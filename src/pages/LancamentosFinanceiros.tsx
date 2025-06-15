@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,6 +46,7 @@ const LancamentosFinanceiros: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [tipoFilter, setTipoFilter] = useState('todos');
   const [categoriaFilter, setCategoriaFilter] = useState('todas');
+  const [activeTab, setActiveTab] = useState('lista');
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -74,7 +74,6 @@ const LancamentosFinanceiros: React.FC = () => {
   const fetchLancamentos = async () => {
     setLoading(true);
     try {
-      // Buscar lançamentos com clientes
       const { data: lancamentosComClientes, error: errorClientes } = await supabase
         .from('lancamentos')
         .select(`
@@ -86,7 +85,6 @@ const LancamentosFinanceiros: React.FC = () => {
 
       if (errorClientes) throw errorClientes;
 
-      // Buscar lançamentos com fornecedores
       const { data: lancamentosComFornecedores, error: errorFornecedores } = await supabase
         .from('lancamentos')
         .select(`
@@ -98,7 +96,6 @@ const LancamentosFinanceiros: React.FC = () => {
 
       if (errorFornecedores) throw errorFornecedores;
 
-      // Buscar lançamentos sem relacionamentos
       const { data: lancamentosSemRelacao, error: errorSemRelacao } = await supabase
         .from('lancamentos')
         .select('*')
@@ -108,7 +105,6 @@ const LancamentosFinanceiros: React.FC = () => {
 
       if (errorSemRelacao) throw errorSemRelacao;
 
-      // Combinar e processar dados
       const todosLancamentos: Lancamento[] = [
         ...(lancamentosComClientes || []).map((l: any) => ({
           ...l,
@@ -121,7 +117,6 @@ const LancamentosFinanceiros: React.FC = () => {
         ...(lancamentosSemRelacao || [])
       ];
 
-      // Ordenar por data de criação
       todosLancamentos.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
       setLancamentos(todosLancamentos);
@@ -224,6 +219,7 @@ const LancamentosFinanceiros: React.FC = () => {
         categoria: '',
         observacoes: ''
       });
+      setActiveTab('lista');
       fetchLancamentos();
     } catch (error: any) {
       toast({
@@ -268,6 +264,13 @@ const LancamentosFinanceiros: React.FC = () => {
           <h1 className="text-3xl font-bold text-fluxo-black-900">Lançamentos Financeiros</h1>
           <p className="text-fluxo-black-600 mt-2">Controle de receitas e despesas</p>
         </div>
+        <Button
+          onClick={() => setActiveTab('formulario')}
+          className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600 text-white"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Novo Lançamento
+        </Button>
       </div>
 
       {/* Painéis de Resumo */}
@@ -323,7 +326,7 @@ const LancamentosFinanceiros: React.FC = () => {
         </Card>
       </div>
 
-      <Tabs defaultValue="lista" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="lista">Lista de Lançamentos</TabsTrigger>
           <TabsTrigger value="formulario">Novo Lançamento</TabsTrigger>

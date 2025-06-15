@@ -14,7 +14,9 @@ import {
   TrendingUp,
   CreditCard,
   ShoppingCart,
-  Settings
+  Settings,
+  Banknote,
+  Calendar
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -33,6 +35,7 @@ const menuItems: MenuItem[] = [
     label: 'Indicadores',
     icon: BarChart3,
     children: [
+      { id: 'dashboard-financeiro', label: 'Dashboard Financeiro', icon: TrendingUp, href: '/dashboard' },
       { id: 'dre', label: 'DRE', icon: TrendingUp, href: '/dashboard/dre' },
       { id: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: CreditCard, href: '/dashboard/fluxo-caixa' }
     ]
@@ -42,7 +45,8 @@ const menuItems: MenuItem[] = [
     label: 'Financeiro',
     icon: DollarSign,
     children: [
-      { id: 'lancamentos', label: 'Lançamentos', icon: CreditCard, href: '/dashboard/lancamentos' }
+      { id: 'lancamentos', label: 'Lançamentos', icon: CreditCard, href: '/dashboard/lancamentos' },
+      { id: 'saldos-bancarios', label: 'Saldos Bancários', icon: Banknote, href: '/dashboard/saldos-bancarios' }
     ]
   },
   {
@@ -85,7 +89,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
-  const [expandedItems, setExpandedItems] = useState<string[]>(['indicadores']);
+  const [expandedItems, setExpandedItems] = useState<string[]>(['indicadores', 'financeiro']);
   const location = useLocation();
 
   const toggleExpanded = (itemId: string) => {
@@ -183,11 +187,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       <div className="absolute inset-0 bg-gradient-to-br from-fluxo-blue-50/40 via-white/30 to-fluxo-blue-100/20 backdrop-blur-xl"></div>
       <div className="absolute inset-0 bg-gradient-to-b from-fluxo-black-900/5 via-transparent to-fluxo-black-900/10"></div>
       
-      {/* Border with gradient */}
       <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-fluxo-blue-200/50 via-fluxo-blue-300/30 to-fluxo-blue-200/50"></div>
       
       <div className="relative z-10 h-full flex flex-col">
-        {/* Header */}
         <div className="p-4 border-b border-white/20 bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-sm">
           {collapsed ? (
             <div className="flex justify-center">
@@ -200,7 +202,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
           )}
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 p-4 overflow-y-auto">
           <div className="space-y-2">
             {menuItems.map(item => renderMenuItem(item))}

@@ -120,11 +120,6 @@ const LoginForm: React.FC = () => {
               )}
             </Button>
           </form>
-
-          <div className="text-center text-sm text-fluxo-black-500 mt-4">
-            <p>Usuário de teste: leandro@fluxoazul.com</p>
-            <p>Senha: jayafcg3</p>
-          </div>
         </div>
       </Card>
     </div>
