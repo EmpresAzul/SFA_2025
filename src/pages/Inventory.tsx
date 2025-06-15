@@ -131,6 +131,15 @@ const Inventory: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!formData.name || !formData.category || !formData.quantity || !formData.minQuantity || !formData.price || !formData.cost || !formData.supplier) {
+      toast({
+        title: "Erro no cadastro",
+        description: "Por favor, preencha todos os campos obrigatórios.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const newItem: InventoryItem = {
       id: editingItem?.id || Date.now().toString(),
       name: formData.name,
