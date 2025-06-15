@@ -11,6 +11,7 @@ import Dashboard from "@/pages/Dashboard";
 import Profile from "@/pages/Profile";
 import VirtualConsultant from "@/pages/VirtualConsultant";
 import RegisterManagement from "@/pages/RegisterManagement";
+import Inventory from "@/pages/Inventory";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -62,6 +63,14 @@ const AppRoutes = () => {
         <ProtectedRoute>
           <DashboardLayout>
             <RegisterManagement />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/dashboard/estoque" element={
+        <ProtectedRoute>
+          <DashboardLayout>
+            <Inventory />
           </DashboardLayout>
         </ProtectedRoute>
       } />

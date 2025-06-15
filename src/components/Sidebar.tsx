@@ -115,8 +115,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
             className={cn(
               "w-full flex items-center px-4 py-3 text-left rounded-lg transition-all duration-200 group",
               parentActive 
-                ? "gradient-fluxo text-white shadow-lg" 
-                : "text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-fluxo-blue-700",
+                ? "gradient-professional text-white shadow-professional" 
+                : "text-fluxo-black-700 hover:bg-gradient-to-r hover:from-fluxo-black-50 hover:to-blue-50 hover:text-fluxo-blue-700",
               collapsed && "justify-center px-2"
             )}
           >
@@ -148,8 +148,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
             "flex items-center px-4 py-3 rounded-lg transition-all duration-200 group mb-1",
             level > 0 && "ml-4",
             isActive(item.href) 
-              ? "gradient-fluxo text-white shadow-lg" 
-              : "text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-fluxo-blue-700",
+              ? "gradient-professional text-white shadow-professional" 
+              : "text-fluxo-black-700 hover:bg-gradient-to-r hover:from-fluxo-black-50 hover:to-blue-50 hover:text-fluxo-blue-700",
             collapsed && "justify-center px-2"
           )}
         >
@@ -166,7 +166,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         className={cn(
           "flex items-center px-4 py-3 rounded-lg transition-all duration-200 group mb-1",
           level > 0 && "ml-4",
-          "text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-fluxo-blue-700",
+          "text-fluxo-black-700 hover:bg-gradient-to-r hover:from-fluxo-black-50 hover:to-blue-50 hover:text-fluxo-blue-700",
           collapsed && "justify-center px-2"
         )}
       >
@@ -178,14 +178,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
 
   return (
     <div className={cn(
-      "h-screen bg-white border-r border-gray-200 transition-all duration-300 flex flex-col shadow-lg",
+      "h-screen bg-gradient-to-b from-fluxo-black-50 to-white border-r border-fluxo-black-200 transition-all duration-300 flex flex-col shadow-professional-lg",
       collapsed ? "w-16" : "w-64"
     )}>
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-fluxo-black-200 bg-white/50 backdrop-blur-sm">
         {collapsed ? (
           <div className="flex justify-center">
-            <div className="w-8 h-8 gradient-fluxo rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 gradient-professional rounded-lg flex items-center justify-center shadow-professional">
               <div className="w-3 h-3 bg-white rounded-full"></div>
             </div>
           </div>

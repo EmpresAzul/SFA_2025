@@ -47,14 +47,14 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-fluxo p-4">
-      <Card className="w-full max-w-md p-8 bg-white shadow-2xl rounded-2xl animate-fade-in">
+    <div className="min-h-screen flex items-center justify-center gradient-professional p-4">
+      <Card className="w-full max-w-md p-8 bg-white shadow-professional-lg rounded-2xl animate-fade-in border border-fluxo-black-200">
         <div className="flex flex-col items-center space-y-6">
           <Logo size="lg" />
           
           <form onSubmit={handleSubmit} className="w-full space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-fluxo-blue-900 font-medium">
+              <Label htmlFor="email" className="text-fluxo-black-800 font-medium">
                 E-mail
               </Label>
               <Input
@@ -64,12 +64,12 @@ const LoginForm: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Digite seu e-mail"
                 required
-                className="h-12 border-2 border-gray-200 focus:border-fluxo-blue-500 transition-colors"
+                className="h-12 border-2 border-fluxo-black-200 focus:border-fluxo-blue-500 transition-colors"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-fluxo-blue-900 font-medium">
+              <Label htmlFor="password" className="text-fluxo-black-800 font-medium">
                 Senha
               </Label>
               <div className="relative">
@@ -80,12 +80,12 @@ const LoginForm: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Digite sua senha"
                   required
-                  className="h-12 border-2 border-gray-200 focus:border-fluxo-blue-500 transition-colors pr-12"
+                  className="h-12 border-2 border-fluxo-black-200 focus:border-fluxo-blue-500 transition-colors pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-fluxo-blue-600"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-fluxo-black-500 hover:text-fluxo-blue-600"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -95,7 +95,7 @@ const LoginForm: React.FC = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 gradient-fluxo hover:gradient-fluxo-light text-white font-semibold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="w-full h-12 gradient-professional hover:gradient-fluxo-light text-white font-semibold text-lg rounded-lg shadow-professional-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               {loading ? (
                 <div className="flex items-center space-x-2">
@@ -111,7 +111,7 @@ const LoginForm: React.FC = () => {
             </Button>
           </form>
 
-          <div className="text-center text-sm text-gray-500 mt-4">
+          <div className="text-center text-sm text-fluxo-black-500 mt-4">
             <p>Usuário de teste: leandro@fluxoazul.com</p>
             <p>Senha: jayafcg3</p>
           </div>
