@@ -1,98 +1,52 @@
-
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import LoginForm from "@/components/LoginForm";
-import DashboardLayout from "@/components/DashboardLayout";
-import Dashboard from "@/pages/Dashboard";
-import Profile from "@/pages/Profile";
-import VirtualConsultant from "@/pages/VirtualConsultant";
-import RegisterManagement from "@/pages/RegisterManagement";
-import Inventory from "@/pages/Inventory";
-import NotFound from "./pages/NotFound";
-
-const queryClient = new QueryClient();
+import React, { useContext } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthContext, AuthProvider } from './contexts/AuthContext';
+import DashboardLayout from './layouts/DashboardLayout';
+import Dashboard from './pages/Dashboard';
+import Index from './pages/Index';
+import NotFound from './pages/NotFound';
+import RegisterManagement from './pages/RegisterManagement';
+import VirtualConsultant from './pages/VirtualConsultant';
+import Profile from './pages/Profile';
+import LoginForm from './components/LoginForm';
+import EstoqueManagement from '@/pages/EstoqueManagement';
+import LancamentosFinanceiros from '@/pages/LancamentosFinanceiros';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useAuth();
-  return user ? <>{children}</> : <Navigate to="/login" replace />;
+  const { isAuthenticated } = useContext(AuthContext);
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  return <>{children}</>;
 };
 
-const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useAuth();
-  return !user ? <>{children}</> : <Navigate to="/dashboard" replace />;
-};
-
-const AppRoutes = () => {
+const App = () => {
   return (
-    <Routes>
-      <Route path="/login" element={
-        <PublicRoute>
-          <LoginForm />
-        </PublicRoute>
-      } />
-      
-      <Route path="/dashboard" element={
-        <ProtectedRoute>
-          <DashboardLayout>
-            <Dashboard />
-          </DashboardLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/dashboard/perfil" element={
-        <ProtectedRoute>
-          <DashboardLayout>
-            <Profile />
-          </DashboardLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/dashboard/consultor-virtual" element={
-        <ProtectedRoute>
-          <DashboardLayout>
-            <VirtualConsultant />
-          </DashboardLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/dashboard/cadastro" element={
-        <ProtectedRoute>
-          <DashboardLayout>
-            <RegisterManagement />
-          </DashboardLayout>
-        </ProtectedRoute>
-      } />
-
-      <Route path="/dashboard/estoque" element={
-        <ProtectedRoute>
-          <DashboardLayout>
-            <Inventory />
-          </DashboardLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="cadastro" element={<RegisterManagement />} />
+            <Route path="estoque" element={<EstoqueManagement />} />
+            <Route path="lancamentos" element={<LancamentosFinanceiros />} />
+            <Route path="consultor-virtual" element={<VirtualConsultant />} />
+            <Route path="perfil" element={<Profile />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 };
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
 
 export default App;
