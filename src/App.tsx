@@ -1,7 +1,8 @@
+
 import React, { useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthContext, AuthProvider } from './contexts/AuthContext';
-import DashboardLayout from './layouts/DashboardLayout';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import DashboardLayout from './components/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import Index from './pages/Index';
 import NotFound from './pages/NotFound';
@@ -11,13 +12,22 @@ import Profile from './pages/Profile';
 import LoginForm from './components/LoginForm';
 import EstoqueManagement from '@/pages/EstoqueManagement';
 import LancamentosFinanceiros from '@/pages/LancamentosFinanceiros';
+import { Outlet } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useContext(AuthContext);
-  if (!isAuthenticated) {
+  const { user } = useAuth();
+  if (!user) {
     return <Navigate to="/login" />;
   }
   return <>{children}</>;
+};
+
+const DashboardLayoutWrapper = () => {
+  return (
+    <DashboardLayout>
+      <Outlet />
+    </DashboardLayout>
+  );
 };
 
 const App = () => {
@@ -31,7 +41,7 @@ const App = () => {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <DashboardLayout />
+                <DashboardLayoutWrapper />
               </ProtectedRoute>
             }
           >

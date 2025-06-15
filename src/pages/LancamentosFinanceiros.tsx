@@ -24,9 +24,10 @@ interface Lancamento {
   observacoes?: string;
   status: string;
   created_at: string;
-  cadastros?: {
-    nome: string;
-  };
+  cliente_id?: string;
+  fornecedor_id?: string;
+  cliente_nome?: string;
+  fornecedor_nome?: string;
 }
 
 interface Cadastro {
@@ -73,18 +74,57 @@ const LancamentosFinanceiros: React.FC = () => {
   const fetchLancamentos = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Buscar lançamentos com clientes
+      const { data: lancamentosComClientes, error: errorClientes } = await supabase
         .from('lancamentos')
         .select(`
           *,
-          cadastros!cliente_id(nome),
-          cadastros!fornecedor_id(nome)
+          cliente:cadastros!cliente_id(nome)
         `)
         .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
+        .not('cliente_id', 'is', null);
 
-      if (error) throw error;
-      setLancamentos(data || []);
+      if (errorClientes) throw errorClientes;
+
+      // Buscar lançamentos com fornecedores
+      const { data: lancamentosComFornecedores, error: errorFornecedores } = await supabase
+        .from('lancamentos')
+        .select(`
+          *,
+          fornecedor:cadastros!fornecedor_id(nome)
+        `)
+        .eq('user_id', user?.id)
+        .not('fornecedor_id', 'is', null);
+
+      if (errorFornecedores) throw errorFornecedores;
+
+      // Buscar lançamentos sem relacionamentos
+      const { data: lancamentosSemRelacao, error: errorSemRelacao } = await supabase
+        .from('lancamentos')
+        .select('*')
+        .eq('user_id', user?.id)
+        .is('cliente_id', null)
+        .is('fornecedor_id', null);
+
+      if (errorSemRelacao) throw errorSemRelacao;
+
+      // Combinar e processar dados
+      const todosLancamentos: Lancamento[] = [
+        ...(lancamentosComClientes || []).map((l: any) => ({
+          ...l,
+          cliente_nome: l.cliente?.nome
+        })),
+        ...(lancamentosComFornecedores || []).map((l: any) => ({
+          ...l,
+          fornecedor_nome: l.fornecedor?.nome
+        })),
+        ...(lancamentosSemRelacao || [])
+      ];
+
+      // Ordenar por data de criação
+      todosLancamentos.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      setLancamentos(todosLancamentos);
     } catch (error: any) {
       toast({
         title: "Erro ao carregar lançamentos",
@@ -105,7 +145,13 @@ const LancamentosFinanceiros: React.FC = () => {
         .eq('status', 'ativo');
 
       if (error) throw error;
-      setCadastros(data || []);
+      
+      const cadastrosTipados: Cadastro[] = (data || []).filter(
+        (cadastro): cadastro is Cadastro => 
+          cadastro.tipo === 'cliente' || cadastro.tipo === 'fornecedor'
+      );
+      
+      setCadastros(cadastrosTipados);
     } catch (error: any) {
       toast({
         title: "Erro ao carregar cadastros",
@@ -364,7 +410,7 @@ const LancamentosFinanceiros: React.FC = () => {
                         R$ {lancamento.valor.toFixed(2)}
                       </TableCell>
                       <TableCell>{lancamento.categoria}</TableCell>
-                      <TableCell>{lancamento.cadastros?.nome || '-'}</TableCell>
+                      <TableCell>{lancamento.cliente_nome || lancamento.fornecedor_nome || '-'}</TableCell>
                       <TableCell>{lancamento.observacoes || '-'}</TableCell>
                     </TableRow>
                   ))}
