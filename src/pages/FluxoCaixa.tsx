@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -70,7 +69,14 @@ const FluxoCaixa: React.FC = () => {
         .order('data', { ascending: true });
 
       if (error) throw error;
-      setLancamentos(data || []);
+      
+      // Type assertion to ensure tipo is properly typed
+      const typedLancamentos = (data || []).map(item => ({
+        ...item,
+        tipo: item.tipo as 'receita' | 'despesa'
+      })) as Lancamento[];
+      
+      setLancamentos(typedLancamentos);
     } catch (error: any) {
       console.error('Erro ao carregar lançamentos:', error);
     } finally {

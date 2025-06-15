@@ -168,6 +168,36 @@ export type Database = {
           },
         ]
       }
+      saldos_bancarios: {
+        Row: {
+          banco: string
+          created_at: string
+          data: string
+          id: string
+          saldo: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          banco: string
+          created_at?: string
+          data: string
+          id?: string
+          saldo: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          banco?: string
+          created_at?: string
+          data?: string
+          id?: string
+          saldo?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
