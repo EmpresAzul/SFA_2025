@@ -138,25 +138,41 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       );
     }
 
-    const Component = item.href ? NavLink : 'div';
-    const props = item.href ? { to: item.href } : {};
+    // For items with href, use NavLink
+    if (item.href) {
+      return (
+        <NavLink
+          key={item.id}
+          to={item.href}
+          className={cn(
+            "flex items-center px-4 py-3 rounded-lg transition-all duration-200 group mb-1",
+            level > 0 && "ml-4",
+            isActive(item.href) 
+              ? "gradient-fluxo text-white shadow-lg" 
+              : "text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-fluxo-blue-700",
+            collapsed && "justify-center px-2"
+          )}
+        >
+          <item.icon className={cn("flex-shrink-0", collapsed ? "w-5 h-5" : "w-5 h-5 mr-3")} />
+          {!collapsed && <span className="font-medium">{item.label}</span>}
+        </NavLink>
+      );
+    }
 
+    // For items without href, use div
     return (
-      <Component
+      <div
         key={item.id}
-        {...props}
         className={cn(
           "flex items-center px-4 py-3 rounded-lg transition-all duration-200 group mb-1",
           level > 0 && "ml-4",
-          isActive(item.href || '') 
-            ? "gradient-fluxo text-white shadow-lg" 
-            : "text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-fluxo-blue-700",
+          "text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-fluxo-blue-700",
           collapsed && "justify-center px-2"
         )}
       >
         <item.icon className={cn("flex-shrink-0", collapsed ? "w-5 h-5" : "w-5 h-5 mr-3")} />
         {!collapsed && <span className="font-medium">{item.label}</span>}
-      </Component>
+      </div>
     );
   };
 
