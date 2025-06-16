@@ -32,7 +32,7 @@ export const CadastroTable: React.FC<CadastroTableProps> = ({
           <TableHeader>
             <TableRow>
               <TableHead>Nome</TableHead>
-              <TableHead>CPF/CNPJ</TableHead>
+              <TableHead>Tipo</TableHead>
               <TableHead>Telefone</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Data</TableHead>
@@ -57,7 +57,7 @@ export const CadastroTable: React.FC<CadastroTableProps> = ({
             {cadastros.map((cadastro) => (
               <TableRow key={cadastro.id}>
                 <TableCell className="font-medium">{cadastro.nome}</TableCell>
-                <TableCell>{cadastro.cpf_cnpj || '-'}</TableCell>
+                <TableCell>{cadastro.tipo}</TableCell>
                 <TableCell>{cadastro.telefone || '-'}</TableCell>
                 <TableCell>{cadastro.email || '-'}</TableCell>
                 <TableCell>{format(new Date(cadastro.data), 'dd/MM/yyyy')}</TableCell>
