@@ -21,6 +21,7 @@ export const FornecedorForm: React.FC<FornecedorFormProps> = ({
           id="razao_social"
           value={formData.razao_social || ''}
           onChange={(e) => setFormData({ ...formData, razao_social: e.target.value, nome: e.target.value })}
+          placeholder="Digite a razão social da empresa"
           required
         />
       </div>

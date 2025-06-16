@@ -20,6 +20,7 @@ export const FuncionarioForm: React.FC<FuncionarioFormProps> = ({
           id="nome"
           value={formData.nome}
           onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+          placeholder="Digite o nome completo"
           required
         />
       </div>
@@ -41,6 +42,7 @@ export const FuncionarioForm: React.FC<FuncionarioFormProps> = ({
           id="cargo"
           value={formData.cargo || ''}
           onChange={(e) => setFormData({ ...formData, cargo: e.target.value })}
+          placeholder="Digite o cargo"
           required
         />
       </div>

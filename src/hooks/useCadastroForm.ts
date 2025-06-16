@@ -77,15 +77,63 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
     setEditingCadastro(null);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.nome.trim()) {
+  const validateForm = (): boolean => {
+    // Validação do nome obrigatório
+    if (!formData.nome.trim() && !formData.razao_social?.trim()) {
       toast({
-        title: "Erro",
+        title: "Erro de validação",
         description: "Nome é obrigatório.",
         variant: "destructive",
       });
+      return false;
+    }
+
+    // Validação do CPF/CNPJ obrigatório
+    if (!formData.cpf_cnpj.trim()) {
+      toast({
+        title: "Erro de validação",
+        description: `${formData.pessoa === 'Física' ? 'CPF' : 'CNPJ'} é obrigatório.`,
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    // Validações específicas por tipo
+    if (tipo === 'Funcionário') {
+      if (!formData.cargo?.trim()) {
+        toast({
+          title: "Erro de validação",
+          description: "Cargo é obrigatório.",
+          variant: "destructive",
+        });
+        return false;
+      }
+      if (!formData.data_admissao?.trim()) {
+        toast({
+          title: "Erro de validação",
+          description: "Data de admissão é obrigatória.",
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+
+    if (tipo === 'Fornecedor' && !formData.razao_social?.trim()) {
+      toast({
+        title: "Erro de validação",
+        description: "Razão Social é obrigatória.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
       return;
     }
 
@@ -96,7 +144,7 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
         nome: formData.razao_social?.trim() || formData.nome.trim(),
         tipo,
         pessoa: formData.pessoa,
-        cpf_cnpj: formData.cpf_cnpj.trim() || undefined,
+        cpf_cnpj: formData.cpf_cnpj.trim(),
         telefone: formData.telefone.trim() || undefined,
         email: formData.email.trim() || undefined,
         endereco: formData.endereco.trim() || undefined,
@@ -108,7 +156,7 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
         observacoes: formData.observacoes.trim() || undefined,
         user_id: user!.id,
         status: 'ativo',
-        data: new Date().toISOString().split('T')[0] // Add the required data field
+        data: new Date().toISOString().split('T')[0]
       };
 
       if (editingCadastro) {
@@ -116,15 +164,28 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
           id: editingCadastro.id, 
           ...cadastroData 
         });
+        toast({
+          title: "Sucesso",
+          description: `${tipo} atualizado com sucesso!`,
+        });
         setEditingCadastro(null);
       } else {
         await createCadastro.mutateAsync(cadastroData);
+        toast({
+          title: "Sucesso",
+          description: `${tipo} cadastrado com sucesso!`,
+        });
       }
 
       resetForm();
       return true;
     } catch (error: any) {
       console.error('Erro ao salvar cadastro:', error);
+      toast({
+        title: "Erro",
+        description: error.message || "Erro ao salvar cadastro. Tente novamente.",
+        variant: "destructive",
+      });
       return false;
     } finally {
       setLoading(false);

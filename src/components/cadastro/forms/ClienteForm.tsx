@@ -21,6 +21,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
           id="nome"
           value={formData.nome}
           onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+          placeholder="Digite o nome completo"
           required
         />
       </div>
