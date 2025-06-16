@@ -47,6 +47,13 @@ const menuItems: MenuItem[] = [
     ]
   },
   {
+    id: 'precificacao',
+    label: 'Precificação',
+    icon: Tag,
+    iconColor: 'text-pink-500',
+    href: '/dashboard/precificacao'
+  },
+  {
     id: 'financeiro',
     label: 'Financeiro',
     icon: DollarSign,
@@ -54,13 +61,6 @@ const menuItems: MenuItem[] = [
     children: [
       { id: 'lancamentos', label: 'Lançamentos', icon: CreditCard, iconColor: 'text-indigo-500', href: '/dashboard/lancamentos' }
     ]
-  },
-  {
-    id: 'precificacao',
-    label: 'Precificação',
-    icon: Tag,
-    iconColor: 'text-pink-500',
-    href: '/dashboard/precificacao'
   },
   {
     id: 'cadastros',

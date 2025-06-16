@@ -16,6 +16,7 @@ const FuncionariosManagement: React.FC = () => {
     isLoading,
     refetch,
     createCadastroMutation,
+    updateCadastroMutation,
     deleteCadastroMutation,
     session,
     error
@@ -51,7 +52,7 @@ const FuncionariosManagement: React.FC = () => {
     handleEdit,
     handleView,
     resetForm
-  } = useContactForm(createCadastroMutation, refetch, session);
+  } = useContactForm(createCadastroMutation, updateCadastroMutation, refetch, session);
 
   // Verificar se o usuário está autenticado
   if (!session?.user?.id) {
@@ -76,7 +77,7 @@ const FuncionariosManagement: React.FC = () => {
     try {
       const newStatus = contact.status === 'ativo' ? 'inativo' : 'ativo';
       
-      await createCadastroMutation.mutateAsync({
+      await updateCadastroMutation.mutateAsync({
         ...contact,
         status: newStatus,
         id: contact.id
@@ -159,7 +160,7 @@ const FuncionariosManagement: React.FC = () => {
           formatTelefone={formatTelefone}
           handleSubmit={handleSubmit}
           resetForm={resetForm}
-          isLoading={createCadastroMutation.isPending}
+          isLoading={createCadastroMutation.isPending || updateCadastroMutation.isPending}
           fixedType="Funcionário"
         />
       )}

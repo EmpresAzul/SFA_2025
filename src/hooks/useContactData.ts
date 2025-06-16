@@ -4,13 +4,14 @@ import { useCadastros } from '@/hooks/useCadastros';
 
 export const useContactData = () => {
   const { user, session } = useAuth();
-  const { useCadastrosQuery, useCreateCadastro, useDeleteCadastro } = useCadastros();
+  const { useCadastrosQuery, useCreateCadastro, useUpdateCadastro, useDeleteCadastro } = useCadastros();
 
   console.log('useContactData - User:', user);
   console.log('useContactData - Session:', session);
 
   const { data: contacts = [], isLoading, refetch, error } = useCadastrosQuery();
   const createCadastroMutation = useCreateCadastro();
+  const updateCadastroMutation = useUpdateCadastro();
   const deleteCadastroMutation = useDeleteCadastro();
 
   console.log('useContactData - Contacts loaded:', contacts.length);
@@ -22,6 +23,7 @@ export const useContactData = () => {
     isLoading,
     refetch,
     createCadastroMutation,
+    updateCadastroMutation,
     deleteCadastroMutation,
     session,
     error

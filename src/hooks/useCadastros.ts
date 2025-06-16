@@ -9,7 +9,7 @@ export const useCadastros = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Query para buscar cadastros
+  // Query para buscar cadastros - seguindo exatamente o padrão do useEstoques
   const useCadastrosQuery = () => {
     return useQuery({
       queryKey: ['cadastros', session?.user?.id],
@@ -41,95 +41,138 @@ export const useCadastros = () => {
     });
   };
 
-  // Mutation para criar/atualizar cadastro - seguindo padrão do EstoqueForm
+  // Mutation para criar cadastro - seguindo exatamente o padrão do useEstoques
   const useCreateCadastro = () => {
     return useMutation({
       mutationFn: async (data: any) => {
         if (!session?.user?.id) {
-          console.log('useCadastros - No authenticated user for create/update');
+          console.log('useCadastros - No authenticated user for create');
           throw new Error('Usuário não autenticado');
         }
         
-        console.log('useCadastros - Creating/updating cadastro:', data);
+        console.log('useCadastros - Creating cadastro with data:', data);
         
-        if (data.id) {
-          // Atualização - seguindo padrão do estoque
-          const { data: result, error } = await supabase
-            .from('cadastros')
-            .update({
-              data: data.data,
-              tipo: data.tipo,
-              pessoa: data.pessoa,
-              nome: data.nome,
-              documento: data.documento,
-              endereco: data.endereco,
-              numero: data.numero,
-              cidade: data.cidade,
-              estado: data.estado,
-              email: data.email,
-              telefone: data.telefone,
-              observacoes: data.observacoes,
-              anexo_url: data.anexo_url,
-              salario: data.salario,
-              status: data.status,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', data.id)
-            .eq('user_id', session.user.id)
-            .select()
-            .single();
+        // Preparar dados seguindo exatamente o padrão do estoque
+        const dataToInsert = {
+          user_id: session.user.id,
+          data: data.data,
+          tipo: data.tipo,
+          pessoa: data.pessoa,
+          nome: data.nome,
+          documento: data.documento?.replace(/\D/g, '') || null,
+          endereco: data.endereco?.trim() || null,
+          numero: data.numero?.trim() || null,
+          cidade: data.cidade?.trim() || null,
+          estado: data.estado?.trim()?.toUpperCase() || null,
+          email: data.email?.trim() || null,
+          telefone: data.telefone?.replace(/\D/g, '') || null,
+          observacoes: data.observacoes?.trim() || null,
+          anexo_url: data.anexo_url?.trim() || null,
+          salario: data.salario && data.salario > 0 ? data.salario : null,
+          status: data.status || 'ativo'
+        };
+        
+        console.log('useCadastros - Final data to insert:', dataToInsert);
+        
+        const { data: result, error } = await supabase
+          .from('cadastros')
+          .insert([dataToInsert])
+          .select()
+          .single();
 
-          if (error) {
-            console.error('useCadastros - Error updating cadastro:', error);
-            throw new Error(`Erro ao atualizar cadastro: ${error.message}`);
-          }
-          
-          console.log('useCadastros - Updated cadastro:', result);
-          return result;
-        } else {
-          // Criação - seguindo padrão do estoque
-          const { data: result, error } = await supabase
-            .from('cadastros')
-            .insert([{
-              user_id: session.user.id,
-              data: data.data,
-              tipo: data.tipo,
-              pessoa: data.pessoa,
-              nome: data.nome,
-              documento: data.documento,
-              endereco: data.endereco,
-              numero: data.numero,
-              cidade: data.cidade,
-              estado: data.estado,
-              email: data.email,
-              telefone: data.telefone,
-              observacoes: data.observacoes,
-              anexo_url: data.anexo_url,
-              salario: data.salario,
-              status: data.status
-            }])
-            .select()
-            .single();
-
-          if (error) {
-            console.error('useCadastros - Error creating cadastro:', error);
-            throw new Error(`Erro ao criar cadastro: ${error.message}`);
-          }
-          
-          console.log('useCadastros - Created cadastro:', result);
-          return result;
+        if (error) {
+          console.error('useCadastros - Error creating cadastro:', error);
+          throw new Error(`Erro ao criar cadastro: ${error.message}`);
         }
+        
+        console.log('useCadastros - Created cadastro:', result);
+        return result;
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['cadastros'] });
+        toast({
+          title: "Sucesso!",
+          description: "Cadastro criado com sucesso!",
+        });
       },
       onError: (error: any) => {
-        console.error('useCadastros - Mutation error:', error);
+        console.error('useCadastros - Create mutation error:', error);
+        toast({
+          title: "Erro",
+          description: error?.message || "Erro ao criar cadastro. Tente novamente.",
+          variant: "destructive",
+        });
       },
     });
   };
 
-  // Mutation para deletar cadastro
+  // Mutation para atualizar cadastro - seguindo exatamente o padrão do useEstoques
+  const useUpdateCadastro = () => {
+    return useMutation({
+      mutationFn: async (data: any) => {
+        if (!session?.user?.id) {
+          console.log('useCadastros - No authenticated user for update');
+          throw new Error('Usuário não autenticado');
+        }
+        
+        console.log('useCadastros - Updating cadastro with data:', data);
+        
+        const dataToUpdate = {
+          data: data.data,
+          tipo: data.tipo,
+          pessoa: data.pessoa,
+          nome: data.nome,
+          documento: data.documento?.replace(/\D/g, '') || null,
+          endereco: data.endereco?.trim() || null,
+          numero: data.numero?.trim() || null,
+          cidade: data.cidade?.trim() || null,
+          estado: data.estado?.trim()?.toUpperCase() || null,
+          email: data.email?.trim() || null,
+          telefone: data.telefone?.replace(/\D/g, '') || null,
+          observacoes: data.observacoes?.trim() || null,
+          anexo_url: data.anexo_url?.trim() || null,
+          salario: data.salario && data.salario > 0 ? data.salario : null,
+          status: data.status || 'ativo',
+          updated_at: new Date().toISOString()
+        };
+        
+        console.log('useCadastros - Final data to update:', dataToUpdate);
+        
+        const { data: result, error } = await supabase
+          .from('cadastros')
+          .update(dataToUpdate)
+          .eq('id', data.id)
+          .eq('user_id', session.user.id)
+          .select()
+          .single();
+
+        if (error) {
+          console.error('useCadastros - Error updating cadastro:', error);
+          throw new Error(`Erro ao atualizar cadastro: ${error.message}`);
+        }
+        
+        console.log('useCadastros - Updated cadastro:', result);
+        return result;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['cadastros'] });
+        toast({
+          title: "Sucesso!",
+          description: "Cadastro atualizado com sucesso!",
+        });
+      },
+      onError: (error: any) => {
+        console.error('useCadastros - Update mutation error:', error);
+        toast({
+          title: "Erro",
+          description: error?.message || "Erro ao atualizar cadastro. Tente novamente.",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  // Mutation para deletar cadastro - seguindo exatamente o padrão do useEstoques
   const useDeleteCadastro = () => {
     return useMutation({
       mutationFn: async (id: string) => {
@@ -174,6 +217,7 @@ export const useCadastros = () => {
   return {
     useCadastrosQuery,
     useCreateCadastro,
+    useUpdateCadastro,
     useDeleteCadastro,
   };
 };

@@ -6,6 +6,7 @@ import { formatCPF, formatCNPJ, formatPhone } from '@/utils/formatters';
 
 export const useContactForm = (
   createCadastroMutation: any,
+  updateCadastroMutation: any,
   refetch: () => void,
   session: any
 ) => {
@@ -13,7 +14,6 @@ export const useContactForm = (
   const [showForm, setShowForm] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [viewingContact, setViewingContact] = useState<Contact | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState<ContactFormData>({
     data: new Date().toISOString().split('T')[0],
@@ -88,22 +88,14 @@ export const useContactForm = (
       return;
     }
 
-    setLoading(true);
-
     try {
       console.log('ContactForm - Submitting data:', formData);
       
-      // Normalizar o tipo para evitar problemas de consistência
-      let tipoNormalizado = formData.tipo;
-      if (formData.tipo === 'Funcionário') {
-        tipoNormalizado = 'Funcionario';
-      }
-      
-      // Preparar dados seguindo o mesmo padrão do EstoqueForm
+      // Preparar dados seguindo o padrão do EstoqueForm
       const dataToSubmit = {
         user_id: session.user.id,
         data: formData.data,
-        tipo: tipoNormalizado,
+        tipo: formData.tipo,
         pessoa: formData.pessoa,
         nome: formData.nome.trim(),
         documento: formData.documento?.replace(/\D/g, '') || null,
@@ -122,41 +114,28 @@ export const useContactForm = (
       
       console.log('ContactForm - Final data to submit:', dataToSubmit);
       
-      await createCadastroMutation.mutateAsync(dataToSubmit);
+      if (editingContact) {
+        await updateCadastroMutation.mutateAsync(dataToSubmit);
+      } else {
+        await createCadastroMutation.mutateAsync(dataToSubmit);
+      }
       
       console.log('ContactForm - Mutation completed successfully');
-      
-      toast({
-        title: "Sucesso!",
-        description: editingContact ? "Cadastro atualizado com sucesso!" : "Cadastro criado com sucesso!",
-      });
       
       resetForm();
       refetch();
     } catch (error: any) {
       console.error('ContactForm - Submit error:', error);
-      toast({
-        title: "Erro",
-        description: error?.message || "Erro ao salvar cadastro. Tente novamente.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+      // O toast de erro já é mostrado pelas mutations
     }
   };
 
   const handleEdit = (contact: Contact) => {
     console.log('ContactForm - Editing contact:', contact);
     
-    // Mapear o tipo corretamente para exibição no formulário
-    let tipoParaFormulario = contact.tipo;
-    if (contact.tipo === 'Funcionario') {
-      tipoParaFormulario = 'Funcionário';
-    }
-    
     setFormData({
       data: contact.data,
-      tipo: tipoParaFormulario,
+      tipo: contact.tipo,
       pessoa: contact.pessoa,
       nome: contact.nome,
       documento: contact.documento || '',
@@ -203,7 +182,6 @@ export const useContactForm = (
     setShowForm(false);
     setEditingContact(null);
     setViewingContact(null);
-    setLoading(false);
   };
 
   return {
@@ -213,7 +191,6 @@ export const useContactForm = (
     setShowForm,
     editingContact,
     viewingContact,
-    loading,
     formatDocument,
     formatTelefone,
     handleSubmit,
