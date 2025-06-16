@@ -18,11 +18,29 @@ export const BasicInfoFields: React.FC<BasicInfoFieldsProps> = ({
   tipoOptions,
   hideTypeField = false
 }) => {
+  const handlePessoaChange = (value: string) => {
+    // Garantir que sempre seja salvo sem acentos
+    let normalizedValue = value;
+    if (value === 'Física' || value === 'física') {
+      normalizedValue = 'Fisica';
+    } else if (value === 'Jurídica' || value === 'jurídica') {
+      normalizedValue = 'Juridica';
+    }
+    
+    console.log('BasicInfoFields - Pessoa changed from', value, 'to', normalizedValue);
+    
+    setFormData({ 
+      ...formData, 
+      pessoa: normalizedValue, 
+      documento: '' // Limpar documento ao trocar tipo de pessoa
+    });
+  };
+
   return (
     <>
       <div>
         <Label htmlFor="data" className="text-fluxo-blue-900 font-medium">
-          Data
+          Data *
         </Label>
         <Input
           id="data"
@@ -35,7 +53,7 @@ export const BasicInfoFields: React.FC<BasicInfoFieldsProps> = ({
 
       {!hideTypeField && (
         <div>
-          <Label className="text-fluxo-blue-900 font-medium">Tipo</Label>
+          <Label className="text-fluxo-blue-900 font-medium">Tipo *</Label>
           <Select 
             value={formData.tipo} 
             onValueChange={(value) => setFormData({ ...formData, tipo: value })}
@@ -55,26 +73,24 @@ export const BasicInfoFields: React.FC<BasicInfoFieldsProps> = ({
       )}
 
       <div>
-        <Label className="text-fluxo-blue-900 font-medium">Pessoa</Label>
+        <Label className="text-fluxo-blue-900 font-medium">Pessoa *</Label>
         <Select 
           value={formData.pessoa} 
-          onValueChange={(value) => {
-            setFormData({ ...formData, pessoa: value, documento: '' });
-          }}
+          onValueChange={handlePessoaChange}
         >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Fisica">Fisica</SelectItem>
-            <SelectItem value="Juridica">Juridica</SelectItem>
+            <SelectItem value="Fisica">Física</SelectItem>
+            <SelectItem value="Juridica">Jurídica</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div>
         <Label htmlFor="nome" className="text-fluxo-blue-900 font-medium">
-          Nome
+          Nome *
         </Label>
         <Input
           id="nome"

@@ -51,7 +51,7 @@ export const useCadastros = () => {
         
         console.log('useCadastros - Creating cadastro with data:', data);
         
-        // Validar e normalizar o tipo
+        // Validação rigorosa do tipo
         const validTipos = ['Cliente', 'Fornecedor', 'Funcionário'];
         let tipoNormalizado = data.tipo;
         
@@ -63,23 +63,27 @@ export const useCadastros = () => {
           throw new Error(`Tipo inválido: ${data.tipo}. Tipos válidos: ${validTipos.join(', ')}`);
         }
 
-        // Validar e normalizar pessoa - garantir sem acentos
+        // Validação rigorosa da pessoa - SEMPRE sem acentos
         let pessoaNormalizada = data.pessoa;
-        if (data.pessoa === 'Física') {
+        
+        // Normalizar todas as variações possíveis
+        if (data.pessoa === 'Física' || data.pessoa === 'física' || data.pessoa === 'FÍSICA') {
           pessoaNormalizada = 'Fisica';
-        } else if (data.pessoa === 'Jurídica') {
+        } else if (data.pessoa === 'Jurídica' || data.pessoa === 'jurídica' || data.pessoa === 'JURÍDICA') {
           pessoaNormalizada = 'Juridica';
         }
         
+        // Validação final
         if (!['Fisica', 'Juridica'].includes(pessoaNormalizada)) {
-          throw new Error(`Pessoa inválida: ${data.pessoa}. Valores válidos: Fisica, Juridica`);
+          console.error('useCadastros - Invalid pessoa value:', data.pessoa, 'normalized to:', pessoaNormalizada);
+          throw new Error(`Pessoa inválida: ${data.pessoa}. Valores válidos: Fisica, Juridica (sem acentos)`);
         }
         
         const dataToInsert = {
           user_id: session.user.id,
           data: data.data,
           tipo: tipoNormalizado,
-          pessoa: pessoaNormalizada,
+          pessoa: pessoaNormalizada, // Garantido sem acentos
           nome: data.nome?.trim(),
           documento: data.documento ? data.documento.replace(/\D/g, '') : null,
           endereco: data.endereco?.trim() || null,
@@ -93,7 +97,7 @@ export const useCadastros = () => {
           status: data.status || 'ativo'
         };
         
-        console.log('useCadastros - Final data to insert:', dataToInsert);
+        console.log('useCadastros - Final data to insert (normalized):', dataToInsert);
         
         const { data: result, error } = await supabase
           .from('cadastros')
@@ -103,10 +107,15 @@ export const useCadastros = () => {
 
         if (error) {
           console.error('useCadastros - Error creating cadastro:', error);
+          
+          if (error.message?.includes('pessoa_check')) {
+            throw new Error(`Erro no campo Pessoa. O valor '${data.pessoa}' não é válido. Use 'Fisica' ou 'Juridica' (sem acentos).`);
+          }
+          
           throw new Error(`Erro ao criar cadastro: ${error.message}`);
         }
         
-        console.log('useCadastros - Created cadastro:', result);
+        console.log('useCadastros - Created cadastro successfully:', result);
         return result;
       },
       onSuccess: () => {
@@ -128,7 +137,7 @@ export const useCadastros = () => {
         
         console.log('useCadastros - Updating cadastro with data:', data);
         
-        // Validar e normalizar o tipo
+        // Validação rigorosa do tipo
         const validTipos = ['Cliente', 'Fornecedor', 'Funcionário'];
         let tipoNormalizado = data.tipo;
         
@@ -140,22 +149,26 @@ export const useCadastros = () => {
           throw new Error(`Tipo inválido: ${data.tipo}. Tipos válidos: ${validTipos.join(', ')}`);
         }
 
-        // Validar e normalizar pessoa - garantir sem acentos
+        // Validação rigorosa da pessoa - SEMPRE sem acentos
         let pessoaNormalizada = data.pessoa;
-        if (data.pessoa === 'Física') {
+        
+        // Normalizar todas as variações possíveis
+        if (data.pessoa === 'Física' || data.pessoa === 'física' || data.pessoa === 'FÍSICA') {
           pessoaNormalizada = 'Fisica';
-        } else if (data.pessoa === 'Jurídica') {
+        } else if (data.pessoa === 'Jurídica' || data.pessoa === 'jurídica' || data.pessoa === 'JURÍDICA') {
           pessoaNormalizada = 'Juridica';
         }
         
+        // Validação final
         if (!['Fisica', 'Juridica'].includes(pessoaNormalizada)) {
-          throw new Error(`Pessoa inválida: ${data.pessoa}. Valores válidos: Fisica, Juridica`);
+          console.error('useCadastros - Invalid pessoa value:', data.pessoa, 'normalized to:', pessoaNormalizada);
+          throw new Error(`Pessoa inválida: ${data.pessoa}. Valores válidos: Fisica, Juridica (sem acentos)`);
         }
         
         const dataToUpdate = {
           data: data.data,
           tipo: tipoNormalizado,
-          pessoa: pessoaNormalizada,
+          pessoa: pessoaNormalizada, // Garantido sem acentos
           nome: data.nome?.trim(),
           documento: data.documento ? data.documento.replace(/\D/g, '') : null,
           endereco: data.endereco?.trim() || null,
@@ -170,7 +183,7 @@ export const useCadastros = () => {
           updated_at: new Date().toISOString()
         };
         
-        console.log('useCadastros - Final data to update:', dataToUpdate);
+        console.log('useCadastros - Final data to update (normalized):', dataToUpdate);
         
         const { data: result, error } = await supabase
           .from('cadastros')
@@ -182,10 +195,15 @@ export const useCadastros = () => {
 
         if (error) {
           console.error('useCadastros - Error updating cadastro:', error);
+          
+          if (error.message?.includes('pessoa_check')) {
+            throw new Error(`Erro no campo Pessoa. O valor '${data.pessoa}' não é válido. Use 'Fisica' ou 'Juridica' (sem acentos).`);
+          }
+          
           throw new Error(`Erro ao atualizar cadastro: ${error.message}`);
         }
         
-        console.log('useCadastros - Updated cadastro:', result);
+        console.log('useCadastros - Updated cadastro successfully:', result);
         return result;
       },
       onSuccess: () => {
@@ -218,20 +236,20 @@ export const useCadastros = () => {
           throw new Error(`Erro ao excluir cadastro: ${error.message}`);
         }
         
-        console.log('useCadastros - Deleted cadastro:', id);
+        console.log('useCadastros - Deleted cadastro successfully:', id);
         return id;
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['cadastros'] });
         toast({
-          title: "Perfeito!",
-          description: "Cadastro excluído com êxito do sistema. Operação realizada com sucesso!",
+          title: "🎉 Exclusão Realizada com Sucesso!",
+          description: "Cadastro excluído com êxito do sistema. Operação realizada com segurança!",
         });
       },
       onError: (error: any) => {
         console.error('useCadastros - Error deleting cadastro:', error);
         toast({
-          title: "Erro",
+          title: "❌ Erro ao Excluir",
           description: error?.message || "Erro ao excluir cadastro. Tente novamente.",
           variant: "destructive",
         });
