@@ -19,7 +19,8 @@ const RegisterManagement: React.FC = () => {
     refetch,
     createCadastroMutation,
     deleteCadastroMutation,
-    session
+    session,
+    error
   } = useContactData();
 
   const {
@@ -68,11 +69,16 @@ const RegisterManagement: React.FC = () => {
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = contact.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         contact.documento.includes(searchTerm);
+                         (contact.documento && contact.documento.includes(searchTerm));
     const matchesType = typeFilter === 'all' || contact.tipo === typeFilter;
     
     return matchesSearch && matchesType;
   });
+
+  // Mostrar erros de carregamento se houver
+  if (error) {
+    console.error('RegisterManagement - Error loading contacts:', error);
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">

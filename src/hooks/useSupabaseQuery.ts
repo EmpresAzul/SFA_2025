@@ -12,19 +12,19 @@ export const useSupabaseQuery = () => {
 
   return {
     // Queries
-    useCadastros: cadastros.useQuery,
-    useEstoques: estoques.useQuery,
-    useLancamentos: lancamentos.useQuery,
-    useSaldosBancarios: saldosBancarios.useQuery,
+    useCadastros: cadastros.useCadastrosQuery,
+    useEstoques: estoques.useEstoquesQuery,
+    useLancamentos: lancamentos.useLancamentosQuery,
+    useSaldosBancarios: saldosBancarios.useSaldosBancariosQuery,
     
     // Mutations
-    useCreateCadastro: cadastros.useCreate,
-    useDeleteCadastro: cadastros.useDelete,
-    useCreateEstoque: estoques.useCreate,
-    useDeleteEstoque: estoques.useDelete,
-    useCreateLancamento: lancamentos.useCreate,
-    useDeleteLancamento: lancamentos.useDelete,
-    useCreateSaldoBancario: saldosBancarios.useCreate,
-    useDeleteSaldoBancario: saldosBancarios.useDelete,
+    useCreateCadastro: cadastros.useCreateCadastro,
+    useDeleteCadastro: cadastros.useDeleteCadastro,
+    useCreateEstoque: estoques.useCreateEstoque,
+    useDeleteEstoque: estoques.useDeleteEstoque,
+    useCreateLancamento: lancamentos.useCreateLancamento,
+    useDeleteLancamento: lancamentos.useDeleteLancamento,
+    useCreateSaldoBancario: saldosBancarios.useCreateSaldoBancario,
+    useDeleteSaldoBancario: saldosBancarios.useDeleteSaldoBancario,
   };
 };

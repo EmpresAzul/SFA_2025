@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Contact, ContactFormData } from '@/types/contact';
@@ -44,19 +45,24 @@ export const useContactForm = (
   };
 
   const validateForm = () => {
+    const errors = [];
+
     if (!formData.nome.trim()) {
-      toast({
-        title: "Erro de validação",
-        description: "Nome é obrigatório",
-        variant: "destructive",
-      });
-      return false;
+      errors.push('Nome é obrigatório');
     }
 
     if (!formData.documento.trim()) {
+      errors.push('Documento é obrigatório');
+    }
+
+    if (!formData.data) {
+      errors.push('Data é obrigatória');
+    }
+
+    if (errors.length > 0) {
       toast({
-        title: "Erro de validação", 
-        description: "Documento é obrigatório",
+        title: "Erro de validação",
+        description: errors.join(', '),
         variant: "destructive",
       });
       return false;
@@ -98,36 +104,33 @@ export const useContactForm = (
       
       console.log('ContactForm - Mutation completed successfully');
       
-      toast({
-        title: "Sucesso!",
-        description: editingContact 
-          ? "Cadastro atualizado com sucesso!" 
-          : "Cadastro realizado com sucesso!",
-      });
-      
       resetForm();
       refetch();
     } catch (error: any) {
       console.error('ContactForm - Submit error:', error);
-      toast({
-        title: "Erro",
-        description: error?.message || "Erro ao salvar cadastro. Tente novamente.",
-        variant: "destructive",
-      });
+      // O erro já é tratado na mutation, mas vamos garantir que apareça aqui também
+      if (!error.message?.includes('Erro ao')) {
+        toast({
+          title: "Erro",
+          description: "Erro inesperado ao salvar cadastro. Tente novamente.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
   const handleEdit = (contact: Contact) => {
+    console.log('ContactForm - Editing contact:', contact);
     setFormData({
       data: contact.data,
       tipo: contact.tipo,
       pessoa: contact.pessoa,
       nome: contact.nome,
-      documento: contact.documento,
-      endereco: contact.endereco,
+      documento: contact.documento || '',
+      endereco: contact.endereco || '',
       numero: contact.numero || '',
-      cidade: contact.cidade,
-      estado: contact.estado,
+      cidade: contact.cidade || '',
+      estado: contact.estado || '',
       email: contact.email || '',
       telefone: contact.telefone || '',
       observacoes: contact.observacoes || '',

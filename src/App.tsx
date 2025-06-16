@@ -51,7 +51,7 @@ const App = () => {
           >
             <Route index element={<Dashboard />} />
             <Route path="dre" element={<DRE />} />
-            <Route path="cadastro" element={<RegisterManagement />} />
+            <Route path="cadastros" element={<RegisterManagement />} />
             <Route path="precificacao" element={<Precificacao />} />
             <Route path="estoque" element={<EstoqueManagement />} />
             <Route path="lancamentos" element={<LancamentosFinanceiros />} />

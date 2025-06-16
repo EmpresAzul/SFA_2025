@@ -1,7 +1,6 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useSupabaseQuery } from '@/hooks/useSupabaseQuery';
-import { Contact } from '@/types/contact';
 
 export const useContactData = () => {
   const { user, session } = useAuth();
@@ -10,9 +9,13 @@ export const useContactData = () => {
   console.log('useContactData - User:', user);
   console.log('useContactData - Session:', session);
 
-  const { data: contacts = [], isLoading, refetch } = useCadastros();
+  const { data: contacts = [], isLoading, refetch, error } = useCadastros();
   const createCadastroMutation = useCreateCadastro();
   const deleteCadastroMutation = useDeleteCadastro();
+
+  console.log('useContactData - Contacts loaded:', contacts.length);
+  console.log('useContactData - Loading state:', isLoading);
+  console.log('useContactData - Error:', error);
 
   return {
     contacts,
@@ -20,6 +23,7 @@ export const useContactData = () => {
     refetch,
     createCadastroMutation,
     deleteCadastroMutation,
-    session
+    session,
+    error
   };
 };
