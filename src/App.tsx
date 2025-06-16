@@ -6,14 +6,6 @@ import DashboardLayout from './components/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import Index from './pages/Index';
 import NotFound from './pages/NotFound';
-import RegisterManagement from './pages/RegisterManagement';
-import ClientesManagement from './pages/ClientesManagement';
-import FornecedoresManagement from './pages/FornecedoresManagement';
-import FuncionariosManagement from './pages/FuncionariosManagement';
-import NovosCadastros from './pages/NovosCadastros';
-import NovoCliente from './pages/NovoCliente';
-import NovoFornecedor from './pages/NovoFornecedor';
-import NovoFuncionario from './pages/NovoFuncionario';
 import VirtualConsultant from './pages/VirtualConsultant';
 import Profile from './pages/Profile';
 import LoginForm from './components/LoginForm';
@@ -58,14 +50,6 @@ const App = () => {
           >
             <Route index element={<Dashboard />} />
             <Route path="dre" element={<DRE />} />
-            <Route path="cadastros" element={<RegisterManagement />} />
-            <Route path="cadastros/clientes" element={<ClientesManagement />} />
-            <Route path="cadastros/fornecedores" element={<FornecedoresManagement />} />
-            <Route path="cadastros/funcionarios" element={<FuncionariosManagement />} />
-            <Route path="novos-cadastros" element={<NovosCadastros />} />
-            <Route path="novos-cadastros/clientes" element={<NovoCliente />} />
-            <Route path="novos-cadastros/fornecedores" element={<NovoFornecedor />} />
-            <Route path="novos-cadastros/funcionarios" element={<NovoFuncionario />} />
             <Route path="precificacao" element={<Precificacao />} />
             <Route path="estoque" element={<EstoqueManagement />} />
             <Route path="lancamentos" element={<LancamentosFinanceiros />} />

@@ -1,10 +1,10 @@
+
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
   BarChart3, 
   DollarSign, 
   Tag, 
-  Users, 
   Package, 
   MessageCircle, 
   User,
@@ -12,14 +12,8 @@ import {
   ChevronRight,
   TrendingUp,
   CreditCard,
-  ShoppingCart,
-  Settings,
   Banknote,
-  Calendar,
-  UserCheck,
-  Truck,
-  BadgeDollarSign,
-  UserPlus
+  Calendar
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -44,28 +38,6 @@ const menuItems: MenuItem[] = [
       { id: 'dre', label: 'DRE', icon: TrendingUp, iconColor: 'text-purple-500', href: '/dashboard/dre' },
       { id: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: CreditCard, iconColor: 'text-orange-500', href: '/dashboard/fluxo-caixa' },
       { id: 'metricas', label: 'Métricas', icon: TrendingUp, iconColor: 'text-cyan-500', href: '/dashboard' }
-    ]
-  },
-  {
-    id: 'cadastros',
-    label: 'Cadastros',
-    icon: Users,
-    iconColor: 'text-violet-500',
-    children: [
-      { id: 'clientes', label: 'Clientes', icon: UserCheck, iconColor: 'text-blue-600', href: '/dashboard/cadastros/clientes' },
-      { id: 'fornecedores', label: 'Fornecedores', icon: Truck, iconColor: 'text-orange-600', href: '/dashboard/cadastros/fornecedores' },
-      { id: 'funcionarios', label: 'Funcionários', icon: BadgeDollarSign, iconColor: 'text-green-600', href: '/dashboard/cadastros/funcionarios' }
-    ]
-  },
-  {
-    id: 'novos-cadastros',
-    label: 'Novos Cadastros',
-    icon: UserPlus,
-    iconColor: 'text-emerald-500',
-    children: [
-      { id: 'novos-clientes', label: 'Clientes', icon: UserCheck, iconColor: 'text-blue-600', href: '/dashboard/novos-cadastros/clientes' },
-      { id: 'novos-fornecedores', label: 'Fornecedores', icon: Truck, iconColor: 'text-orange-600', href: '/dashboard/novos-cadastros/fornecedores' },
-      { id: 'novos-funcionarios', label: 'Funcionários', icon: BadgeDollarSign, iconColor: 'text-green-600', href: '/dashboard/novos-cadastros/funcionarios' }
     ]
   },
   {
