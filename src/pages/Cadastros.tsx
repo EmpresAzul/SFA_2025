@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +15,28 @@ import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
 import { useCadastros, type Cadastro } from '@/hooks/useCadastros';
 import { useParams } from 'react-router-dom';
+
+interface FormData {
+  // Campos comuns
+  nome: string;
+  pessoa: 'Física' | 'Jurídica';
+  telefone: string;
+  email: string;
+  endereco: string;
+  numero: string;
+  bairro: string;
+  cidade: string;
+  estado: string;
+  cep: string;
+  observacoes: string;
+  
+  // Campos específicos por tipo
+  cpf_cnpj: string;
+  razao_social?: string;
+  tipo_fornecedor?: string;
+  cargo?: string;
+  data_admissao?: string;
+}
 
 const Cadastros: React.FC = () => {
   const { tipo } = useParams<{ tipo: string }>();
@@ -35,21 +58,45 @@ const Cadastros: React.FC = () => {
   const updateCadastro = useUpdate();
   const deleteCadastro = useDelete();
 
-  const [formData, setFormData] = useState({
-    nome: '',
-    pessoa: 'Física' as 'Física' | 'Jurídica',
-    cpf_cnpj: '',
-    telefone: '',
-    email: '',
-    endereco: '',
-    numero: '',
-    bairro: '',
-    cidade: '',
-    estado: '',
-    cep: '',
-    observacoes: '',
-    salario: ''
-  });
+  // Função para obter formulário inicial baseado no tipo
+  const getInitialFormData = (): FormData => {
+    const baseForm: FormData = {
+      nome: '',
+      pessoa: 'Física',
+      cpf_cnpj: '',
+      telefone: '',
+      email: '',
+      endereco: '',
+      numero: '',
+      bairro: '',
+      cidade: '',
+      estado: '',
+      cep: '',
+      observacoes: ''
+    };
+
+    switch (tipoCapitalized) {
+      case 'Cliente':
+        return baseForm;
+      case 'Fornecedor':
+        return {
+          ...baseForm,
+          pessoa: 'Jurídica',
+          razao_social: '',
+          tipo_fornecedor: ''
+        };
+      case 'Funcionário':
+        return {
+          ...baseForm,
+          cargo: '',
+          data_admissao: ''
+        };
+      default:
+        return baseForm;
+    }
+  };
+
+  const [formData, setFormData] = useState<FormData>(getInitialFormData());
 
   useEffect(() => {
     if (cadastrosData) {
@@ -91,15 +138,6 @@ const Cadastros: React.FC = () => {
       return;
     }
 
-    if (!formData.pessoa) {
-      toast({
-        title: "Erro",
-        description: "Por favor, selecione o tipo de pessoa.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!tipoCapitalized) {
       toast({
         title: "Erro",
@@ -113,7 +151,7 @@ const Cadastros: React.FC = () => {
 
     try {
       const cadastroData = {
-        nome: formData.nome.trim(),
+        nome: formData.razao_social?.trim() || formData.nome.trim(),
         tipo: tipoCapitalized,
         pessoa: formData.pessoa,
         cpf_cnpj: formData.cpf_cnpj.trim() || undefined,
@@ -126,7 +164,6 @@ const Cadastros: React.FC = () => {
         estado: formData.estado.trim() || undefined,
         cep: formData.cep.trim() || undefined,
         observacoes: formData.observacoes.trim() || undefined,
-        salario: formData.salario && formData.salario.trim() ? parseFloat(formData.salario) : undefined,
         data: new Date().toISOString().split('T')[0],
         user_id: user!.id,
         status: 'ativo'
@@ -154,26 +191,12 @@ const Cadastros: React.FC = () => {
   };
 
   const resetForm = () => {
-    setFormData({
-      nome: '',
-      pessoa: 'Física',
-      cpf_cnpj: '',
-      telefone: '',
-      email: '',
-      endereco: '',
-      numero: '',
-      bairro: '',
-      cidade: '',
-      estado: '',
-      cep: '',
-      observacoes: '',
-      salario: ''
-    });
+    setFormData(getInitialFormData());
     setEditingCadastro(null);
   };
 
   const handleEdit = (cadastro: Cadastro) => {
-    setFormData({
+    const editData: FormData = {
       nome: cadastro.nome,
       pessoa: cadastro.pessoa,
       cpf_cnpj: cadastro.cpf_cnpj || '',
@@ -185,9 +208,19 @@ const Cadastros: React.FC = () => {
       cidade: cadastro.cidade || '',
       estado: cadastro.estado || '',
       cep: cadastro.cep || '',
-      observacoes: cadastro.observacoes || '',
-      salario: cadastro.salario?.toString() || ''
-    });
+      observacoes: cadastro.observacoes || ''
+    };
+
+    // Adicionar campos específicos baseado no tipo
+    if (tipoCapitalized === 'Fornecedor') {
+      editData.razao_social = cadastro.nome;
+      editData.tipo_fornecedor = '';
+    } else if (tipoCapitalized === 'Funcionário') {
+      editData.cargo = '';
+      editData.data_admissao = '';
+    }
+
+    setFormData(editData);
     setEditingCadastro(cadastro);
     setActiveTab('formulario');
   };
@@ -221,6 +254,213 @@ const Cadastros: React.FC = () => {
       case 'Fornecedor': return Building2;
       case 'Funcionário': return UserCog;
       default: return Users;
+    }
+  };
+
+  const renderFormFields = () => {
+    switch (tipoCapitalized) {
+      case 'Cliente':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="nome">Nome *</Label>
+              <Input
+                id="nome"
+                value={formData.nome}
+                onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                required
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="pessoa">Tipo de Pessoa *</Label>
+              <Select value={formData.pessoa} onValueChange={(value: 'Física' | 'Jurídica') => 
+                setFormData({ ...formData, pessoa: value })
+              }>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Física">Pessoa Física</SelectItem>
+                  <SelectItem value="Jurídica">Pessoa Jurídica</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cpf_cnpj">{formData.pessoa === 'Física' ? 'CPF *' : 'CNPJ *'}</Label>
+              <Input
+                id="cpf_cnpj"
+                value={formData.cpf_cnpj}
+                onChange={(e) => setFormData({ ...formData, cpf_cnpj: e.target.value })}
+                placeholder={formData.pessoa === 'Física' ? '000.000.000-00' : '00.000.000/0000-00'}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="telefone">Telefone *</Label>
+              <Input
+                id="telefone"
+                value={formData.telefone}
+                onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+                placeholder="(00) 00000-0000"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="email@exemplo.com"
+                required
+              />
+            </div>
+          </>
+        );
+
+      case 'Fornecedor':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="razao_social">Razão Social *</Label>
+              <Input
+                id="razao_social"
+                value={formData.razao_social || ''}
+                onChange={(e) => setFormData({ ...formData, razao_social: e.target.value, nome: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cpf_cnpj">CNPJ *</Label>
+              <Input
+                id="cpf_cnpj"
+                value={formData.cpf_cnpj}
+                onChange={(e) => setFormData({ ...formData, cpf_cnpj: e.target.value })}
+                placeholder="00.000.000/0000-00"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="tipo_fornecedor">Tipo de Fornecedor</Label>
+              <Select value={formData.tipo_fornecedor || ''} onValueChange={(value) => 
+                setFormData({ ...formData, tipo_fornecedor: value })
+              }>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Produtos">Produtos</SelectItem>
+                  <SelectItem value="Serviços">Serviços</SelectItem>
+                  <SelectItem value="Matéria Prima">Matéria Prima</SelectItem>
+                  <SelectItem value="Equipamentos">Equipamentos</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="telefone">Telefone *</Label>
+              <Input
+                id="telefone"
+                value={formData.telefone}
+                onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+                placeholder="(00) 00000-0000"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="email@exemplo.com"
+                required
+              />
+            </div>
+          </>
+        );
+
+      case 'Funcionário':
+        return (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="nome">Nome *</Label>
+              <Input
+                id="nome"
+                value={formData.nome}
+                onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cpf_cnpj">CPF *</Label>
+              <Input
+                id="cpf_cnpj"
+                value={formData.cpf_cnpj}
+                onChange={(e) => setFormData({ ...formData, cpf_cnpj: e.target.value })}
+                placeholder="000.000.000-00"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cargo">Cargo *</Label>
+              <Input
+                id="cargo"
+                value={formData.cargo || ''}
+                onChange={(e) => setFormData({ ...formData, cargo: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="telefone">Telefone *</Label>
+              <Input
+                id="telefone"
+                value={formData.telefone}
+                onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+                placeholder="(00) 00000-0000"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="email@exemplo.com"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="data_admissao">Data de Admissão *</Label>
+              <Input
+                id="data_admissao"
+                type="date"
+                value={formData.data_admissao || ''}
+                onChange={(e) => setFormData({ ...formData, data_admissao: e.target.value })}
+                required
+              />
+            </div>
+          </>
+        );
+
+      default:
+        return null;
     }
   };
 
@@ -323,19 +563,21 @@ const Cadastros: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Tipo de Pessoa</Label>
-                  <Select value={pessoaFilter} onValueChange={setPessoaFilter}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="todas">Todas</SelectItem>
-                      <SelectItem value="Física">Pessoa Física</SelectItem>
-                      <SelectItem value="Jurídica">Pessoa Jurídica</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {tipoCapitalized !== 'Funcionário' && (
+                  <div className="space-y-2">
+                    <Label>Tipo de Pessoa</Label>
+                    <Select value={pessoaFilter} onValueChange={setPessoaFilter}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="todas">Todas</SelectItem>
+                        <SelectItem value="Física">Pessoa Física</SelectItem>
+                        <SelectItem value="Jurídica">Pessoa Jurídica</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -350,11 +592,10 @@ const Cadastros: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nome</TableHead>
-                    <TableHead>Tipo</TableHead>
-                    <TableHead>CPF/CNPJ</TableHead>
+                    {tipoCapitalized !== 'Funcionário' && <TableHead>Tipo</TableHead>}
+                    <TableHead>{tipoCapitalized === 'Funcionário' ? 'CPF' : 'CPF/CNPJ'}</TableHead>
                     <TableHead>Telefone</TableHead>
                     <TableHead>Email</TableHead>
-                    {tipoCapitalized === 'Funcionário' && <TableHead>Salário</TableHead>}
                     <TableHead>Data</TableHead>
                     <TableHead>Ações</TableHead>
                   </TableRow>
@@ -362,14 +603,14 @@ const Cadastros: React.FC = () => {
                 <TableBody>
                   {isLoading && (
                     <TableRow>
-                      <TableCell colSpan={tipoCapitalized === 'Funcionário' ? 8 : 7} className="text-center text-gray-500">
+                      <TableCell colSpan={7} className="text-center text-gray-500">
                         Carregando...
                       </TableCell>
                     </TableRow>
                   )}
                   {!isLoading && filteredCadastros.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={tipoCapitalized === 'Funcionário' ? 8 : 7} className="text-center text-gray-500">
+                      <TableCell colSpan={7} className="text-center text-gray-500">
                         Nenhum cadastro encontrado
                       </TableCell>
                     </TableRow>
@@ -377,19 +618,16 @@ const Cadastros: React.FC = () => {
                   {filteredCadastros.map((cadastro) => (
                     <TableRow key={cadastro.id}>
                       <TableCell className="font-medium">{cadastro.nome}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">
-                          {cadastro.pessoa}
-                        </Badge>
-                      </TableCell>
+                      {tipoCapitalized !== 'Funcionário' && (
+                        <TableCell>
+                          <Badge variant="outline">
+                            {cadastro.pessoa}
+                          </Badge>
+                        </TableCell>
+                      )}
                       <TableCell>{cadastro.cpf_cnpj || '-'}</TableCell>
                       <TableCell>{cadastro.telefone || '-'}</TableCell>
                       <TableCell>{cadastro.email || '-'}</TableCell>
-                      {tipoCapitalized === 'Funcionário' && (
-                        <TableCell>
-                          {cadastro.salario ? `R$ ${cadastro.salario.toFixed(2)}` : '-'}
-                        </TableCell>
-                      )}
                       <TableCell>{format(new Date(cadastro.data), 'dd/MM/yyyy')}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
@@ -426,77 +664,10 @@ const Cadastros: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Campos específicos por tipo */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="nome">Nome *</Label>
-                    <Input
-                      id="nome"
-                      value={formData.nome}
-                      onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="pessoa">Tipo de Pessoa *</Label>
-                    <Select value={formData.pessoa} onValueChange={(value: 'Física' | 'Jurídica') => 
-                      setFormData({ ...formData, pessoa: value })
-                    }>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Física">Pessoa Física</SelectItem>
-                        <SelectItem value="Jurídica">Jurídica</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="cpf_cnpj">{formData.pessoa === 'Física' ? 'CPF' : 'CNPJ'}</Label>
-                    <Input
-                      id="cpf_cnpj"
-                      value={formData.cpf_cnpj}
-                      onChange={(e) => setFormData({ ...formData, cpf_cnpj: e.target.value })}
-                      placeholder={formData.pessoa === 'Física' ? '000.000.000-00' : '00.000.000/0000-00'}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="telefone">Telefone</Label>
-                    <Input
-                      id="telefone"
-                      value={formData.telefone}
-                      onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
-                      placeholder="(00) 00000-0000"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="email@exemplo.com"
-                    />
-                  </div>
-
-                  {tipoCapitalized === 'Funcionário' && (
-                    <div className="space-y-2">
-                      <Label htmlFor="salario">Salário (R$)</Label>
-                      <Input
-                        id="salario"
-                        type="number"
-                        step="0.01"
-                        value={formData.salario}
-                        onChange={(e) => setFormData({ ...formData, salario: e.target.value })}
-                        placeholder="0.00"
-                      />
-                    </div>
-                  )}
+                  {renderFormFields()}
                 </div>
 
                 {/* Endereço */}
@@ -504,12 +675,13 @@ const Cadastros: React.FC = () => {
                   <h3 className="text-lg font-semibold">Endereço</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="endereco">Logradouro</Label>
+                      <Label htmlFor="endereco">Logradouro *</Label>
                       <Input
                         id="endereco"
                         value={formData.endereco}
                         onChange={(e) => setFormData({ ...formData, endereco: e.target.value })}
                         placeholder="Rua, Avenida, etc."
+                        required
                       />
                     </div>
 
@@ -524,42 +696,46 @@ const Cadastros: React.FC = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="bairro">Bairro</Label>
+                      <Label htmlFor="bairro">Bairro *</Label>
                       <Input
                         id="bairro"
                         value={formData.bairro}
                         onChange={(e) => setFormData({ ...formData, bairro: e.target.value })}
                         placeholder="Nome do bairro"
+                        required
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="cidade">Cidade</Label>
+                      <Label htmlFor="cidade">Cidade *</Label>
                       <Input
                         id="cidade"
                         value={formData.cidade}
                         onChange={(e) => setFormData({ ...formData, cidade: e.target.value })}
                         placeholder="Nome da cidade"
+                        required
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="estado">Estado</Label>
+                      <Label htmlFor="estado">Estado *</Label>
                       <Input
                         id="estado"
                         value={formData.estado}
                         onChange={(e) => setFormData({ ...formData, estado: e.target.value })}
                         placeholder="SP"
+                        required
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="cep">CEP</Label>
+                      <Label htmlFor="cep">CEP *</Label>
                       <Input
                         id="cep"
                         value={formData.cep}
                         onChange={(e) => setFormData({ ...formData, cep: e.target.value })}
                         placeholder="00000-000"
+                        required
                       />
                     </div>
                   </div>
@@ -582,7 +758,7 @@ const Cadastros: React.FC = () => {
                     disabled={loading}
                     className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
                   >
-                    {loading ? "Salvando..." : editingCadastro ? "Atualizar" : "Cadastrar"}
+                    {loading ? "Salvando..." : editingCadastro ? "Atualizar" : "Salvar"}
                   </Button>
                   {editingCadastro && (
                     <Button
