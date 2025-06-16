@@ -11,7 +11,7 @@ export const useContactForm = (
   session: any
 ) => {
   const { toast } = useToast();
-  const [showForm, setShowForm] = useState(true); // Sempre mostrar formulário
+  const [showForm, setShowForm] = useState(true);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [viewingContact, setViewingContact] = useState<Contact | null>(null);
 
@@ -62,9 +62,8 @@ export const useContactForm = (
       errors.push('Tipo deve ser Cliente, Fornecedor ou Funcionário');
     }
 
-    // Validar pessoa - atualizado para aceitar sem acento
-    const validPessoas = ['Fisica', 'Juridica'];
-    if (!validPessoas.includes(formData.pessoa)) {
+    // Validar pessoa - sem acentos
+    if (!['Fisica', 'Juridica'].includes(formData.pessoa)) {
       errors.push('Pessoa deve ser Fisica ou Juridica');
     }
 
@@ -103,17 +102,22 @@ export const useContactForm = (
     }
 
     try {
-      // Normalizar o tipo antes de enviar
+      // Garantir que o tipo seja normalizado
       let tipoNormalizado = formData.tipo;
       if (formData.tipo === 'Funcionario') {
         tipoNormalizado = 'Funcionário';
       }
 
+      // Garantir que pessoa não tenha acentos
+      const pessoaNormalizada = formData.pessoa === 'Física' ? 'Fisica' : 
+                                formData.pessoa === 'Jurídica' ? 'Juridica' : 
+                                formData.pessoa;
+
       const dataToSubmit = {
         user_id: session.user.id,
         data: formData.data,
         tipo: tipoNormalizado,
-        pessoa: formData.pessoa,
+        pessoa: pessoaNormalizada,
         nome: formData.nome?.trim(),
         documento: formData.documento || null,
         endereco: formData.endereco || null,
@@ -123,7 +127,6 @@ export const useContactForm = (
         email: formData.email || null,
         telefone: formData.telefone || null,
         observacoes: formData.observacoes || null,
-        anexo_url: null, // Sempre null agora
         salario: formData.salario || null,
         status: formData.status || 'ativo',
         ...(editingContact ? { id: editingContact.id } : {})
@@ -135,15 +138,15 @@ export const useContactForm = (
         console.log('ContactForm - Updating existing contact');
         await updateCadastroMutation.mutateAsync(dataToSubmit);
         toast({
-          title: "Sucesso!",
-          description: `${formData.tipo} atualizado com êxito! Os dados foram salvos no sistema.`,
+          title: "Parabéns!",
+          description: `${formData.tipo} atualizado com êxito! Todas as alterações foram salvas no sistema.`,
         });
       } else {
         console.log('ContactForm - Creating new contact');
         await createCadastroMutation.mutateAsync(dataToSubmit);
         toast({
-          title: "Parabéns!",
-          description: `${formData.tipo} cadastrado com êxito! Todos os dados foram salvos no sistema.`,
+          title: "Excelente!",
+          description: `${formData.tipo} cadastrado com êxito! Todos os dados foram salvos com sucesso no sistema.`,
         });
       }
       
@@ -152,9 +155,21 @@ export const useContactForm = (
       refetch();
     } catch (error: any) {
       console.error('ContactForm - Submit error:', error);
+      
+      // Mensagens de erro mais específicas
+      let errorMessage = "Erro ao salvar cadastro. Tente novamente.";
+      
+      if (error?.message?.includes('pessoa_check')) {
+        errorMessage = "Erro no campo Pessoa. Verifique se está selecionado corretamente.";
+      } else if (error?.message?.includes('tipo_check')) {
+        errorMessage = "Erro no campo Tipo. Verifique se está selecionado corretamente.";
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Erro ao salvar",
-        description: error?.message || "Erro ao salvar cadastro. Tente novamente.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -163,10 +178,15 @@ export const useContactForm = (
   const handleEdit = (contact: Contact) => {
     console.log('ContactForm - Editing contact:', contact);
     
+    // Garantir que pessoa não tenha acentos ao editar
+    const pessoaNormalizada = contact.pessoa === 'Física' ? 'Fisica' : 
+                              contact.pessoa === 'Jurídica' ? 'Juridica' : 
+                              contact.pessoa;
+    
     setFormData({
       data: contact.data,
       tipo: contact.tipo,
-      pessoa: contact.pessoa,
+      pessoa: pessoaNormalizada,
       nome: contact.nome,
       documento: contact.documento || '',
       endereco: contact.endereco || '',
@@ -208,7 +228,7 @@ export const useContactForm = (
       salario: 0,
       status: 'ativo'
     });
-    setShowForm(true); // Manter formulário sempre visível
+    setShowForm(true);
     setEditingContact(null);
     setViewingContact(null);
   };

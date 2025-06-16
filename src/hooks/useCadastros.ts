@@ -51,7 +51,7 @@ export const useCadastros = () => {
         
         console.log('useCadastros - Creating cadastro with data:', data);
         
-        // Validar e normalizar o tipo antes de enviar
+        // Validar e normalizar o tipo
         const validTipos = ['Cliente', 'Fornecedor', 'Funcionário'];
         let tipoNormalizado = data.tipo;
         
@@ -63,17 +63,23 @@ export const useCadastros = () => {
           throw new Error(`Tipo inválido: ${data.tipo}. Tipos válidos: ${validTipos.join(', ')}`);
         }
 
-        // Validar pessoa sem acento
-        const validPessoas = ['Fisica', 'Juridica'];
-        if (!validPessoas.includes(data.pessoa)) {
-          throw new Error(`Pessoa inválida: ${data.pessoa}. Valores válidos: ${validPessoas.join(', ')}`);
+        // Validar e normalizar pessoa - garantir sem acentos
+        let pessoaNormalizada = data.pessoa;
+        if (data.pessoa === 'Física') {
+          pessoaNormalizada = 'Fisica';
+        } else if (data.pessoa === 'Jurídica') {
+          pessoaNormalizada = 'Juridica';
+        }
+        
+        if (!['Fisica', 'Juridica'].includes(pessoaNormalizada)) {
+          throw new Error(`Pessoa inválida: ${data.pessoa}. Valores válidos: Fisica, Juridica`);
         }
         
         const dataToInsert = {
           user_id: session.user.id,
           data: data.data,
           tipo: tipoNormalizado,
-          pessoa: data.pessoa,
+          pessoa: pessoaNormalizada,
           nome: data.nome?.trim(),
           documento: data.documento ? data.documento.replace(/\D/g, '') : null,
           endereco: data.endereco?.trim() || null,
@@ -83,7 +89,6 @@ export const useCadastros = () => {
           email: data.email?.trim() || null,
           telefone: data.telefone ? data.telefone.replace(/\D/g, '') : null,
           observacoes: data.observacoes?.trim() || null,
-          anexo_url: null, // Sempre null agora
           salario: data.salario && data.salario > 0 ? data.salario : null,
           status: data.status || 'ativo'
         };
@@ -123,7 +128,7 @@ export const useCadastros = () => {
         
         console.log('useCadastros - Updating cadastro with data:', data);
         
-        // Validar e normalizar o tipo antes de enviar
+        // Validar e normalizar o tipo
         const validTipos = ['Cliente', 'Fornecedor', 'Funcionário'];
         let tipoNormalizado = data.tipo;
         
@@ -135,16 +140,22 @@ export const useCadastros = () => {
           throw new Error(`Tipo inválido: ${data.tipo}. Tipos válidos: ${validTipos.join(', ')}`);
         }
 
-        // Validar pessoa sem acento
-        const validPessoas = ['Fisica', 'Juridica'];
-        if (!validPessoas.includes(data.pessoa)) {
-          throw new Error(`Pessoa inválida: ${data.pessoa}. Valores válidos: ${validPessoas.join(', ')}`);
+        // Validar e normalizar pessoa - garantir sem acentos
+        let pessoaNormalizada = data.pessoa;
+        if (data.pessoa === 'Física') {
+          pessoaNormalizada = 'Fisica';
+        } else if (data.pessoa === 'Jurídica') {
+          pessoaNormalizada = 'Juridica';
+        }
+        
+        if (!['Fisica', 'Juridica'].includes(pessoaNormalizada)) {
+          throw new Error(`Pessoa inválida: ${data.pessoa}. Valores válidos: Fisica, Juridica`);
         }
         
         const dataToUpdate = {
           data: data.data,
           tipo: tipoNormalizado,
-          pessoa: data.pessoa,
+          pessoa: pessoaNormalizada,
           nome: data.nome?.trim(),
           documento: data.documento ? data.documento.replace(/\D/g, '') : null,
           endereco: data.endereco?.trim() || null,
@@ -154,7 +165,6 @@ export const useCadastros = () => {
           email: data.email?.trim() || null,
           telefone: data.telefone ? data.telefone.replace(/\D/g, '') : null,
           observacoes: data.observacoes?.trim() || null,
-          anexo_url: null, // Sempre null agora
           salario: data.salario && data.salario > 0 ? data.salario : null,
           status: data.status || 'ativo',
           updated_at: new Date().toISOString()
@@ -214,8 +224,8 @@ export const useCadastros = () => {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['cadastros'] });
         toast({
-          title: "Sucesso!",
-          description: "Cadastro excluído com êxito do sistema",
+          title: "Perfeito!",
+          description: "Cadastro excluído com êxito do sistema. Operação realizada com sucesso!",
         });
       },
       onError: (error: any) => {

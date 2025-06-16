@@ -17,13 +17,13 @@ export const DocumentInput: React.FC<DocumentInputProps> = ({
   return (
     <div>
       <Label htmlFor="documento" className="text-fluxo-blue-900 font-medium">
-        {pessoa === 'Física' ? 'CPF' : 'CNPJ'}
+        {pessoa === 'Fisica' ? 'CPF' : 'CNPJ'}
       </Label>
       <Input
         id="documento"
         value={documento}
         onChange={(e) => onDocumentChange(e.target.value)}
-        placeholder={pessoa === 'Física' ? '000.000.000-00' : '00.000.000/0000-00'}
+        placeholder={pessoa === 'Fisica' ? '000.000.000-00' : '00.000.000/0000-00'}
         required
       />
     </div>
