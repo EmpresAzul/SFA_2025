@@ -81,7 +81,8 @@ export const useFluxoCaixaData = (periodoFilter: string) => {
         setLancamentos([]);
       } else {
         console.log('Lançamentos carregados para fluxo de caixa:', data);
-        setLancamentos(data || []);
+        // Type assertion para garantir compatibilidade com nosso tipo Lancamento
+        setLancamentos((data || []) as Lancamento[]);
       }
     } catch (error: any) {
       console.error('Erro ao carregar lançamentos para fluxo de caixa:', error);
