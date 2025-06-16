@@ -52,10 +52,16 @@ export const useCadastros = () => {
         
         console.log('useCadastros - Creating/updating cadastro:', data);
         
+        // Normalizar o tipo para evitar problemas com check constraint
+        let tipoNormalizado = data.tipo;
+        if (data.tipo === 'Funcionário') {
+          tipoNormalizado = 'Funcionario';
+        }
+        
         // Preparar dados para inserção/atualização
         const cadastroData = {
           data: data.data,
-          tipo: data.tipo,
+          tipo: tipoNormalizado,
           pessoa: data.pessoa,
           nome: data.nome.trim(),
           documento: data.documento?.replace(/\D/g, '') || null,

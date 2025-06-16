@@ -70,7 +70,16 @@ const RegisterManagement: React.FC = () => {
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = contact.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (contact.documento && contact.documento.includes(searchTerm));
-    const matchesType = typeFilter === 'all' || contact.tipo === typeFilter;
+    
+    // Normalizar filtro de tipo para incluir "Funcionario" e "Funcionário"
+    let matchesType = typeFilter === 'all';
+    if (!matchesType) {
+      if (typeFilter === 'Funcionário') {
+        matchesType = contact.tipo === 'Funcionário' || contact.tipo === 'Funcionario';
+      } else {
+        matchesType = contact.tipo === typeFilter;
+      }
+    }
     
     return matchesSearch && matchesType;
   });

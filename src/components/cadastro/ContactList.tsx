@@ -26,6 +26,12 @@ export const ContactList: React.FC<ContactListProps> = ({
   handleToggleActive,
   handleDelete
 }) => {
+  // Função para normalizar a exibição do tipo
+  const displayTipo = (tipo: string) => {
+    if (tipo === 'Funcionario') return 'Funcionário';
+    return tipo;
+  };
+
   return (
     <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
       <CardHeader>
@@ -51,7 +57,7 @@ export const ContactList: React.FC<ContactListProps> = ({
                                 contact.tipo === 'Fornecedor' ? 'secondary' : 'outline'}
                         className="gradient-fluxo text-white"
                       >
-                        {contact.tipo}
+                        {displayTipo(contact.tipo)}
                       </Badge>
                       <Badge 
                         variant={contact.pessoa === 'Física' ? 'default' : 'secondary'}
@@ -81,7 +87,7 @@ export const ContactList: React.FC<ContactListProps> = ({
                     {contact.telefone && (
                       <p className="text-sm text-gray-500">Telefone: {contact.telefone}</p>
                     )}
-                    {contact.tipo === 'Funcionário' && contact.salario && (
+                    {(contact.tipo === 'Funcionário' || contact.tipo === 'Funcionario') && contact.salario && (
                       <p className="text-sm text-gray-500">Salário: {formatCurrency(contact.salario)}</p>
                     )}
                   </div>
@@ -133,14 +139,14 @@ export const ContactList: React.FC<ContactListProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div><span className="font-medium">ID:</span> {contact.id}</div>
                     <div><span className="font-medium">Data:</span> {new Date(contact.data).toLocaleDateString('pt-BR')}</div>
-                    <div><span className="font-medium">Tipo:</span> {contact.tipo}</div>
+                    <div><span className="font-medium">Tipo:</span> {displayTipo(contact.tipo)}</div>
                     <div><span className="font-medium">Pessoa:</span> {contact.pessoa}</div>
                     <div><span className="font-medium">Documento:</span> {contact.documento}</div>
                     <div><span className="font-medium">Endereço completo:</span> {contact.endereco}{contact.numero ? `, ${contact.numero}` : ''}</div>
                     <div><span className="font-medium">Cidade/UF:</span> {contact.cidade}/{contact.estado}</div>
                     {contact.email && <div><span className="font-medium">E-mail:</span> {contact.email}</div>}
                     {contact.telefone && <div><span className="font-medium">Telefone:</span> {contact.telefone}</div>}
-                    {contact.tipo === 'Funcionário' && contact.salario && (
+                    {(contact.tipo === 'Funcionário' || contact.tipo === 'Funcionario') && contact.salario && (
                       <div><span className="font-medium">Salário:</span> {formatCurrency(contact.salario)}</div>
                     )}
                     {contact.observacoes && <div className="col-span-2"><span className="font-medium">Observações:</span> {contact.observacoes}</div>}

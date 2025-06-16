@@ -45,6 +45,13 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     setFormData({ ...formData, salario: numericValue });
   };
 
+  // Mapear tipos para exibição vs banco de dados
+  const tipoOptions = [
+    { value: 'Cliente', label: 'Cliente' },
+    { value: 'Fornecedor', label: 'Fornecedor' },
+    { value: 'Funcionário', label: 'Funcionário' }
+  ];
+
   return (
     <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
       <CardHeader>
@@ -78,9 +85,11 @@ export const ContactForm: React.FC<ContactFormProps> = ({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Cliente">Cliente</SelectItem>
-                  <SelectItem value="Fornecedor">Fornecedor</SelectItem>
-                  <SelectItem value="Funcionário">Funcionário</SelectItem>
+                  {tipoOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

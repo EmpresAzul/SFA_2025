@@ -121,9 +121,16 @@ export const useContactForm = (
 
   const handleEdit = (contact: Contact) => {
     console.log('ContactForm - Editing contact:', contact);
+    
+    // Mapear o tipo corretamente para exibição no formulário
+    let tipoParaFormulario = contact.tipo;
+    if (contact.tipo === 'Funcionario') {
+      tipoParaFormulario = 'Funcionário';
+    }
+    
     setFormData({
       data: contact.data,
-      tipo: contact.tipo,
+      tipo: tipoParaFormulario,
       pessoa: contact.pessoa,
       nome: contact.nome,
       documento: contact.documento || '',
