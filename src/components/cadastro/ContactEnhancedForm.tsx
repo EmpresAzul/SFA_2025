@@ -19,6 +19,7 @@ interface ContactEnhancedFormProps {
   handleSubmit: (e: React.FormEvent) => void;
   resetForm: () => void;
   isLoading: boolean;
+  fixedType?: string;
 }
 
 export const ContactEnhancedForm: React.FC<ContactEnhancedFormProps> = ({
@@ -29,7 +30,8 @@ export const ContactEnhancedForm: React.FC<ContactEnhancedFormProps> = ({
   formatTelefone,
   handleSubmit,
   resetForm,
-  isLoading
+  isLoading,
+  fixedType
 }) => {
   const handleDocumentChange = (value: string) => {
     const formatted = formatDocument(value, formData.pessoa);
@@ -54,12 +56,15 @@ export const ContactEnhancedForm: React.FC<ContactEnhancedFormProps> = ({
     return formData.pessoa === 'Física' ? '000.000.000-00' : '00.000.000/0000-00';
   };
 
+  // Usar o tipo fixo se fornecido, senão usar o do formData
+  const currentTipo = fixedType || formData.tipo;
+
   return (
     <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md mb-6">
       <CardHeader className="bg-gradient-to-r from-fluxo-blue-50 to-fluxo-blue-100 rounded-t-lg">
         <div className="flex justify-between items-center">
           <CardTitle className="gradient-fluxo-text text-xl">
-            {editingContact ? 'Editar Cadastro' : 'Novo Cadastro'}
+            {editingContact ? `Editar ${currentTipo}` : `Novo ${currentTipo}`}
           </CardTitle>
           <Button
             type="button"
@@ -90,22 +95,37 @@ export const ContactEnhancedForm: React.FC<ContactEnhancedFormProps> = ({
               />
             </div>
 
-            <div>
-              <Label className="text-fluxo-blue-900 font-medium">Tipo *</Label>
-              <Select 
-                value={formData.tipo} 
-                onValueChange={(value) => setFormData({ ...formData, tipo: value })}
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Selecione o tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Cliente">Cliente</SelectItem>
-                  <SelectItem value="Fornecedor">Fornecedor</SelectItem>
-                  <SelectItem value="Funcionário">Funcionário</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {/* Só mostrar o seletor de tipo se não tiver tipo fixo */}
+            {!fixedType && (
+              <div>
+                <Label className="text-fluxo-blue-900 font-medium">Tipo *</Label>
+                <Select 
+                  value={formData.tipo} 
+                  onValueChange={(value) => setFormData({ ...formData, tipo: value })}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Selecione o tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Cliente">Cliente</SelectItem>
+                    <SelectItem value="Fornecedor">Fornecedor</SelectItem>
+                    <SelectItem value="Funcionário">Funcionário</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Se tem tipo fixo, mostrar como texto readonly */}
+            {fixedType && (
+              <div>
+                <Label className="text-fluxo-blue-900 font-medium">Tipo *</Label>
+                <Input
+                  value={currentTipo}
+                  readOnly
+                  className="mt-1 bg-gray-100"
+                />
+              </div>
+            )}
 
             <div>
               <Label className="text-fluxo-blue-900 font-medium">Pessoa *</Label>
@@ -243,7 +263,7 @@ export const ContactEnhancedForm: React.FC<ContactEnhancedFormProps> = ({
             </div>
 
             {/* Campo Salário só aparece para Funcionários */}
-            {formData.tipo === 'Funcionário' && (
+            {currentTipo === 'Funcionário' && (
               <div>
                 <Label htmlFor="salario" className="text-fluxo-blue-900 font-medium">
                   Salário (R$)
@@ -309,7 +329,7 @@ export const ContactEnhancedForm: React.FC<ContactEnhancedFormProps> = ({
               disabled={isLoading}
               className="gradient-fluxo hover:gradient-fluxo-light text-white font-semibold py-2 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              {isLoading ? 'Salvando...' : editingContact ? 'Atualizar Cadastro' : 'Salvar Cadastro'}
+              {isLoading ? 'Salvando...' : editingContact ? `Atualizar ${currentTipo}` : `Salvar ${currentTipo}`}
             </Button>
             
             <Button

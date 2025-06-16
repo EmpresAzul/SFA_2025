@@ -16,7 +16,10 @@ import {
   ShoppingCart,
   Settings,
   Banknote,
-  Calendar
+  Calendar,
+  UserCheck,
+  Truck,
+  BadgeDollarSign
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -64,7 +67,11 @@ const menuItems: MenuItem[] = [
     label: 'Cadastros',
     icon: Users,
     iconColor: 'text-violet-500',
-    href: '/dashboard/cadastros'
+    children: [
+      { id: 'clientes', label: 'Clientes', icon: UserCheck, iconColor: 'text-blue-600', href: '/dashboard/cadastros/clientes' },
+      { id: 'fornecedores', label: 'Fornecedores', icon: Truck, iconColor: 'text-orange-600', href: '/dashboard/cadastros/fornecedores' },
+      { id: 'funcionarios', label: 'Funcionários', icon: BadgeDollarSign, iconColor: 'text-green-600', href: '/dashboard/cadastros/funcionarios' }
+    ]
   },
   {
     id: 'estoque',
@@ -95,7 +102,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
-  const [expandedItems, setExpandedItems] = useState<string[]>(['indicadores', 'financeiro']);
+  const [expandedItems, setExpandedItems] = useState<string[]>(['indicadores', 'financeiro', 'cadastros']);
   const location = useLocation();
 
   const toggleExpanded = (itemId: string) => {

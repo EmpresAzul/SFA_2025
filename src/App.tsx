@@ -7,6 +7,9 @@ import Dashboard from './pages/Dashboard';
 import Index from './pages/Index';
 import NotFound from './pages/NotFound';
 import RegisterManagement from './pages/RegisterManagement';
+import ClientesManagement from './pages/ClientesManagement';
+import FornecedoresManagement from './pages/FornecedoresManagement';
+import FuncionariosManagement from './pages/FuncionariosManagement';
 import VirtualConsultant from './pages/VirtualConsultant';
 import Profile from './pages/Profile';
 import LoginForm from './components/LoginForm';
@@ -52,6 +55,9 @@ const App = () => {
             <Route index element={<Dashboard />} />
             <Route path="dre" element={<DRE />} />
             <Route path="cadastros" element={<RegisterManagement />} />
+            <Route path="cadastros/clientes" element={<ClientesManagement />} />
+            <Route path="cadastros/fornecedores" element={<FornecedoresManagement />} />
+            <Route path="cadastros/funcionarios" element={<FuncionariosManagement />} />
             <Route path="precificacao" element={<Precificacao />} />
             <Route path="estoque" element={<EstoqueManagement />} />
             <Route path="lancamentos" element={<LancamentosFinanceiros />} />

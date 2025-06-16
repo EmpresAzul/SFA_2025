@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -16,6 +15,7 @@ interface ContactAdvancedFiltersProps {
   setStartDate: (value: string) => void;
   endDate: string;
   setEndDate: (value: string) => void;
+  hideTypeFilter?: boolean;
 }
 
 export const ContactAdvancedFilters: React.FC<ContactAdvancedFiltersProps> = ({
@@ -26,93 +26,82 @@ export const ContactAdvancedFilters: React.FC<ContactAdvancedFiltersProps> = ({
   startDate,
   setStartDate,
   endDate,
-  setEndDate
+  setEndDate,
+  hideTypeFilter = false
 }) => {
-  const clearFilters = () => {
-    setSearchTerm('');
-    setTypeFilter('all');
-    setStartDate('');
-    setEndDate('');
-  };
-
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md mb-6">
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {/* Busca por Nome */}
+    <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+      <CardHeader>
+        <CardTitle className="gradient-fluxo-text flex items-center">
+          <Filter className="mr-2 h-5 w-5" />
+          Filtros Avançados
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Busca por nome */}
           <div>
-            <Label htmlFor="search" className="text-fluxo-blue-900 font-medium flex items-center mb-2">
-              <Search className="h-4 w-4 mr-2" />
-              Buscar por Nome
+            <Label htmlFor="search" className="text-fluxo-blue-900 font-medium flex items-center">
+              <Search className="mr-1 h-4 w-4" />
+              Buscar por nome
             </Label>
             <Input
               id="search"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Digite o nome..."
-              className="w-full"
+              placeholder="Digite o nome ou documento..."
+              className="mt-1"
             />
           </div>
 
-          {/* Data Início */}
+          {/* Filtro por tipo - só aparece se não estiver escondido */}
+          {!hideTypeFilter && (
+            <div>
+              <Label className="text-fluxo-blue-900 font-medium">
+                Tipo de Cadastro
+              </Label>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Todos os tipos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="Cliente">Clientes</SelectItem>
+                  <SelectItem value="Fornecedor">Fornecedores</SelectItem>
+                  <SelectItem value="Funcionário">Funcionários</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* Data início */}
           <div>
-            <Label htmlFor="startDate" className="text-fluxo-blue-900 font-medium flex items-center mb-2">
-              <Calendar className="h-4 w-4 mr-2" />
-              Data Início
+            <Label htmlFor="startDate" className="text-fluxo-blue-900 font-medium flex items-center">
+              <Calendar className="mr-1 h-4 w-4" />
+              Data início
             </Label>
             <Input
               id="startDate"
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full"
+              className="mt-1"
             />
           </div>
 
-          {/* Data Fim */}
+          {/* Data fim */}
           <div>
-            <Label htmlFor="endDate" className="text-fluxo-blue-900 font-medium flex items-center mb-2">
-              <Calendar className="h-4 w-4 mr-2" />
-              Data Fim
+            <Label htmlFor="endDate" className="text-fluxo-blue-900 font-medium flex items-center">
+              <Calendar className="mr-1 h-4 w-4" />
+              Data fim
             </Label>
             <Input
               id="endDate"
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full"
+              className="mt-1"
             />
-          </div>
-
-          {/* Filtro por Tipo */}
-          <div>
-            <Label className="text-fluxo-blue-900 font-medium flex items-center mb-2">
-              <Filter className="h-4 w-4 mr-2" />
-              Tipo de Cadastro
-            </Label>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selecione o tipo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="Cliente">Clientes</SelectItem>
-                <SelectItem value="Fornecedor">Fornecedores</SelectItem>
-                <SelectItem value="Funcionário">Funcionários</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Botão Limpar Filtros */}
-          <div className="flex items-end">
-            <Button
-              onClick={clearFilters}
-              variant="outline"
-              className="w-full hover:bg-gray-50"
-            >
-              <Filter className="mr-2 h-4 w-4" />
-              Limpar Filtros
-            </Button>
           </div>
         </div>
       </CardContent>
