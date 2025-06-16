@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,14 +18,19 @@ import { useCadastros } from '@/hooks/useCadastros';
 const categoriasReceita = ['Receita', 'Receita Não Operacional'];
 const categoriasDespesa = ['Despesa fixa', 'Custo variável', 'Despesa não operacional', 'Salários', 'Investimentos'];
 
+type LancamentoComRelacoes = Lancamento & {
+  cliente?: { nome: string };
+  fornecedor?: { nome: string };
+};
+
 const LancamentosFinanceiros: React.FC = () => {
-  const [filteredLancamentos, setFilteredLancamentos] = useState<any[]>([]);
+  const [filteredLancamentos, setFilteredLancamentos] = useState<LancamentoComRelacoes[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [tipoFilter, setTipoFilter] = useState('todos');
   const [categoriaFilter, setCategoriaFilter] = useState('todas');
   const [activeTab, setActiveTab] = useState('lista');
-  const [editingLancamento, setEditingLancamento] = useState<any>(null);
+  const [editingLancamento, setEditingLancamento] = useState<LancamentoComRelacoes | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -59,7 +63,7 @@ const LancamentosFinanceiros: React.FC = () => {
   const filterLancamentos = () => {
     if (!lancamentos) return;
     
-    let filtered = lancamentos;
+    let filtered: LancamentoComRelacoes[] = lancamentos;
 
     if (searchTerm) {
       filtered = filtered.filter(lancamento =>
@@ -130,7 +134,7 @@ const LancamentosFinanceiros: React.FC = () => {
     setEditingLancamento(null);
   };
 
-  const handleEdit = (lancamento: any) => {
+  const handleEdit = (lancamento: LancamentoComRelacoes) => {
     setFormData({
       data: lancamento.data,
       tipo: lancamento.tipo,
