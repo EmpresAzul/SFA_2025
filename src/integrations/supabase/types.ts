@@ -186,6 +186,42 @@ export type Database = {
           },
         ]
       }
+      lembretes: {
+        Row: {
+          created_at: string
+          data_lembrete: string
+          descricao: string | null
+          hora_lembrete: string | null
+          id: string
+          status: string
+          titulo: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_lembrete: string
+          descricao?: string | null
+          hora_lembrete?: string | null
+          id?: string
+          status?: string
+          titulo: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data_lembrete?: string
+          descricao?: string | null
+          hora_lembrete?: string | null
+          id?: string
+          status?: string
+          titulo?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       saldos_bancarios: {
         Row: {
           banco: string

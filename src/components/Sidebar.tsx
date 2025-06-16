@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
@@ -13,7 +14,8 @@ import {
   CreditCard,
   Banknote,
   Calendar,
-  Users
+  Users,
+  Bell
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -69,6 +71,13 @@ const menuItems: MenuItem[] = [
     icon: Package,
     iconColor: 'text-amber-500',
     href: '/dashboard/estoque'
+  },
+  {
+    id: 'lembretes',
+    label: 'Lembretes',
+    icon: Bell,
+    iconColor: 'text-violet-500',
+    href: '/dashboard/lembretes'
   },
   {
     id: 'consultor-virtual',
