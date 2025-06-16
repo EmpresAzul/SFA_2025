@@ -133,14 +133,20 @@ export const useSupabaseQuery = () => {
           const { data: result, error } = await supabase
             .from('cadastros')
             .update({
+              data: data.data,
               tipo: data.tipo,
+              pessoa: data.pessoa,
               nome: data.nome,
               documento: data.documento,
               endereco: data.endereco,
+              numero: data.numero,
               cidade: data.cidade,
               estado: data.estado,
               email: data.email,
               telefone: data.telefone,
+              observacoes: data.observacoes,
+              anexo_url: data.anexo_url,
+              salario: data.salario,
               status: data.status,
               updated_at: new Date().toISOString()
             })
@@ -161,14 +167,20 @@ export const useSupabaseQuery = () => {
           const { data: result, error } = await supabase
             .from('cadastros')
             .insert({
+              data: data.data,
               tipo: data.tipo,
+              pessoa: data.pessoa,
               nome: data.nome,
               documento: data.documento,
               endereco: data.endereco,
+              numero: data.numero,
               cidade: data.cidade,
               estado: data.estado,
               email: data.email,
               telefone: data.telefone,
+              observacoes: data.observacoes,
+              anexo_url: data.anexo_url,
+              salario: data.salario,
               status: data.status || 'ativo',
               user_id: session.user.id,
             })
