@@ -9,8 +9,72 @@ import { Textarea } from '@/components/ui/textarea';
 import type { Cadastro } from '@/hooks/useCadastros';
 import type { Lancamento } from '@/hooks/useLancamentos';
 
-const categoriasReceita = ['Receita', 'Receita Não Operacional'];
-const categoriasDespesa = ['Despesa fixa', 'Custo variável', 'Despesa não operacional', 'Salários', 'Investimentos'];
+// Categorias específicas do DRE organizadas por tipo
+const categoriasReceita = {
+  'Receitas Operacionais': [
+    'Vendas de Produtos',
+    'Vendas de Mercadorias',
+    'Prestação de Serviços',
+    'Outras Receitas Operacionais'
+  ],
+  'Receitas Financeiras': [
+    'Juros Recebidos',
+    'Aplicações Financeiras',
+    'Descontos Obtidos',
+    'Variações Monetárias Ativas'
+  ],
+  'Outras Receitas': [
+    'Receitas Extraordinárias',
+    'Venda de Ativos'
+  ]
+};
+
+const categoriasDespesa = {
+  'Deduções da Receita': [
+    'Devoluções de Vendas',
+    'Abatimentos sobre Vendas',
+    'ICMS sobre Vendas',
+    'PIS/COFINS',
+    'ISS',
+    'Outros Impostos sobre Vendas'
+  ],
+  'Custos': [
+    'Custo dos Produtos Vendidos (CPV)',
+    'Custo das Mercadorias Vendidas (CMV)',
+    'Custo dos Serviços Prestados (CSP)',
+    'Matéria-Prima',
+    'Mão de Obra Direta',
+    'Custos Indiretos de Fabricação'
+  ],
+  'Despesas Operacionais': [
+    'Despesas com Vendas',
+    'Comissões sobre Vendas',
+    'Marketing e Publicidade',
+    'Fretes e Entregas',
+    'Despesas Administrativas',
+    'Salários e Encargos',
+    'Aluguel e Condomínio',
+    'Energia Elétrica',
+    'Telefone e Internet',
+    'Material de Escritório',
+    'Contabilidade',
+    'Honorários Profissionais',
+    'Seguros',
+    'Manutenção e Conservação',
+    'Depreciação'
+  ],
+  'Despesas Financeiras': [
+    'Juros Pagos',
+    'Taxas Bancárias',
+    'IOF',
+    'Descontos Concedidos',
+    'Variações Monetárias Passivas'
+  ],
+  'Outras Despesas': [
+    'Despesas Extraordinárias',
+    'Provisões para Contingências'
+  ]
+};
 
 type LancamentoComRelacoes = Lancamento & {
   cliente?: { nome: string } | null;
@@ -48,12 +112,33 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
+  const renderCategoriasByGroup = () => {
+    const categorias = formData.tipo === 'receita' ? categoriasReceita : categoriasDespesa;
+    
+    return Object.entries(categorias).map(([grupo, items]) => (
+      <React.Fragment key={grupo}>
+        <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
+          {grupo}
+        </div>
+        {items.map((categoria) => (
+          <SelectItem key={categoria} value={categoria}>
+            {categoria}
+          </SelectItem>
+        ))}
+      </React.Fragment>
+    ));
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
           {editingLancamento ? 'Editar Lançamento' : 'Novo Lançamento'}
         </CardTitle>
+        <p className="text-sm text-gray-600">
+          As categorias selecionadas alimentarão automaticamente a estrutura do DRE
+        </p>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-4">
@@ -98,20 +183,20 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="categoria">Categoria *</Label>
+              <Label htmlFor="categoria">Categoria DRE *</Label>
               <Select value={formData.categoria} onValueChange={(value) => setFormData({ ...formData, categoria: value })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione a categoria" />
                 </SelectTrigger>
-                <SelectContent>
-                  {formData.tipo === 'receita' && categoriasReceita.map((categoria) => (
-                    <SelectItem key={categoria} value={categoria}>{categoria}</SelectItem>
-                  ))}
-                  {formData.tipo === 'despesa' && categoriasDespesa.map((categoria) => (
-                    <SelectItem key={categoria} value={categoria}>{categoria}</SelectItem>
-                  ))}
+                <SelectContent className="max-h-80">
+                  {formData.tipo && renderCategoriasByGroup()}
                 </SelectContent>
               </Select>
+              {formData.categoria && (
+                <p className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                  💡 Esta categoria será refletida automaticamente no relatório DRE
+                </p>
+              )}
             </div>
 
             {formData.tipo === 'receita' && clientes && (
@@ -155,7 +240,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
               id="observacoes"
               value={formData.observacoes}
               onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
-              placeholder="Observações opcionais..."
+              placeholder="Observações opcionais sobre este lançamento..."
               rows={3}
             />
           </div>
@@ -185,3 +270,4 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
 };
 
 export default LancamentosForm;
+

@@ -1,198 +1,47 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
 import { TrendingUp, TrendingDown, DollarSign, Calendar, FileText } from 'lucide-react';
-import { format, startOfMonth, endOfMonth, startOfYear, endOfYear, subMonths, parseISO } from 'date-fns';
+import { format, subMonths } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-
-interface Lancamento {
-  id: string;
-  tipo: 'receita' | 'despesa';
-  categoria: string;
-  valor: number;
-  data: string;
-  observacoes?: string;
-}
-
-interface DREData {
-  receitaOperacionalBruta: number;
-  deducoesReceitaBruta: number;
-  receitaOperacionalLiquida: number;
-  custosVendas: number;
-  resultadoOperacionalBruto: number;
-  despesasOperacionais: number;
-  despesasFinanceiras: number;
-  resultadoOperacional: number;
-  outrasReceitasDespesas: number;
-  resultadoAntesIR: number;
-  provisaoIR: number;
-  lucroLiquido: number;
-}
+import { useLancamentos } from '@/hooks/useLancamentos';
+import { useDRECalculations, DREData } from '@/hooks/useDRECalculations';
 
 const DRE: React.FC = () => {
-  const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
-  const [dreData, setDreData] = useState<DREData>({
-    receitaOperacionalBruta: 0,
-    deducoesReceitaBruta: 0,
-    receitaOperacionalLiquida: 0,
-    custosVendas: 0,
-    resultadoOperacionalBruto: 0,
-    despesasOperacionais: 0,
-    despesasFinanceiras: 0,
-    resultadoOperacional: 0,
-    outrasReceitasDespesas: 0,
-    resultadoAntesIR: 0,
-    provisaoIR: 0,
-    lucroLiquido: 0
-  });
   const [periodo, setPeriodo] = useState<string>('mes-atual');
-  const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
-  const { toast } = useToast();
+  
+  const { useQuery } = useLancamentos();
+  const { data: lancamentos = [], isLoading } = useQuery();
+  
+  // Filtrar lançamentos por período
+  const lancamentosFiltrados = React.useMemo(() => {
+    const hoje = new Date();
+    let dataInicio: Date;
+    let dataFim: Date;
 
-  const fetchLancamentos = async () => {
-    if (!user) return;
-
-    setLoading(true);
-    try {
-      // Como a tabela lancamentos foi removida, retornamos array vazio
-      console.log('Tabela lancamentos foi removida. Retornando dados vazios para DRE.');
-      setLancamentos([]);
-      calcularDRE([]);
-    } catch (error: any) {
-      toast({
-        title: "Aviso",
-        description: "Funcionalidade de lançamentos foi removida",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+    switch (periodo) {
+      case 'mes-anterior':
+        dataInicio = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
+        dataFim = new Date(hoje.getFullYear(), hoje.getMonth(), 0);
+        break;
+      case 'ano-atual':
+        dataInicio = new Date(hoje.getFullYear(), 0, 1);
+        dataFim = new Date(hoje.getFullYear(), 11, 31);
+        break;
+      default: // mes-atual
+        dataInicio = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+        dataFim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
     }
-  };
 
-  const calcularDRE = (lancamentosData: Lancamento[]) => {
-    // Categorização dos lançamentos
-    const receitas = lancamentosData.filter(l => l.tipo === 'receita');
-    const despesas = lancamentosData.filter(l => l.tipo === 'despesa');
-
-    // RECEITA OPERACIONAL BRUTA
-    const receitaVendas = receitas.filter(r => 
-      ['vendas', 'produtos', 'serviços', 'receita operacional'].includes(r.categoria.toLowerCase())
-    ).reduce((sum, r) => sum + r.valor, 0);
-
-    const receitaMercadorias = receitas.filter(r => 
-      ['mercadorias', 'revenda'].includes(r.categoria.toLowerCase())
-    ).reduce((sum, r) => sum + r.valor, 0);
-
-    const prestacaoServicos = receitas.filter(r => 
-      ['prestação de serviços', 'serviços prestados'].includes(r.categoria.toLowerCase())
-    ).reduce((sum, r) => sum + r.valor, 0);
-
-    const receitaOperacionalBruta = receitaVendas + receitaMercadorias + prestacaoServicos;
-
-    // DEDUÇÕES DA RECEITA BRUTA
-    const devolucoes = despesas.filter(d => 
-      ['devoluções', 'devolução de vendas'].includes(d.categoria.toLowerCase())
-    ).reduce((sum, d) => sum + d.valor, 0);
-
-    const abatimentos = despesas.filter(d => 
-      ['abatimentos', 'descontos'].includes(d.categoria.toLowerCase())
-    ).reduce((sum, d) => sum + d.valor, 0);
-
-    const impostos = despesas.filter(d => 
-      ['impostos', 'tributos', 'icms', 'ipi', 'pis', 'cofins'].includes(d.categoria.toLowerCase())
-    ).reduce((sum, d) => sum + d.valor, 0);
-
-    const deducoesReceitaBruta = devolucoes + abatimentos + impostos;
-
-    // RECEITA OPERACIONAL LÍQUIDA
-    const receitaOperacionalLiquida = receitaOperacionalBruta - deducoesReceitaBruta;
-
-    // CUSTOS DAS VENDAS
-    const custoProdutos = despesas.filter(d => 
-      ['custo dos produtos', 'cpm', 'cmv'].includes(d.categoria.toLowerCase())
-    ).reduce((sum, d) => sum + d.valor, 0);
-
-    const custoMercadorias = despesas.filter(d => 
-      ['custo das mercadorias', 'custo mercadorias'].includes(d.categoria.toLowerCase())
-    ).reduce((sum, d) => sum + d.valor, 0);
-
-    const custoServicos = despesas.filter(d => 
-      ['custo dos serviços', 'csp'].includes(d.categoria.toLowerCase())
-    ).reduce((sum, d) => sum + d.valor, 0);
-
-    const custosVendas = custoProdutos + custoMercadorias + custoServicos;
-
-    // RESULTADO OPERACIONAL BRUTO
-    const resultadoOperacionalBruto = receitaOperacionalLiquida - custosVendas;
-
-    // DESPESAS OPERACIONAIS
-    const despesasComVendas = despesas.filter(d => 
-      ['vendas', 'comissões', 'marketing', 'publicidade'].includes(d.categoria.toLowerCase())
-    ).reduce((sum, d) => sum + d.valor, 0);
-
-    const despesasAdministrativas = despesas.filter(d => 
-      ['administrativas', 'salários', 'aluguel', 'energia', 'telefone', 'material escritório'].includes(d.categoria.toLowerCase())
-    ).reduce((sum, d) => sum + d.valor, 0);
-
-    const despesasOperacionais = despesasComVendas + despesasAdministrativas;
-
-    // DESPESAS FINANCEIRAS
-    const receitasFinanceiras = receitas.filter(r => 
-      ['receitas financeiras', 'juros recebidos', 'aplicações'].includes(r.categoria.toLowerCase())
-    ).reduce((sum, r) => sum + r.valor, 0);
-
-    const variacoesMonetarias = receitas.filter(r => 
-      ['variações monetárias', 'correção monetária'].includes(r.categoria.toLowerCase())
-    ).reduce((sum, r) => sum + r.valor, 0);
-
-    const despesasFinanceiras = (receitasFinanceiras + variacoesMonetarias) * -1; // Invertendo para despesa
-
-    // RESULTADO OPERACIONAL
-    const resultadoOperacional = resultadoOperacionalBruto - despesasOperacionais - Math.abs(despesasFinanceiras);
-
-    // OUTRAS RECEITAS E DESPESAS
-    const outrasReceitas = receitas.filter(r => 
-      ['outras receitas', 'receitas extraordinárias'].includes(r.categoria.toLowerCase())
-    ).reduce((sum, r) => sum + r.valor, 0);
-
-    const custoVendaBens = despesas.filter(d => 
-      ['custo venda bens', 'alienação'].includes(d.categoria.toLowerCase())
-    ).reduce((sum, d) => sum + d.valor, 0);
-
-    const outrasReceitasDespesas = outrasReceitas - custoVendaBens;
-
-    // RESULTADO ANTES DO IR
-    const resultadoAntesIR = resultadoOperacional + outrasReceitasDespesas;
-
-    // PROVISÃO PARA IR E CSLL
-    const provisaoIR = resultadoAntesIR > 0 ? resultadoAntesIR * 0.15 : 0; // 15% estimado
-
-    // LUCRO LÍQUIDO
-    const lucroLiquido = resultadoAntesIR - provisaoIR;
-
-    setDreData({
-      receitaOperacionalBruta,
-      deducoesReceitaBruta,
-      receitaOperacionalLiquida,
-      custosVendas,
-      resultadoOperacionalBruto,
-      despesasOperacionais,
-      despesasFinanceiras: Math.abs(despesasFinanceiras),
-      resultadoOperacional,
-      outrasReceitasDespesas,
-      resultadoAntesIR,
-      provisaoIR,
-      lucroLiquido
+    return lancamentos.filter(l => {
+      const dataLancamento = new Date(l.data);
+      return dataLancamento >= dataInicio && dataLancamento <= dataFim;
     });
-  };
+  }, [lancamentos, periodo]);
 
-  useEffect(() => {
-    fetchLancamentos();
-  }, [user, periodo]);
+  const dreData = useDRECalculations(lancamentosFiltrados);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -220,7 +69,8 @@ const DRE: React.FC = () => {
     isSubtotal = false, 
     isTotal = false, 
     isNegative = false,
-    level = 0 
+    level = 0,
+    detalhes = null
   }: {
     label: string;
     value: number;
@@ -228,6 +78,7 @@ const DRE: React.FC = () => {
     isTotal?: boolean;
     isNegative?: boolean;
     level?: number;
+    detalhes?: { [key: string]: number } | null;
   }) => (
     <div className={`
       flex justify-between items-center py-2 px-4
@@ -235,15 +86,27 @@ const DRE: React.FC = () => {
       ${isSubtotal ? 'bg-gray-50 border-t border-gray-200 font-semibold' : ''}
       ${level > 0 ? `ml-${level * 4}` : ''}
     `}>
+      <div className="flex-1">
+        <span className={`
+          ${isTotal ? 'text-fluxo-blue-800' : ''}
+          ${isSubtotal ? 'text-gray-700' : 'text-gray-600'}
+          ${isNegative ? 'text-red-600' : ''}
+        `}>
+          {isNegative && '(-) '}{label}
+        </span>
+        {detalhes && Object.keys(detalhes).length > 0 && (
+          <div className="text-xs text-gray-500 mt-1 ml-4">
+            {Object.entries(detalhes).map(([cat, val]) => (
+              <div key={cat} className="flex justify-between">
+                <span>{cat}</span>
+                <span>{formatCurrency(val)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       <span className={`
-        ${isTotal ? 'text-fluxo-blue-800' : ''}
-        ${isSubtotal ? 'text-gray-700' : 'text-gray-600'}
-        ${isNegative ? 'text-red-600' : ''}
-      `}>
-        {isNegative && '(-) '}{label}
-      </span>
-      <span className={`
-        font-mono
+        font-mono ml-4
         ${isTotal ? 'text-fluxo-blue-800 text-xl' : ''}
         ${isSubtotal ? 'text-gray-700 font-semibold' : 'text-gray-600'}
         ${value < 0 ? 'text-red-600' : value > 0 ? 'text-green-600' : 'text-gray-600'}
@@ -252,6 +115,14 @@ const DRE: React.FC = () => {
       </span>
     </div>
   );
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center">Carregando dados do DRE...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -262,7 +133,7 @@ const DRE: React.FC = () => {
             Demonstração do Resultado do Exercício (DRE)
           </h1>
           <p className="text-fluxo-black-600 mt-2">
-            Análise completa da performance financeira do período selecionado
+            Análise baseada em {lancamentosFiltrados.length} lançamentos do período
           </p>
         </div>
         
@@ -280,25 +151,8 @@ const DRE: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
-          
-          <Button 
-            onClick={fetchLancamentos}
-            disabled={loading}
-            className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
-          >
-            {loading ? 'Carregando...' : 'Atualizar'}
-          </Button>
         </div>
       </div>
-
-      {/* Aviso sobre funcionalidade removida */}
-      <Card className="border-yellow-200 bg-yellow-50">
-        <CardContent className="p-4">
-          <p className="text-yellow-800">
-            ⚠️ A funcionalidade de lançamentos foi removida. A DRE não pode ser calculada sem dados de lançamentos.
-          </p>
-        </CardContent>
-      </Card>
 
       {/* Resumo Executivo */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -373,17 +227,24 @@ const DRE: React.FC = () => {
             <div className="bg-green-50 border-b-2 border-green-200 p-4">
               <h3 className="font-bold text-green-800 text-lg mb-2">RECEITA OPERACIONAL BRUTA</h3>
             </div>
-            <DRELineItem label="Vendas de Produtos" value={dreData.receitaOperacionalBruta * 0.6} level={1} />
-            <DRELineItem label="Vendas de Mercadorias" value={dreData.receitaOperacionalBruta * 0.3} level={1} />
-            <DRELineItem label="Prestação de Serviços" value={dreData.receitaOperacionalBruta * 0.1} level={1} />
+            <DRELineItem 
+              label="Receitas Operacionais" 
+              value={dreData.receitaOperacionalBruta} 
+              detalhes={dreData.detalhamento.receitasOperacionais}
+              level={1} 
+            />
 
             {/* DEDUÇÕES */}
             <div className="bg-red-50 border-b border-red-200 p-4">
               <h3 className="font-bold text-red-800">(-) DEDUÇÕES DA RECEITA BRUTA</h3>
             </div>
-            <DRELineItem label="Devoluções de Vendas" value={dreData.deducoesReceitaBruta * 0.2} isNegative level={1} />
-            <DRELineItem label="Abatimentos" value={dreData.deducoesReceitaBruta * 0.1} isNegative level={1} />
-            <DRELineItem label="Impostos e Contribuições Incidentes sobre Vendas" value={dreData.deducoesReceitaBruta * 0.7} isNegative level={1} />
+            <DRELineItem 
+              label="Deduções e Impostos" 
+              value={dreData.deducoesReceitaBruta} 
+              isNegative 
+              detalhes={dreData.detalhamento.deducoes}
+              level={1} 
+            />
 
             {/* RECEITA LÍQUIDA */}
             <DRELineItem label="= RECEITA OPERACIONAL LÍQUIDA" value={dreData.receitaOperacionalLiquida} isSubtotal />
@@ -392,9 +253,13 @@ const DRE: React.FC = () => {
             <div className="bg-orange-50 border-b border-orange-200 p-4">
               <h3 className="font-bold text-orange-800">(-) CUSTOS DAS VENDAS</h3>
             </div>
-            <DRELineItem label="Custo dos Produtos Vendidos" value={dreData.custosVendas * 0.5} isNegative level={1} />
-            <DRELineItem label="Custo das Mercadorias" value={dreData.custosVendas * 0.3} isNegative level={1} />
-            <DRELineItem label="Custo dos Serviços Prestados" value={dreData.custosVendas * 0.2} isNegative level={1} />
+            <DRELineItem 
+              label="Custos Diretos" 
+              value={dreData.custosVendas} 
+              isNegative 
+              detalhes={dreData.detalhamento.custos}
+              level={1} 
+            />
 
             {/* RESULTADO BRUTO */}
             <DRELineItem label="= RESULTADO OPERACIONAL BRUTO" value={dreData.resultadoOperacionalBruto} isSubtotal />
@@ -403,30 +268,55 @@ const DRE: React.FC = () => {
             <div className="bg-blue-50 border-b border-blue-200 p-4">
               <h3 className="font-bold text-blue-800">(-) DESPESAS OPERACIONAIS</h3>
             </div>
-            <DRELineItem label="Despesas com Vendas" value={dreData.despesasOperacionais * 0.4} isNegative level={1} />
-            <DRELineItem label="Despesas Administrativas" value={dreData.despesasOperacionais * 0.6} isNegative level={1} />
+            <DRELineItem 
+              label="Despesas Operacionais" 
+              value={dreData.despesasOperacionais} 
+              isNegative 
+              detalhes={dreData.detalhamento.despesasOperacionais}
+              level={1} 
+            />
 
             {/* DESPESAS FINANCEIRAS */}
             <div className="bg-purple-50 border-b border-purple-200 p-4">
-              <h3 className="font-bold text-purple-800">(-) DESPESAS FINANCEIRAS LÍQUIDAS</h3>
+              <h3 className="font-bold text-purple-800">(-) DESPESAS FINANCEIRAS</h3>
             </div>
-            <DRELineItem label="(-) Receitas Financeiras" value={dreData.despesasFinanceiras * 0.3} level={1} />
-            <DRELineItem label="(-) Variações Monetárias e Cambiais Ativas" value={dreData.despesasFinanceiras * 0.7} level={1} />
+            <DRELineItem 
+              label="Despesas Financeiras" 
+              value={dreData.despesasFinanceiras} 
+              isNegative 
+              detalhes={dreData.detalhamento.despesasFinanceiras}
+              level={1} 
+            />
+
+            {/* RESULTADO OPERACIONAL */}
+            <DRELineItem label="= RESULTADO OPERACIONAL" value={dreData.resultadoOperacional} isSubtotal />
 
             {/* OUTRAS RECEITAS */}
             <div className="bg-gray-50 border-b border-gray-200 p-4">
               <h3 className="font-bold text-gray-800">OUTRAS RECEITAS E DESPESAS</h3>
             </div>
-            <DRELineItem label="(-) Custo da Venda de Bens e Direitos do Ativo Não Circulante" value={dreData.outrasReceitasDespesas} level={1} />
+            <DRELineItem 
+              label="Outras Receitas" 
+              value={Object.values(dreData.detalhamento.outrasReceitas).reduce((a, b) => a + b, 0)} 
+              detalhes={dreData.detalhamento.outrasReceitas}
+              level={1} 
+            />
+            <DRELineItem 
+              label="(-) Outras Despesas" 
+              value={Object.values(dreData.detalhamento.outrasDespesas).reduce((a, b) => a + b, 0)} 
+              isNegative 
+              detalhes={dreData.detalhamento.outrasDespesas}
+              level={1} 
+            />
 
             {/* RESULTADO ANTES IR */}
-            <DRELineItem label="= RESULTADO OPERACIONAL ANTES DO IR E CSLL" value={dreData.resultadoAntesIR} isSubtotal />
+            <DRELineItem label="= RESULTADO ANTES DO IR E CSLL" value={dreData.resultadoAntesIR} isSubtotal />
 
             {/* PROVISÕES */}
             <div className="bg-yellow-50 border-b border-yellow-200 p-4">
               <h3 className="font-bold text-yellow-800">(-) Provisão para IR e CSLL</h3>
             </div>
-            <DRELineItem label="(-) PRO LABORE" value={dreData.provisaoIR} isNegative level={1} />
+            <DRELineItem label="(-) Provisão IR/CSLL (15%)" value={dreData.provisaoIR} isNegative level={1} />
 
             {/* LUCRO LÍQUIDO */}
             <DRELineItem label="= RESULTADO LÍQUIDO DO EXERCÍCIO" value={dreData.lucroLiquido} isTotal />
@@ -438,3 +328,4 @@ const DRE: React.FC = () => {
 };
 
 export default DRE;
+
