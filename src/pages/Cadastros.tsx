@@ -20,7 +20,7 @@ const Cadastros: React.FC = () => {
   const [cadastros, setCadastros] = useState<Cadastro[]>([]);
   const [filteredCadastros, setFilteredCadastros] = useState<Cadastro[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [pessoaFilter, setPessoaFilter] = useState('todas');
+  const [typeFilter, setTypeFilter] = useState('all');
   const [activeTab, setActiveTab] = useState('lista');
   const { user } = useAuth();
 
@@ -46,7 +46,7 @@ const Cadastros: React.FC = () => {
 
   useEffect(() => {
     filterCadastros();
-  }, [cadastros, searchTerm, pessoaFilter]);
+  }, [cadastros, searchTerm, typeFilter]);
 
   const filterCadastros = () => {
     let filtered = cadastros;
@@ -59,8 +59,8 @@ const Cadastros: React.FC = () => {
       );
     }
 
-    if (pessoaFilter !== 'todas') {
-      filtered = filtered.filter(cadastro => cadastro.pessoa === pessoaFilter);
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter(cadastro => cadastro.pessoa === typeFilter);
     }
 
     setFilteredCadastros(filtered);
@@ -147,9 +147,8 @@ const Cadastros: React.FC = () => {
           <ContactFilters
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
-            pessoaFilter={pessoaFilter}
-            setPessoaFilter={setPessoaFilter}
-            showPessoaFilter={tipoCapitalized !== 'Funcionário'}
+            typeFilter={typeFilter}
+            setTypeFilter={setTypeFilter}
           />
 
           <CadastroTable

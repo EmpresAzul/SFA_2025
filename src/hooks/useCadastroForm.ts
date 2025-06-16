@@ -107,7 +107,8 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
         cep: formData.cep.trim() || undefined,
         observacoes: formData.observacoes.trim() || undefined,
         user_id: user!.id,
-        status: 'ativo'
+        status: 'ativo',
+        data: new Date().toISOString().split('T')[0] // Add the required data field
       };
 
       if (editingCadastro) {
