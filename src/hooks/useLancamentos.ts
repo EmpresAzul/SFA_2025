@@ -1,137 +1,85 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+
+// Definindo o tipo Lancamento localmente já que a tabela foi removida
+export interface Lancamento {
+  id: string;
+  data: string;
+  tipo: 'receita' | 'despesa';
+  categoria: string;
+  valor: number;
+  cliente_id?: string;
+  fornecedor_id?: string;
+  observacoes?: string;
+  status: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
 
 export const useLancamentos = () => {
   const { session } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Query para lançamentos
+  // Query para lançamentos - retorna array vazio já que a tabela foi removida
   const useLancamentosQuery = () => {
     return useQuery({
       queryKey: ['lancamentos'],
       queryFn: async () => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
-        console.log('useLancamentos - Fetching lancamentos for user:', session.user.id);
-        
-        const { data, error } = await supabase
-          .from('lancamentos')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .eq('status', 'ativo')
-          .order('data', { ascending: false });
-
-        if (error) {
-          console.error('useLancamentos - Error fetching lancamentos:', error);
-          throw error;
-        }
-        
-        console.log('useLancamentos - Fetched lancamentos:', data);
-        return data;
+        console.log('Tabela lancamentos foi removida. Retornando dados vazios.');
+        return [];
       },
       enabled: !!session?.user?.id,
     });
   };
 
-  // Mutation para criar/atualizar lançamento
+  // Mutation para criar/atualizar lançamento - desabilitada
   const useLancamentosCreate = () => {
     return useMutation({
       mutationFn: async (data: any) => {
-        if (!session?.user?.id) throw new Error('User not authenticated');
-        
-        console.log('useLancamentos - Creating/updating lancamento:', data);
-        
-        if (data.id) {
-          // Atualização
-          const { data: result, error } = await supabase
-            .from('lancamentos')
-            .update({
-              data: data.data,
-              tipo: data.tipo,
-              categoria: data.categoria,
-              valor: data.valor,
-              cliente_id: data.cliente_id,
-              fornecedor_id: data.fornecedor_id,
-              observacoes: data.observacoes,
-              status: data.status,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', data.id)
-            .eq('user_id', session.user.id)
-            .select()
-            .single();
-
-          if (error) throw error;
-          return result;
-        } else {
-          // Criação
-          const { data: result, error } = await supabase
-            .from('lancamentos')
-            .insert({
-              data: data.data,
-              tipo: data.tipo,
-              categoria: data.categoria,
-              valor: data.valor,
-              cliente_id: data.cliente_id,
-              fornecedor_id: data.fornecedor_id,
-              observacoes: data.observacoes,
-              status: data.status || 'ativo',
-              user_id: session.user.id,
-            })
-            .select()
-            .single();
-
-          if (error) throw error;
-          return result;
-        }
+        throw new Error('Funcionalidade de lançamentos foi removida');
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
         toast({
-          title: "Sucesso!",
-          description: "Lançamento salvo com sucesso",
+          title: "Aviso",
+          description: "Funcionalidade de lançamentos foi removida",
+          variant: "destructive",
         });
       },
       onError: (error: any) => {
         toast({
           title: "Erro",
-          description: "Erro ao salvar lançamento: " + error.message,
+          description: "Funcionalidade de lançamentos foi removida",
           variant: "destructive",
         });
       },
     });
   };
 
-  // Mutation para deletar lançamento
+  // Mutation para deletar lançamento - desabilitada
   const useLancamentosDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
-        if (!session?.user?.id) throw new Error('User not authenticated');
-        
-        const { error } = await supabase
-          .from('lancamentos')
-          .delete()
-          .eq('id', id)
-          .eq('user_id', session.user.id);
-
-        if (error) throw error;
-        return id;
+        throw new Error('Funcionalidade de lançamentos foi removida');
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
         toast({
-          title: "Sucesso!",
-          description: "Lançamento excluído com sucesso",
+          title: "Aviso",
+          description: "Funcionalidade de lançamentos foi removida",
+          variant: "destructive",
         });
       },
       onError: (error: any) => {
         toast({
           title: "Erro",
-          description: "Erro ao excluir lançamento: " + error.message,
+          description: "Funcionalidade de lançamentos foi removida",
           variant: "destructive",
         });
       },
