@@ -66,8 +66,8 @@ export const BasicInfoFields: React.FC<BasicInfoFieldsProps> = ({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Física">Física</SelectItem>
-            <SelectItem value="Jurídica">Jurídica</SelectItem>
+            <SelectItem value="Fisica">Fisica</SelectItem>
+            <SelectItem value="Juridica">Juridica</SelectItem>
           </SelectContent>
         </Select>
       </div>

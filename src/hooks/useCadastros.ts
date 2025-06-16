@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -61,6 +60,12 @@ export const useCadastros = () => {
         
         if (!validTipos.includes(tipoNormalizado)) {
           throw new Error(`Tipo inválido: ${data.tipo}. Tipos válidos: ${validTipos.join(', ')}`);
+        }
+
+        // Validar pessoa sem acento
+        const validPessoas = ['Fisica', 'Juridica'];
+        if (!validPessoas.includes(data.pessoa)) {
+          throw new Error(`Pessoa inválida: ${data.pessoa}. Valores válidos: ${validPessoas.join(', ')}`);
         }
         
         const dataToInsert = {
@@ -136,6 +141,12 @@ export const useCadastros = () => {
         
         if (!validTipos.includes(tipoNormalizado)) {
           throw new Error(`Tipo inválido: ${data.tipo}. Tipos válidos: ${validTipos.join(', ')}`);
+        }
+
+        // Validar pessoa sem acento
+        const validPessoas = ['Fisica', 'Juridica'];
+        if (!validPessoas.includes(data.pessoa)) {
+          throw new Error(`Pessoa inválida: ${data.pessoa}. Valores válidos: ${validPessoas.join(', ')}`);
         }
         
         const dataToUpdate = {

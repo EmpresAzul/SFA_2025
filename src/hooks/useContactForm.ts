@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Contact, ContactFormData } from '@/types/contact';
@@ -18,7 +17,7 @@ export const useContactForm = (
   const [formData, setFormData] = useState<ContactFormData>({
     data: new Date().toISOString().split('T')[0],
     tipo: 'Cliente',
-    pessoa: 'Física',
+    pessoa: 'Fisica',
     nome: '',
     documento: '',
     endereco: '',
@@ -34,7 +33,7 @@ export const useContactForm = (
   });
 
   const formatDocument = (value: string, pessoa: string) => {
-    if (pessoa === 'Física') {
+    if (pessoa === 'Fisica') {
       return formatCPF(value);
     } else {
       return formatCNPJ(value);
@@ -62,10 +61,10 @@ export const useContactForm = (
       errors.push('Tipo deve ser Cliente, Fornecedor ou Funcionário');
     }
 
-    // Validar pessoa
-    const validPessoas = ['Física', 'Jurídica'];
+    // Validar pessoa - atualizado para aceitar sem acento
+    const validPessoas = ['Fisica', 'Juridica'];
     if (!validPessoas.includes(formData.pessoa)) {
-      errors.push('Pessoa deve ser Física ou Jurídica');
+      errors.push('Pessoa deve ser Fisica ou Juridica');
     }
 
     if (errors.length > 0) {
@@ -187,7 +186,7 @@ export const useContactForm = (
     setFormData({
       data: new Date().toISOString().split('T')[0],
       tipo: 'Cliente',
-      pessoa: 'Física',
+      pessoa: 'Fisica',
       nome: '',
       documento: '',
       endereco: '',
