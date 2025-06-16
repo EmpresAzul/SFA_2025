@@ -25,3 +25,15 @@ export interface CategoriaTotais {
   categoria: string;
   total: number;
 }
+
+export interface FluxoDiario {
+  data: string;
+  receitas: number;
+  despesas: number;
+}
+
+export interface CategoriaData {
+  name: string;
+  value: number;
+  color: string;
+}

@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { TrendingUp, TrendingDown, DollarSign, Calendar, FileText } from 'lucide-react';
@@ -60,51 +58,14 @@ const DRE: React.FC = () => {
 
     setLoading(true);
     try {
-      let dataInicio: Date;
-      let dataFim: Date;
-
-      const hoje = new Date();
-      
-      switch (periodo) {
-        case 'mes-atual':
-          dataInicio = startOfMonth(hoje);
-          dataFim = endOfMonth(hoje);
-          break;
-        case 'mes-anterior':
-          const mesAnterior = subMonths(hoje, 1);
-          dataInicio = startOfMonth(mesAnterior);
-          dataFim = endOfMonth(mesAnterior);
-          break;
-        case 'ano-atual':
-          dataInicio = startOfYear(hoje);
-          dataFim = endOfYear(hoje);
-          break;
-        default:
-          dataInicio = startOfMonth(hoje);
-          dataFim = endOfMonth(hoje);
-      }
-
-      const { data, error } = await supabase
-        .from('lancamentos')
-        .select('*')
-        .eq('user_id', user.id)
-        .gte('data', format(dataInicio, 'yyyy-MM-dd'))
-        .lte('data', format(dataFim, 'yyyy-MM-dd'))
-        .eq('status', 'ativo');
-
-      if (error) throw error;
-
-      const lancamentosFormatados = (data || []).map(item => ({
-        ...item,
-        tipo: item.tipo as 'receita' | 'despesa'
-      }));
-
-      setLancamentos(lancamentosFormatados);
-      calcularDRE(lancamentosFormatados);
+      // Como a tabela lancamentos foi removida, retornamos array vazio
+      console.log('Tabela lancamentos foi removida. Retornando dados vazios para DRE.');
+      setLancamentos([]);
+      calcularDRE([]);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar lançamentos",
-        description: error.message,
+        title: "Aviso",
+        description: "Funcionalidade de lançamentos foi removida",
         variant: "destructive",
       });
     } finally {
@@ -329,6 +290,15 @@ const DRE: React.FC = () => {
           </Button>
         </div>
       </div>
+
+      {/* Aviso sobre funcionalidade removida */}
+      <Card className="border-yellow-200 bg-yellow-50">
+        <CardContent className="p-4">
+          <p className="text-yellow-800">
+            ⚠️ A funcionalidade de lançamentos foi removida. A DRE não pode ser calculada sem dados de lançamentos.
+          </p>
+        </CardContent>
+      </Card>
 
       {/* Resumo Executivo */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +11,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Search, TrendingUp, TrendingDown, DollarSign, BarChart3 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
 
@@ -29,19 +29,12 @@ interface Lancamento {
   fornecedor_nome?: string;
 }
 
-interface Cadastro {
-  id: string;
-  nome: string;
-  tipo: 'cliente' | 'fornecedor';
-}
-
 const categoriasReceita = ['Receita', 'Receita Não Operacional'];
 const categoriasDespesa = ['Despesa fixa', 'Custo variável', 'Despesa não operacional', 'Salários', 'Investimentos'];
 
 const LancamentosFinanceiros: React.FC = () => {
   const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
   const [filteredLancamentos, setFilteredLancamentos] = useState<Lancamento[]>([]);
-  const [cadastros, setCadastros] = useState<Cadastro[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [tipoFilter, setTipoFilter] = useState('todos');
@@ -63,7 +56,6 @@ const LancamentosFinanceiros: React.FC = () => {
   useEffect(() => {
     if (user) {
       fetchLancamentos();
-      fetchCadastros();
     }
   }, [user]);
 
@@ -74,85 +66,17 @@ const LancamentosFinanceiros: React.FC = () => {
   const fetchLancamentos = async () => {
     setLoading(true);
     try {
-      const { data: lancamentosComClientes, error: errorClientes } = await supabase
-        .from('lancamentos')
-        .select(`
-          *,
-          cliente:cadastros!cliente_id(nome)
-        `)
-        .eq('user_id', user?.id)
-        .not('cliente_id', 'is', null);
-
-      if (errorClientes) throw errorClientes;
-
-      const { data: lancamentosComFornecedores, error: errorFornecedores } = await supabase
-        .from('lancamentos')
-        .select(`
-          *,
-          fornecedor:cadastros!fornecedor_id(nome)
-        `)
-        .eq('user_id', user?.id)
-        .not('fornecedor_id', 'is', null);
-
-      if (errorFornecedores) throw errorFornecedores;
-
-      const { data: lancamentosSemRelacao, error: errorSemRelacao } = await supabase
-        .from('lancamentos')
-        .select('*')
-        .eq('user_id', user?.id)
-        .is('cliente_id', null)
-        .is('fornecedor_id', null);
-
-      if (errorSemRelacao) throw errorSemRelacao;
-
-      const todosLancamentos: Lancamento[] = [
-        ...(lancamentosComClientes || []).map((l: any) => ({
-          ...l,
-          cliente_nome: l.cliente?.nome
-        })),
-        ...(lancamentosComFornecedores || []).map((l: any) => ({
-          ...l,
-          fornecedor_nome: l.fornecedor?.nome
-        })),
-        ...(lancamentosSemRelacao || [])
-      ];
-
-      todosLancamentos.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-      setLancamentos(todosLancamentos);
+      // Como as tabelas lancamentos e cadastros foram removidas, retornamos array vazio
+      console.log('Tabelas lancamentos e cadastros foram removidas. Retornando dados vazios.');
+      setLancamentos([]);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar lançamentos",
-        description: error.message,
+        title: "Aviso",
+        description: "Funcionalidade de lançamentos foi removida",
         variant: "destructive",
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchCadastros = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('cadastros')
-        .select('id, nome, tipo')
-        .eq('user_id', user?.id)
-        .eq('status', 'ativo');
-
-      if (error) throw error;
-      
-      const cadastrosTipados: Cadastro[] = (data || []).filter(
-        (cadastro): cadastro is Cadastro => 
-          cadastro.tipo === 'cliente' || cadastro.tipo === 'fornecedor'
-      );
-      
-      setCadastros(cadastrosTipados);
-    } catch (error: any) {
-      toast({
-        title: "Erro ao carregar cadastros",
-        description: error.message,
-        variant: "destructive",
-      });
     }
   };
 
@@ -182,49 +106,16 @@ const LancamentosFinanceiros: React.FC = () => {
     setLoading(true);
 
     try {
-      const lancamentoData: any = {
-        user_id: user?.id,
-        data: formData.data,
-        tipo: formData.tipo,
-        valor: parseFloat(formData.valor),
-        categoria: formData.categoria,
-        observacoes: formData.observacoes || null
-      };
-
-      if (formData.tipo === 'receita' && formData.cliente_id) {
-        lancamentoData.cliente_id = formData.cliente_id;
-      }
-
-      if (formData.tipo === 'despesa' && formData.fornecedor_id) {
-        lancamentoData.fornecedor_id = formData.fornecedor_id;
-      }
-
-      const { error } = await supabase
-        .from('lancamentos')
-        .insert([lancamentoData]);
-
-      if (error) throw error;
-
+      // Funcionalidade removida
       toast({
-        title: "Lançamento cadastrado com sucesso!",
-        description: `${formData.tipo === 'receita' ? 'Receita' : 'Despesa'} registrada no sistema.`,
+        title: "Aviso",
+        description: "Funcionalidade de lançamentos foi removida",
+        variant: "destructive",
       });
-
-      setFormData({
-        data: '',
-        tipo: '' as 'receita' | 'despesa' | '',
-        valor: '',
-        cliente_id: '',
-        fornecedor_id: '',
-        categoria: '',
-        observacoes: ''
-      });
-      setActiveTab('lista');
-      fetchLancamentos();
     } catch (error: any) {
       toast({
-        title: "Erro ao cadastrar lançamento",
-        description: error.message,
+        title: "Erro",
+        description: "Funcionalidade de lançamentos foi removida",
         variant: "destructive",
       });
     } finally {
@@ -254,9 +145,6 @@ const LancamentosFinanceiros: React.FC = () => {
     return getTotalReceitas() - getTotalDespesas();
   };
 
-  const getClientes = () => cadastros.filter(c => c.tipo === 'cliente');
-  const getFornecedores = () => cadastros.filter(c => c.tipo === 'fornecedor');
-
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -272,6 +160,15 @@ const LancamentosFinanceiros: React.FC = () => {
           Novo Lançamento
         </Button>
       </div>
+
+      {/* Aviso sobre funcionalidade removida */}
+      <Card className="border-yellow-200 bg-yellow-50">
+        <CardContent className="p-4">
+          <p className="text-yellow-800">
+            ⚠️ A funcionalidade de lançamentos financeiros foi removida junto com os cadastros.
+          </p>
+        </CardContent>
+      </Card>
 
       {/* Painéis de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -401,6 +298,13 @@ const LancamentosFinanceiros: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
+                  {filteredLancamentos.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-gray-500">
+                        Nenhum lançamento encontrado
+                      </TableCell>
+                    </TableRow>
+                  )}
                   {filteredLancamentos.map((lancamento) => (
                     <TableRow key={lancamento.id}>
                       <TableCell>{format(new Date(lancamento.data), 'dd/MM/yyyy')}</TableCell>
@@ -469,38 +373,6 @@ const LancamentosFinanceiros: React.FC = () => {
                       required
                     />
                   </div>
-
-                  {formData.tipo === 'receita' && (
-                    <div className="space-y-2">
-                      <Label htmlFor="cliente">Cliente</Label>
-                      <Select value={formData.cliente_id} onValueChange={(value) => setFormData({ ...formData, cliente_id: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o cliente" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {getClientes().map((cliente) => (
-                            <SelectItem key={cliente.id} value={cliente.id}>{cliente.nome}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  {formData.tipo === 'despesa' && (
-                    <div className="space-y-2">
-                      <Label htmlFor="fornecedor">Fornecedor</Label>
-                      <Select value={formData.fornecedor_id} onValueChange={(value) => setFormData({ ...formData, fornecedor_id: value })}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o fornecedor" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {getFornecedores().map((fornecedor) => (
-                            <SelectItem key={fornecedor.id} value={fornecedor.id}>{fornecedor.nome}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
 
                   <div className="space-y-2">
                     <Label htmlFor="categoria">Categoria</Label>
