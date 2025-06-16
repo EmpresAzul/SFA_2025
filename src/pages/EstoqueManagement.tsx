@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Search, Package, TrendingUp, DollarSign, BarChart3 } from 'lucide-react';
+import { Search, Package, TrendingUp, DollarSign, BarChart3 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
@@ -38,7 +38,6 @@ const EstoqueManagement: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('todos');
-  const [showForm, setShowForm] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -145,7 +144,6 @@ const EstoqueManagement: React.FC = () => {
         quantidade_bruta: '',
         quantidade_liquida: ''
       });
-      setShowForm(false);
       fetchEstoques();
     } catch (error: any) {
       toast({
@@ -181,13 +179,6 @@ const EstoqueManagement: React.FC = () => {
           <h1 className="text-3xl font-bold text-fluxo-black-900">Gestão de Estoques</h1>
           <p className="text-fluxo-black-600 mt-2">Controle completo do seu estoque</p>
         </div>
-        <Button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Novo Item
-        </Button>
       </div>
 
       {/* Painéis de Resumo */}
@@ -244,9 +235,19 @@ const EstoqueManagement: React.FC = () => {
       </div>
 
       <Tabs defaultValue="lista" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="lista">Lista de Estoques</TabsTrigger>
-          <TabsTrigger value="formulario">Cadastrar Item</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-fluxo-blue-50 to-fluxo-blue-100">
+          <TabsTrigger 
+            value="lista" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-fluxo-blue-600 data-[state=active]:to-fluxo-blue-500 data-[state=active]:text-white font-semibold text-lg py-3 shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
+            📋 Lista de Estoques
+          </TabsTrigger>
+          <TabsTrigger 
+            value="formulario"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-fluxo-blue-600 data-[state=active]:to-fluxo-blue-500 data-[state=active]:text-white font-semibold text-lg py-3 shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
+            ➕ Cadastrar Item
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="lista" className="space-y-4">

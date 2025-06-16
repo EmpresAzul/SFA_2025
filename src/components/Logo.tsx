@@ -8,24 +8,17 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ className = '', size = 'md' }) => {
   const sizeClasses = {
-    sm: 'w-24 h-12',
-    md: 'w-32 h-16',
-    lg: 'w-40 h-20'
+    sm: 'text-2xl',
+    md: 'text-3xl',
+    lg: 'text-4xl'
   };
 
   return (
-    <div className={`${sizeClasses[size]} ${className} flex items-center justify-center`}>
+    <div className={`${className} flex items-center justify-center`}>
       <div className="relative">
-        <div className="gradient-fluxo rounded-lg p-2 shadow-lg">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 gradient-fluxo rounded-full"></div>
-            </div>
-            <div className="text-white font-bold text-lg">
-              FluxoAzul
-            </div>
-          </div>
-        </div>
+        <h1 className={`${sizeClasses[size]} font-black bg-gradient-to-r from-fluxo-blue-900 via-fluxo-blue-600 to-fluxo-blue-400 bg-clip-text text-transparent`}>
+          FluxoAzul
+        </h1>
       </div>
     </div>
   );

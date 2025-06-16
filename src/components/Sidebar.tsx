@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
@@ -35,7 +34,7 @@ const menuItems: MenuItem[] = [
     label: 'Indicadores',
     icon: BarChart3,
     children: [
-      { id: 'dashboard-financeiro', label: 'Dashboard Financeiro', icon: TrendingUp, href: '/dashboard' },
+      { id: 'metricas', label: 'Métricas', icon: TrendingUp, href: '/dashboard' },
       { id: 'dre', label: 'DRE', icon: TrendingUp, href: '/dashboard/dre' },
       { id: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: CreditCard, href: '/dashboard/fluxo-caixa' }
     ]
