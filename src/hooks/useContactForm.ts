@@ -56,6 +56,18 @@ export const useContactForm = (
       errors.push('Data é obrigatória');
     }
 
+    // Validar tipo
+    const validTipos = ['Cliente', 'Fornecedor', 'Funcionário'];
+    if (!validTipos.includes(formData.tipo)) {
+      errors.push('Tipo deve ser Cliente, Fornecedor ou Funcionário');
+    }
+
+    // Validar pessoa
+    const validPessoas = ['Física', 'Jurídica'];
+    if (!validPessoas.includes(formData.pessoa)) {
+      errors.push('Pessoa deve ser Física ou Jurídica');
+    }
+
     if (errors.length > 0) {
       toast({
         title: "Erro de validação",
@@ -91,10 +103,16 @@ export const useContactForm = (
     }
 
     try {
+      // Normalizar o tipo antes de enviar
+      let tipoNormalizado = formData.tipo;
+      if (formData.tipo === 'Funcionario') {
+        tipoNormalizado = 'Funcionário';
+      }
+
       const dataToSubmit = {
         user_id: session.user.id,
         data: formData.data,
-        tipo: formData.tipo,
+        tipo: tipoNormalizado,
         pessoa: formData.pessoa,
         nome: formData.nome?.trim(),
         documento: formData.documento || null,
@@ -126,6 +144,11 @@ export const useContactForm = (
       refetch();
     } catch (error: any) {
       console.error('ContactForm - Submit error:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: error?.message || "Erro ao salvar cadastro. Tente novamente.",
+        variant: "destructive",
+      });
     }
   };
 

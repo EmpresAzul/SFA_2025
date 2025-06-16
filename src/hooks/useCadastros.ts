@@ -51,10 +51,22 @@ export const useCadastros = () => {
         
         console.log('useCadastros - Creating cadastro with data:', data);
         
+        // Validar e normalizar o tipo antes de enviar
+        const validTipos = ['Cliente', 'Fornecedor', 'Funcionário'];
+        let tipoNormalizado = data.tipo;
+        
+        if (data.tipo === 'Funcionario') {
+          tipoNormalizado = 'Funcionário';
+        }
+        
+        if (!validTipos.includes(tipoNormalizado)) {
+          throw new Error(`Tipo inválido: ${data.tipo}. Tipos válidos: ${validTipos.join(', ')}`);
+        }
+        
         const dataToInsert = {
           user_id: session.user.id,
           data: data.data,
-          tipo: data.tipo,
+          tipo: tipoNormalizado,
           pessoa: data.pessoa,
           nome: data.nome?.trim(),
           documento: data.documento ? data.documento.replace(/\D/g, '') : null,
@@ -114,9 +126,21 @@ export const useCadastros = () => {
         
         console.log('useCadastros - Updating cadastro with data:', data);
         
+        // Validar e normalizar o tipo antes de enviar
+        const validTipos = ['Cliente', 'Fornecedor', 'Funcionário'];
+        let tipoNormalizado = data.tipo;
+        
+        if (data.tipo === 'Funcionario') {
+          tipoNormalizado = 'Funcionário';
+        }
+        
+        if (!validTipos.includes(tipoNormalizado)) {
+          throw new Error(`Tipo inválido: ${data.tipo}. Tipos válidos: ${validTipos.join(', ')}`);
+        }
+        
         const dataToUpdate = {
           data: data.data,
-          tipo: data.tipo,
+          tipo: tipoNormalizado,
           pessoa: data.pessoa,
           nome: data.nome?.trim(),
           documento: data.documento ? data.documento.replace(/\D/g, '') : null,

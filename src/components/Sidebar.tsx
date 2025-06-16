@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
@@ -46,6 +47,17 @@ const menuItems: MenuItem[] = [
     ]
   },
   {
+    id: 'cadastros',
+    label: 'Cadastros',
+    icon: Users,
+    iconColor: 'text-violet-500',
+    children: [
+      { id: 'clientes', label: 'Clientes', icon: UserCheck, iconColor: 'text-blue-600', href: '/dashboard/cadastros/clientes' },
+      { id: 'fornecedores', label: 'Fornecedores', icon: Truck, iconColor: 'text-orange-600', href: '/dashboard/cadastros/fornecedores' },
+      { id: 'funcionarios', label: 'Funcionários', icon: BadgeDollarSign, iconColor: 'text-green-600', href: '/dashboard/cadastros/funcionarios' }
+    ]
+  },
+  {
     id: 'precificacao',
     label: 'Precificação',
     icon: Tag,
@@ -59,17 +71,6 @@ const menuItems: MenuItem[] = [
     iconColor: 'text-emerald-500',
     children: [
       { id: 'lancamentos', label: 'Lançamentos', icon: CreditCard, iconColor: 'text-indigo-500', href: '/dashboard/lancamentos' }
-    ]
-  },
-  {
-    id: 'cadastros',
-    label: 'Cadastros',
-    icon: Users,
-    iconColor: 'text-violet-500',
-    children: [
-      { id: 'clientes', label: 'Clientes', icon: UserCheck, iconColor: 'text-blue-600', href: '/dashboard/cadastros/clientes' },
-      { id: 'fornecedores', label: 'Fornecedores', icon: Truck, iconColor: 'text-orange-600', href: '/dashboard/cadastros/fornecedores' },
-      { id: 'funcionarios', label: 'Funcionários', icon: BadgeDollarSign, iconColor: 'text-green-600', href: '/dashboard/cadastros/funcionarios' }
     ]
   },
   {
@@ -101,15 +102,18 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
-  const [expandedItems, setExpandedItems] = useState<string[]>(['indicadores', 'financeiro', 'cadastros']);
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const location = useLocation();
 
   const toggleExpanded = (itemId: string) => {
-    setExpandedItems(prev => 
-      prev.includes(itemId) 
-        ? prev.filter(id => id !== itemId)
-        : [...prev, itemId]
-    );
+    setExpandedItems(prev => {
+      // Se o item já está expandido, feche-o
+      if (prev.includes(itemId)) {
+        return prev.filter(id => id !== itemId);
+      }
+      // Caso contrário, feche todos os outros e abra apenas este
+      return [itemId];
+    });
   };
 
   const isActive = (href: string) => location.pathname === href;
