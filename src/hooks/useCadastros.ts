@@ -10,7 +10,7 @@ export const useCadastros = () => {
   const queryClient = useQueryClient();
 
   // Query para cadastros
-  const useCadastrosQuery = () => {
+  const useCadastrosQueryHook = () => {
     return useQuery({
       queryKey: ['cadastros'],
       queryFn: async () => {
@@ -22,7 +22,6 @@ export const useCadastros = () => {
           .from('cadastros')
           .select('*')
           .eq('user_id', session.user.id)
-          .eq('status', 'ativo')
           .order('nome');
 
         if (error) {
@@ -38,7 +37,7 @@ export const useCadastros = () => {
   };
 
   // Mutation para criar/atualizar cadastro
-  const useCadastrosCreate = () => {
+  const useCadastrosCreateHook = () => {
     return useMutation({
       mutationFn: async (data: any) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
@@ -81,26 +80,30 @@ export const useCadastros = () => {
           return result;
         } else {
           // Criação
+          const insertData = {
+            data: data.data,
+            tipo: data.tipo,
+            pessoa: data.pessoa,
+            nome: data.nome,
+            documento: data.documento,
+            endereco: data.endereco || null,
+            numero: data.numero || null,
+            cidade: data.cidade || null,
+            estado: data.estado || null,
+            email: data.email || null,
+            telefone: data.telefone || null,
+            observacoes: data.observacoes || null,
+            anexo_url: data.anexo_url || null,
+            salario: data.salario || null,
+            status: data.status || 'ativo',
+            user_id: session.user.id,
+          };
+
+          console.log('useCadastros - Insert data:', insertData);
+
           const { data: result, error } = await supabase
             .from('cadastros')
-            .insert({
-              data: data.data,
-              tipo: data.tipo,
-              pessoa: data.pessoa,
-              nome: data.nome,
-              documento: data.documento,
-              endereco: data.endereco,
-              numero: data.numero,
-              cidade: data.cidade,
-              estado: data.estado,
-              email: data.email,
-              telefone: data.telefone,
-              observacoes: data.observacoes,
-              anexo_url: data.anexo_url,
-              salario: data.salario,
-              status: data.status || 'ativo',
-              user_id: session.user.id,
-            })
+            .insert(insertData)
             .select()
             .single();
 
@@ -132,7 +135,7 @@ export const useCadastros = () => {
   };
 
   // Mutation para deletar cadastro
-  const useCadastrosDelete = () => {
+  const useCadastrosDeleteHook = () => {
     return useMutation({
       mutationFn: async (id: string) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
@@ -172,8 +175,8 @@ export const useCadastros = () => {
   };
 
   return {
-    useQuery: useCadastrosQuery,
-    useCreate: useCadastrosCreate,
-    useDelete: useCadastrosDelete,
+    useQuery: useCadastrosQueryHook,
+    useCreate: useCadastrosCreateHook,
+    useDelete: useCadastrosDeleteHook,
   };
 };

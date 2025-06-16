@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Contact, ContactFormData } from '@/types/contact';
@@ -44,28 +43,77 @@ export const useContactForm = (
     return formatPhone(value);
   };
 
+  const validateForm = () => {
+    if (!formData.nome.trim()) {
+      toast({
+        title: "Erro de validação",
+        description: "Nome é obrigatório",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!formData.documento.trim()) {
+      toast({
+        title: "Erro de validação", 
+        description: "Documento é obrigatório",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    console.log('ContactForm - Starting submit process');
+    console.log('ContactForm - Session check:', session);
+    console.log('ContactForm - Form data:', formData);
     
     if (!session?.user?.id) {
       toast({
         title: "Erro de autenticação",
-        description: "Usuário não autenticado",
+        description: "Usuário não autenticado. Faça login novamente.",
         variant: "destructive",
       });
+      return;
+    }
+
+    if (!validateForm()) {
       return;
     }
 
     try {
       console.log('ContactForm - Submitting data:', formData);
       
-      const dataToSubmit = editingContact ? { ...formData, id: editingContact.id } : formData;
+      const dataToSubmit = editingContact 
+        ? { ...formData, id: editingContact.id } 
+        : { ...formData };
+      
+      console.log('ContactForm - Data to submit:', dataToSubmit);
+      
       await createCadastroMutation.mutateAsync(dataToSubmit);
+      
+      console.log('ContactForm - Mutation completed successfully');
+      
+      toast({
+        title: "Sucesso!",
+        description: editingContact 
+          ? "Cadastro atualizado com sucesso!" 
+          : "Cadastro realizado com sucesso!",
+      });
       
       resetForm();
       refetch();
     } catch (error: any) {
       console.error('ContactForm - Submit error:', error);
+      toast({
+        title: "Erro",
+        description: error?.message || "Erro ao salvar cadastro. Tente novamente.",
+        variant: "destructive",
+      });
     }
   };
 
