@@ -20,7 +20,6 @@ interface AuthContextType {
   session: Session | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  signup: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateUser: (userData: Partial<AuthUser>) => void;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
@@ -49,6 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const tenMinutes = 10 * 60 * 1000; // 10 minutos em milliseconds
 
       if (inactiveTime > tenMinutes && session) {
+        console.log('Auto-logout por inatividade');
         logout();
       }
     };
@@ -100,6 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Verificar sessão existente
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Sessão existente encontrada:', session);
       setSession(session);
       if (session?.user) {
         const authUser: AuthUser = {
@@ -123,52 +124,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
+      console.log('Iniciando login para:', email);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
-        console.error('Login error:', error);
+        console.error('Erro no login:', error);
         return false;
       }
 
+      console.log('Login bem-sucedido:', data);
       return !!data.user;
     } catch (error) {
-      console.error('Login error:', error);
-      return false;
-    }
-  };
-
-  const signup = async (email: string, password: string): Promise<boolean> => {
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`
-        }
-      });
-
-      if (error) {
-        console.error('Signup error:', error);
-        return false;
-      }
-
-      return !!data.user;
-    } catch (error) {
-      console.error('Signup error:', error);
+      console.error('Erro durante login:', error);
       return false;
     }
   };
 
   const logout = async () => {
     try {
+      console.log('Fazendo logout...');
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Erro no logout:', error);
     }
   };
 
@@ -186,13 +169,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (error) {
-        console.error('Password update error:', error);
+        console.error('Erro ao atualizar senha:', error);
         return false;
       }
 
       return true;
     } catch (error) {
-      console.error('Password update error:', error);
+      console.error('Erro ao atualizar senha:', error);
       return false;
     }
   };
@@ -202,7 +185,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     session,
     isAuthenticated: !!session,
     login,
-    signup,
     logout,
     updateUser,
     updatePassword
