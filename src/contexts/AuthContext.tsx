@@ -71,6 +71,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [session, lastActivity]);
 
+  const createAuthUserFromSession = (session: Session): AuthUser => {
+    const userData = session.user.user_metadata || {};
+    return {
+      id: session.user.id,
+      email: session.user.email || '',
+      name: userData.name || session.user.email?.split('@')[0] || '',
+      registrationDate: session.user.created_at || '',
+      address: userData.address || '',
+      number: userData.number || '',
+      neighborhood: userData.neighborhood || '',
+      city: userData.city || '',
+      state: userData.state || ''
+    };
+  };
+
   useEffect(() => {
     // Configurar listener de mudanças de autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -79,17 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(session);
         
         if (session?.user) {
-          const authUser: AuthUser = {
-            id: session.user.id,
-            email: session.user.email || '',
-            name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || '',
-            registrationDate: session.user.created_at || '',
-            address: '',
-            number: '',
-            neighborhood: '',
-            city: '',
-            state: ''
-          };
+          const authUser = createAuthUserFromSession(session);
           setUser(authUser);
           setLastActivity(Date.now());
         } else {
@@ -103,17 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('Sessão existente encontrada:', session);
       setSession(session);
       if (session?.user) {
-        const authUser: AuthUser = {
-          id: session.user.id,
-          email: session.user.email || '',
-          name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || '',
-          registrationDate: session.user.created_at || '',
-          address: '',
-          number: '',
-          neighborhood: '',
-          city: '',
-          state: ''
-        };
+        const authUser = createAuthUserFromSession(session);
         setUser(authUser);
         setLastActivity(Date.now());
       }
@@ -159,6 +154,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (user) {
       const updatedUser = { ...user, ...userData };
       setUser(updatedUser);
+      console.log('AuthContext - User updated:', updatedUser);
     }
   };
 

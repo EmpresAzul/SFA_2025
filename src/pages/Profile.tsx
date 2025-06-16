@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,12 +15,12 @@ const Profile: React.FC = () => {
   const { toast } = useToast();
   
   const [formData, setFormData] = useState({
-    name: user?.name || '',
-    address: user?.address || '',
-    number: user?.number || '',
-    neighborhood: user?.neighborhood || '',
-    city: user?.city || '',
-    state: user?.state || ''
+    name: '',
+    address: '',
+    number: '',
+    neighborhood: '',
+    city: '',
+    state: ''
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -31,8 +31,23 @@ const Profile: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
 
+  // Atualiza o formulário quando o usuário muda
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || '',
+        address: user.address || '',
+        number: user.number || '',
+        neighborhood: user.neighborhood || '',
+        city: user.city || '',
+        state: user.state || ''
+      });
+    }
+  }, [user]);
+
   console.log('Profile - User:', user);
   console.log('Profile - Session:', session);
+  console.log('Profile - Form Data:', formData);
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +67,7 @@ const Profile: React.FC = () => {
       console.log('Profile - Updating user metadata:', formData);
       
       // Atualizar metadados do usuário no Supabase Auth
-      const { error: updateError } = await supabase.auth.updateUser({
+      const { data, error: updateError } = await supabase.auth.updateUser({
         data: {
           name: formData.name,
           address: formData.address,
@@ -68,7 +83,9 @@ const Profile: React.FC = () => {
         throw updateError;
       }
 
-      // Atualizar estado local
+      console.log('Profile - User metadata updated successfully:', data);
+
+      // Atualizar estado local imediatamente
       updateUser(formData);
       
       toast({

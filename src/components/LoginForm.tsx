@@ -68,10 +68,6 @@ const LoginForm: React.FC = () => {
           <Logo size="lg" />
           
           <div className="w-full">
-            <h2 className="text-2xl font-bold text-center text-fluxo-black-800 mb-6">
-              Entrar no Sistema
-            </h2>
-
             <form onSubmit={handleLogin} className="w-full space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-fluxo-black-800 font-medium">
