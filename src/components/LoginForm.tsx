@@ -15,7 +15,7 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login, user } = useAuth();
+  const { login, user, logout } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -25,6 +25,25 @@ const LoginForm: React.FC = () => {
       navigate('/dashboard');
     }
   }, [user, navigate]);
+
+  // Fazer logout sempre que acessar a página de login
+  useEffect(() => {
+    const handleLogout = async () => {
+      try {
+        await logout();
+        toast({
+          title: "Logout realizado com êxito!",
+          description: "Você foi desconectado do sistema com segurança.",
+        });
+      } catch (error) {
+        console.error('Erro no logout:', error);
+      }
+    };
+
+    if (user) {
+      handleLogout();
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,14 +57,14 @@ const LoginForm: React.FC = () => {
       
       if (success) {
         toast({
-          title: "Login realizado com sucesso!",
-          description: "Bem-vindo ao FluxoAzul",
+          title: "Login realizado com êxito!",
+          description: "Bem-vindo ao FluxoAzul! Você foi autenticado com sucesso.",
         });
         navigate('/dashboard');
       } else {
         toast({
           title: "Erro no login",
-          description: "E-mail ou senha incorretos",
+          description: "E-mail ou senha incorretos. Verifique suas credenciais.",
           variant: "destructive",
         });
       }
@@ -53,7 +72,7 @@ const LoginForm: React.FC = () => {
       console.error('Erro durante o login:', error);
       toast({
         title: "Erro no login",
-        description: "Ocorreu um erro inesperado",
+        description: "Ocorreu um erro inesperado. Tente novamente.",
         variant: "destructive",
       });
     } finally {

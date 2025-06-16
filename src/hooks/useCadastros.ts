@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -82,7 +83,7 @@ export const useCadastros = () => {
           email: data.email?.trim() || null,
           telefone: data.telefone ? data.telefone.replace(/\D/g, '') : null,
           observacoes: data.observacoes?.trim() || null,
-          anexo_url: data.anexo_url?.trim() || null,
+          anexo_url: null, // Sempre null agora
           salario: data.salario && data.salario > 0 ? data.salario : null,
           status: data.status || 'ativo'
         };
@@ -105,18 +106,9 @@ export const useCadastros = () => {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['cadastros'] });
-        toast({
-          title: "Sucesso!",
-          description: "Cadastro criado com sucesso!",
-        });
       },
       onError: (error: any) => {
         console.error('useCadastros - Create mutation error:', error);
-        toast({
-          title: "Erro",
-          description: error?.message || "Erro ao criar cadastro. Tente novamente.",
-          variant: "destructive",
-        });
       },
     });
   };
@@ -162,7 +154,7 @@ export const useCadastros = () => {
           email: data.email?.trim() || null,
           telefone: data.telefone ? data.telefone.replace(/\D/g, '') : null,
           observacoes: data.observacoes?.trim() || null,
-          anexo_url: data.anexo_url?.trim() || null,
+          anexo_url: null, // Sempre null agora
           salario: data.salario && data.salario > 0 ? data.salario : null,
           status: data.status || 'ativo',
           updated_at: new Date().toISOString()
@@ -188,18 +180,9 @@ export const useCadastros = () => {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['cadastros'] });
-        toast({
-          title: "Sucesso!",
-          description: "Cadastro atualizado com sucesso!",
-        });
       },
       onError: (error: any) => {
         console.error('useCadastros - Update mutation error:', error);
-        toast({
-          title: "Erro",
-          description: error?.message || "Erro ao atualizar cadastro. Tente novamente.",
-          variant: "destructive",
-        });
       },
     });
   };
@@ -232,7 +215,7 @@ export const useCadastros = () => {
         queryClient.invalidateQueries({ queryKey: ['cadastros'] });
         toast({
           title: "Sucesso!",
-          description: "Cadastro excluído com sucesso",
+          description: "Cadastro excluído com êxito do sistema",
         });
       },
       onError: (error: any) => {

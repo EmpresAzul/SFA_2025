@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Contact, ContactFormData } from '@/types/contact';
@@ -10,7 +11,7 @@ export const useContactForm = (
   session: any
 ) => {
   const { toast } = useToast();
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true); // Sempre mostrar formulário
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [viewingContact, setViewingContact] = useState<Contact | null>(null);
 
@@ -122,7 +123,7 @@ export const useContactForm = (
         email: formData.email || null,
         telefone: formData.telefone || null,
         observacoes: formData.observacoes || null,
-        anexo_url: formData.anexo_url || null,
+        anexo_url: null, // Sempre null agora
         salario: formData.salario || null,
         status: formData.status || 'ativo',
         ...(editingContact ? { id: editingContact.id } : {})
@@ -133,9 +134,17 @@ export const useContactForm = (
       if (editingContact) {
         console.log('ContactForm - Updating existing contact');
         await updateCadastroMutation.mutateAsync(dataToSubmit);
+        toast({
+          title: "Sucesso!",
+          description: `${formData.tipo} atualizado com êxito! Os dados foram salvos no sistema.`,
+        });
       } else {
         console.log('ContactForm - Creating new contact');
         await createCadastroMutation.mutateAsync(dataToSubmit);
+        toast({
+          title: "Parabéns!",
+          description: `${formData.tipo} cadastrado com êxito! Todos os dados foram salvos no sistema.`,
+        });
       }
       
       console.log('ContactForm - Mutation completed successfully');
@@ -167,7 +176,7 @@ export const useContactForm = (
       email: contact.email || '',
       telefone: contact.telefone || '',
       observacoes: contact.observacoes || '',
-      anexo_url: contact.anexo_url || '',
+      anexo_url: '',
       salario: contact.salario || 0,
       status: contact.status
     });
@@ -179,7 +188,6 @@ export const useContactForm = (
   const handleView = (contact: Contact) => {
     setViewingContact(viewingContact?.id === contact.id ? null : contact);
     setEditingContact(null);
-    setShowForm(false);
   };
 
   const resetForm = () => {
@@ -200,7 +208,7 @@ export const useContactForm = (
       salario: 0,
       status: 'ativo'
     });
-    setShowForm(false);
+    setShowForm(true); // Manter formulário sempre visível
     setEditingContact(null);
     setViewingContact(null);
   };

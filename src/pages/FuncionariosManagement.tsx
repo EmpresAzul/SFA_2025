@@ -1,7 +1,5 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import { useContactData } from '@/hooks/useContactData';
 import { useContactForm } from '@/hooks/useContactForm';
 import { useContactFilters } from '@/hooks/useContactFilters';
@@ -54,6 +52,11 @@ const FuncionariosManagement: React.FC = () => {
     resetForm
   } = useContactForm(createCadastroMutation, updateCadastroMutation, refetch, session);
 
+  // Sempre definir tipo como Funcionário
+  React.useEffect(() => {
+    setFormData(prev => ({ ...prev, tipo: 'Funcionário' }));
+  }, [setFormData]);
+
   // Verificar se o usuário está autenticado
   if (!session?.user?.id) {
     return (
@@ -102,11 +105,6 @@ const FuncionariosManagement: React.FC = () => {
     }
   };
 
-  const handleNewEmployee = () => {
-    setFormData(prev => ({ ...prev, tipo: 'Funcionário' }));
-    setShowForm(true);
-  };
-
   // Mostrar erros de carregamento se houver
   if (error) {
     console.error('FuncionariosManagement - Error loading contacts:', error);
@@ -115,24 +113,27 @@ const FuncionariosManagement: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Cabeçalho */}
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold gradient-fluxo-text mb-2">
-            Cadastro de Funcionários
-          </h1>
-          <p className="text-gray-600">
-            Gerencie seus funcionários
-          </p>
-        </div>
-        
-        <Button
-          onClick={handleNewEmployee}
-          className="gradient-fluxo hover:gradient-fluxo-light text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          <Plus className="mr-2 h-5 w-5" />
-          Novo Funcionário
-        </Button>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold gradient-fluxo-text mb-2">
+          Cadastro de Funcionários
+        </h1>
+        <p className="text-gray-600">
+          Gerencie seus funcionários com facilidade
+        </p>
       </div>
+
+      {/* Formulário Enhanced - Sempre visível */}
+      <ContactEnhancedForm
+        formData={formData}
+        setFormData={setFormData}
+        editingContact={editingContact}
+        formatDocument={formatDocument}
+        formatTelefone={formatTelefone}
+        handleSubmit={handleSubmit}
+        resetForm={resetForm}
+        isLoading={createCadastroMutation.isPending || updateCadastroMutation.isPending}
+        fixedType="Funcionário"
+      />
 
       {/* Quadrantes de Estatísticas Coloridos */}
       <ContactStatsCards contacts={funcionariosContacts} />
@@ -149,21 +150,6 @@ const FuncionariosManagement: React.FC = () => {
         setEndDate={setEndDate}
         hideTypeFilter={true}
       />
-
-      {/* Formulário Enhanced */}
-      {showForm && (
-        <ContactEnhancedForm
-          formData={formData}
-          setFormData={setFormData}
-          editingContact={editingContact}
-          formatDocument={formatDocument}
-          formatTelefone={formatTelefone}
-          handleSubmit={handleSubmit}
-          resetForm={resetForm}
-          isLoading={createCadastroMutation.isPending || updateCadastroMutation.isPending}
-          fixedType="Funcionário"
-        />
-      )}
 
       {/* Lista de Contatos */}
       <ContactList
