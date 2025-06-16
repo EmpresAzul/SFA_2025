@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Contact, ContactFormData } from '@/types/contact';
@@ -12,6 +13,7 @@ export const useContactForm = (
   const [showForm, setShowForm] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [viewingContact, setViewingContact] = useState<Contact | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState<ContactFormData>({
     data: new Date().toISOString().split('T')[0],
@@ -73,10 +75,6 @@ export const useContactForm = (
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log('ContactForm - Starting submit process');
-    console.log('ContactForm - Session check:', session);
-    console.log('ContactForm - Form data:', formData);
-    
     if (!session?.user?.id) {
       toast({
         title: "Erro de autenticação",
@@ -90,34 +88,60 @@ export const useContactForm = (
       return;
     }
 
+    setLoading(true);
+
     try {
       console.log('ContactForm - Submitting data:', formData);
       
-      // Preparar dados para envio, garantindo que user_id seja incluído
+      // Normalizar o tipo para evitar problemas de consistência
+      let tipoNormalizado = formData.tipo;
+      if (formData.tipo === 'Funcionário') {
+        tipoNormalizado = 'Funcionario';
+      }
+      
+      // Preparar dados seguindo o mesmo padrão do EstoqueForm
       const dataToSubmit = {
-        ...formData,
         user_id: session.user.id,
+        data: formData.data,
+        tipo: tipoNormalizado,
+        pessoa: formData.pessoa,
+        nome: formData.nome.trim(),
+        documento: formData.documento?.replace(/\D/g, '') || null,
+        endereco: formData.endereco?.trim() || null,
+        numero: formData.numero?.trim() || null,
+        cidade: formData.cidade?.trim() || null,
+        estado: formData.estado?.trim().toUpperCase() || null,
+        email: formData.email?.trim() || null,
+        telefone: formData.telefone?.replace(/\D/g, '') || null,
+        observacoes: formData.observacoes?.trim() || null,
+        anexo_url: formData.anexo_url?.trim() || null,
+        salario: formData.salario && formData.salario > 0 ? formData.salario : null,
+        status: formData.status || 'ativo',
         ...(editingContact ? { id: editingContact.id } : {})
       };
       
-      console.log('ContactForm - Data to submit:', dataToSubmit);
+      console.log('ContactForm - Final data to submit:', dataToSubmit);
       
       await createCadastroMutation.mutateAsync(dataToSubmit);
       
       console.log('ContactForm - Mutation completed successfully');
       
+      toast({
+        title: "Sucesso!",
+        description: editingContact ? "Cadastro atualizado com sucesso!" : "Cadastro criado com sucesso!",
+      });
+      
       resetForm();
       refetch();
     } catch (error: any) {
       console.error('ContactForm - Submit error:', error);
-      // O erro já é tratado na mutation, mas vamos garantir que apareça aqui também
-      if (!error.message?.includes('Erro ao')) {
-        toast({
-          title: "Erro",
-          description: "Erro inesperado ao salvar cadastro. Tente novamente.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Erro",
+        description: error?.message || "Erro ao salvar cadastro. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -179,6 +203,7 @@ export const useContactForm = (
     setShowForm(false);
     setEditingContact(null);
     setViewingContact(null);
+    setLoading(false);
   };
 
   return {
@@ -188,6 +213,7 @@ export const useContactForm = (
     setShowForm,
     editingContact,
     viewingContact,
+    loading,
     formatDocument,
     formatTelefone,
     handleSubmit,
