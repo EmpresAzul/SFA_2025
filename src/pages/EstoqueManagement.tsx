@@ -9,7 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Package, TrendingUp, DollarSign, BarChart3 } from 'lucide-react';
+import { Search, Package, TrendingUp, DollarSign, BarChart3, Eye, Pencil, ToggleLeft, ToggleRight, Trash2 } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
@@ -38,6 +40,8 @@ const EstoqueManagement: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('todos');
+  const [selectedEstoque, setSelectedEstoque] = useState<Estoque | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -113,26 +117,53 @@ const EstoqueManagement: React.FC = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase
-        .from('estoques')
-        .insert([{
-          user_id: user?.id,
-          data: formData.data,
-          nome_produto: formData.nome_produto,
-          unidade_medida: formData.unidade_medida,
-          quantidade: parseFloat(formData.quantidade),
-          valor_unitario: parseFloat(formData.valor_unitario),
-          valor_total: parseFloat(formData.valor_total),
-          quantidade_bruta: parseFloat(formData.quantidade_bruta),
-          quantidade_liquida: parseFloat(formData.quantidade_liquida)
-        }]);
+      if (isEditMode && selectedEstoque) {
+        // Atualizar estoque existente
+        const { error } = await supabase
+          .from('estoques')
+          .update({
+            data: formData.data,
+            nome_produto: formData.nome_produto,
+            unidade_medida: formData.unidade_medida,
+            quantidade: parseFloat(formData.quantidade),
+            valor_unitario: parseFloat(formData.valor_unitario),
+            valor_total: parseFloat(formData.valor_total),
+            quantidade_bruta: parseFloat(formData.quantidade_bruta),
+            quantidade_liquida: parseFloat(formData.quantidade_liquida),
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', selectedEstoque.id)
+          .eq('user_id', user?.id);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      toast({
-        title: "Estoque cadastrado com sucesso!",
-        description: "O item foi adicionado ao estoque.",
-      });
+        toast({
+          title: "Estoque atualizado com sucesso!",
+          description: "As alterações foram salvas.",
+        });
+      } else {
+        // Criar novo estoque
+        const { error } = await supabase
+          .from('estoques')
+          .insert([{
+            user_id: user?.id,
+            data: formData.data,
+            nome_produto: formData.nome_produto,
+            unidade_medida: formData.unidade_medida,
+            quantidade: parseFloat(formData.quantidade),
+            valor_unitario: parseFloat(formData.valor_unitario),
+            valor_total: parseFloat(formData.valor_total),
+            quantidade_bruta: parseFloat(formData.quantidade_bruta),
+            quantidade_liquida: parseFloat(formData.quantidade_liquida)
+          }]);
+
+        if (error) throw error;
+
+        toast({
+          title: "Estoque cadastrado com sucesso!",
+          description: "O item foi adicionado ao estoque.",
+        });
+      }
 
       setFormData({
         data: '',
@@ -144,16 +175,102 @@ const EstoqueManagement: React.FC = () => {
         quantidade_bruta: '',
         quantidade_liquida: ''
       });
+      setSelectedEstoque(null);
+      setIsEditMode(false);
       fetchEstoques();
     } catch (error: any) {
       toast({
-        title: "Erro ao cadastrar estoque",
+        title: "Erro ao salvar estoque",
         description: error.message,
         variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEdit = (estoque: Estoque) => {
+    setSelectedEstoque(estoque);
+    setFormData({
+      data: estoque.data,
+      nome_produto: estoque.nome_produto,
+      unidade_medida: estoque.unidade_medida,
+      quantidade: estoque.quantidade.toString(),
+      valor_unitario: estoque.valor_unitario.toString(),
+      valor_total: estoque.valor_total.toString(),
+      quantidade_bruta: estoque.quantidade_bruta.toString(),
+      quantidade_liquida: estoque.quantidade_liquida.toString()
+    });
+    setIsEditMode(true);
+  };
+
+  const handleToggleStatus = async (estoque: Estoque) => {
+    try {
+      const newStatus = estoque.status === 'ativo' ? 'inativo' : 'ativo';
+      const { error } = await supabase
+        .from('estoques')
+        .update({ 
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', estoque.id)
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Status atualizado!",
+        description: `Item ${newStatus === 'ativo' ? 'ativado' : 'desativado'} com sucesso.`,
+      });
+
+      fetchEstoques();
+    } catch (error: any) {
+      toast({
+        title: "Erro ao alterar status",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('estoques')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Item excluído!",
+        description: "O item foi removido do estoque.",
+      });
+
+      fetchEstoques();
+    } catch (error: any) {
+      toast({
+        title: "Erro ao excluir item",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      data: '',
+      nome_produto: '',
+      unidade_medida: '',
+      quantidade: '',
+      valor_unitario: '',
+      valor_total: '',
+      quantidade_bruta: '',
+      quantidade_liquida: ''
+    });
+    setSelectedEstoque(null);
+    setIsEditMode(false);
   };
 
   const getStatusBadge = (status: string) => {
@@ -173,113 +290,117 @@ const EstoqueManagement: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-8 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-fluxo-black-900">Gestão de Estoques</h1>
-          <p className="text-fluxo-black-600 mt-2">Controle completo do seu estoque</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Gestão de Estoques
+          </h1>
+          <p className="text-gray-600 mt-2 text-lg">Controle completo e inteligente do seu estoque</p>
         </div>
       </div>
 
-      {/* Painéis de Resumo */}
+      {/* Painéis de Resumo Melhorados */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+        <Card className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
           <CardContent className="p-6">
-            <div className="flex items-center">
-              <Package className="h-8 w-8 text-emerald-600" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-emerald-600">Total de Itens</p>
-                <p className="text-2xl font-bold text-emerald-900">{filteredEstoques.length}</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-emerald-100 font-medium">Total de Itens</p>
+                <p className="text-3xl font-bold">{filteredEstoques.length}</p>
               </div>
+              <Package className="h-12 w-12 text-emerald-200" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="bg-gradient-to-br from-blue-400 to-blue-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
           <CardContent className="p-6">
-            <div className="flex items-center">
-              <TrendingUp className="h-8 w-8 text-blue-600" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-blue-600">Quantidade Total</p>
-                <p className="text-2xl font-bold text-blue-900">{getTotalItems().toFixed(2)}</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-blue-100 font-medium">Quantidade Total</p>
+                <p className="text-3xl font-bold">{getTotalItems().toFixed(2)}</p>
               </div>
+              <TrendingUp className="h-12 w-12 text-blue-200" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+        <Card className="bg-gradient-to-br from-purple-400 to-purple-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
           <CardContent className="p-6">
-            <div className="flex items-center">
-              <DollarSign className="h-8 w-8 text-purple-600" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-purple-600">Valor Total</p>
-                <p className="text-2xl font-bold text-purple-900">R$ {getTotalValue().toFixed(2)}</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-purple-100 font-medium">Valor Total</p>
+                <p className="text-3xl font-bold">R$ {getTotalValue().toFixed(2)}</p>
               </div>
+              <DollarSign className="h-12 w-12 text-purple-200" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+        <Card className="bg-gradient-to-br from-orange-400 to-orange-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
           <CardContent className="p-6">
-            <div className="flex items-center">
-              <BarChart3 className="h-8 w-8 text-orange-600" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-orange-600">Valor Médio</p>
-                <p className="text-2xl font-bold text-orange-900">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-orange-100 font-medium">Valor Médio</p>
+                <p className="text-3xl font-bold">
                   R$ {filteredEstoques.length > 0 ? (getTotalValue() / filteredEstoques.length).toFixed(2) : '0.00'}
                 </p>
               </div>
+              <BarChart3 className="h-12 w-12 text-orange-200" />
             </div>
           </CardContent>
         </Card>
       </div>
 
       <Tabs defaultValue="lista" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-fluxo-blue-50 to-fluxo-blue-100">
+        <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-14">
           <TabsTrigger 
             value="lista" 
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-fluxo-blue-600 data-[state=active]:to-fluxo-blue-500 data-[state=active]:text-white font-semibold text-lg py-3 shadow-lg transition-all duration-300 hover:shadow-xl"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-lg py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
             📋 Lista de Estoques
           </TabsTrigger>
           <TabsTrigger 
             value="formulario"
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-fluxo-blue-600 data-[state=active]:to-fluxo-blue-500 data-[state=active]:text-white font-semibold text-lg py-3 shadow-lg transition-all duration-300 hover:shadow-xl"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-lg py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
-            ➕ Cadastrar Item
+            ➕ {isEditMode ? 'Editar Item' : 'Cadastrar Item'}
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="lista" className="space-y-4">
-          {/* Filtros */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Filtros</CardTitle>
+        <TabsContent value="lista" className="space-y-6 mt-8">
+          {/* Filtros Melhorados */}
+          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-t-lg">
+              <CardTitle className="text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                🔍 Filtros de Pesquisa
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <Label>Buscar Produto</Label>
+                  <Label className="text-gray-700 font-medium">Buscar Produto</Label>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <Input
                       placeholder="Digite o nome do produto..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
+                      className="pl-12 h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Status</Label>
+                  <Label className="text-gray-700 font-medium">Status</Label>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="todos">Todos</SelectItem>
-                      <SelectItem value="ativo">Ativo</SelectItem>
-                      <SelectItem value="inativo">Inativo</SelectItem>
+                      <SelectItem value="todos">Todos os Status</SelectItem>
+                      <SelectItem value="ativo">✅ Ativo</SelectItem>
+                      <SelectItem value="inativo">❌ Inativo</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -287,80 +408,211 @@ const EstoqueManagement: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Tabela */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Itens do Estoque ({filteredEstoques.length})</CardTitle>
+          {/* Tabela Melhorada */}
+          <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-t-lg">
+              <CardTitle className="text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                📦 Itens do Estoque ({filteredEstoques.length})
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Data</TableHead>
-                    <TableHead>Produto</TableHead>
-                    <TableHead>Unidade</TableHead>
-                    <TableHead>Quantidade</TableHead>
-                    <TableHead>Valor Unitário</TableHead>
-                    <TableHead>Valor Total</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredEstoques.map((estoque) => (
-                    <TableRow key={estoque.id}>
-                      <TableCell>{format(new Date(estoque.data), 'dd/MM/yyyy')}</TableCell>
-                      <TableCell className="font-medium">{estoque.nome_produto}</TableCell>
-                      <TableCell>{estoque.unidade_medida}</TableCell>
-                      <TableCell>{estoque.quantidade}</TableCell>
-                      <TableCell>R$ {estoque.valor_unitario.toFixed(2)}</TableCell>
-                      <TableCell>R$ {estoque.valor_total.toFixed(2)}</TableCell>
-                      <TableCell>
-                        <Badge className={getStatusBadge(estoque.status)}>
-                          {estoque.status}
-                        </Badge>
-                      </TableCell>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gradient-to-r from-gray-50 to-blue-50 hover:bg-gray-100">
+                      <TableHead className="font-semibold text-gray-700">Data</TableHead>
+                      <TableHead className="font-semibold text-gray-700">Produto</TableHead>
+                      <TableHead className="font-semibold text-gray-700">Unidade</TableHead>
+                      <TableHead className="font-semibold text-gray-700">Quantidade</TableHead>
+                      <TableHead className="font-semibold text-gray-700">Valor Unitário</TableHead>
+                      <TableHead className="font-semibold text-gray-700">Valor Total</TableHead>
+                      <TableHead className="font-semibold text-gray-700">Status</TableHead>
+                      <TableHead className="font-semibold text-gray-700 text-center">Ações</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredEstoques.map((estoque) => (
+                      <TableRow key={estoque.id} className="hover:bg-blue-50 transition-colors duration-200">
+                        <TableCell className="font-medium">{format(new Date(estoque.data), 'dd/MM/yyyy')}</TableCell>
+                        <TableCell className="font-semibold text-gray-800">{estoque.nome_produto}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                            {estoque.unidade_medida}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="font-medium">{estoque.quantidade}</TableCell>
+                        <TableCell className="text-green-600 font-semibold">R$ {estoque.valor_unitario.toFixed(2)}</TableCell>
+                        <TableCell className="text-green-700 font-bold">R$ {estoque.valor_total.toFixed(2)}</TableCell>
+                        <TableCell>
+                          <Badge className={getStatusBadge(estoque.status)}>
+                            {estoque.status === 'ativo' ? '✅ Ativo' : '❌ Inativo'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-center space-x-2">
+                            {/* Botão Visualizar */}
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-8 w-8 p-0 hover:bg-blue-50 hover:border-blue-300"
+                                  onClick={() => setSelectedEstoque(estoque)}
+                                >
+                                  <Eye className="h-4 w-4 text-blue-600" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-md">
+                                <DialogHeader>
+                                  <DialogTitle className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                    📦 Detalhes do Item
+                                  </DialogTitle>
+                                </DialogHeader>
+                                {selectedEstoque && (
+                                  <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4 text-sm">
+                                      <div>
+                                        <p className="font-medium text-gray-600">Produto:</p>
+                                        <p className="font-semibold">{selectedEstoque.nome_produto}</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-medium text-gray-600">Data:</p>
+                                        <p>{format(new Date(selectedEstoque.data), 'dd/MM/yyyy')}</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-medium text-gray-600">Quantidade:</p>
+                                        <p>{selectedEstoque.quantidade} {selectedEstoque.unidade_medida}</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-medium text-gray-600">Valor Unit.:</p>
+                                        <p className="text-green-600 font-semibold">R$ {selectedEstoque.valor_unitario.toFixed(2)}</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-medium text-gray-600">Quantidade Bruta:</p>
+                                        <p>{selectedEstoque.quantidade_bruta}</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-medium text-gray-600">Quantidade Líquida:</p>
+                                        <p>{selectedEstoque.quantidade_liquida}</p>
+                                      </div>
+                                      <div className="col-span-2">
+                                        <p className="font-medium text-gray-600">Valor Total:</p>
+                                        <p className="text-green-700 font-bold text-lg">R$ {selectedEstoque.valor_total.toFixed(2)}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </DialogContent>
+                            </Dialog>
+
+                            {/* Botão Editar */}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 w-8 p-0 hover:bg-yellow-50 hover:border-yellow-300"
+                              onClick={() => {
+                                handleEdit(estoque);
+                                // Switch to form tab
+                                const tabTrigger = document.querySelector('[value="formulario"]') as HTMLElement;
+                                if (tabTrigger) tabTrigger.click();
+                              }}
+                            >
+                              <Pencil className="h-4 w-4 text-yellow-600" />
+                            </Button>
+
+                            {/* Botão Ativar/Desativar */}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 w-8 p-0 hover:bg-purple-50 hover:border-purple-300"
+                              onClick={() => handleToggleStatus(estoque)}
+                            >
+                              {estoque.status === 'ativo' ? (
+                                <ToggleRight className="h-4 w-4 text-green-600" />
+                              ) : (
+                                <ToggleLeft className="h-4 w-4 text-gray-400" />
+                              )}
+                            </Button>
+
+                            {/* Botão Excluir */}
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-8 w-8 p-0 hover:bg-red-50 hover:border-red-300"
+                                >
+                                  <Trash2 className="h-4 w-4 text-red-600" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Tem certeza de que deseja excluir permanentemente o item "{estoque.nome_produto}"? 
+                                    Esta ação não pode ser desfeita.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDelete(estoque.id)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    Excluir
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="formulario">
-          <Card>
-            <CardHeader>
-              <CardTitle>Cadastrar Novo Item</CardTitle>
+        <TabsContent value="formulario" className="mt-8">
+          <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-t-lg">
+              <CardTitle className="text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {isEditMode ? '✏️ Editar Item do Estoque' : '➕ Cadastrar Novo Item'}
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <CardContent className="p-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="data">Data</Label>
+                    <Label htmlFor="data" className="text-gray-700 font-medium">Data</Label>
                     <Input
                       id="data"
                       type="date"
                       value={formData.data}
                       onChange={(e) => setFormData({ ...formData, data: e.target.value })}
                       required
+                      className="h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg"
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="nome_produto">Nome do Produto</Label>
+                    <Label htmlFor="nome_produto" className="text-gray-700 font-medium">Nome do Produto</Label>
                     <Input
                       id="nome_produto"
                       value={formData.nome_produto}
                       onChange={(e) => setFormData({ ...formData, nome_produto: e.target.value })}
                       placeholder="Digite o nome do produto"
                       required
+                      className="h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="unidade_medida">Unidade de Medida</Label>
+                    <Label htmlFor="unidade_medida" className="text-gray-700 font-medium">Unidade de Medida</Label>
                     <Select value={formData.unidade_medida} onValueChange={(value) => setFormData({ ...formData, unidade_medida: value })}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg">
                         <SelectValue placeholder="Selecione a unidade" />
                       </SelectTrigger>
                       <SelectContent>
@@ -372,7 +624,7 @@ const EstoqueManagement: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="quantidade">Quantidade</Label>
+                    <Label htmlFor="quantidade" className="text-gray-700 font-medium">Quantidade</Label>
                     <Input
                       id="quantidade"
                       type="number"
@@ -381,11 +633,12 @@ const EstoqueManagement: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, quantidade: e.target.value })}
                       placeholder="0.00"
                       required
+                      className="h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="valor_unitario">Valor Unitário (R$)</Label>
+                    <Label htmlFor="valor_unitario" className="text-gray-700 font-medium">Valor Unitário (R$)</Label>
                     <Input
                       id="valor_unitario"
                       type="number"
@@ -394,23 +647,24 @@ const EstoqueManagement: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, valor_unitario: e.target.value })}
                       placeholder="0.00"
                       required
+                      className="h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="valor_total">Valor Total (R$)</Label>
+                    <Label htmlFor="valor_total" className="text-gray-700 font-medium">Valor Total (R$)</Label>
                     <Input
                       id="valor_total"
                       type="number"
                       step="0.01"
                       value={formData.valor_total}
                       readOnly
-                      className="bg-gray-50"
+                      className="h-12 bg-green-50 border-2 border-green-200 rounded-lg font-semibold text-green-700"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="quantidade_bruta">Quantidade Bruta</Label>
+                    <Label htmlFor="quantidade_bruta" className="text-gray-700 font-medium">Quantidade Bruta</Label>
                     <Input
                       id="quantidade_bruta"
                       type="number"
@@ -419,11 +673,12 @@ const EstoqueManagement: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, quantidade_bruta: e.target.value })}
                       placeholder="0.00"
                       required
+                      className="h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="quantidade_liquida">Quantidade Líquida</Label>
+                    <Label htmlFor="quantidade_liquida" className="text-gray-700 font-medium">Quantidade Líquida</Label>
                     <Input
                       id="quantidade_liquida"
                       type="number"
@@ -432,17 +687,31 @@ const EstoqueManagement: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, quantidade_liquida: e.target.value })}
                       placeholder="0.00"
                       required
+                      className="h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg"
                     />
                   </div>
                 </div>
 
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
-                >
-                  {loading ? "Cadastrando..." : "Cadastrar Item"}
-                </Button>
+                <div className="flex gap-4 pt-4">
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    {loading ? "Salvando..." : isEditMode ? "Atualizar Item" : "Cadastrar Item"}
+                  </Button>
+                  
+                  {isEditMode && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={resetForm}
+                      className="h-12 px-6 border-2 border-gray-300 hover:bg-gray-50 rounded-lg font-semibold"
+                    >
+                      Cancelar
+                    </Button>
+                  )}
+                </div>
               </form>
             </CardContent>
           </Card>

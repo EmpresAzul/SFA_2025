@@ -340,16 +340,6 @@ const Profile: React.FC = () => {
                 />
               </div>
 
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-medium text-fluxo-blue-900 mb-2">Requisitos da senha:</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Mínimo de 8 caracteres</li>
-                  <li>• Pelo menos uma letra maiúscula</li>
-                  <li>• Pelo menos um número</li>
-                  <li>• Pelo menos um caractere especial</li>
-                </ul>
-              </div>
-
               <Button
                 type="submit"
                 disabled={loading}
