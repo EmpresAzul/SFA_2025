@@ -1,5 +1,5 @@
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery as useReactQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -23,15 +23,15 @@ export const useLancamentos = () => {
   const queryClient = useQueryClient();
 
   const useQuery = () => {
-    return useQuery({
+    return useReactQuery({
       queryKey: ['lancamentos'],
       queryFn: async () => {
         const { data, error } = await supabase
           .from('lancamentos')
           .select(`
             *,
-            cliente:cliente_id(nome),
-            fornecedor:fornecedor_id(nome)
+            cliente:cadastros!cliente_id(nome),
+            fornecedor:cadastros!fornecedor_id(nome)
           `)
           .order('data', { ascending: false });
 
@@ -41,8 +41,8 @@ export const useLancamentos = () => {
         }
 
         return data as (Lancamento & {
-          cliente?: { nome: string };
-          fornecedor?: { nome: string };
+          cliente?: { nome: string } | null;
+          fornecedor?: { nome: string } | null;
         })[];
       },
     });

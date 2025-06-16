@@ -1,5 +1,5 @@
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery as useReactQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -31,7 +31,7 @@ export const useCadastros = () => {
   const queryClient = useQueryClient();
 
   const useQuery = (tipo?: 'Cliente' | 'Fornecedor' | 'Funcionário') => {
-    return useQuery({
+    return useReactQuery({
       queryKey: ['cadastros', tipo],
       queryFn: async () => {
         let query = supabase
