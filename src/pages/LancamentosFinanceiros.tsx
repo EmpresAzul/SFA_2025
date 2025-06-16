@@ -1,190 +1,59 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
-import { useLancamentos, type Lancamento } from '@/hooks/useLancamentos';
-import { useCadastros } from '@/hooks/useCadastros';
 import LancamentosSummaryCards from '@/components/lancamentos/LancamentosSummaryCards';
 import LancamentosFilters from '@/components/lancamentos/LancamentosFilters';
 import LancamentosTable from '@/components/lancamentos/LancamentosTable';
 import LancamentosForm from '@/components/lancamentos/LancamentosForm';
-
-type LancamentoComRelacoes = Lancamento & {
-  cliente?: { nome: string } | null;
-  fornecedor?: { nome: string } | null;
-};
+import { useLancamentosPage } from '@/hooks/useLancamentosPage';
+import { useLancamentosForm } from '@/hooks/useLancamentosForm';
 
 const LancamentosFinanceiros: React.FC = () => {
-  const [filteredLancamentos, setFilteredLancamentos] = useState<LancamentoComRelacoes[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [tipoFilter, setTipoFilter] = useState('todos');
-  const [categoriaFilter, setCategoriaFilter] = useState('todas');
-  const [activeTab, setActiveTab] = useState('lista');
-  const [editingLancamento, setEditingLancamento] = useState<LancamentoComRelacoes | null>(null);
-  const { user } = useAuth();
-  const { toast } = useToast();
+  const {
+    filteredLancamentos,
+    loading,
+    setLoading,
+    searchTerm,
+    setSearchTerm,
+    tipoFilter,
+    setTipoFilter,
+    categoriaFilter,
+    setCategoriaFilter,
+    activeTab,
+    setActiveTab,
+    editingLancamento,
+    setEditingLancamento,
+    isLoading,
+    clientes,
+    fornecedores,
+    createLancamento,
+    updateLancamento,
+    handleEdit,
+    handleDelete,
+    handleNewLancamento,
+  } = useLancamentosPage();
 
-  const { useQuery: useLancamentosQuery, useCreate, useUpdate, useDelete } = useLancamentos();
-  const { data: lancamentos, isLoading } = useLancamentosQuery();
-  const createLancamento = useCreate();
-  const updateLancamento = useUpdate();
-  const deleteLancamento = useDelete();
+  const {
+    formData,
+    setFormData,
+    handleSubmit,
+    handleCancel,
+    loadFormData,
+  } = useLancamentosForm(
+    createLancamento,
+    updateLancamento,
+    editingLancamento,
+    setLoading,
+    setActiveTab,
+    setEditingLancamento
+  );
 
-  const { useQuery: useCadastrosQuery } = useCadastros();
-  const { data: clientes } = useCadastrosQuery('Cliente');
-  const { data: fornecedores } = useCadastrosQuery('Fornecedor');
-
-  const [formData, setFormData] = useState({
-    data: new Date().toISOString().split('T')[0],
-    tipo: 'receita' as 'receita' | 'despesa',
-    valor: '',
-    cliente_id: '',
-    fornecedor_id: '',
-    categoria: '',
-    observacoes: ''
-  });
-
+  // Load form data when editing
   useEffect(() => {
-    if (lancamentos) {
-      filterLancamentos();
+    if (editingLancamento) {
+      loadFormData(editingLancamento);
     }
-  }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
-
-  const filterLancamentos = () => {
-    if (!lancamentos) return;
-    
-    let filtered: LancamentoComRelacoes[] = [...lancamentos];
-
-    if (searchTerm) {
-      filtered = filtered.filter(lancamento =>
-        lancamento.categoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (lancamento.observacoes && lancamento.observacoes.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-
-    if (tipoFilter !== 'todos') {
-      filtered = filtered.filter(lancamento => lancamento.tipo === tipoFilter);
-    }
-
-    if (categoriaFilter !== 'todas') {
-      filtered = filtered.filter(lancamento => lancamento.categoria === categoriaFilter);
-    }
-
-    setFilteredLancamentos(filtered);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.tipo) {
-      toast({
-        title: "Erro",
-        description: "Por favor, selecione o tipo de lançamento.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.categoria) {
-      toast({
-        title: "Erro",
-        description: "Por favor, selecione a categoria.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.valor || parseFloat(formData.valor) <= 0) {
-      toast({
-        title: "Erro",
-        description: "Por favor, informe um valor válido.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const lancamentoData = {
-        data: formData.data,
-        tipo: formData.tipo,
-        categoria: formData.categoria,
-        valor: parseFloat(formData.valor),
-        cliente_id: formData.cliente_id || undefined,
-        fornecedor_id: formData.fornecedor_id || undefined,
-        observacoes: formData.observacoes.trim() || undefined,
-        user_id: user!.id,
-        status: 'ativo'
-      };
-
-      console.log('Dados do lançamento a serem salvos:', lancamentoData);
-
-      if (editingLancamento) {
-        await updateLancamento.mutateAsync({ id: editingLancamento.id, ...lancamentoData });
-        setEditingLancamento(null);
-      } else {
-        await createLancamento.mutateAsync(lancamentoData);
-      }
-
-      resetForm();
-      setActiveTab('lista');
-    } catch (error: any) {
-      console.error('Erro ao salvar lançamento:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      data: new Date().toISOString().split('T')[0],
-      tipo: 'receita',
-      valor: '',
-      cliente_id: '',
-      fornecedor_id: '',
-      categoria: '',
-      observacoes: ''
-    });
-    setEditingLancamento(null);
-  };
-
-  const handleEdit = (lancamento: LancamentoComRelacoes) => {
-    setFormData({
-      data: lancamento.data,
-      tipo: lancamento.tipo,
-      valor: lancamento.valor.toString(),
-      cliente_id: lancamento.cliente_id || '',
-      fornecedor_id: lancamento.fornecedor_id || '',
-      categoria: lancamento.categoria,
-      observacoes: lancamento.observacoes || ''
-    });
-    setEditingLancamento(lancamento);
-    setActiveTab('formulario');
-  };
-
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Tem certeza que deseja excluir este lançamento?')) {
-      try {
-        await deleteLancamento.mutateAsync(id);
-      } catch (error) {
-        console.error('Erro ao excluir lançamento:', error);
-      }
-    }
-  };
-
-  const handleCancel = () => {
-    resetForm();
-    setActiveTab('lista');
-  };
-
-  const handleNewLancamento = () => {
-    console.log('Clicando em Novo Lançamento');
-    resetForm();
-    setActiveTab('formulario');
-  };
+  }, [editingLancamento]);
 
   return (
     <div className="p-6 space-y-6">
