@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,8 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CurrencyInput } from '@/components/ui/currency-input';
 import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart, Package, Plus, Calculator } from 'lucide-react';
+import { formatCurrency } from '@/utils/formatters';
 
 const Precificacao: React.FC = () => {
   const { toast } = useToast();
@@ -17,21 +18,21 @@ const Precificacao: React.FC = () => {
   const [produtoData, setProdutoData] = useState({
     nome: '',
     categoria: '',
-    custoProduto: '',
-    custoOperacional: '',
-    margemLucro: '',
-    precoVenda: '',
+    custoProduto: 0,
+    custoOperacional: 0,
+    margemLucro: 0,
+    precoVenda: 0,
     descricao: ''
   });
 
   const [servicoData, setServicoData] = useState({
     nome: '',
     categoria: '',
-    custoHora: '',
-    tempoEstimado: '',
-    custoMaterial: '',
-    margemLucro: '',
-    precoVenda: '',
+    custoHora: 0,
+    tempoEstimado: 0,
+    custoMaterial: 0,
+    margemLucro: 0,
+    precoVenda: 0,
     descricao: ''
   });
 
@@ -58,26 +59,26 @@ const Precificacao: React.FC = () => {
   ];
 
   const calcularPrecoProduto = () => {
-    const custo = parseFloat(produtoData.custoProduto) || 0;
-    const operacional = parseFloat(produtoData.custoOperacional) || 0;
-    const margem = parseFloat(produtoData.margemLucro) || 0;
+    const custo = produtoData.custoProduto || 0;
+    const operacional = produtoData.custoOperacional || 0;
+    const margem = produtoData.margemLucro || 0;
     
     const custoTotal = custo + operacional;
     const precoCalculado = custoTotal * (1 + margem / 100);
     
-    setProdutoData({ ...produtoData, precoVenda: precoCalculado.toFixed(2) });
+    setProdutoData({ ...produtoData, precoVenda: precoCalculado });
   };
 
   const calcularPrecoServico = () => {
-    const custoHora = parseFloat(servicoData.custoHora) || 0;
-    const tempo = parseFloat(servicoData.tempoEstimado) || 0;
-    const material = parseFloat(servicoData.custoMaterial) || 0;
-    const margem = parseFloat(servicoData.margemLucro) || 0;
+    const custoHora = servicoData.custoHora || 0;
+    const tempo = servicoData.tempoEstimado || 0;
+    const material = servicoData.custoMaterial || 0;
+    const margem = servicoData.margemLucro || 0;
     
     const custoTotal = (custoHora * tempo) + material;
     const precoCalculado = custoTotal * (1 + margem / 100);
     
-    setServicoData({ ...servicoData, precoVenda: precoCalculado.toFixed(2) });
+    setServicoData({ ...servicoData, precoVenda: precoCalculado });
   };
 
   const handleSubmitProduto = async (e: React.FormEvent) => {
@@ -85,7 +86,6 @@ const Precificacao: React.FC = () => {
     setLoading(true);
 
     try {
-      // Aqui você pode adicionar a lógica para salvar no banco de dados
       toast({
         title: "Produto cadastrado com sucesso!",
         description: `Produto "${produtoData.nome}" foi cadastrado.`,
@@ -94,10 +94,10 @@ const Precificacao: React.FC = () => {
       setProdutoData({
         nome: '',
         categoria: '',
-        custoProduto: '',
-        custoOperacional: '',
-        margemLucro: '',
-        precoVenda: '',
+        custoProduto: 0,
+        custoOperacional: 0,
+        margemLucro: 0,
+        precoVenda: 0,
         descricao: ''
       });
     } catch (error: any) {
@@ -116,7 +116,6 @@ const Precificacao: React.FC = () => {
     setLoading(true);
 
     try {
-      // Aqui você pode adicionar a lógica para salvar no banco de dados
       toast({
         title: "Serviço cadastrado com sucesso!",
         description: `Serviço "${servicoData.nome}" foi cadastrado.`,
@@ -125,11 +124,11 @@ const Precificacao: React.FC = () => {
       setServicoData({
         nome: '',
         categoria: '',
-        custoHora: '',
-        tempoEstimado: '',
-        custoMaterial: '',
-        margemLucro: '',
-        precoVenda: '',
+        custoHora: 0,
+        tempoEstimado: 0,
+        custoMaterial: 0,
+        margemLucro: 0,
+        precoVenda: 0,
         descricao: ''
       });
     } catch (error: any) {
@@ -201,27 +200,21 @@ const Precificacao: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="custo-produto">Custo do Produto (R$) *</Label>
-                    <Input
+                    <Label htmlFor="custo-produto">Custo do Produto *</Label>
+                    <CurrencyInput
                       id="custo-produto"
-                      type="number"
-                      step="0.01"
                       value={produtoData.custoProduto}
-                      onChange={(e) => setProdutoData({ ...produtoData, custoProduto: e.target.value })}
-                      placeholder="0.00"
+                      onChange={(value) => setProdutoData({ ...produtoData, custoProduto: value })}
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="custo-operacional">Custo Operacional (R$) *</Label>
-                    <Input
+                    <Label htmlFor="custo-operacional">Custo Operacional *</Label>
+                    <CurrencyInput
                       id="custo-operacional"
-                      type="number"
-                      step="0.01"
                       value={produtoData.custoOperacional}
-                      onChange={(e) => setProdutoData({ ...produtoData, custoOperacional: e.target.value })}
-                      placeholder="0.00"
+                      onChange={(value) => setProdutoData({ ...produtoData, custoOperacional: value })}
                       required
                     />
                   </div>
@@ -234,7 +227,7 @@ const Precificacao: React.FC = () => {
                         type="number"
                         step="0.01"
                         value={produtoData.margemLucro}
-                        onChange={(e) => setProdutoData({ ...produtoData, margemLucro: e.target.value })}
+                        onChange={(e) => setProdutoData({ ...produtoData, margemLucro: parseFloat(e.target.value) || 0 })}
                         placeholder="0.00"
                         required
                       />
@@ -251,14 +244,11 @@ const Precificacao: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="preco-venda-produto">Preço de Venda (R$)</Label>
-                    <Input
+                    <Label htmlFor="preco-venda-produto">Preço de Venda</Label>
+                    <CurrencyInput
                       id="preco-venda-produto"
-                      type="number"
-                      step="0.01"
                       value={produtoData.precoVenda}
-                      onChange={(e) => setProdutoData({ ...produtoData, precoVenda: e.target.value })}
-                      placeholder="0.00"
+                      onChange={(value) => setProdutoData({ ...produtoData, precoVenda: value })}
                       className="bg-gray-50"
                     />
                   </div>
@@ -315,14 +305,11 @@ const Precificacao: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="custo-hora">Custo por Hora (R$) *</Label>
-                    <Input
+                    <Label htmlFor="custo-hora">Custo por Hora *</Label>
+                    <CurrencyInput
                       id="custo-hora"
-                      type="number"
-                      step="0.01"
                       value={servicoData.custoHora}
-                      onChange={(e) => setServicoData({ ...servicoData, custoHora: e.target.value })}
-                      placeholder="0.00"
+                      onChange={(value) => setServicoData({ ...servicoData, custoHora: value })}
                       required
                     />
                   </div>
@@ -334,21 +321,18 @@ const Precificacao: React.FC = () => {
                       type="number"
                       step="0.01"
                       value={servicoData.tempoEstimado}
-                      onChange={(e) => setServicoData({ ...servicoData, tempoEstimado: e.target.value })}
+                      onChange={(e) => setServicoData({ ...servicoData, tempoEstimado: parseFloat(e.target.value) || 0 })}
                       placeholder="0.00"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="custo-material">Custo de Material (R$)</Label>
-                    <Input
+                    <Label htmlFor="custo-material">Custo de Material</Label>
+                    <CurrencyInput
                       id="custo-material"
-                      type="number"
-                      step="0.01"
                       value={servicoData.custoMaterial}
-                      onChange={(e) => setServicoData({ ...servicoData, custoMaterial: e.target.value })}
-                      placeholder="0.00"
+                      onChange={(value) => setServicoData({ ...servicoData, custoMaterial: value })}
                     />
                   </div>
 
@@ -360,7 +344,7 @@ const Precificacao: React.FC = () => {
                         type="number"
                         step="0.01"
                         value={servicoData.margemLucro}
-                        onChange={(e) => setServicoData({ ...servicoData, margemLucro: e.target.value })}
+                        onChange={(e) => setServicoData({ ...servicoData, margemLucro: parseFloat(e.target.value) || 0 })}
                         placeholder="0.00"
                         required
                       />
@@ -377,14 +361,11 @@ const Precificacao: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="preco-venda-servico">Preço de Venda (R$)</Label>
-                    <Input
+                    <Label htmlFor="preco-venda-servico">Preço de Venda</Label>
+                    <CurrencyInput
                       id="preco-venda-servico"
-                      type="number"
-                      step="0.01"
                       value={servicoData.precoVenda}
-                      onChange={(e) => setServicoData({ ...servicoData, precoVenda: e.target.value })}
-                      placeholder="0.00"
+                      onChange={(value) => setServicoData({ ...servicoData, precoVenda: value })}
                       className="bg-gray-50"
                     />
                   </div>

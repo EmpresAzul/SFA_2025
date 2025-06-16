@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,11 +5,13 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { CurrencyInput } from '@/components/ui/currency-input';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Search, Banknote, TrendingUp } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
+import { formatCurrency } from '@/utils/formatters';
 
 interface SaldoBancario {
   id: string;
@@ -48,7 +49,7 @@ const SaldosBancarios: React.FC = () => {
   const [formData, setFormData] = useState({
     data: '',
     banco: '',
-    saldo: ''
+    saldo: 0
   });
 
   useEffect(() => {
@@ -110,7 +111,7 @@ const SaldosBancarios: React.FC = () => {
           user_id: user?.id,
           data: formData.data,
           banco: formData.banco,
-          saldo: parseFloat(formData.saldo)
+          saldo: formData.saldo
         }]);
 
       if (error) throw error;
@@ -123,7 +124,7 @@ const SaldosBancarios: React.FC = () => {
       setFormData({
         data: '',
         banco: '',
-        saldo: ''
+        saldo: 0
       });
       fetchSaldos();
     } catch (error: any) {
@@ -179,7 +180,7 @@ const SaldosBancarios: React.FC = () => {
               {Object.entries(saldosPorBanco).map(([banco, saldo]) => (
                 <div key={banco} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                   <span className="font-medium text-gray-700">{banco}</span>
-                  <span className="font-bold text-blue-600">R$ {saldo.toFixed(2)}</span>
+                  <span className="font-bold text-blue-600">{formatCurrency(saldo)}</span>
                 </div>
               ))}
             </div>
@@ -192,7 +193,7 @@ const SaldosBancarios: React.FC = () => {
               <TrendingUp className="h-8 w-8 text-blue-600" />
               <div className="ml-4">
                 <p className="text-sm font-medium text-blue-600">Saldo Total</p>
-                <p className="text-2xl font-bold text-blue-900">R$ {getSaldoTotal().toFixed(2)}</p>
+                <p className="text-2xl font-bold text-blue-900">{formatCurrency(getSaldoTotal())}</p>
               </div>
             </div>
           </CardContent>
@@ -233,14 +234,11 @@ const SaldosBancarios: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="saldo">Saldo (R$)</Label>
-                <Input
+                <Label htmlFor="saldo">Saldo</Label>
+                <CurrencyInput
                   id="saldo"
-                  type="number"
-                  step="0.01"
                   value={formData.saldo}
-                  onChange={(e) => setFormData({ ...formData, saldo: e.target.value })}
-                  placeholder="0.00"
+                  onChange={(value) => setFormData({ ...formData, saldo: value })}
                   required
                 />
               </div>
@@ -316,7 +314,7 @@ const SaldosBancarios: React.FC = () => {
                   <TableCell>{format(new Date(saldo.data), 'dd/MM/yyyy')}</TableCell>
                   <TableCell>{saldo.banco}</TableCell>
                   <TableCell className="font-semibold text-blue-600">
-                    R$ {saldo.saldo.toFixed(2)}
+                    {formatCurrency(saldo.saldo)}
                   </TableCell>
                   <TableCell>{format(new Date(saldo.created_at), 'dd/MM/yyyy HH:mm')}</TableCell>
                 </TableRow>
