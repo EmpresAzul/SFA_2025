@@ -50,8 +50,14 @@ export const useLancamentos = () => {
           const { data: result, error } = await supabase
             .from('lancamentos')
             .update({
-              ...data,
-              user_id: session.user.id,
+              data: data.data,
+              tipo: data.tipo,
+              categoria: data.categoria,
+              valor: data.valor,
+              cliente_id: data.cliente_id,
+              fornecedor_id: data.fornecedor_id,
+              observacoes: data.observacoes,
+              status: data.status,
               updated_at: new Date().toISOString()
             })
             .eq('id', data.id)
@@ -59,30 +65,27 @@ export const useLancamentos = () => {
             .select()
             .single();
 
-          if (error) {
-            console.error('useLancamentos - Error updating lancamento:', error);
-            throw error;
-          }
-          
-          console.log('useLancamentos - Updated lancamento:', result);
+          if (error) throw error;
           return result;
         } else {
           // Criação
           const { data: result, error } = await supabase
             .from('lancamentos')
             .insert({
-              ...data,
+              data: data.data,
+              tipo: data.tipo,
+              categoria: data.categoria,
+              valor: data.valor,
+              cliente_id: data.cliente_id,
+              fornecedor_id: data.fornecedor_id,
+              observacoes: data.observacoes,
+              status: data.status || 'ativo',
               user_id: session.user.id,
             })
             .select()
             .single();
 
-          if (error) {
-            console.error('useLancamentos - Error creating lancamento:', error);
-            throw error;
-          }
-          
-          console.log('useLancamentos - Created lancamento:', result);
+          if (error) throw error;
           return result;
         }
       },
@@ -94,7 +97,6 @@ export const useLancamentos = () => {
         });
       },
       onError: (error: any) => {
-        console.error('useLancamentos - Error with lancamento:', error);
         toast({
           title: "Erro",
           description: "Erro ao salvar lançamento: " + error.message,
@@ -110,20 +112,13 @@ export const useLancamentos = () => {
       mutationFn: async (id: string) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
-        console.log('useLancamentos - Deleting lancamento:', id);
-        
         const { error } = await supabase
           .from('lancamentos')
           .delete()
           .eq('id', id)
           .eq('user_id', session.user.id);
 
-        if (error) {
-          console.error('useLancamentos - Error deleting lancamento:', error);
-          throw error;
-        }
-        
-        console.log('useLancamentos - Deleted lancamento:', id);
+        if (error) throw error;
         return id;
       },
       onSuccess: () => {
@@ -134,7 +129,6 @@ export const useLancamentos = () => {
         });
       },
       onError: (error: any) => {
-        console.error('useLancamentos - Error deleting lancamento:', error);
         toast({
           title: "Erro",
           description: "Erro ao excluir lançamento: " + error.message,

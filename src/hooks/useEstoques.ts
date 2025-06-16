@@ -23,7 +23,7 @@ export const useEstoques = () => {
           .select('*')
           .eq('user_id', session.user.id)
           .eq('status', 'ativo')
-          .order('created_at', { ascending: false });
+          .order('nome_produto');
 
         if (error) {
           console.error('useEstoques - Error fetching estoques:', error);
@@ -50,8 +50,15 @@ export const useEstoques = () => {
           const { data: result, error } = await supabase
             .from('estoques')
             .update({
-              ...data,
-              user_id: session.user.id,
+              data: data.data,
+              nome_produto: data.nome_produto,
+              quantidade: data.quantidade,
+              valor_unitario: data.valor_unitario,
+              valor_total: data.valor_total,
+              quantidade_bruta: data.quantidade_bruta,
+              quantidade_liquida: data.quantidade_liquida,
+              unidade_medida: data.unidade_medida,
+              status: data.status,
               updated_at: new Date().toISOString()
             })
             .eq('id', data.id)
@@ -59,30 +66,28 @@ export const useEstoques = () => {
             .select()
             .single();
 
-          if (error) {
-            console.error('useEstoques - Error updating estoque:', error);
-            throw error;
-          }
-          
-          console.log('useEstoques - Updated estoque:', result);
+          if (error) throw error;
           return result;
         } else {
           // Criação
           const { data: result, error } = await supabase
             .from('estoques')
             .insert({
-              ...data,
+              data: data.data,
+              nome_produto: data.nome_produto,
+              quantidade: data.quantidade,
+              valor_unitario: data.valor_unitario,
+              valor_total: data.valor_total,
+              quantidade_bruta: data.quantidade_bruta,
+              quantidade_liquida: data.quantidade_liquida,
+              unidade_medida: data.unidade_medida,
+              status: data.status || 'ativo',
               user_id: session.user.id,
             })
             .select()
             .single();
 
-          if (error) {
-            console.error('useEstoques - Error creating estoque:', error);
-            throw error;
-          }
-          
-          console.log('useEstoques - Created estoque:', result);
+          if (error) throw error;
           return result;
         }
       },
@@ -90,14 +95,13 @@ export const useEstoques = () => {
         queryClient.invalidateQueries({ queryKey: ['estoques'] });
         toast({
           title: "Sucesso!",
-          description: "Item de estoque salvo com sucesso",
+          description: "Estoque salvo com sucesso",
         });
       },
       onError: (error: any) => {
-        console.error('useEstoques - Error with estoque:', error);
         toast({
           title: "Erro",
-          description: "Erro ao salvar item de estoque: " + error.message,
+          description: "Erro ao salvar estoque: " + error.message,
           variant: "destructive",
         });
       },
@@ -110,34 +114,26 @@ export const useEstoques = () => {
       mutationFn: async (id: string) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
-        console.log('useEstoques - Deleting estoque:', id);
-        
         const { error } = await supabase
           .from('estoques')
           .delete()
           .eq('id', id)
           .eq('user_id', session.user.id);
 
-        if (error) {
-          console.error('useEstoques - Error deleting estoque:', error);
-          throw error;
-        }
-        
-        console.log('useEstoques - Deleted estoque:', id);
+        if (error) throw error;
         return id;
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['estoques'] });
         toast({
           title: "Sucesso!",
-          description: "Item de estoque excluído com sucesso",
+          description: "Estoque excluído com sucesso",
         });
       },
       onError: (error: any) => {
-        console.error('useEstoques - Error deleting estoque:', error);
         toast({
           title: "Erro",
-          description: "Erro ao excluir item de estoque: " + error.message,
+          description: "Erro ao excluir estoque: " + error.message,
           variant: "destructive",
         });
       },

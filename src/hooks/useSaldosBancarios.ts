@@ -16,7 +16,7 @@ export const useSaldosBancarios = () => {
       queryFn: async () => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
-        console.log('useSaldosBancarios - Fetching saldos_bancarios for user:', session.user.id);
+        console.log('useSaldosBancarios - Fetching saldos bancarios for user:', session.user.id);
         
         const { data, error } = await supabase
           .from('saldos_bancarios')
@@ -25,11 +25,11 @@ export const useSaldosBancarios = () => {
           .order('data', { ascending: false });
 
         if (error) {
-          console.error('useSaldosBancarios - Error fetching saldos_bancarios:', error);
+          console.error('useSaldosBancarios - Error fetching saldos bancarios:', error);
           throw error;
         }
         
-        console.log('useSaldosBancarios - Fetched saldos_bancarios:', data);
+        console.log('useSaldosBancarios - Fetched saldos bancarios:', data);
         return data;
       },
       enabled: !!session?.user?.id,
