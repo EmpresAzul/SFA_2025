@@ -56,25 +56,36 @@ const LancamentosFinanceiros: React.FC = () => {
   }, [editingLancamento]);
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-fluxo-black-900">Lançamentos Financeiros</h1>
-          <p className="text-fluxo-black-600 mt-2">Controle de receitas e despesas</p>
+          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            💰 Lançamentos Financeiros
+          </h1>
+          <p className="text-gray-600 mt-2 text-sm">Controle completo de receitas e despesas</p>
         </div>
       </div>
 
       <LancamentosSummaryCards lancamentos={filteredLancamentos} />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="lista">Lista de Lançamentos</TabsTrigger>
-          <TabsTrigger value="formulario" onClick={handleNewLancamento}>
-            {editingLancamento ? 'Editar Lançamento' : 'Novo Lançamento'}
+        <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-12 sm:h-14">
+          <TabsTrigger 
+            value="lista"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
+            📋 Lista de Lançamentos
+          </TabsTrigger>
+          <TabsTrigger 
+            value="formulario" 
+            onClick={handleNewLancamento}
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
+            ➕ {editingLancamento ? 'Editar Lançamento' : 'Novo Lançamento'}
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="lista" className="space-y-4">
+        <TabsContent value="lista" className="responsive-margin mt-6 sm:mt-8">
           <LancamentosFilters
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
@@ -92,7 +103,7 @@ const LancamentosFinanceiros: React.FC = () => {
           />
         </TabsContent>
 
-        <TabsContent value="formulario">
+        <TabsContent value="formulario" className="mt-6 sm:mt-8">
           <LancamentosForm
             formData={formData}
             setFormData={setFormData}

@@ -64,14 +64,26 @@ const DRE: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Carregando dados do DRE...</div>
+      <div className="responsive-padding bg-gradient-to-br from-slate-50 to-green-50 min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando dados do DRE...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-green-50 min-h-screen">
+      <div className="mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
+          📊 Demonstração do Resultado do Exercício (DRE)
+        </h1>
+        <p className="text-gray-600 text-sm">
+          Análise financeira completa baseada em {lancamentosFiltrados.length} lançamentos do período
+        </p>
+      </div>
+
       <DREHeader
         periodo={periodo}
         setPeriodo={setPeriodo}

@@ -29,12 +29,25 @@ const FluxoCaixa: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="responsive-padding bg-gradient-to-br from-slate-50 to-purple-50 min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando dados do fluxo de caixa...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-purple-50 min-h-screen">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold gradient-fluxo-text">Fluxo de Caixa</h1>
-          <p className="text-gray-600 mt-2">Análise detalhada do movimento financeiro</p>
+          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            💰 Fluxo de Caixa
+          </h1>
+          <p className="text-gray-600 mt-2 text-sm">Análise detalhada do movimento financeiro</p>
         </div>
         
         <PeriodSelector value={periodoFilter} onChange={setPeriodoFilter} />
@@ -50,16 +63,16 @@ const FluxoCaixa: React.FC = () => {
 
       <DailyFlowChart data={fluxoPorDia} periodoLabel={getPeriodoLabel()} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="responsive-grid-2">
         <CategoryChart
           data={receitasPorCategoria}
-          title="Receitas por Categoria"
+          title="💚 Receitas por Categoria"
           emptyMessage="Nenhuma receita encontrada no período"
         />
         
         <CategoryChart
           data={despesasPorCategoria}
-          title="Despesas por Categoria"
+          title="❤️ Despesas por Categoria"
           emptyMessage="Nenhuma despesa encontrada no período"
         />
       </div>
