@@ -117,12 +117,12 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
             {formData.tipo === 'receita' && clientes && (
               <div className="space-y-2">
                 <Label htmlFor="cliente_id">Cliente</Label>
-                <Select value={formData.cliente_id} onValueChange={(value) => setFormData({ ...formData, cliente_id: value })}>
+                <Select value={formData.cliente_id} onValueChange={(value) => setFormData({ ...formData, cliente_id: value === 'none' ? '' : value })}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione um cliente" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Nenhum</SelectItem>
+                    <SelectItem value="none">Nenhum</SelectItem>
                     {clientes.map((cliente) => (
                       <SelectItem key={cliente.id} value={cliente.id}>{cliente.nome}</SelectItem>
                     ))}
@@ -134,12 +134,12 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
             {formData.tipo === 'despesa' && fornecedores && (
               <div className="space-y-2">
                 <Label htmlFor="fornecedor_id">Fornecedor</Label>
-                <Select value={formData.fornecedor_id} onValueChange={(value) => setFormData({ ...formData, fornecedor_id: value })}>
+                <Select value={formData.fornecedor_id} onValueChange={(value) => setFormData({ ...formData, fornecedor_id: value === 'none' ? '' : value })}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione um fornecedor" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Nenhum</SelectItem>
+                    <SelectItem value="none">Nenhum</SelectItem>
                     {fornecedores.map((fornecedor) => (
                       <SelectItem key={fornecedor.id} value={fornecedor.id}>{fornecedor.nome}</SelectItem>
                     ))}
