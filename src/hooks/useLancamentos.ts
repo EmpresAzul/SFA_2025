@@ -26,6 +26,8 @@ export const useLancamentos = () => {
     return useReactQuery({
       queryKey: ['lancamentos'],
       queryFn: async () => {
+        console.log('Buscando lançamentos');
+        
         const { data, error } = await supabase
           .from('lancamentos')
           .select(`
@@ -40,6 +42,7 @@ export const useLancamentos = () => {
           throw error;
         }
 
+        console.log('Lançamentos encontrados:', data);
         return data as (Lancamento & {
           cliente?: { nome: string } | null;
           fornecedor?: { nome: string } | null;
@@ -51,13 +54,25 @@ export const useLancamentos = () => {
   const useCreate = () => {
     return useMutation({
       mutationFn: async (lancamentoData: Omit<Lancamento, 'id' | 'created_at' | 'updated_at'>) => {
+        console.log('Criando lançamento:', lancamentoData);
+        
+        // Validar dados obrigatórios
+        if (!lancamentoData.data || !lancamentoData.tipo || !lancamentoData.categoria || !lancamentoData.valor) {
+          throw new Error('Data, tipo, categoria e valor são obrigatórios');
+        }
+
         const { data, error } = await supabase
           .from('lancamentos')
           .insert([lancamentoData])
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Erro ao criar lançamento:', error);
+          throw error;
+        }
+        
+        console.log('Lançamento criado com sucesso:', data);
         return data;
       },
       onSuccess: () => {
@@ -71,7 +86,7 @@ export const useLancamentos = () => {
         console.error('Erro ao criar lançamento:', error);
         toast({
           title: "Erro",
-          description: "Erro ao criar lançamento. Tente novamente.",
+          description: error.message || "Erro ao criar lançamento. Tente novamente.",
           variant: "destructive",
         });
       },
@@ -81,6 +96,8 @@ export const useLancamentos = () => {
   const useUpdate = () => {
     return useMutation({
       mutationFn: async ({ id, ...updateData }: Partial<Lancamento> & { id: string }) => {
+        console.log('Atualizando lançamento:', id, updateData);
+        
         const { data, error } = await supabase
           .from('lancamentos')
           .update(updateData)
@@ -88,7 +105,12 @@ export const useLancamentos = () => {
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Erro ao atualizar lançamento:', error);
+          throw error;
+        }
+        
+        console.log('Lançamento atualizado com sucesso:', data);
         return data;
       },
       onSuccess: () => {
@@ -102,7 +124,7 @@ export const useLancamentos = () => {
         console.error('Erro ao atualizar lançamento:', error);
         toast({
           title: "Erro",
-          description: "Erro ao atualizar lançamento. Tente novamente.",
+          description: error.message || "Erro ao atualizar lançamento. Tente novamente.",
           variant: "destructive",
         });
       },
@@ -112,12 +134,19 @@ export const useLancamentos = () => {
   const useDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
+        console.log('Excluindo lançamento:', id);
+        
         const { error } = await supabase
           .from('lancamentos')
           .delete()
           .eq('id', id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Erro ao excluir lançamento:', error);
+          throw error;
+        }
+        
+        console.log('Lançamento excluído com sucesso');
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
@@ -130,7 +159,7 @@ export const useLancamentos = () => {
         console.error('Erro ao excluir lançamento:', error);
         toast({
           title: "Erro",
-          description: "Erro ao excluir lançamento. Tente novamente.",
+          description: error.message || "Erro ao excluir lançamento. Tente novamente.",
           variant: "destructive",
         });
       },

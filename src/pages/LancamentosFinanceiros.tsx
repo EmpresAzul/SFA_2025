@@ -55,7 +55,7 @@ const LancamentosFinanceiros: React.FC = () => {
   const filterLancamentos = () => {
     if (!lancamentos) return;
     
-    let filtered: LancamentoComRelacoes[] = lancamentos;
+    let filtered: LancamentoComRelacoes[] = [...lancamentos];
 
     if (searchTerm) {
       filtered = filtered.filter(lancamento =>
@@ -87,15 +87,40 @@ const LancamentosFinanceiros: React.FC = () => {
       return;
     }
 
+    if (!formData.categoria) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione a categoria.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.valor || parseFloat(formData.valor) <= 0) {
+      toast({
+        title: "Erro",
+        description: "Por favor, informe um valor válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
       const lancamentoData = {
-        ...formData,
+        data: formData.data,
+        tipo: formData.tipo,
+        categoria: formData.categoria,
         valor: parseFloat(formData.valor),
+        cliente_id: formData.cliente_id || undefined,
+        fornecedor_id: formData.fornecedor_id || undefined,
+        observacoes: formData.observacoes.trim() || undefined,
         user_id: user!.id,
         status: 'ativo'
       };
+
+      console.log('Dados do lançamento a serem salvos:', lancamentoData);
 
       if (editingLancamento) {
         await updateLancamento.mutateAsync({ id: editingLancamento.id, ...lancamentoData });

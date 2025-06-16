@@ -34,6 +34,7 @@ export const useCadastros = () => {
     return useReactQuery({
       queryKey: ['cadastros', tipo],
       queryFn: async () => {
+        console.log('Buscando cadastros, tipo:', tipo);
         let query = supabase
           .from('cadastros')
           .select('*')
@@ -50,6 +51,7 @@ export const useCadastros = () => {
           throw error;
         }
 
+        console.log('Cadastros encontrados:', data);
         return data as Cadastro[];
       },
     });
@@ -58,13 +60,25 @@ export const useCadastros = () => {
   const useCreate = () => {
     return useMutation({
       mutationFn: async (cadastroData: Omit<Cadastro, 'id' | 'created_at' | 'updated_at'>) => {
+        console.log('Criando cadastro:', cadastroData);
+        
+        // Validar dados obrigatórios
+        if (!cadastroData.nome || !cadastroData.tipo || !cadastroData.pessoa) {
+          throw new Error('Nome, tipo e pessoa são obrigatórios');
+        }
+
         const { data, error } = await supabase
           .from('cadastros')
           .insert([cadastroData])
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Erro ao criar cadastro:', error);
+          throw error;
+        }
+        
+        console.log('Cadastro criado com sucesso:', data);
         return data;
       },
       onSuccess: () => {
@@ -78,7 +92,7 @@ export const useCadastros = () => {
         console.error('Erro ao criar cadastro:', error);
         toast({
           title: "Erro",
-          description: "Erro ao criar cadastro. Tente novamente.",
+          description: error.message || "Erro ao criar cadastro. Tente novamente.",
           variant: "destructive",
         });
       },
@@ -88,6 +102,8 @@ export const useCadastros = () => {
   const useUpdate = () => {
     return useMutation({
       mutationFn: async ({ id, ...updateData }: Partial<Cadastro> & { id: string }) => {
+        console.log('Atualizando cadastro:', id, updateData);
+        
         const { data, error } = await supabase
           .from('cadastros')
           .update(updateData)
@@ -95,7 +111,12 @@ export const useCadastros = () => {
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Erro ao atualizar cadastro:', error);
+          throw error;
+        }
+        
+        console.log('Cadastro atualizado com sucesso:', data);
         return data;
       },
       onSuccess: () => {
@@ -109,7 +130,7 @@ export const useCadastros = () => {
         console.error('Erro ao atualizar cadastro:', error);
         toast({
           title: "Erro",
-          description: "Erro ao atualizar cadastro. Tente novamente.",
+          description: error.message || "Erro ao atualizar cadastro. Tente novamente.",
           variant: "destructive",
         });
       },
@@ -119,12 +140,19 @@ export const useCadastros = () => {
   const useDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
+        console.log('Excluindo cadastro:', id);
+        
         const { error } = await supabase
           .from('cadastros')
           .delete()
           .eq('id', id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Erro ao excluir cadastro:', error);
+          throw error;
+        }
+        
+        console.log('Cadastro excluído com sucesso');
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['cadastros'] });
@@ -137,7 +165,7 @@ export const useCadastros = () => {
         console.error('Erro ao excluir cadastro:', error);
         toast({
           title: "Erro",
-          description: "Erro ao excluir cadastro. Tente novamente.",
+          description: error.message || "Erro ao excluir cadastro. Tente novamente.",
           variant: "destructive",
         });
       },

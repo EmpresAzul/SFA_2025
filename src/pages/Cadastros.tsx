@@ -83,6 +83,15 @@ const Cadastros: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!formData.nome.trim()) {
+      toast({
+        title: "Erro",
+        description: "Nome é obrigatório.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!formData.pessoa) {
       toast({
         title: "Erro",
@@ -92,19 +101,45 @@ const Cadastros: React.FC = () => {
       return;
     }
 
+    if (!tipoCapitalized) {
+      toast({
+        title: "Erro",
+        description: "Tipo de cadastro não identificado.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
       const cadastroData = {
-        ...formData,
-        tipo: tipoCapitalized!,
+        nome: formData.nome.trim(),
+        tipo: tipoCapitalized,
+        pessoa: formData.pessoa,
+        cpf_cnpj: formData.cpf_cnpj.trim() || undefined,
+        telefone: formData.telefone.trim() || undefined,
+        email: formData.email.trim() || undefined,
+        endereco: formData.endereco.trim() || undefined,
+        numero: formData.numero.trim() || undefined,
+        bairro: formData.bairro.trim() || undefined,
+        cidade: formData.cidade.trim() || undefined,
+        estado: formData.estado.trim() || undefined,
+        cep: formData.cep.trim() || undefined,
+        observacoes: formData.observacoes.trim() || undefined,
         salario: formData.salario ? parseFloat(formData.salario) : undefined,
+        data: formData.data,
         user_id: user!.id,
         status: 'ativo'
       };
 
+      console.log('Dados do cadastro a serem salvos:', cadastroData);
+
       if (editingCadastro) {
-        await updateCadastro.mutateAsync({ id: editingCadastro.id, ...cadastroData });
+        await updateCadastro.mutateAsync({ 
+          id: editingCadastro.id, 
+          ...cadastroData 
+        });
         setEditingCadastro(null);
       } else {
         await createCadastro.mutateAsync(cadastroData);

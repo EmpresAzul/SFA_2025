@@ -26,12 +26,6 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const getTipoClasses = (tipo: string) => {
-    return tipo === 'receita' 
-      ? 'bg-emerald-100 text-emerald-800' 
-      : 'bg-red-100 text-red-800';
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -43,8 +37,8 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
             <TableRow>
               <TableHead>Data</TableHead>
               <TableHead>Tipo</TableHead>
-              <TableHead>Valor</TableHead>
               <TableHead>Categoria</TableHead>
+              <TableHead>Valor</TableHead>
               <TableHead>Cliente/Fornecedor</TableHead>
               <TableHead>Observações</TableHead>
               <TableHead>Ações</TableHead>
@@ -69,15 +63,20 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
               <TableRow key={lancamento.id}>
                 <TableCell>{format(new Date(lancamento.data), 'dd/MM/yyyy')}</TableCell>
                 <TableCell>
-                  <Badge className={getTipoClasses(lancamento.tipo)}>
+                  <Badge variant={lancamento.tipo === 'receita' ? 'default' : 'secondary'}>
                     {lancamento.tipo === 'receita' ? 'Receita' : 'Despesa'}
                   </Badge>
                 </TableCell>
-                <TableCell className={lancamento.tipo === 'receita' ? 'text-emerald-600 font-semibold' : 'text-red-600 font-semibold'}>
+                <TableCell>{lancamento.categoria}</TableCell>
+                <TableCell className={lancamento.tipo === 'receita' ? 'text-green-600' : 'text-red-600'}>
                   R$ {lancamento.valor.toFixed(2)}
                 </TableCell>
-                <TableCell>{lancamento.categoria}</TableCell>
-                <TableCell>{lancamento.cliente?.nome || lancamento.fornecedor?.nome || '-'}</TableCell>
+                <TableCell>
+                  {lancamento.tipo === 'receita' 
+                    ? lancamento.cliente?.nome || '-'
+                    : lancamento.fornecedor?.nome || '-'
+                  }
+                </TableCell>
                 <TableCell>{lancamento.observacoes || '-'}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
