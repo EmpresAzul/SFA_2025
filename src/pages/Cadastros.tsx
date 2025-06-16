@@ -205,6 +205,19 @@ const Cadastros: React.FC = () => {
     }
   };
 
+  const getDisplayName = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário', plural: boolean = false) => {
+    switch (tipo) {
+      case 'Cliente':
+        return plural ? 'Clientes' : 'Cliente';
+      case 'Fornecedor':
+        return plural ? 'Fornecedores' : 'Fornecedor';
+      case 'Funcionário':
+        return plural ? 'Funcionários' : 'Funcionário';
+      default:
+        return plural ? 'Cadastros' : 'Cadastro';
+    }
+  };
+
   const getIcon = () => {
     switch (tipoCapitalized) {
       case 'Cliente': return UserCheck;
@@ -223,11 +236,11 @@ const Cadastros: React.FC = () => {
           <div className="flex items-center gap-3">
             <Icon className="w-8 h-8 text-fluxo-blue-600" />
             <h1 className="text-3xl font-bold text-fluxo-black-900">
-              {tipoCapitalized === 'Funcionário' ? 'Funcionários' : `${tipoCapitalized}s`}
+              {getDisplayName(tipoCapitalized, true)}
             </h1>
           </div>
           <p className="text-fluxo-black-600 mt-2">
-            Gerencie o cadastro de {tipoCapitalized === 'Funcionário' ? 'funcionários' : `${tipo?.toLowerCase()}s`}
+            Gerencie o cadastro de {getDisplayName(tipoCapitalized, true).toLowerCase()}
           </p>
         </div>
         <Button
@@ -238,7 +251,7 @@ const Cadastros: React.FC = () => {
           className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600 text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Novo {tipoCapitalized}
+          Novo {getDisplayName(tipoCapitalized)}
         </Button>
       </div>
 
@@ -261,7 +274,7 @@ const Cadastros: React.FC = () => {
             <div className="flex items-center">
               <Users className="h-8 w-8 text-green-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-green-600">Pessoa Fisica</p>
+                <p className="text-sm font-medium text-green-600">Pessoa Física</p>
                 <p className="text-2xl font-bold text-green-900">
                   {filteredCadastros.filter(c => c.pessoa === 'Física').length}
                 </p>
@@ -275,7 +288,7 @@ const Cadastros: React.FC = () => {
             <div className="flex items-center">
               <Building2 className="h-8 w-8 text-purple-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-purple-600">Jurídica</p>
+                <p className="text-sm font-medium text-purple-600">Pessoa Jurídica</p>
                 <p className="text-2xl font-bold text-purple-900">
                   {filteredCadastros.filter(c => c.pessoa === 'Jurídica').length}
                 </p>
@@ -287,9 +300,9 @@ const Cadastros: React.FC = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="lista">Lista de {tipoCapitalized === 'Funcionário' ? 'Funcionários' : `${tipoCapitalized}s`}</TabsTrigger>
+          <TabsTrigger value="lista">Lista de {getDisplayName(tipoCapitalized, true)}</TabsTrigger>
           <TabsTrigger value="formulario">
-            {editingCadastro ? `Editar ${tipoCapitalized}` : `Novo ${tipoCapitalized}`}
+            {editingCadastro ? `Editar ${getDisplayName(tipoCapitalized)}` : `Novo ${getDisplayName(tipoCapitalized)}`}
           </TabsTrigger>
         </TabsList>
 
@@ -321,8 +334,8 @@ const Cadastros: React.FC = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="todas">Todas</SelectItem>
-                      <SelectItem value="Física">Pessoa Fisica</SelectItem>
-                      <SelectItem value="Jurídica">Jurídica</SelectItem>
+                      <SelectItem value="Física">Pessoa Física</SelectItem>
+                      <SelectItem value="Jurídica">Pessoa Jurídica</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -333,7 +346,7 @@ const Cadastros: React.FC = () => {
           {/* Tabela */}
           <Card>
             <CardHeader>
-              <CardTitle>{tipoCapitalized === 'Funcionário' ? 'Funcionários' : `${tipoCapitalized}s`} ({filteredCadastros.length})</CardTitle>
+              <CardTitle>{getDisplayName(tipoCapitalized, true)} ({filteredCadastros.length})</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
@@ -412,7 +425,7 @@ const Cadastros: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle>
-                {editingCadastro ? `Editar ${tipoCapitalized}` : `Novo ${tipoCapitalized}`}
+                {editingCadastro ? `Editar ${getDisplayName(tipoCapitalized)}` : `Novo ${getDisplayName(tipoCapitalized)}`}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -437,7 +450,7 @@ const Cadastros: React.FC = () => {
                         <SelectValue placeholder="Selecione o tipo" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Física">Pessoa Fisica</SelectItem>
+                        <SelectItem value="Física">Pessoa Física</SelectItem>
                         <SelectItem value="Jurídica">Jurídica</SelectItem>
                       </SelectContent>
                     </Select>
