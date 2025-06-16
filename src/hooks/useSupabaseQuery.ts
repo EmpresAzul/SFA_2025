@@ -13,18 +13,18 @@ export const useSupabaseQuery = () => {
   return {
     // Queries - usando os nomes corretos retornados pelos hooks
     useCadastros: cadastros.useCadastrosQuery,
-    useEstoques: estoques.useEstoquesQuery,
-    useLancamentos: lancamentos.useLancamentosQuery,
-    useSaldosBancarios: saldosBancarios.useSaldosBancariosQuery,
+    useEstoques: estoques.useQuery,
+    useLancamentos: lancamentos.useQuery,
+    useSaldosBancarios: saldosBancarios.useQuery,
     
     // Mutations - usando os nomes corretos retornados pelos hooks
     useCreateCadastro: cadastros.useCreateCadastro,
     useDeleteCadastro: cadastros.useDeleteCadastro,
-    useCreateEstoque: estoques.useEstoquesCreate,
-    useDeleteEstoque: estoques.useEstoquesDelete,
-    useCreateLancamento: lancamentos.useLancamentosCreate,
-    useDeleteLancamento: lancamentos.useLancamentosDelete,
-    useCreateSaldoBancario: saldosBancarios.useSaldosBancariosCreate,
-    useDeleteSaldoBancario: saldosBancarios.useSaldosBancariosDelete,
+    useCreateEstoque: estoques.useCreate,
+    useDeleteEstoque: estoques.useDelete,
+    useCreateLancamento: lancamentos.useCreate,
+    useDeleteLancamento: lancamentos.useDelete,
+    useCreateSaldoBancario: saldosBancarios.useCreate,
+    useDeleteSaldoBancario: saldosBancarios.useDelete,
   };
 };
