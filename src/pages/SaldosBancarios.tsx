@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { CurrencyInput } from '@/components/ui/currency-input';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Search, Banknote, TrendingUp } from 'lucide-react';
+import { Plus, Search, Banknote, TrendingUp, Eye, Edit, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
@@ -43,7 +44,9 @@ const SaldosBancarios: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [bancoFilter, setBancoFilter] = useState('todos');
-  const { user } = useAuth();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [viewingId, setViewingId] = useState<string | null>(null);
+  const { user, session } = useAuth();
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -52,28 +55,43 @@ const SaldosBancarios: React.FC = () => {
     saldo: 0
   });
 
+  console.log('SaldosBancarios - User:', user);
+  console.log('SaldosBancarios - Session:', session);
+
   useEffect(() => {
-    if (user) {
+    if (user && session) {
       fetchSaldos();
     }
-  }, [user]);
+  }, [user, session]);
 
   useEffect(() => {
     filterSaldos();
   }, [saldos, searchTerm, bancoFilter]);
 
   const fetchSaldos = async () => {
+    if (!session?.user?.id) {
+      console.log('SaldosBancarios - No user session available');
+      return;
+    }
+
     setLoading(true);
     try {
+      console.log('SaldosBancarios - Fetching saldos for user:', session.user.id);
       const { data, error } = await supabase
         .from('saldos_bancarios')
         .select('*')
-        .eq('user_id', user?.id)
+        .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('SaldosBancarios - Error fetching saldos:', error);
+        throw error;
+      }
+      
+      console.log('SaldosBancarios - Fetched saldos:', data);
       setSaldos(data || []);
     } catch (error: any) {
+      console.error('SaldosBancarios - Fetch error:', error);
       toast({
         title: "Erro ao carregar saldos bancários",
         description: error.message,
@@ -102,39 +120,132 @@ const SaldosBancarios: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!session?.user?.id) {
+      toast({
+        title: "Erro de autenticação",
+        description: "Usuário não autenticado",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const { error } = await supabase
-        .from('saldos_bancarios')
-        .insert([{
-          user_id: user?.id,
-          data: formData.data,
-          banco: formData.banco,
-          saldo: formData.saldo
-        }]);
+      console.log('SaldosBancarios - Submitting data:', formData);
+      
+      if (editingId) {
+        const { error } = await supabase
+          .from('saldos_bancarios')
+          .update({
+            data: formData.data,
+            banco: formData.banco,
+            saldo: formData.saldo,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', editingId)
+          .eq('user_id', session.user.id);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      toast({
-        title: "Saldo bancário cadastrado com sucesso!",
-        description: `Saldo do ${formData.banco} registrado.`,
-      });
+        toast({
+          title: "Saldo bancário atualizado com sucesso!",
+          description: `Saldo do ${formData.banco} atualizado.`,
+        });
+      } else {
+        const { error } = await supabase
+          .from('saldos_bancarios')
+          .insert([{
+            user_id: session.user.id,
+            data: formData.data,
+            banco: formData.banco,
+            saldo: formData.saldo
+          }]);
 
-      setFormData({
-        data: '',
-        banco: '',
-        saldo: 0
-      });
+        if (error) throw error;
+
+        toast({
+          title: "Saldo bancário cadastrado com sucesso!",
+          description: `Saldo do ${formData.banco} registrado.`,
+        });
+      }
+
+      resetForm();
       fetchSaldos();
     } catch (error: any) {
+      console.error('SaldosBancarios - Submit error:', error);
       toast({
-        title: "Erro ao cadastrar saldo bancário",
+        title: "Erro ao salvar saldo bancário",
         description: error.message,
         variant: "destructive",
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      data: '',
+      banco: '',
+      saldo: 0
+    });
+    setEditingId(null);
+    setViewingId(null);
+  };
+
+  const handleEdit = (saldo: SaldoBancario) => {
+    setFormData({
+      data: saldo.data,
+      banco: saldo.banco,
+      saldo: saldo.saldo
+    });
+    setEditingId(saldo.id);
+    setViewingId(null);
+  };
+
+  const handleView = (saldo: SaldoBancario) => {
+    setViewingId(viewingId === saldo.id ? null : saldo.id);
+    setEditingId(null);
+  };
+
+  const handleDelete = async (id: string, banco: string) => {
+    if (!window.confirm(`Tem certeza que deseja excluir este saldo bancário do ${banco}? Esta ação não pode ser desfeita.`)) {
+      return;
+    }
+
+    if (!session?.user?.id) {
+      toast({
+        title: "Erro de autenticação",
+        description: "Usuário não autenticado",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('saldos_bancarios')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', session.user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Saldo bancário excluído!",
+        description: "O saldo foi removido com sucesso.",
+      });
+
+      fetchSaldos();
+    } catch (error: any) {
+      console.error('SaldosBancarios - Delete error:', error);
+      toast({
+        title: "Erro ao excluir saldo bancário",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -203,7 +314,7 @@ const SaldosBancarios: React.FC = () => {
       {/* Formulário */}
       <Card>
         <CardHeader>
-          <CardTitle>Cadastrar Novo Saldo</CardTitle>
+          <CardTitle>{editingId ? 'Editar Saldo' : 'Cadastrar Novo Saldo'}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -244,14 +355,26 @@ const SaldosBancarios: React.FC = () => {
               </div>
             </div>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              {loading ? "Cadastrando..." : "Cadastrar Saldo"}
-            </Button>
+            <div className="flex space-x-4">
+              <Button
+                type="submit"
+                disabled={loading}
+                className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                {loading ? "Salvando..." : editingId ? "Atualizar Saldo" : "Cadastrar Saldo"}
+              </Button>
+              
+              {editingId && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={resetForm}
+                >
+                  Cancelar
+                </Button>
+              )}
+            </div>
           </form>
         </CardContent>
       </Card>
@@ -306,19 +429,76 @@ const SaldosBancarios: React.FC = () => {
                 <TableHead>Banco</TableHead>
                 <TableHead>Saldo</TableHead>
                 <TableHead>Data de Registro</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredSaldos.map((saldo) => (
-                <TableRow key={saldo.id}>
-                  <TableCell>{format(new Date(saldo.data), 'dd/MM/yyyy')}</TableCell>
-                  <TableCell>{saldo.banco}</TableCell>
-                  <TableCell className="font-semibold text-blue-600">
-                    {formatCurrency(saldo.saldo)}
-                  </TableCell>
-                  <TableCell>{format(new Date(saldo.created_at), 'dd/MM/yyyy HH:mm')}</TableCell>
-                </TableRow>
+                <React.Fragment key={saldo.id}>
+                  <TableRow className={viewingId === saldo.id ? "bg-blue-50" : ""}>
+                    <TableCell>{format(new Date(saldo.data), 'dd/MM/yyyy')}</TableCell>
+                    <TableCell>{saldo.banco}</TableCell>
+                    <TableCell className="font-semibold text-blue-600">
+                      {formatCurrency(saldo.saldo)}
+                    </TableCell>
+                    <TableCell>{format(new Date(saldo.created_at), 'dd/MM/yyyy HH:mm')}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end space-x-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleView(saldo)}
+                          className="hover:bg-blue-50"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEdit(saldo)}
+                          className="hover:bg-green-50"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleDelete(saldo.id, saldo.banco)}
+                          className="hover:bg-red-50 text-red-600"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                  {viewingId === saldo.id && (
+                    <TableRow className="bg-blue-50">
+                      <TableCell colSpan={5}>
+                        <div className="p-4 space-y-2">
+                          <h4 className="font-semibold text-blue-900">Detalhes do Saldo Bancário</h4>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <span className="font-medium">ID:</span> {saldo.id}
+                            </div>
+                            <div>
+                              <span className="font-medium">Última Atualização:</span> {format(new Date(saldo.updated_at), 'dd/MM/yyyy HH:mm:ss')}
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </React.Fragment>
               ))}
+              
+              {filteredSaldos.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                    <Banknote className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                    <p>Nenhum saldo bancário encontrado</p>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>

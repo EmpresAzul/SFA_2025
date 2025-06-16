@@ -16,6 +16,8 @@ export const useSupabaseQuery = () => {
       queryFn: async () => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
+        console.log('useSupabaseQuery - Fetching cadastros for user:', session.user.id);
+        
         const { data, error } = await supabase
           .from('cadastros')
           .select('*')
@@ -23,7 +25,12 @@ export const useSupabaseQuery = () => {
           .eq('status', 'ativo')
           .order('nome');
 
-        if (error) throw error;
+        if (error) {
+          console.error('useSupabaseQuery - Error fetching cadastros:', error);
+          throw error;
+        }
+        
+        console.log('useSupabaseQuery - Fetched cadastros:', data);
         return data;
       },
       enabled: !!session?.user?.id,
@@ -37,14 +44,21 @@ export const useSupabaseQuery = () => {
       queryFn: async () => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
+        console.log('useSupabaseQuery - Fetching estoques for user:', session.user.id);
+        
         const { data, error } = await supabase
           .from('estoques')
           .select('*')
           .eq('user_id', session.user.id)
           .eq('status', 'ativo')
-          .order('data', { ascending: false });
+          .order('created_at', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+          console.error('useSupabaseQuery - Error fetching estoques:', error);
+          throw error;
+        }
+        
+        console.log('useSupabaseQuery - Fetched estoques:', data);
         return data;
       },
       enabled: !!session?.user?.id,
@@ -58,18 +72,21 @@ export const useSupabaseQuery = () => {
       queryFn: async () => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
+        console.log('useSupabaseQuery - Fetching lancamentos for user:', session.user.id);
+        
         const { data, error } = await supabase
           .from('lancamentos')
-          .select(`
-            *,
-            cliente:cliente_id(nome),
-            fornecedor:fornecedor_id(nome)
-          `)
+          .select('*')
           .eq('user_id', session.user.id)
           .eq('status', 'ativo')
           .order('data', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+          console.error('useSupabaseQuery - Error fetching lancamentos:', error);
+          throw error;
+        }
+        
+        console.log('useSupabaseQuery - Fetched lancamentos:', data);
         return data;
       },
       enabled: !!session?.user?.id,
@@ -83,13 +100,20 @@ export const useSupabaseQuery = () => {
       queryFn: async () => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
+        console.log('useSupabaseQuery - Fetching saldos_bancarios for user:', session.user.id);
+        
         const { data, error } = await supabase
           .from('saldos_bancarios')
           .select('*')
           .eq('user_id', session.user.id)
           .order('data', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+          console.error('useSupabaseQuery - Error fetching saldos_bancarios:', error);
+          throw error;
+        }
+        
+        console.log('useSupabaseQuery - Fetched saldos_bancarios:', data);
         return data;
       },
       enabled: !!session?.user?.id,
@@ -102,6 +126,8 @@ export const useSupabaseQuery = () => {
       mutationFn: async (data: any) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
+        console.log('useSupabaseQuery - Creating cadastro:', data);
+        
         const { data: result, error } = await supabase
           .from('cadastros')
           .insert({
@@ -111,7 +137,12 @@ export const useSupabaseQuery = () => {
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('useSupabaseQuery - Error creating cadastro:', error);
+          throw error;
+        }
+        
+        console.log('useSupabaseQuery - Created cadastro:', result);
         return result;
       },
       onSuccess: () => {
@@ -121,11 +152,11 @@ export const useSupabaseQuery = () => {
           description: "Cadastro criado com sucesso",
         });
       },
-      onError: (error) => {
-        console.error('Erro ao criar cadastro:', error);
+      onError: (error: any) => {
+        console.error('useSupabaseQuery - Error creating cadastro:', error);
         toast({
           title: "Erro",
-          description: "Erro ao criar cadastro",
+          description: "Erro ao criar cadastro: " + error.message,
           variant: "destructive",
         });
       },
@@ -138,6 +169,8 @@ export const useSupabaseQuery = () => {
       mutationFn: async (data: any) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
+        console.log('useSupabaseQuery - Creating estoque:', data);
+        
         const { data: result, error } = await supabase
           .from('estoques')
           .insert({
@@ -147,7 +180,12 @@ export const useSupabaseQuery = () => {
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('useSupabaseQuery - Error creating estoque:', error);
+          throw error;
+        }
+        
+        console.log('useSupabaseQuery - Created estoque:', result);
         return result;
       },
       onSuccess: () => {
@@ -157,11 +195,11 @@ export const useSupabaseQuery = () => {
           description: "Item de estoque criado com sucesso",
         });
       },
-      onError: (error) => {
-        console.error('Erro ao criar estoque:', error);
+      onError: (error: any) => {
+        console.error('useSupabaseQuery - Error creating estoque:', error);
         toast({
           title: "Erro",
-          description: "Erro ao criar item de estoque",
+          description: "Erro ao criar item de estoque: " + error.message,
           variant: "destructive",
         });
       },
@@ -174,6 +212,8 @@ export const useSupabaseQuery = () => {
       mutationFn: async (data: any) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
+        console.log('useSupabaseQuery - Creating lancamento:', data);
+        
         const { data: result, error } = await supabase
           .from('lancamentos')
           .insert({
@@ -183,7 +223,12 @@ export const useSupabaseQuery = () => {
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('useSupabaseQuery - Error creating lancamento:', error);
+          throw error;
+        }
+        
+        console.log('useSupabaseQuery - Created lancamento:', result);
         return result;
       },
       onSuccess: () => {
@@ -193,11 +238,11 @@ export const useSupabaseQuery = () => {
           description: "Lançamento criado com sucesso",
         });
       },
-      onError: (error) => {
-        console.error('Erro ao criar lançamento:', error);
+      onError: (error: any) => {
+        console.error('useSupabaseQuery - Error creating lancamento:', error);
         toast({
           title: "Erro",
-          description: "Erro ao criar lançamento",
+          description: "Erro ao criar lançamento: " + error.message,
           variant: "destructive",
         });
       },
@@ -210,6 +255,8 @@ export const useSupabaseQuery = () => {
       mutationFn: async (data: any) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
+        console.log('useSupabaseQuery - Creating saldo bancario:', data);
+        
         const { data: result, error } = await supabase
           .from('saldos_bancarios')
           .insert({
@@ -219,7 +266,12 @@ export const useSupabaseQuery = () => {
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('useSupabaseQuery - Error creating saldo bancario:', error);
+          throw error;
+        }
+        
+        console.log('useSupabaseQuery - Created saldo bancario:', result);
         return result;
       },
       onSuccess: () => {
@@ -229,11 +281,11 @@ export const useSupabaseQuery = () => {
           description: "Saldo bancário criado com sucesso",
         });
       },
-      onError: (error) => {
-        console.error('Erro ao criar saldo bancário:', error);
+      onError: (error: any) => {
+        console.error('useSupabaseQuery - Error creating saldo bancario:', error);
         toast({
           title: "Erro",
-          description: "Erro ao criar saldo bancário",
+          description: "Erro ao criar saldo bancário: " + error.message,
           variant: "destructive",
         });
       },

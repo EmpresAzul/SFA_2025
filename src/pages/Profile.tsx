@@ -8,9 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Save, User, Lock, Calendar } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Profile: React.FC = () => {
-  const { user, updateUser, updatePassword } = useAuth();
+  const { user, session, updateUser, updatePassword } = useAuth();
   const { toast } = useToast();
   
   const [formData, setFormData] = useState({
@@ -30,20 +31,55 @@ const Profile: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
 
+  console.log('Profile - User:', user);
+  console.log('Profile - Session:', session);
+
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!session?.user?.id) {
+      toast({
+        title: "Erro de autenticação",
+        description: "Usuário não autenticado",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
+      console.log('Profile - Updating user metadata:', formData);
+      
+      // Atualizar metadados do usuário no Supabase Auth
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: {
+          name: formData.name,
+          address: formData.address,
+          number: formData.number,
+          neighborhood: formData.neighborhood,
+          city: formData.city,
+          state: formData.state
+        }
+      });
+
+      if (updateError) {
+        console.error('Profile - Error updating user metadata:', updateError);
+        throw updateError;
+      }
+
+      // Atualizar estado local
       updateUser(formData);
+      
       toast({
         title: "Perfil atualizado!",
         description: "Suas informações foram salvas com sucesso.",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Profile - Update error:', error);
       toast({
-        title: "Erro ao atualizar",
-        description: "Ocorreu um erro ao salvar suas informações.",
+        title: "Erro ao atualizar perfil",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -63,9 +99,19 @@ const Profile: React.FC = () => {
       return;
     }
 
+    if (passwordData.newPassword.length < 8) {
+      toast({
+        title: "Senha muito curta",
+        description: "A senha deve ter pelo menos 8 caracteres.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
+      console.log('Profile - Updating password');
       const success = await updatePassword(passwordData.currentPassword, passwordData.newPassword);
       if (success) {
         toast({
@@ -80,10 +126,11 @@ const Profile: React.FC = () => {
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Profile - Password update error:', error);
       toast({
         title: "Erro ao atualizar senha",
-        description: "Ocorreu um erro inesperado.",
+        description: error.message,
         variant: "destructive",
       });
     } finally {

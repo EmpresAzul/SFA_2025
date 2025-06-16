@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Users, 
   Plus, 
@@ -23,97 +25,94 @@ import {
 
 interface Contact {
   id: string;
-  type: 'Cliente' | 'Fornecedor' | 'Funcionário';
-  date: string;
-  name: string;
-  document: string;
-  address: string;
-  number: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-  salary?: string;
-  observations: string;
-  active: boolean;
+  tipo: string;
+  data?: string;
+  nome: string;
+  documento: string;
+  endereco: string;
+  cidade: string;
+  estado: string;
+  email?: string;
+  telefone?: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const RegisterManagement: React.FC = () => {
   const { toast } = useToast();
-  const [contacts, setContacts] = useState<Contact[]>([
-    {
-      id: '1',
-      type: 'Cliente',
-      date: '2024-01-15',
-      name: 'Maria Silva Santos',
-      document: '123.456.789-00',
-      address: 'Rua das Flores, 123',
-      number: '123',
-      neighborhood: 'Centro',
-      city: 'São Paulo',
-      state: 'SP',
-      observations: 'Cliente VIP, desconto especial',
-      active: true
-    },
-    {
-      id: '2',
-      type: 'Fornecedor',
-      date: '2024-02-10',
-      name: 'Distribuidora ABC Ltda',
-      document: '12.345.678/0001-90',
-      address: 'Av. Industrial, 456',
-      number: '456',
-      neighborhood: 'Industrial',
-      city: 'Guarulhos',
-      state: 'SP',
-      observations: 'Prazo pagamento 30 dias',
-      active: true
-    },
-    {
-      id: '3',
-      type: 'Funcionário',
-      date: '2024-03-05',
-      name: 'João Carlos Oliveira',
-      document: '987.654.321-00',
-      address: 'Rua do Trabalhador, 789',
-      number: '789',
-      neighborhood: 'Vila Nova',
-      city: 'São Paulo',
-      state: 'SP',
-      salary: 'R$ 3.500,00',
-      observations: 'Vendedor sênior',
-      active: true
-    }
-  ]);
-
+  const { user, session } = useAuth();
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
+  const [viewingContact, setViewingContact] = useState<Contact | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
-  const [dateFilter, setDateFilter] = useState('');
 
   const [formData, setFormData] = useState<Partial<Contact>>({
-    type: 'Cliente',
-    date: new Date().toISOString().split('T')[0],
-    name: '',
-    document: '',
-    address: '',
-    number: '',
-    neighborhood: '',
-    city: '',
-    state: '',
-    salary: '',
-    observations: '',
-    active: true
+    tipo: 'Cliente',
+    nome: '',
+    documento: '',
+    endereco: '',
+    cidade: '',
+    estado: '',
+    email: '',
+    telefone: '',
+    status: 'ativo'
   });
+
+  console.log('RegisterManagement - User:', user);
+  console.log('RegisterManagement - Session:', session);
+
+  useEffect(() => {
+    if (user && session) {
+      fetchContacts();
+    }
+  }, [user, session]);
+
+  const fetchContacts = async () => {
+    if (!session?.user?.id) {
+      console.log('RegisterManagement - No user session available');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      console.log('RegisterManagement - Fetching contacts for user:', session.user.id);
+      const { data, error } = await supabase
+        .from('cadastros')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('RegisterManagement - Error fetching contacts:', error);
+        throw error;
+      }
+      
+      console.log('RegisterManagement - Fetched contacts:', data);
+      setContacts(data || []);
+    } catch (error: any) {
+      console.error('RegisterManagement - Fetch error:', error);
+      toast({
+        title: "Erro ao carregar cadastros",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Statistics
   const stats = {
-    activeClients: contacts.filter(c => c.type === 'Cliente' && c.active).length,
-    inactiveClients: contacts.filter(c => c.type === 'Cliente' && !c.active).length,
-    activeSuppliers: contacts.filter(c => c.type === 'Fornecedor' && c.active).length,
-    inactiveSuppliers: contacts.filter(c => c.type === 'Fornecedor' && !c.active).length,
-    activeEmployees: contacts.filter(c => c.type === 'Funcionário' && c.active).length,
-    inactiveEmployees: contacts.filter(c => c.type === 'Funcionário' && !c.active).length,
+    activeClients: contacts.filter(c => c.tipo === 'Cliente' && c.status === 'ativo').length,
+    inactiveClients: contacts.filter(c => c.tipo === 'Cliente' && c.status === 'inativo').length,
+    activeSuppliers: contacts.filter(c => c.tipo === 'Fornecedor' && c.status === 'ativo').length,
+    inactiveSuppliers: contacts.filter(c => c.tipo === 'Fornecedor' && c.status === 'inativo').length,
+    activeEmployees: contacts.filter(c => c.tipo === 'Funcionário' && c.status === 'ativo').length,
+    inactiveEmployees: contacts.filter(c => c.tipo === 'Funcionário' && c.status === 'inativo').length,
   };
 
   const formatDocument = (value: string, type: string) => {
@@ -133,96 +132,185 @@ const RegisterManagement: React.FC = () => {
     return value;
   };
 
-  const formatSalary = (value: string) => {
-    const numbers = value.replace(/\D/g, '');
-    const amount = parseInt(numbers) / 100;
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(amount);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (editingContact) {
-      setContacts(prev => prev.map(contact => 
-        contact.id === editingContact.id 
-          ? { ...contact, ...formData } as Contact
-          : contact
-      ));
+    if (!session?.user?.id) {
       toast({
-        title: "Cadastro atualizado!",
-        description: "Os dados foram atualizados com sucesso.",
+        title: "Erro de autenticação",
+        description: "Usuário não autenticado",
+        variant: "destructive",
       });
-    } else {
-      const newContact: Contact = {
-        id: Date.now().toString(),
-        ...formData
-      } as Contact;
-      
-      setContacts(prev => [...prev, newContact]);
-      toast({
-        title: "Cadastro realizado!",
-        description: "Novo cadastro adicionado com sucesso.",
-      });
+      return;
     }
-    
-    resetForm();
+
+    setLoading(true);
+
+    try {
+      console.log('RegisterManagement - Submitting data:', formData);
+      
+      if (editingContact) {
+        const { error } = await supabase
+          .from('cadastros')
+          .update({
+            ...formData,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', editingContact.id)
+          .eq('user_id', session.user.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Cadastro atualizado!",
+          description: "Os dados foram atualizados com sucesso.",
+        });
+      } else {
+        const { error } = await supabase
+          .from('cadastros')
+          .insert([{
+            ...formData,
+            user_id: session.user.id
+          }]);
+
+        if (error) throw error;
+
+        toast({
+          title: "Cadastro realizado!",
+          description: "Novo cadastro adicionado com sucesso.",
+        });
+      }
+      
+      resetForm();
+      fetchContacts();
+    } catch (error: any) {
+      console.error('RegisterManagement - Submit error:', error);
+      toast({
+        title: "Erro ao salvar cadastro",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const resetForm = () => {
     setFormData({
-      type: 'Cliente',
-      date: new Date().toISOString().split('T')[0],
-      name: '',
-      document: '',
-      address: '',
-      number: '',
-      neighborhood: '',
-      city: '',
-      state: '',
-      salary: '',
-      observations: '',
-      active: true
+      tipo: 'Cliente',
+      nome: '',
+      documento: '',
+      endereco: '',
+      cidade: '',
+      estado: '',
+      email: '',
+      telefone: '',
+      status: 'ativo'
     });
     setShowForm(false);
     setEditingContact(null);
+    setViewingContact(null);
   };
 
   const handleEdit = (contact: Contact) => {
     setFormData(contact);
     setEditingContact(contact);
     setShowForm(true);
+    setViewingContact(null);
   };
 
-  const handleToggleActive = (id: string) => {
-    setContacts(prev => prev.map(contact =>
-      contact.id === id ? { ...contact, active: !contact.active } : contact
-    ));
-    toast({
-      title: "Status atualizado!",
-      description: "O status do cadastro foi alterado.",
-    });
+  const handleView = (contact: Contact) => {
+    setViewingContact(viewingContact?.id === contact.id ? null : contact);
+    setEditingContact(null);
+    setShowForm(false);
   };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm('Tem certeza que deseja excluir este cadastro? Esta ação não pode ser desfeita.')) {
-      setContacts(prev => prev.filter(contact => contact.id !== id));
+  const handleToggleActive = async (id: string) => {
+    if (!session?.user?.id) {
+      toast({
+        title: "Erro de autenticação",
+        description: "Usuário não autenticado",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const contact = contacts.find(c => c.id === id);
+      const newStatus = contact?.status === 'ativo' ? 'inativo' : 'ativo';
+      
+      const { error } = await supabase
+        .from('cadastros')
+        .update({ 
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id)
+        .eq('user_id', session.user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Status atualizado!",
+        description: "O status do cadastro foi alterado.",
+      });
+
+      fetchContacts();
+    } catch (error: any) {
+      console.error('RegisterManagement - Toggle status error:', error);
+      toast({
+        title: "Erro ao alterar status",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDelete = async (id: string, nome: string) => {
+    if (!window.confirm(`Tem certeza que deseja excluir o cadastro de "${nome}"? Esta ação não pode ser desfeita.`)) {
+      return;
+    }
+
+    if (!session?.user?.id) {
+      toast({
+        title: "Erro de autenticação",
+        description: "Usuário não autenticado",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('cadastros')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', session.user.id);
+
+      if (error) throw error;
+
       toast({
         title: "Cadastro excluído!",
         description: "O cadastro foi removido permanentemente.",
+      });
+
+      fetchContacts();
+    } catch (error: any) {
+      console.error('RegisterManagement - Delete error:', error);
+      toast({
+        title: "Erro ao excluir cadastro",
+        description: error.message,
+        variant: "destructive",
       });
     }
   };
 
   const filteredContacts = contacts.filter(contact => {
-    const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         contact.document.includes(searchTerm);
-    const matchesType = typeFilter === 'all' || contact.type === typeFilter;
-    const matchesDate = !dateFilter || contact.date === dateFilter;
+    const matchesSearch = contact.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         contact.documento.includes(searchTerm);
+    const matchesType = typeFilter === 'all' || contact.tipo === typeFilter;
     
-    return matchesSearch && matchesType && matchesDate;
+    return matchesSearch && matchesType;
   });
 
   return (
@@ -294,7 +382,7 @@ const RegisterManagement: React.FC = () => {
       {/* Filters */}
       <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="search" className="text-fluxo-blue-900 font-medium">
                 Buscar
@@ -326,24 +414,11 @@ const RegisterManagement: React.FC = () => {
               </Select>
             </div>
             
-            <div>
-              <Label htmlFor="dateFilter" className="text-fluxo-blue-900 font-medium">
-                Data de Cadastro
-              </Label>
-              <Input
-                id="dateFilter"
-                type="date"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-              />
-            </div>
-            
             <div className="flex items-end">
               <Button
                 onClick={() => {
                   setSearchTerm('');
                   setTypeFilter('all');
-                  setDateFilter('');
                 }}
                 variant="outline"
                 className="w-full"
@@ -370,8 +445,8 @@ const RegisterManagement: React.FC = () => {
                 <div>
                   <Label className="text-fluxo-blue-900 font-medium">Tipo</Label>
                   <Select 
-                    value={formData.type} 
-                    onValueChange={(value) => setFormData({ ...formData, type: value as Contact['type'] })}
+                    value={formData.tipo} 
+                    onValueChange={(value) => setFormData({ ...formData, tipo: value })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -385,145 +460,104 @@ const RegisterManagement: React.FC = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="date" className="text-fluxo-blue-900 font-medium">
-                    Data
-                  </Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="name" className="text-fluxo-blue-900 font-medium">
+                  <Label htmlFor="nome" className="text-fluxo-blue-900 font-medium">
                     Nome
                   </Label>
                   <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    id="nome"
+                    value={formData.nome}
+                    onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                     placeholder="Nome completo"
                     required
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="document" className="text-fluxo-blue-900 font-medium">
-                    {formData.type === 'Fornecedor' ? 'CNPJ' : 'CPF'}
+                  <Label htmlFor="documento" className="text-fluxo-blue-900 font-medium">
+                    {formData.tipo === 'Fornecedor' ? 'CNPJ' : 'CPF'}
                   </Label>
                   <Input
-                    id="document"
-                    value={formData.document}
+                    id="documento"
+                    value={formData.documento}
                     onChange={(e) => setFormData({ 
                       ...formData, 
-                      document: formatDocument(e.target.value, formData.type || 'Cliente')
+                      documento: formatDocument(e.target.value, formData.tipo || 'Cliente')
                     })}
-                    placeholder={formData.type === 'Fornecedor' ? '00.000.000/0000-00' : '000.000.000-00'}
+                    placeholder={formData.tipo === 'Fornecedor' ? '00.000.000/0000-00' : '000.000.000-00'}
                     required
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="address" className="text-fluxo-blue-900 font-medium">
+                  <Label htmlFor="endereco" className="text-fluxo-blue-900 font-medium">
                     Endereço
                   </Label>
                   <Input
-                    id="address"
-                    value={formData.address}
-                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    id="endereco"
+                    value={formData.endereco}
+                    onChange={(e) => setFormData({ ...formData, endereco: e.target.value })}
                     placeholder="Rua, Avenida..."
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="number" className="text-fluxo-blue-900 font-medium">
-                    Número
-                  </Label>
-                  <Input
-                    id="number"
-                    value={formData.number}
-                    onChange={(e) => setFormData({ ...formData, number: e.target.value })}
-                    placeholder="123"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="neighborhood" className="text-fluxo-blue-900 font-medium">
-                    Bairro
-                  </Label>
-                  <Input
-                    id="neighborhood"
-                    value={formData.neighborhood}
-                    onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
-                    placeholder="Centro"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="city" className="text-fluxo-blue-900 font-medium">
+                  <Label htmlFor="cidade" className="text-fluxo-blue-900 font-medium">
                     Cidade
                   </Label>
                   <Input
-                    id="city"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    id="cidade"
+                    value={formData.cidade}
+                    onChange={(e) => setFormData({ ...formData, cidade: e.target.value })}
                     placeholder="São Paulo"
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="state" className="text-fluxo-blue-900 font-medium">
+                  <Label htmlFor="estado" className="text-fluxo-blue-900 font-medium">
                     UF
                   </Label>
                   <Input
-                    id="state"
-                    value={formData.state}
-                    onChange={(e) => setFormData({ ...formData, state: e.target.value.toUpperCase() })}
+                    id="estado"
+                    value={formData.estado}
+                    onChange={(e) => setFormData({ ...formData, estado: e.target.value.toUpperCase() })}
                     placeholder="SP"
                     maxLength={2}
                   />
                 </div>
                 
-                {formData.type === 'Funcionário' && (
-                  <div>
-                    <Label htmlFor="salary" className="text-fluxo-blue-900 font-medium">
-                      Salário
-                    </Label>
-                    <Input
-                      id="salary"
-                      value={formData.salary}
-                      onChange={(e) => setFormData({ 
-                        ...formData, 
-                        salary: formatSalary(e.target.value)
-                      })}
-                      placeholder="R$ 0,00"
-                    />
-                  </div>
-                )}
-              </div>
-              
-              <div>
-                <Label htmlFor="observations" className="text-fluxo-blue-900 font-medium">
-                  Observações
-                </Label>
-                <Textarea
-                  id="observations"
-                  value={formData.observations}
-                  onChange={(e) => setFormData({ ...formData, observations: e.target.value })}
-                  placeholder="Observações adicionais..."
-                  rows={3}
-                />
+                <div>
+                  <Label htmlFor="email" className="text-fluxo-blue-900 font-medium">
+                    E-mail
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="email@exemplo.com"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="telefone" className="text-fluxo-blue-900 font-medium">
+                    Telefone
+                  </Label>
+                  <Input
+                    id="telefone"
+                    value={formData.telefone}
+                    onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+                    placeholder="(11) 99999-9999"
+                  />
+                </div>
               </div>
               
               <div className="flex space-x-4">
                 <Button
                   type="submit"
+                  disabled={loading}
                   className="gradient-fluxo hover:gradient-fluxo-light text-white font-semibold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  {editingContact ? 'Atualizar' : 'Cadastrar'}
+                  {loading ? 'Salvando...' : editingContact ? 'Atualizar' : 'Cadastrar'}
                 </Button>
                 
                 <Button
@@ -551,81 +585,88 @@ const RegisterManagement: React.FC = () => {
         <CardContent>
           <div className="space-y-4">
             {filteredContacts.map((contact) => (
-              <div
-                key={contact.id}
-                className="border rounded-lg p-4 hover:shadow-md transition-all duration-200 bg-gray-50"
-              >
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-2 lg:space-y-0">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Badge 
-                        variant={contact.type === 'Cliente' ? 'default' : 
-                                contact.type === 'Fornecedor' ? 'secondary' : 'outline'}
-                        className="gradient-fluxo text-white"
-                      >
-                        {contact.type}
-                      </Badge>
-                      <Badge 
-                        variant={contact.active ? 'default' : 'destructive'}
-                        className={contact.active ? 'bg-green-600' : ''}
-                      >
-                        {contact.active ? 'Ativo' : 'Inativo'}
-                      </Badge>
+              <React.Fragment key={contact.id}>
+                <div className={`border rounded-lg p-4 hover:shadow-md transition-all duration-200 ${viewingContact?.id === contact.id ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'}`}>
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-2 lg:space-y-0">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Badge 
+                          variant={contact.tipo === 'Cliente' ? 'default' : 
+                                  contact.tipo === 'Fornecedor' ? 'secondary' : 'outline'}
+                          className="gradient-fluxo text-white"
+                        >
+                          {contact.tipo}
+                        </Badge>
+                        <Badge 
+                          variant={contact.status === 'ativo' ? 'default' : 'destructive'}
+                          className={contact.status === 'ativo' ? 'bg-green-600' : ''}
+                        >
+                          {contact.status === 'ativo' ? 'Ativo' : 'Inativo'}
+                        </Badge>
+                      </div>
+                      
+                      <h3 className="font-semibold text-lg text-gray-900">{contact.nome}</h3>
+                      <p className="text-gray-600">{contact.documento}</p>
+                      <p className="text-sm text-gray-500">
+                        {contact.endereco && `${contact.endereco}, ${contact.cidade}/${contact.estado}`}
+                      </p>
+                      {contact.email && (
+                        <p className="text-sm text-gray-500">E-mail: {contact.email}</p>
+                      )}
+                      {contact.telefone && (
+                        <p className="text-sm text-gray-500">Telefone: {contact.telefone}</p>
+                      )}
                     </div>
                     
-                    <h3 className="font-semibold text-lg text-gray-900">{contact.name}</h3>
-                    <p className="text-gray-600">{contact.document}</p>
-                    <p className="text-sm text-gray-500">
-                      {contact.address && `${contact.address}, ${contact.number} - ${contact.neighborhood}, ${contact.city}/${contact.state}`}
-                    </p>
-                    <p className="text-xs text-gray-500 flex items-center mt-1">
-                      <Calendar className="mr-1 h-3 w-3" />
-                      Cadastrado em: {new Date(contact.date).toLocaleDateString('pt-BR')}
-                    </p>
-                    {contact.salary && (
-                      <p className="text-sm font-medium text-green-600">
-                        Salário: {contact.salary}
-                      </p>
-                    )}
-                  </div>
-                  
-                  <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" className="hover:bg-blue-50">
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => handleEdit(contact)}
-                      className="hover:bg-blue-50"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => handleToggleActive(contact.id)}
-                      className={contact.active ? 'hover:bg-orange-50' : 'hover:bg-green-50'}
-                    >
-                      {contact.active ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => handleDelete(contact.id)}
-                      className="hover:bg-red-50 text-red-600"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex space-x-2">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => handleView(contact)}
+                        className="hover:bg-blue-50"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleEdit(contact)}
+                        className="hover:bg-green-50"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleToggleActive(contact.id)}
+                        className={contact.status === 'ativo' ? 'hover:bg-orange-50' : 'hover:bg-green-50'}
+                      >
+                        {contact.status === 'ativo' ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleDelete(contact.id, contact.nome)}
+                        className="hover:bg-red-50 text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 
-                {contact.observations && (
-                  <div className="mt-3 p-2 bg-blue-50 rounded text-sm text-gray-700">
-                    <strong>Observações:</strong> {contact.observations}
+                {viewingContact?.id === contact.id && (
+                  <div className="ml-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <h4 className="font-semibold text-blue-900 mb-2">Detalhes Completos</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div><span className="font-medium">ID:</span> {contact.id}</div>
+                      <div><span className="font-medium">Cadastrado em:</span> {new Date(contact.created_at).toLocaleDateString('pt-BR')}</div>
+                      <div><span className="font-medium">Última atualização:</span> {new Date(contact.updated_at).toLocaleDateString('pt-BR')}</div>
+                      <div><span className="font-medium">Status:</span> {contact.status}</div>
+                    </div>
                   </div>
                 )}
-              </div>
+              </React.Fragment>
             ))}
             
             {filteredContacts.length === 0 && (
