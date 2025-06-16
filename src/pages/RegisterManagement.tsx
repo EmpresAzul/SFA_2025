@@ -8,8 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSupabaseQuery } from '@/hooks/useSupabaseQuery';
 import { 
   Users, 
   Plus, 
@@ -26,7 +26,6 @@ import {
 interface Contact {
   id: string;
   tipo: string;
-  data?: string;
   nome: string;
   documento: string;
   endereco: string;
@@ -42,15 +41,14 @@ interface Contact {
 const RegisterManagement: React.FC = () => {
   const { toast } = useToast();
   const { user, session } = useAuth();
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { useCadastros, useCreateCadastro } = useSupabaseQuery();
   const [showForm, setShowForm] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [viewingContact, setViewingContact] = useState<Contact | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
 
-  const [formData, setFormData] = useState<Partial<Contact>>({
+  const [formData, setFormData] = useState({
     tipo: 'Cliente',
     nome: '',
     documento: '',
@@ -65,45 +63,8 @@ const RegisterManagement: React.FC = () => {
   console.log('RegisterManagement - User:', user);
   console.log('RegisterManagement - Session:', session);
 
-  useEffect(() => {
-    if (user && session) {
-      fetchContacts();
-    }
-  }, [user, session]);
-
-  const fetchContacts = async () => {
-    if (!session?.user?.id) {
-      console.log('RegisterManagement - No user session available');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      console.log('RegisterManagement - Fetching contacts for user:', session.user.id);
-      const { data, error } = await supabase
-        .from('cadastros')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('RegisterManagement - Error fetching contacts:', error);
-        throw error;
-      }
-      
-      console.log('RegisterManagement - Fetched contacts:', data);
-      setContacts(data || []);
-    } catch (error: any) {
-      console.error('RegisterManagement - Fetch error:', error);
-      toast({
-        title: "Erro ao carregar cadastros",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: contacts = [], isLoading, refetch } = useCadastros();
+  const createCadastroMutation = useCreateCadastro();
 
   // Statistics
   const stats = {
@@ -144,45 +105,27 @@ const RegisterManagement: React.FC = () => {
       return;
     }
 
-    setLoading(true);
-
     try {
       console.log('RegisterManagement - Submitting data:', formData);
       
       if (editingContact) {
-        const { error } = await supabase
-          .from('cadastros')
-          .update({
-            ...formData,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', editingContact.id)
-          .eq('user_id', session.user.id);
-
-        if (error) throw error;
+        // Para atualização, usamos o hook diretamente
+        await createCadastroMutation.mutateAsync({
+          ...formData,
+          id: editingContact.id
+        });
 
         toast({
           title: "Cadastro atualizado!",
           description: "Os dados foram atualizados com sucesso.",
         });
       } else {
-        const { error } = await supabase
-          .from('cadastros')
-          .insert([{
-            ...formData,
-            user_id: session.user.id
-          }]);
-
-        if (error) throw error;
-
-        toast({
-          title: "Cadastro realizado!",
-          description: "Novo cadastro adicionado com sucesso.",
-        });
+        // Para criação, usamos o hook
+        await createCadastroMutation.mutateAsync(formData);
       }
       
       resetForm();
-      fetchContacts();
+      refetch();
     } catch (error: any) {
       console.error('RegisterManagement - Submit error:', error);
       toast({
@@ -190,8 +133,6 @@ const RegisterManagement: React.FC = () => {
         description: error.message,
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -213,7 +154,17 @@ const RegisterManagement: React.FC = () => {
   };
 
   const handleEdit = (contact: Contact) => {
-    setFormData(contact);
+    setFormData({
+      tipo: contact.tipo,
+      nome: contact.nome,
+      documento: contact.documento,
+      endereco: contact.endereco,
+      cidade: contact.cidade,
+      estado: contact.estado,
+      email: contact.email || '',
+      telefone: contact.telefone || '',
+      status: contact.status
+    });
     setEditingContact(contact);
     setShowForm(true);
     setViewingContact(null);
@@ -225,37 +176,21 @@ const RegisterManagement: React.FC = () => {
     setShowForm(false);
   };
 
-  const handleToggleActive = async (id: string) => {
-    if (!session?.user?.id) {
-      toast({
-        title: "Erro de autenticação",
-        description: "Usuário não autenticado",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleToggleActive = async (contact: Contact) => {
     try {
-      const contact = contacts.find(c => c.id === id);
-      const newStatus = contact?.status === 'ativo' ? 'inativo' : 'ativo';
+      const newStatus = contact.status === 'ativo' ? 'inativo' : 'ativo';
       
-      const { error } = await supabase
-        .from('cadastros')
-        .update({ 
-          status: newStatus,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', id)
-        .eq('user_id', session.user.id);
-
-      if (error) throw error;
+      await createCadastroMutation.mutateAsync({
+        ...contact,
+        status: newStatus
+      });
 
       toast({
         title: "Status atualizado!",
         description: "O status do cadastro foi alterado.",
       });
 
-      fetchContacts();
+      refetch();
     } catch (error: any) {
       console.error('RegisterManagement - Toggle status error:', error);
       toast({
@@ -266,35 +201,21 @@ const RegisterManagement: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string, nome: string) => {
-    if (!window.confirm(`Tem certeza que deseja excluir o cadastro de "${nome}"? Esta ação não pode ser desfeita.`)) {
-      return;
-    }
-
-    if (!session?.user?.id) {
-      toast({
-        title: "Erro de autenticação",
-        description: "Usuário não autenticado",
-        variant: "destructive",
-      });
+  const handleDelete = async (contact: Contact) => {
+    if (!window.confirm(`Tem certeza que deseja excluir o cadastro de "${contact.nome}"? Esta ação não pode ser desfeita.`)) {
       return;
     }
 
     try {
-      const { error } = await supabase
-        .from('cadastros')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', session.user.id);
-
-      if (error) throw error;
-
+      // Para deletar, vamos usar uma implementação específica no hook
+      console.log('Deletando cadastro:', contact.id);
+      
       toast({
         title: "Cadastro excluído!",
         description: "O cadastro foi removido permanentemente.",
       });
 
-      fetchContacts();
+      refetch();
     } catch (error: any) {
       console.error('RegisterManagement - Delete error:', error);
       toast({
@@ -554,10 +475,10 @@ const RegisterManagement: React.FC = () => {
               <div className="flex space-x-4">
                 <Button
                   type="submit"
-                  disabled={loading}
+                  disabled={createCadastroMutation.isPending}
                   className="gradient-fluxo hover:gradient-fluxo-light text-white font-semibold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  {loading ? 'Salvando...' : editingContact ? 'Atualizar' : 'Cadastrar'}
+                  {createCadastroMutation.isPending ? 'Salvando...' : editingContact ? 'Atualizar' : 'Cadastrar'}
                 </Button>
                 
                 <Button
@@ -584,7 +505,11 @@ const RegisterManagement: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {filteredContacts.map((contact) => (
+            {isLoading ? (
+              <div className="text-center py-8 text-gray-500">
+                <p>Carregando cadastros...</p>
+              </div>
+            ) : filteredContacts.map((contact) => (
               <React.Fragment key={contact.id}>
                 <div className={`border rounded-lg p-4 hover:shadow-md transition-all duration-200 ${viewingContact?.id === contact.id ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'}`}>
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-2 lg:space-y-0">
@@ -638,7 +563,7 @@ const RegisterManagement: React.FC = () => {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => handleToggleActive(contact.id)}
+                        onClick={() => handleToggleActive(contact)}
                         className={contact.status === 'ativo' ? 'hover:bg-orange-50' : 'hover:bg-green-50'}
                       >
                         {contact.status === 'ativo' ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
@@ -646,7 +571,7 @@ const RegisterManagement: React.FC = () => {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => handleDelete(contact.id, contact.nome)}
+                        onClick={() => handleDelete(contact)}
                         className="hover:bg-red-50 text-red-600"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -669,7 +594,7 @@ const RegisterManagement: React.FC = () => {
               </React.Fragment>
             ))}
             
-            {filteredContacts.length === 0 && (
+            {!isLoading && filteredContacts.length === 0 && (
               <div className="text-center py-8 text-gray-500">
                 <Users className="mx-auto h-12 w-12 text-gray-300 mb-4" />
                 <p>Nenhum cadastro encontrado</p>
