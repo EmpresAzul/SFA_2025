@@ -10,7 +10,7 @@ export const useSaldosBancarios = () => {
   const queryClient = useQueryClient();
 
   // Query para saldos bancários
-  const useQuery = () => {
+  const useSaldosBancariosQuery = () => {
     return useQuery({
       queryKey: ['saldos_bancarios'],
       queryFn: async () => {
@@ -37,7 +37,7 @@ export const useSaldosBancarios = () => {
   };
 
   // Mutation para criar/atualizar saldo bancário
-  const useCreate = () => {
+  const useSaldosBancariosCreate = () => {
     return useMutation({
       mutationFn: async (data: any) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
@@ -107,7 +107,7 @@ export const useSaldosBancarios = () => {
   };
 
   // Mutation para deletar saldo bancário
-  const useDelete = () => {
+  const useSaldosBancariosDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
@@ -147,8 +147,8 @@ export const useSaldosBancarios = () => {
   };
 
   return {
-    useQuery,
-    useCreate,
-    useDelete,
+    useQuery: useSaldosBancariosQuery,
+    useCreate: useSaldosBancariosCreate,
+    useDelete: useSaldosBancariosDelete,
   };
 };

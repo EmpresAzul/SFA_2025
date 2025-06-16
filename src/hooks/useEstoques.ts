@@ -10,7 +10,7 @@ export const useEstoques = () => {
   const queryClient = useQueryClient();
 
   // Query para estoques
-  const useQuery = () => {
+  const useEstoquesQuery = () => {
     return useQuery({
       queryKey: ['estoques'],
       queryFn: async () => {
@@ -38,7 +38,7 @@ export const useEstoques = () => {
   };
 
   // Mutation para criar/atualizar estoque
-  const useCreate = () => {
+  const useEstoquesCreate = () => {
     return useMutation({
       mutationFn: async (data: any) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
@@ -105,7 +105,7 @@ export const useEstoques = () => {
   };
 
   // Mutation para deletar estoque
-  const useDelete = () => {
+  const useEstoquesDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
@@ -145,8 +145,8 @@ export const useEstoques = () => {
   };
 
   return {
-    useQuery,
-    useCreate,
-    useDelete,
+    useQuery: useEstoquesQuery,
+    useCreate: useEstoquesCreate,
+    useDelete: useEstoquesDelete,
   };
 };

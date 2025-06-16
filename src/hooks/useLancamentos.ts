@@ -10,7 +10,7 @@ export const useLancamentos = () => {
   const queryClient = useQueryClient();
 
   // Query para lançamentos
-  const useQuery = () => {
+  const useLancamentosQuery = () => {
     return useQuery({
       queryKey: ['lancamentos'],
       queryFn: async () => {
@@ -38,7 +38,7 @@ export const useLancamentos = () => {
   };
 
   // Mutation para criar/atualizar lançamento
-  const useCreate = () => {
+  const useLancamentosCreate = () => {
     return useMutation({
       mutationFn: async (data: any) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
@@ -105,7 +105,7 @@ export const useLancamentos = () => {
   };
 
   // Mutation para deletar lançamento
-  const useDelete = () => {
+  const useLancamentosDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
@@ -145,8 +145,8 @@ export const useLancamentos = () => {
   };
 
   return {
-    useQuery,
-    useCreate,
-    useDelete,
+    useQuery: useLancamentosQuery,
+    useCreate: useLancamentosCreate,
+    useDelete: useLancamentosDelete,
   };
 };

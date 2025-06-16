@@ -10,7 +10,7 @@ export const useCadastros = () => {
   const queryClient = useQueryClient();
 
   // Query para cadastros
-  const useQuery = () => {
+  const useCadastrosQuery = () => {
     return useQuery({
       queryKey: ['cadastros'],
       queryFn: async () => {
@@ -38,7 +38,7 @@ export const useCadastros = () => {
   };
 
   // Mutation para criar/atualizar cadastro
-  const useCreate = () => {
+  const useCadastrosCreate = () => {
     return useMutation({
       mutationFn: async (data: any) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
@@ -132,7 +132,7 @@ export const useCadastros = () => {
   };
 
   // Mutation para deletar cadastro
-  const useDelete = () => {
+  const useCadastrosDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
@@ -172,8 +172,8 @@ export const useCadastros = () => {
   };
 
   return {
-    useQuery,
-    useCreate,
-    useDelete,
+    useQuery: useCadastrosQuery,
+    useCreate: useCadastrosCreate,
+    useDelete: useCadastrosDelete,
   };
 };
