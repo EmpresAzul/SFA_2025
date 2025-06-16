@@ -1,4 +1,5 @@
 
+// Usando o mesmo tipo Lancamento do sistema principal
 export interface Lancamento {
   id: string;
   data: string;

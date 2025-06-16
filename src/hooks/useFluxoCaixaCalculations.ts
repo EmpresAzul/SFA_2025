@@ -1,6 +1,6 @@
 
 import { useMemo } from 'react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Lancamento, FluxoDiario, CategoriaData } from '@/types/fluxoCaixa';
 
 export const useFluxoCaixaCalculations = (lancamentos: Lancamento[]) => {
@@ -21,22 +21,31 @@ export const useFluxoCaixaCalculations = (lancamentos: Lancamento[]) => {
   }, [totalReceitas, totalDespesas]);
 
   const fluxoPorDia = useMemo(() => {
-    const fluxoPorDia: { [key: string]: { receitas: number; despesas: number; data: string } } = {};
+    const fluxoPorDia: { [key: string]: { receitas: number; despesas: number; data: string; dataCompleta: string } } = {};
 
     lancamentos.forEach(lancamento => {
-      const data = lancamento.data;
-      if (!fluxoPorDia[data]) {
-        fluxoPorDia[data] = { receitas: 0, despesas: 0, data: format(new Date(data), 'dd/MM') };
+      const dataLancamento = lancamento.data;
+      const dataFormatada = format(parseISO(dataLancamento), 'dd/MM');
+      
+      if (!fluxoPorDia[dataLancamento]) {
+        fluxoPorDia[dataLancamento] = { 
+          receitas: 0, 
+          despesas: 0, 
+          data: dataFormatada,
+          dataCompleta: dataLancamento
+        };
       }
 
       if (lancamento.tipo === 'receita') {
-        fluxoPorDia[data].receitas += lancamento.valor;
+        fluxoPorDia[dataLancamento].receitas += lancamento.valor;
       } else {
-        fluxoPorDia[data].despesas += lancamento.valor;
+        fluxoPorDia[dataLancamento].despesas += lancamento.valor;
       }
     });
 
-    return Object.values(fluxoPorDia).sort((a, b) => a.data.localeCompare(b.data));
+    return Object.values(fluxoPorDia)
+      .sort((a, b) => a.dataCompleta.localeCompare(b.dataCompleta))
+      .map(({ dataCompleta, ...rest }) => rest);
   }, [lancamentos]);
 
   const receitasPorCategoria = useMemo(() => {

@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
-import { useFluxoCaixaData } from '@/hooks/useFluxoCaixaData';
-import { useFluxoCaixaCalculations } from '@/hooks/useFluxoCaixaCalculations';
+import React, { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useIntegratedFluxoCaixa } from '@/hooks/useIntegratedFluxoCaixa';
 import { SummaryCards } from '@/components/fluxo-caixa/SummaryCards';
 import { DailyFlowChart } from '@/components/fluxo-caixa/DailyFlowChart';
 import { CategoryChart } from '@/components/fluxo-caixa/CategoryChart';
@@ -9,15 +9,31 @@ import { PeriodSelector } from '@/components/fluxo-caixa/PeriodSelector';
 
 const FluxoCaixa: React.FC = () => {
   const [periodoFilter, setPeriodoFilter] = useState('mes-atual');
-  const { lancamentos, loading } = useFluxoCaixaData(periodoFilter);
+  const queryClient = useQueryClient();
+  
   const {
+    lancamentos,
+    loading,
     totalReceitas,
     totalDespesas,
     saldo,
     fluxoPorDia,
     receitasPorCategoria,
-    despesasPorCategoria
-  } = useFluxoCaixaCalculations(lancamentos);
+    despesasPorCategoria,
+    onLancamentosChange
+  } = useIntegratedFluxoCaixa(periodoFilter);
+
+  // Escutar mudanças nos lançamentos para atualização automática
+  useEffect(() => {
+    const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
+      if (event?.query?.queryKey?.[0] === 'lancamentos') {
+        console.log('Detectada mudança nos lançamentos, atualizando fluxo de caixa...');
+        onLancamentosChange();
+      }
+    });
+
+    return () => unsubscribe();
+  }, [queryClient, onLancamentosChange]);
 
   const getPeriodoLabel = () => {
     switch (periodoFilter) {
@@ -47,7 +63,9 @@ const FluxoCaixa: React.FC = () => {
           <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
             💰 Fluxo de Caixa
           </h1>
-          <p className="text-gray-600 mt-2 text-sm">Análise detalhada do movimento financeiro</p>
+          <p className="text-gray-600 mt-2 text-sm">
+            Análise detalhada do movimento financeiro - {lancamentos.length} lançamentos
+          </p>
         </div>
         
         <PeriodSelector value={periodoFilter} onChange={setPeriodoFilter} />
