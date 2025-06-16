@@ -38,6 +38,25 @@ const RegisterManagement: React.FC = () => {
     resetForm
   } = useContactForm(createCadastroMutation, refetch, session);
 
+  // Verificar se o usuário está autenticado
+  if (!session?.user?.id) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="text-center py-8">
+          <h1 className="text-3xl font-bold gradient-fluxo-text mb-2">
+            Cadastros
+          </h1>
+          <p className="text-gray-600 mb-4">
+            Você precisa estar logado para acessar os cadastros.
+          </p>
+          <p className="text-red-600">
+            Por favor, faça login para continuar.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const handleToggleActive = async (contact: any) => {
     try {
       const newStatus = contact.status === 'ativo' ? 'inativo' : 'ativo';

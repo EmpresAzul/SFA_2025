@@ -11,13 +11,13 @@ export const useSupabaseQuery = () => {
   const saldosBancarios = useSaldosBancarios();
 
   return {
-    // Queries - usando os nomes corretos retornados pelos hooks
+    // Queries - retornando as funções diretamente
     useCadastros: cadastros.useCadastrosQuery,
     useEstoques: estoques.useQuery,
     useLancamentos: lancamentos.useQuery,
     useSaldosBancarios: saldosBancarios.useQuery,
     
-    // Mutations - usando os nomes corretos retornados pelos hooks
+    // Mutations - retornando as funções diretamente
     useCreateCadastro: cadastros.useCreateCadastro,
     useDeleteCadastro: cadastros.useDeleteCadastro,
     useCreateEstoque: estoques.useCreate,

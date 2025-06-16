@@ -1,15 +1,15 @@
 
 import { useAuth } from '@/contexts/AuthContext';
-import { useSupabaseQuery } from '@/hooks/useSupabaseQuery';
+import { useCadastros } from '@/hooks/useCadastros';
 
 export const useContactData = () => {
   const { user, session } = useAuth();
-  const { useCadastros, useCreateCadastro, useDeleteCadastro } = useSupabaseQuery();
+  const { useCadastrosQuery, useCreateCadastro, useDeleteCadastro } = useCadastros();
 
   console.log('useContactData - User:', user);
   console.log('useContactData - Session:', session);
 
-  const { data: contacts = [], isLoading, refetch, error } = useCadastros();
+  const { data: contacts = [], isLoading, refetch, error } = useCadastrosQuery();
   const createCadastroMutation = useCreateCadastro();
   const deleteCadastroMutation = useDeleteCadastro();
 

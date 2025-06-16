@@ -16,7 +16,7 @@ export const useCadastros = () => {
       queryFn: async () => {
         if (!session?.user?.id) {
           console.log('useCadastros - No authenticated user');
-          throw new Error('User not authenticated');
+          return [];
         }
         
         console.log('useCadastros - Fetching cadastros for user:', session.user.id);
@@ -47,7 +47,7 @@ export const useCadastros = () => {
       mutationFn: async (data: any) => {
         if (!session?.user?.id) {
           console.log('useCadastros - No authenticated user for create/update');
-          throw new Error('User not authenticated');
+          throw new Error('Usuário não autenticado');
         }
         
         console.log('useCadastros - Creating/updating cadastro:', data);
@@ -143,7 +143,7 @@ export const useCadastros = () => {
     return useMutation({
       mutationFn: async (id: string) => {
         if (!session?.user?.id) {
-          throw new Error('User not authenticated');
+          throw new Error('Usuário não autenticado');
         }
         
         console.log('useCadastros - Deleting cadastro:', id);
