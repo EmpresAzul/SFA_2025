@@ -1,10 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -19,7 +17,6 @@ import {
   Trash2, 
   UserCheck, 
   UserX,
-  Calendar,
   Filter
 } from 'lucide-react';
 
@@ -41,7 +38,7 @@ interface Contact {
 const RegisterManagement: React.FC = () => {
   const { toast } = useToast();
   const { user, session } = useAuth();
-  const { useCadastros, useCreateCadastro } = useSupabaseQuery();
+  const { useCadastros, useCreateCadastro, useDeleteCadastro } = useSupabaseQuery();
   const [showForm, setShowForm] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [viewingContact, setViewingContact] = useState<Contact | null>(null);
@@ -65,6 +62,7 @@ const RegisterManagement: React.FC = () => {
 
   const { data: contacts = [], isLoading, refetch } = useCadastros();
   const createCadastroMutation = useCreateCadastro();
+  const deleteCadastroMutation = useDeleteCadastro();
 
   // Statistics
   const stats = {
@@ -108,31 +106,13 @@ const RegisterManagement: React.FC = () => {
     try {
       console.log('RegisterManagement - Submitting data:', formData);
       
-      if (editingContact) {
-        // Para atualização, usamos o hook diretamente
-        await createCadastroMutation.mutateAsync({
-          ...formData,
-          id: editingContact.id
-        });
-
-        toast({
-          title: "Cadastro atualizado!",
-          description: "Os dados foram atualizados com sucesso.",
-        });
-      } else {
-        // Para criação, usamos o hook
-        await createCadastroMutation.mutateAsync(formData);
-      }
+      const dataToSubmit = editingContact ? { ...formData, id: editingContact.id } : formData;
+      await createCadastroMutation.mutateAsync(dataToSubmit);
       
       resetForm();
       refetch();
     } catch (error: any) {
       console.error('RegisterManagement - Submit error:', error);
-      toast({
-        title: "Erro ao salvar cadastro",
-        description: error.message,
-        variant: "destructive",
-      });
     }
   };
 
@@ -182,22 +162,13 @@ const RegisterManagement: React.FC = () => {
       
       await createCadastroMutation.mutateAsync({
         ...contact,
-        status: newStatus
-      });
-
-      toast({
-        title: "Status atualizado!",
-        description: "O status do cadastro foi alterado.",
+        status: newStatus,
+        id: contact.id
       });
 
       refetch();
     } catch (error: any) {
       console.error('RegisterManagement - Toggle status error:', error);
-      toast({
-        title: "Erro ao alterar status",
-        description: error.message,
-        variant: "destructive",
-      });
     }
   };
 
@@ -207,22 +178,10 @@ const RegisterManagement: React.FC = () => {
     }
 
     try {
-      // Para deletar, vamos usar uma implementação específica no hook
-      console.log('Deletando cadastro:', contact.id);
-      
-      toast({
-        title: "Cadastro excluído!",
-        description: "O cadastro foi removido permanentemente.",
-      });
-
+      await deleteCadastroMutation.mutateAsync(contact.id);
       refetch();
     } catch (error: any) {
       console.error('RegisterManagement - Delete error:', error);
-      toast({
-        title: "Erro ao excluir cadastro",
-        description: error.message,
-        variant: "destructive",
-      });
     }
   };
 
@@ -549,6 +508,7 @@ const RegisterManagement: React.FC = () => {
                         variant="outline" 
                         onClick={() => handleView(contact)}
                         className="hover:bg-blue-50"
+                        title="Visualizar"
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
@@ -557,6 +517,7 @@ const RegisterManagement: React.FC = () => {
                         variant="outline"
                         onClick={() => handleEdit(contact)}
                         className="hover:bg-green-50"
+                        title="Editar"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -565,6 +526,7 @@ const RegisterManagement: React.FC = () => {
                         variant="outline"
                         onClick={() => handleToggleActive(contact)}
                         className={contact.status === 'ativo' ? 'hover:bg-orange-50' : 'hover:bg-green-50'}
+                        title={contact.status === 'ativo' ? 'Desativar' : 'Ativar'}
                       >
                         {contact.status === 'ativo' ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
                       </Button>
@@ -573,6 +535,7 @@ const RegisterManagement: React.FC = () => {
                         variant="outline"
                         onClick={() => handleDelete(contact)}
                         className="hover:bg-red-50 text-red-600"
+                        title="Excluir"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

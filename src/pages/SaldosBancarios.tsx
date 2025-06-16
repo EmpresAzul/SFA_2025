@@ -9,8 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { CurrencyInput } from '@/components/ui/currency-input';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Search, Banknote, TrendingUp, Eye, Edit, Trash2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSupabaseQuery } from '@/hooks/useSupabaseQuery';
 import { format } from 'date-fns';
 import { formatCurrency } from '@/utils/formatters';
 
@@ -39,15 +39,18 @@ const bancos = [
 ];
 
 const SaldosBancarios: React.FC = () => {
-  const [saldos, setSaldos] = useState<SaldoBancario[]>([]);
   const [filteredSaldos, setFilteredSaldos] = useState<SaldoBancario[]>([]);
-  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [bancoFilter, setBancoFilter] = useState('todos');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [viewingId, setViewingId] = useState<string | null>(null);
   const { user, session } = useAuth();
   const { toast } = useToast();
+
+  const { useSaldosBancarios, useCreateSaldoBancario, useDeleteSaldoBancario } = useSupabaseQuery();
+  const { data: saldos = [], isLoading, refetch } = useSaldosBancarios();
+  const createSaldoBancarioMutation = useCreateSaldoBancario();
+  const deleteSaldoBancarioMutation = useDeleteSaldoBancario();
 
   const [formData, setFormData] = useState({
     data: '',
@@ -59,48 +62,8 @@ const SaldosBancarios: React.FC = () => {
   console.log('SaldosBancarios - Session:', session);
 
   useEffect(() => {
-    if (user && session) {
-      fetchSaldos();
-    }
-  }, [user, session]);
-
-  useEffect(() => {
     filterSaldos();
   }, [saldos, searchTerm, bancoFilter]);
-
-  const fetchSaldos = async () => {
-    if (!session?.user?.id) {
-      console.log('SaldosBancarios - No user session available');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      console.log('SaldosBancarios - Fetching saldos for user:', session.user.id);
-      const { data, error } = await supabase
-        .from('saldos_bancarios')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('SaldosBancarios - Error fetching saldos:', error);
-        throw error;
-      }
-      
-      console.log('SaldosBancarios - Fetched saldos:', data);
-      setSaldos(data || []);
-    } catch (error: any) {
-      console.error('SaldosBancarios - Fetch error:', error);
-      toast({
-        title: "Erro ao carregar saldos bancários",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const filterSaldos = () => {
     let filtered = saldos;
@@ -130,58 +93,16 @@ const SaldosBancarios: React.FC = () => {
       return;
     }
 
-    setLoading(true);
-
     try {
       console.log('SaldosBancarios - Submitting data:', formData);
       
-      if (editingId) {
-        const { error } = await supabase
-          .from('saldos_bancarios')
-          .update({
-            data: formData.data,
-            banco: formData.banco,
-            saldo: formData.saldo,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', editingId)
-          .eq('user_id', session.user.id);
-
-        if (error) throw error;
-
-        toast({
-          title: "Saldo bancário atualizado com sucesso!",
-          description: `Saldo do ${formData.banco} atualizado.`,
-        });
-      } else {
-        const { error } = await supabase
-          .from('saldos_bancarios')
-          .insert([{
-            user_id: session.user.id,
-            data: formData.data,
-            banco: formData.banco,
-            saldo: formData.saldo
-          }]);
-
-        if (error) throw error;
-
-        toast({
-          title: "Saldo bancário cadastrado com sucesso!",
-          description: `Saldo do ${formData.banco} registrado.`,
-        });
-      }
+      const dataToSubmit = editingId ? { ...formData, id: editingId } : formData;
+      await createSaldoBancarioMutation.mutateAsync(dataToSubmit);
 
       resetForm();
-      fetchSaldos();
+      refetch();
     } catch (error: any) {
       console.error('SaldosBancarios - Submit error:', error);
-      toast({
-        title: "Erro ao salvar saldo bancário",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -225,27 +146,10 @@ const SaldosBancarios: React.FC = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from('saldos_bancarios')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', session.user.id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Saldo bancário excluído!",
-        description: "O saldo foi removido com sucesso.",
-      });
-
-      fetchSaldos();
+      await deleteSaldoBancarioMutation.mutateAsync(id);
+      refetch();
     } catch (error: any) {
       console.error('SaldosBancarios - Delete error:', error);
-      toast({
-        title: "Erro ao excluir saldo bancário",
-        description: error.message,
-        variant: "destructive",
-      });
     }
   };
 
@@ -358,11 +262,11 @@ const SaldosBancarios: React.FC = () => {
             <div className="flex space-x-4">
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={createSaldoBancarioMutation.isPending}
                 className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                {loading ? "Salvando..." : editingId ? "Atualizar Saldo" : "Cadastrar Saldo"}
+                {createSaldoBancarioMutation.isPending ? "Salvando..." : editingId ? "Atualizar Saldo" : "Cadastrar Saldo"}
               </Button>
               
               {editingId && (
@@ -449,6 +353,7 @@ const SaldosBancarios: React.FC = () => {
                           variant="outline"
                           onClick={() => handleView(saldo)}
                           className="hover:bg-blue-50"
+                          title="Visualizar"
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -457,6 +362,7 @@ const SaldosBancarios: React.FC = () => {
                           variant="outline"
                           onClick={() => handleEdit(saldo)}
                           className="hover:bg-green-50"
+                          title="Editar"
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -465,6 +371,7 @@ const SaldosBancarios: React.FC = () => {
                           variant="outline"
                           onClick={() => handleDelete(saldo.id, saldo.banco)}
                           className="hover:bg-red-50 text-red-600"
+                          title="Excluir"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
