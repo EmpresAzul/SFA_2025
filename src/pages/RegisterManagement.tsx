@@ -30,6 +30,7 @@ const RegisterManagement: React.FC = () => {
     editingContact,
     viewingContact,
     formatDocument,
+    formatTelefone,
     handleSubmit,
     handleEdit,
     handleView,
@@ -109,6 +110,7 @@ const RegisterManagement: React.FC = () => {
           setFormData={setFormData}
           editingContact={editingContact}
           formatDocument={formatDocument}
+          formatTelefone={formatTelefone}
           handleSubmit={handleSubmit}
           resetForm={resetForm}
           isLoading={createCadastroMutation.isPending}

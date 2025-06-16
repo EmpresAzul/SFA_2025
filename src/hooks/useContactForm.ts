@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Contact, ContactFormData } from '@/types/contact';
+import { formatCPF, formatCNPJ, formatPhone } from '@/utils/formatters';
 
 export const useContactForm = (
   createCadastroMutation: any,
@@ -14,32 +15,33 @@ export const useContactForm = (
   const [viewingContact, setViewingContact] = useState<Contact | null>(null);
 
   const [formData, setFormData] = useState<ContactFormData>({
+    data: new Date().toISOString().split('T')[0],
     tipo: 'Cliente',
+    pessoa: 'Física',
     nome: '',
     documento: '',
     endereco: '',
+    numero: '',
     cidade: '',
     estado: '',
     email: '',
     telefone: '',
+    observacoes: '',
+    anexo_url: '',
+    salario: 0,
     status: 'ativo'
   });
 
-  const formatDocument = (value: string, type: string) => {
-    const numbers = value.replace(/\D/g, '');
-    
-    if (type === 'Cliente' || type === 'Funcionário') {
-      // CPF format: 000.000.000-00
-      if (numbers.length <= 11) {
-        return numbers.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-      }
+  const formatDocument = (value: string, pessoa: string) => {
+    if (pessoa === 'Física') {
+      return formatCPF(value);
     } else {
-      // CNPJ format: 00.000.000/0000-00
-      if (numbers.length <= 14) {
-        return numbers.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-      }
+      return formatCNPJ(value);
     }
-    return value;
+  };
+
+  const formatTelefone = (value: string) => {
+    return formatPhone(value);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,14 +71,20 @@ export const useContactForm = (
 
   const handleEdit = (contact: Contact) => {
     setFormData({
+      data: contact.data,
       tipo: contact.tipo,
+      pessoa: contact.pessoa,
       nome: contact.nome,
       documento: contact.documento,
       endereco: contact.endereco,
+      numero: contact.numero || '',
       cidade: contact.cidade,
       estado: contact.estado,
       email: contact.email || '',
       telefone: contact.telefone || '',
+      observacoes: contact.observacoes || '',
+      anexo_url: contact.anexo_url || '',
+      salario: contact.salario || 0,
       status: contact.status
     });
     setEditingContact(contact);
@@ -92,14 +100,20 @@ export const useContactForm = (
 
   const resetForm = () => {
     setFormData({
+      data: new Date().toISOString().split('T')[0],
       tipo: 'Cliente',
+      pessoa: 'Física',
       nome: '',
       documento: '',
       endereco: '',
+      numero: '',
       cidade: '',
       estado: '',
       email: '',
       telefone: '',
+      observacoes: '',
+      anexo_url: '',
+      salario: 0,
       status: 'ativo'
     });
     setShowForm(false);
@@ -115,6 +129,7 @@ export const useContactForm = (
     editingContact,
     viewingContact,
     formatDocument,
+    formatTelefone,
     handleSubmit,
     handleEdit,
     handleView,

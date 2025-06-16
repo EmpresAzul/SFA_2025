@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Users, Eye, Edit, UserCheck, UserX, Trash2 } from 'lucide-react';
 import { Contact } from '@/types/contact';
+import { formatCurrency } from '@/utils/formatters';
 
 interface ContactListProps {
   filteredContacts: Contact[];
@@ -53,6 +54,12 @@ export const ContactList: React.FC<ContactListProps> = ({
                         {contact.tipo}
                       </Badge>
                       <Badge 
+                        variant={contact.pessoa === 'Física' ? 'default' : 'secondary'}
+                        className="bg-blue-600"
+                      >
+                        {contact.pessoa}
+                      </Badge>
+                      <Badge 
                         variant={contact.status === 'ativo' ? 'default' : 'destructive'}
                         className={contact.status === 'ativo' ? 'bg-green-600' : ''}
                       >
@@ -63,13 +70,19 @@ export const ContactList: React.FC<ContactListProps> = ({
                     <h3 className="font-semibold text-lg text-gray-900">{contact.nome}</h3>
                     <p className="text-gray-600">{contact.documento}</p>
                     <p className="text-sm text-gray-500">
-                      {contact.endereco && `${contact.endereco}, ${contact.cidade}/${contact.estado}`}
+                      Data: {new Date(contact.data).toLocaleDateString('pt-BR')}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {contact.endereco && `${contact.endereco}${contact.numero ? `, ${contact.numero}` : ''}, ${contact.cidade}/${contact.estado}`}
                     </p>
                     {contact.email && (
                       <p className="text-sm text-gray-500">E-mail: {contact.email}</p>
                     )}
                     {contact.telefone && (
                       <p className="text-sm text-gray-500">Telefone: {contact.telefone}</p>
+                    )}
+                    {contact.tipo === 'Funcionário' && contact.salario && (
+                      <p className="text-sm text-gray-500">Salário: {formatCurrency(contact.salario)}</p>
                     )}
                   </div>
                   
@@ -119,9 +132,22 @@ export const ContactList: React.FC<ContactListProps> = ({
                   <h4 className="font-semibold text-blue-900 mb-2">Detalhes Completos</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div><span className="font-medium">ID:</span> {contact.id}</div>
+                    <div><span className="font-medium">Data:</span> {new Date(contact.data).toLocaleDateString('pt-BR')}</div>
+                    <div><span className="font-medium">Tipo:</span> {contact.tipo}</div>
+                    <div><span className="font-medium">Pessoa:</span> {contact.pessoa}</div>
+                    <div><span className="font-medium">Documento:</span> {contact.documento}</div>
+                    <div><span className="font-medium">Endereço completo:</span> {contact.endereco}{contact.numero ? `, ${contact.numero}` : ''}</div>
+                    <div><span className="font-medium">Cidade/UF:</span> {contact.cidade}/{contact.estado}</div>
+                    {contact.email && <div><span className="font-medium">E-mail:</span> {contact.email}</div>}
+                    {contact.telefone && <div><span className="font-medium">Telefone:</span> {contact.telefone}</div>}
+                    {contact.tipo === 'Funcionário' && contact.salario && (
+                      <div><span className="font-medium">Salário:</span> {formatCurrency(contact.salario)}</div>
+                    )}
+                    {contact.observacoes && <div className="col-span-2"><span className="font-medium">Observações:</span> {contact.observacoes}</div>}
+                    {contact.anexo_url && <div><span className="font-medium">Anexo:</span> {contact.anexo_url}</div>}
+                    <div><span className="font-medium">Status:</span> {contact.status}</div>
                     <div><span className="font-medium">Cadastrado em:</span> {new Date(contact.created_at).toLocaleDateString('pt-BR')}</div>
                     <div><span className="font-medium">Última atualização:</span> {new Date(contact.updated_at).toLocaleDateString('pt-BR')}</div>
-                    <div><span className="font-medium">Status:</span> {contact.status}</div>
                   </div>
                 </div>
               )}

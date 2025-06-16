@@ -11,15 +11,21 @@ export type Database = {
     Tables: {
       cadastros: {
         Row: {
+          anexo_url: string | null
           cep: string | null
           cidade: string | null
           created_at: string
+          data: string
           documento: string | null
           email: string | null
           endereco: string | null
           estado: string | null
           id: string
           nome: string
+          numero: string | null
+          observacoes: string | null
+          pessoa: string
+          salario: number | null
           status: string
           telefone: string | null
           tipo: string
@@ -27,15 +33,21 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          anexo_url?: string | null
           cep?: string | null
           cidade?: string | null
           created_at?: string
+          data: string
           documento?: string | null
           email?: string | null
           endereco?: string | null
           estado?: string | null
           id?: string
           nome: string
+          numero?: string | null
+          observacoes?: string | null
+          pessoa: string
+          salario?: number | null
           status?: string
           telefone?: string | null
           tipo: string
@@ -43,15 +55,21 @@ export type Database = {
           user_id: string
         }
         Update: {
+          anexo_url?: string | null
           cep?: string | null
           cidade?: string | null
           created_at?: string
+          data?: string
           documento?: string | null
           email?: string | null
           endereco?: string | null
           estado?: string | null
           id?: string
           nome?: string
+          numero?: string | null
+          observacoes?: string | null
+          pessoa?: string
+          salario?: number | null
           status?: string
           telefone?: string | null
           tipo?: string
