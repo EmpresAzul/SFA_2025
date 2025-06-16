@@ -9,7 +9,7 @@ export const useCadastros = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Query para buscar cadastros - seguindo exatamente o padrão do useEstoques
+  // Query para buscar cadastros
   const useCadastrosQuery = () => {
     return useQuery({
       queryKey: ['cadastros', session?.user?.id],
@@ -41,31 +41,29 @@ export const useCadastros = () => {
     });
   };
 
-  // Mutation para criar cadastro - seguindo exatamente o padrão do useEstoques
+  // Mutation para criar cadastro
   const useCreateCadastro = () => {
     return useMutation({
       mutationFn: async (data: any) => {
         if (!session?.user?.id) {
-          console.log('useCadastros - No authenticated user for create');
           throw new Error('Usuário não autenticado');
         }
         
         console.log('useCadastros - Creating cadastro with data:', data);
         
-        // Preparar dados seguindo exatamente o padrão do estoque
         const dataToInsert = {
           user_id: session.user.id,
           data: data.data,
           tipo: data.tipo,
           pessoa: data.pessoa,
-          nome: data.nome,
-          documento: data.documento?.replace(/\D/g, '') || null,
+          nome: data.nome?.trim(),
+          documento: data.documento ? data.documento.replace(/\D/g, '') : null,
           endereco: data.endereco?.trim() || null,
           numero: data.numero?.trim() || null,
           cidade: data.cidade?.trim() || null,
           estado: data.estado?.trim()?.toUpperCase() || null,
           email: data.email?.trim() || null,
-          telefone: data.telefone?.replace(/\D/g, '') || null,
+          telefone: data.telefone ? data.telefone.replace(/\D/g, '') : null,
           observacoes: data.observacoes?.trim() || null,
           anexo_url: data.anexo_url?.trim() || null,
           salario: data.salario && data.salario > 0 ? data.salario : null,
@@ -106,12 +104,11 @@ export const useCadastros = () => {
     });
   };
 
-  // Mutation para atualizar cadastro - seguindo exatamente o padrão do useEstoques
+  // Mutation para atualizar cadastro
   const useUpdateCadastro = () => {
     return useMutation({
       mutationFn: async (data: any) => {
         if (!session?.user?.id) {
-          console.log('useCadastros - No authenticated user for update');
           throw new Error('Usuário não autenticado');
         }
         
@@ -121,14 +118,14 @@ export const useCadastros = () => {
           data: data.data,
           tipo: data.tipo,
           pessoa: data.pessoa,
-          nome: data.nome,
-          documento: data.documento?.replace(/\D/g, '') || null,
+          nome: data.nome?.trim(),
+          documento: data.documento ? data.documento.replace(/\D/g, '') : null,
           endereco: data.endereco?.trim() || null,
           numero: data.numero?.trim() || null,
           cidade: data.cidade?.trim() || null,
           estado: data.estado?.trim()?.toUpperCase() || null,
           email: data.email?.trim() || null,
-          telefone: data.telefone?.replace(/\D/g, '') || null,
+          telefone: data.telefone ? data.telefone.replace(/\D/g, '') : null,
           observacoes: data.observacoes?.trim() || null,
           anexo_url: data.anexo_url?.trim() || null,
           salario: data.salario && data.salario > 0 ? data.salario : null,
@@ -172,7 +169,7 @@ export const useCadastros = () => {
     });
   };
 
-  // Mutation para deletar cadastro - seguindo exatamente o padrão do useEstoques
+  // Mutation para deletar cadastro
   const useDeleteCadastro = () => {
     return useMutation({
       mutationFn: async (id: string) => {

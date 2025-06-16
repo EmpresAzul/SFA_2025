@@ -48,12 +48,8 @@ export const useContactForm = (
   const validateForm = () => {
     const errors = [];
 
-    if (!formData.nome.trim()) {
+    if (!formData.nome?.trim()) {
       errors.push('Nome é obrigatório');
-    }
-
-    if (!formData.documento.trim()) {
-      errors.push('Documento é obrigatório');
     }
 
     if (!formData.data) {
@@ -75,7 +71,12 @@ export const useContactForm = (
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('ContactForm - handleSubmit called');
+    console.log('ContactForm - Session:', session);
+    console.log('ContactForm - FormData:', formData);
+    
     if (!session?.user?.id) {
+      console.error('ContactForm - No authenticated user');
       toast({
         title: "Erro de autenticação",
         description: "Usuário não autenticado. Faça login novamente.",
@@ -85,48 +86,46 @@ export const useContactForm = (
     }
 
     if (!validateForm()) {
+      console.error('ContactForm - Form validation failed');
       return;
     }
 
     try {
-      console.log('ContactForm - Submitting data:', formData);
-      
-      // Preparar dados seguindo o padrão do EstoqueForm
       const dataToSubmit = {
         user_id: session.user.id,
         data: formData.data,
         tipo: formData.tipo,
         pessoa: formData.pessoa,
-        nome: formData.nome.trim(),
-        documento: formData.documento?.replace(/\D/g, '') || null,
-        endereco: formData.endereco?.trim() || null,
-        numero: formData.numero?.trim() || null,
-        cidade: formData.cidade?.trim() || null,
-        estado: formData.estado?.trim().toUpperCase() || null,
-        email: formData.email?.trim() || null,
-        telefone: formData.telefone?.replace(/\D/g, '') || null,
-        observacoes: formData.observacoes?.trim() || null,
-        anexo_url: formData.anexo_url?.trim() || null,
-        salario: formData.salario && formData.salario > 0 ? formData.salario : null,
+        nome: formData.nome?.trim(),
+        documento: formData.documento || null,
+        endereco: formData.endereco || null,
+        numero: formData.numero || null,
+        cidade: formData.cidade || null,
+        estado: formData.estado || null,
+        email: formData.email || null,
+        telefone: formData.telefone || null,
+        observacoes: formData.observacoes || null,
+        anexo_url: formData.anexo_url || null,
+        salario: formData.salario || null,
         status: formData.status || 'ativo',
         ...(editingContact ? { id: editingContact.id } : {})
       };
       
-      console.log('ContactForm - Final data to submit:', dataToSubmit);
+      console.log('ContactForm - Data to submit:', dataToSubmit);
       
       if (editingContact) {
+        console.log('ContactForm - Updating existing contact');
         await updateCadastroMutation.mutateAsync(dataToSubmit);
       } else {
+        console.log('ContactForm - Creating new contact');
         await createCadastroMutation.mutateAsync(dataToSubmit);
       }
       
       console.log('ContactForm - Mutation completed successfully');
-      
       resetForm();
       refetch();
     } catch (error: any) {
       console.error('ContactForm - Submit error:', error);
-      // O toast de erro já é mostrado pelas mutations
     }
   };
 
