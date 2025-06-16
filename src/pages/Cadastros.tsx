@@ -48,8 +48,7 @@ const Cadastros: React.FC = () => {
     estado: '',
     cep: '',
     observacoes: '',
-    salario: '',
-    data: new Date().toISOString().split('T')[0]
+    salario: ''
   });
 
   useEffect(() => {
@@ -127,8 +126,8 @@ const Cadastros: React.FC = () => {
         estado: formData.estado.trim() || undefined,
         cep: formData.cep.trim() || undefined,
         observacoes: formData.observacoes.trim() || undefined,
-        salario: formData.salario ? parseFloat(formData.salario) : undefined,
-        data: formData.data,
+        salario: formData.salario && formData.salario.trim() ? parseFloat(formData.salario) : undefined,
+        data: new Date().toISOString().split('T')[0],
         user_id: user!.id,
         status: 'ativo'
       };
@@ -168,8 +167,7 @@ const Cadastros: React.FC = () => {
       estado: '',
       cep: '',
       observacoes: '',
-      salario: '',
-      data: new Date().toISOString().split('T')[0]
+      salario: ''
     });
     setEditingCadastro(null);
   };
@@ -188,8 +186,7 @@ const Cadastros: React.FC = () => {
       estado: cadastro.estado || '',
       cep: cadastro.cep || '',
       observacoes: cadastro.observacoes || '',
-      salario: cadastro.salario?.toString() || '',
-      data: cadastro.data
+      salario: cadastro.salario?.toString() || ''
     });
     setEditingCadastro(cadastro);
     setActiveTab('formulario');
@@ -500,17 +497,6 @@ const Cadastros: React.FC = () => {
                       />
                     </div>
                   )}
-
-                  <div className="space-y-2">
-                    <Label htmlFor="data">Data de Cadastro</Label>
-                    <Input
-                      id="data"
-                      type="date"
-                      value={formData.data}
-                      onChange={(e) => setFormData({ ...formData, data: e.target.value })}
-                      required
-                    />
-                  </div>
                 </div>
 
                 {/* Endereço */}
