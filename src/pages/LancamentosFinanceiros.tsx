@@ -180,6 +180,12 @@ const LancamentosFinanceiros: React.FC = () => {
     setActiveTab('lista');
   };
 
+  const handleNewLancamento = () => {
+    console.log('Clicando em Novo Lançamento');
+    resetForm();
+    setActiveTab('formulario');
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -194,7 +200,7 @@ const LancamentosFinanceiros: React.FC = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="lista">Lista de Lançamentos</TabsTrigger>
-          <TabsTrigger value="formulario">
+          <TabsTrigger value="formulario" onClick={handleNewLancamento}>
             {editingLancamento ? 'Editar Lançamento' : 'Novo Lançamento'}
           </TabsTrigger>
         </TabsList>
