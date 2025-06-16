@@ -10,41 +10,38 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Search, TrendingUp, TrendingDown, DollarSign, BarChart3 } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown, DollarSign, BarChart3, Edit, Trash2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
-
-interface Lancamento {
-  id: string;
-  data: string;
-  tipo: 'receita' | 'despesa';
-  valor: number;
-  categoria: string;
-  observacoes?: string;
-  status: string;
-  created_at: string;
-  cliente_id?: string;
-  fornecedor_id?: string;
-  cliente_nome?: string;
-  fornecedor_nome?: string;
-}
+import { useLancamentos, type Lancamento } from '@/hooks/useLancamentos';
+import { useCadastros } from '@/hooks/useCadastros';
 
 const categoriasReceita = ['Receita', 'Receita Não Operacional'];
 const categoriasDespesa = ['Despesa fixa', 'Custo variável', 'Despesa não operacional', 'Salários', 'Investimentos'];
 
 const LancamentosFinanceiros: React.FC = () => {
-  const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
-  const [filteredLancamentos, setFilteredLancamentos] = useState<Lancamento[]>([]);
+  const [filteredLancamentos, setFilteredLancamentos] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [tipoFilter, setTipoFilter] = useState('todos');
   const [categoriaFilter, setCategoriaFilter] = useState('todas');
   const [activeTab, setActiveTab] = useState('lista');
+  const [editingLancamento, setEditingLancamento] = useState<any>(null);
   const { user } = useAuth();
   const { toast } = useToast();
 
+  const { useQuery: useLancamentosQuery, useCreate, useUpdate, useDelete } = useLancamentos();
+  const { data: lancamentos, isLoading } = useLancamentosQuery();
+  const createLancamento = useCreate();
+  const updateLancamento = useUpdate();
+  const deleteLancamento = useDelete();
+
+  const { useQuery: useCadastrosQuery } = useCadastros();
+  const { data: clientes } = useCadastrosQuery('Cliente');
+  const { data: fornecedores } = useCadastrosQuery('Fornecedor');
+
   const [formData, setFormData] = useState({
-    data: '',
+    data: new Date().toISOString().split('T')[0],
     tipo: '' as 'receita' | 'despesa' | '',
     valor: '',
     cliente_id: '',
@@ -54,33 +51,14 @@ const LancamentosFinanceiros: React.FC = () => {
   });
 
   useEffect(() => {
-    if (user) {
-      fetchLancamentos();
+    if (lancamentos) {
+      filterLancamentos();
     }
-  }, [user]);
-
-  useEffect(() => {
-    filterLancamentos();
   }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
 
-  const fetchLancamentos = async () => {
-    setLoading(true);
-    try {
-      // Como as tabelas lancamentos e cadastros foram removidas, retornamos array vazio
-      console.log('Tabelas lancamentos e cadastros foram removidas. Retornando dados vazios.');
-      setLancamentos([]);
-    } catch (error: any) {
-      toast({
-        title: "Aviso",
-        description: "Funcionalidade de lançamentos foi removida",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const filterLancamentos = () => {
+    if (!lancamentos) return;
+    
     let filtered = lancamentos;
 
     if (searchTerm) {
@@ -106,20 +84,63 @@ const LancamentosFinanceiros: React.FC = () => {
     setLoading(true);
 
     try {
-      // Funcionalidade removida
-      toast({
-        title: "Aviso",
-        description: "Funcionalidade de lançamentos foi removida",
-        variant: "destructive",
-      });
+      const lancamentoData = {
+        ...formData,
+        valor: parseFloat(formData.valor),
+        user_id: user!.id,
+        status: 'ativo'
+      };
+
+      if (editingLancamento) {
+        await updateLancamento.mutateAsync({ id: editingLancamento.id, ...lancamentoData });
+        setEditingLancamento(null);
+      } else {
+        await createLancamento.mutateAsync(lancamentoData);
+      }
+
+      resetForm();
+      setActiveTab('lista');
     } catch (error: any) {
-      toast({
-        title: "Erro",
-        description: "Funcionalidade de lançamentos foi removida",
-        variant: "destructive",
-      });
+      console.error('Erro ao salvar lançamento:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      data: new Date().toISOString().split('T')[0],
+      tipo: '',
+      valor: '',
+      cliente_id: '',
+      fornecedor_id: '',
+      categoria: '',
+      observacoes: ''
+    });
+    setEditingLancamento(null);
+  };
+
+  const handleEdit = (lancamento: any) => {
+    setFormData({
+      data: lancamento.data,
+      tipo: lancamento.tipo,
+      valor: lancamento.valor.toString(),
+      cliente_id: lancamento.cliente_id || '',
+      fornecedor_id: lancamento.fornecedor_id || '',
+      categoria: lancamento.categoria,
+      observacoes: lancamento.observacoes || ''
+    });
+    setEditingLancamento(lancamento);
+    setActiveTab('formulario');
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja excluir este lançamento?')) {
+      try {
+        await deleteLancamento.mutateAsync(id);
+      } catch (error) {
+        console.error('Erro ao excluir lançamento:', error);
+      }
     }
   };
 
@@ -152,23 +173,7 @@ const LancamentosFinanceiros: React.FC = () => {
           <h1 className="text-3xl font-bold text-fluxo-black-900">Lançamentos Financeiros</h1>
           <p className="text-fluxo-black-600 mt-2">Controle de receitas e despesas</p>
         </div>
-        <Button
-          onClick={() => setActiveTab('formulario')}
-          className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600 text-white"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Novo Lançamento
-        </Button>
       </div>
-
-      {/* Aviso sobre funcionalidade removida */}
-      <Card className="border-yellow-200 bg-yellow-50">
-        <CardContent className="p-4">
-          <p className="text-yellow-800">
-            ⚠️ A funcionalidade de lançamentos financeiros foi removida junto com os cadastros.
-          </p>
-        </CardContent>
-      </Card>
 
       {/* Painéis de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -226,7 +231,9 @@ const LancamentosFinanceiros: React.FC = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="lista">Lista de Lançamentos</TabsTrigger>
-          <TabsTrigger value="formulario">Novo Lançamento</TabsTrigger>
+          <TabsTrigger value="formulario">
+            {editingLancamento ? 'Editar Lançamento' : 'Novo Lançamento'}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="lista" className="space-y-4">
@@ -295,12 +302,20 @@ const LancamentosFinanceiros: React.FC = () => {
                     <TableHead>Categoria</TableHead>
                     <TableHead>Cliente/Fornecedor</TableHead>
                     <TableHead>Observações</TableHead>
+                    <TableHead>Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredLancamentos.length === 0 && (
+                  {isLoading && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center text-gray-500">
+                      <TableCell colSpan={7} className="text-center text-gray-500">
+                        Carregando...
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  {!isLoading && filteredLancamentos.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-gray-500">
                         Nenhum lançamento encontrado
                       </TableCell>
                     </TableRow>
@@ -317,8 +332,27 @@ const LancamentosFinanceiros: React.FC = () => {
                         R$ {lancamento.valor.toFixed(2)}
                       </TableCell>
                       <TableCell>{lancamento.categoria}</TableCell>
-                      <TableCell>{lancamento.cliente_nome || lancamento.fornecedor_nome || '-'}</TableCell>
+                      <TableCell>{lancamento.cliente?.nome || lancamento.fornecedor?.nome || '-'}</TableCell>
                       <TableCell>{lancamento.observacoes || '-'}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEdit(lancamento)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDelete(lancamento.id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -330,13 +364,15 @@ const LancamentosFinanceiros: React.FC = () => {
         <TabsContent value="formulario">
           <Card>
             <CardHeader>
-              <CardTitle>Novo Lançamento</CardTitle>
+              <CardTitle>
+                {editingLancamento ? 'Editar Lançamento' : 'Novo Lançamento'}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="data">Data</Label>
+                    <Label htmlFor="data">Data *</Label>
                     <Input
                       id="data"
                       type="date"
@@ -347,7 +383,7 @@ const LancamentosFinanceiros: React.FC = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="tipo">Tipo</Label>
+                    <Label htmlFor="tipo">Tipo *</Label>
                     <Select value={formData.tipo} onValueChange={(value: 'receita' | 'despesa') => 
                       setFormData({ ...formData, tipo: value, categoria: '', cliente_id: '', fornecedor_id: '' })
                     }>
@@ -362,7 +398,7 @@ const LancamentosFinanceiros: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="valor">Valor (R$)</Label>
+                    <Label htmlFor="valor">Valor (R$) *</Label>
                     <Input
                       id="valor"
                       type="number"
@@ -375,7 +411,7 @@ const LancamentosFinanceiros: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="categoria">Categoria</Label>
+                    <Label htmlFor="categoria">Categoria *</Label>
                     <Select value={formData.categoria} onValueChange={(value) => setFormData({ ...formData, categoria: value })}>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecione a categoria" />
@@ -390,6 +426,40 @@ const LancamentosFinanceiros: React.FC = () => {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {formData.tipo === 'receita' && clientes && (
+                    <div className="space-y-2">
+                      <Label htmlFor="cliente_id">Cliente</Label>
+                      <Select value={formData.cliente_id} onValueChange={(value) => setFormData({ ...formData, cliente_id: value })}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um cliente" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">Nenhum</SelectItem>
+                          {clientes.map((cliente) => (
+                            <SelectItem key={cliente.id} value={cliente.id}>{cliente.nome}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {formData.tipo === 'despesa' && fornecedores && (
+                    <div className="space-y-2">
+                      <Label htmlFor="fornecedor_id">Fornecedor</Label>
+                      <Select value={formData.fornecedor_id} onValueChange={(value) => setFormData({ ...formData, fornecedor_id: value })}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um fornecedor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">Nenhum</SelectItem>
+                          {fornecedores.map((fornecedor) => (
+                            <SelectItem key={fornecedor.id} value={fornecedor.id}>{fornecedor.nome}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -403,13 +473,27 @@ const LancamentosFinanceiros: React.FC = () => {
                   />
                 </div>
 
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
-                >
-                  {loading ? "Cadastrando..." : "Cadastrar Lançamento"}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
+                  >
+                    {loading ? "Salvando..." : editingLancamento ? "Atualizar Lançamento" : "Cadastrar Lançamento"}
+                  </Button>
+                  {editingLancamento && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        resetForm();
+                        setActiveTab('lista');
+                      }}
+                    >
+                      Cancelar
+                    </Button>
+                  )}
+                </div>
               </form>
             </CardContent>
           </Card>

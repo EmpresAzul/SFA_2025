@@ -3,57 +3,64 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-export interface Lancamento {
+export interface Cadastro {
   id: string;
   user_id: string;
-  data: string;
-  tipo: 'receita' | 'despesa';
-  categoria: string;
-  valor: number;
-  cliente_id?: string;
-  fornecedor_id?: string;
+  nome: string;
+  tipo: 'Cliente' | 'Fornecedor' | 'Funcionário';
+  pessoa: 'Física' | 'Jurídica';
+  cpf_cnpj?: string;
+  telefone?: string;
+  email?: string;
+  endereco?: string;
+  numero?: string;
+  bairro?: string;
+  cidade?: string;
+  estado?: string;
+  cep?: string;
   observacoes?: string;
+  salario?: number;
+  data: string;
   status: string;
   created_at: string;
   updated_at: string;
 }
 
-export const useLancamentos = () => {
+export const useCadastros = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const useQuery = () => {
+  const useQuery = (tipo?: 'Cliente' | 'Fornecedor' | 'Funcionário') => {
     return useQuery({
-      queryKey: ['lancamentos'],
+      queryKey: ['cadastros', tipo],
       queryFn: async () => {
-        const { data, error } = await supabase
-          .from('lancamentos')
-          .select(`
-            *,
-            cliente:cliente_id(nome),
-            fornecedor:fornecedor_id(nome)
-          `)
-          .order('data', { ascending: false });
+        let query = supabase
+          .from('cadastros')
+          .select('*')
+          .order('nome', { ascending: true });
+
+        if (tipo) {
+          query = query.eq('tipo', tipo);
+        }
+
+        const { data, error } = await query;
 
         if (error) {
-          console.error('Erro ao buscar lançamentos:', error);
+          console.error('Erro ao buscar cadastros:', error);
           throw error;
         }
 
-        return data as (Lancamento & {
-          cliente?: { nome: string };
-          fornecedor?: { nome: string };
-        })[];
+        return data as Cadastro[];
       },
     });
   };
 
   const useCreate = () => {
     return useMutation({
-      mutationFn: async (lancamentoData: Omit<Lancamento, 'id' | 'created_at' | 'updated_at'>) => {
+      mutationFn: async (cadastroData: Omit<Cadastro, 'id' | 'created_at' | 'updated_at'>) => {
         const { data, error } = await supabase
-          .from('lancamentos')
-          .insert([lancamentoData])
+          .from('cadastros')
+          .insert([cadastroData])
           .select()
           .single();
 
@@ -61,17 +68,17 @@ export const useLancamentos = () => {
         return data;
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
+        queryClient.invalidateQueries({ queryKey: ['cadastros'] });
         toast({
           title: "Sucesso",
-          description: "Lançamento criado com sucesso!",
+          description: "Cadastro criado com sucesso!",
         });
       },
       onError: (error: any) => {
-        console.error('Erro ao criar lançamento:', error);
+        console.error('Erro ao criar cadastro:', error);
         toast({
           title: "Erro",
-          description: "Erro ao criar lançamento. Tente novamente.",
+          description: "Erro ao criar cadastro. Tente novamente.",
           variant: "destructive",
         });
       },
@@ -80,9 +87,9 @@ export const useLancamentos = () => {
 
   const useUpdate = () => {
     return useMutation({
-      mutationFn: async ({ id, ...updateData }: Partial<Lancamento> & { id: string }) => {
+      mutationFn: async ({ id, ...updateData }: Partial<Cadastro> & { id: string }) => {
         const { data, error } = await supabase
-          .from('lancamentos')
+          .from('cadastros')
           .update(updateData)
           .eq('id', id)
           .select()
@@ -92,17 +99,17 @@ export const useLancamentos = () => {
         return data;
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
+        queryClient.invalidateQueries({ queryKey: ['cadastros'] });
         toast({
           title: "Sucesso",
-          description: "Lançamento atualizado com sucesso!",
+          description: "Cadastro atualizado com sucesso!",
         });
       },
       onError: (error: any) => {
-        console.error('Erro ao atualizar lançamento:', error);
+        console.error('Erro ao atualizar cadastro:', error);
         toast({
           title: "Erro",
-          description: "Erro ao atualizar lançamento. Tente novamente.",
+          description: "Erro ao atualizar cadastro. Tente novamente.",
           variant: "destructive",
         });
       },
@@ -113,24 +120,24 @@ export const useLancamentos = () => {
     return useMutation({
       mutationFn: async (id: string) => {
         const { error } = await supabase
-          .from('lancamentos')
+          .from('cadastros')
           .delete()
           .eq('id', id);
 
         if (error) throw error;
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
+        queryClient.invalidateQueries({ queryKey: ['cadastros'] });
         toast({
           title: "Sucesso",
-          description: "Lançamento excluído com sucesso!",
+          description: "Cadastro excluído com sucesso!",
         });
       },
       onError: (error: any) => {
-        console.error('Erro ao excluir lançamento:', error);
+        console.error('Erro ao excluir cadastro:', error);
         toast({
           title: "Erro",
-          description: "Erro ao excluir lançamento. Tente novamente.",
+          description: "Erro ao excluir cadastro. Tente novamente.",
           variant: "destructive",
         });
       },

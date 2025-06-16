@@ -13,7 +13,11 @@ import {
   TrendingUp,
   CreditCard,
   Banknote,
-  Calendar
+  Calendar,
+  Users,
+  UserCheck,
+  Building2,
+  UserCog
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -38,6 +42,17 @@ const menuItems: MenuItem[] = [
       { id: 'dre', label: 'DRE', icon: TrendingUp, iconColor: 'text-purple-500', href: '/dashboard/dre' },
       { id: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: CreditCard, iconColor: 'text-orange-500', href: '/dashboard/fluxo-caixa' },
       { id: 'metricas', label: 'Métricas', icon: TrendingUp, iconColor: 'text-cyan-500', href: '/dashboard' }
+    ]
+  },
+  {
+    id: 'cadastros',
+    label: 'Cadastros',
+    icon: Users,
+    iconColor: 'text-indigo-500',
+    children: [
+      { id: 'clientes', label: 'Clientes', icon: UserCheck, iconColor: 'text-blue-500', href: '/dashboard/cadastros/clientes' },
+      { id: 'fornecedores', label: 'Fornecedores', icon: Building2, iconColor: 'text-green-500', href: '/dashboard/cadastros/fornecedores' },
+      { id: 'funcionarios', label: 'Funcionários', icon: UserCog, iconColor: 'text-purple-500', href: '/dashboard/cadastros/funcionarios' }
     ]
   },
   {

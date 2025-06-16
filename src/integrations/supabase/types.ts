@@ -9,6 +9,75 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      cadastros: {
+        Row: {
+          bairro: string | null
+          cep: string | null
+          cidade: string | null
+          cpf_cnpj: string | null
+          created_at: string
+          data: string
+          email: string | null
+          endereco: string | null
+          estado: string | null
+          id: string
+          nome: string
+          numero: string | null
+          observacoes: string | null
+          pessoa: string
+          salario: number | null
+          status: string
+          telefone: string | null
+          tipo: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          data?: string
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome: string
+          numero?: string | null
+          observacoes?: string | null
+          pessoa: string
+          salario?: number | null
+          status?: string
+          telefone?: string | null
+          tipo: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          data?: string
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome?: string
+          numero?: string | null
+          observacoes?: string | null
+          pessoa?: string
+          salario?: number | null
+          status?: string
+          telefone?: string | null
+          tipo?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       estoques: {
         Row: {
           created_at: string
@@ -56,6 +125,66 @@ export type Database = {
           valor_unitario?: number
         }
         Relationships: []
+      }
+      lancamentos: {
+        Row: {
+          categoria: string
+          cliente_id: string | null
+          created_at: string
+          data: string
+          fornecedor_id: string | null
+          id: string
+          observacoes: string | null
+          status: string
+          tipo: string
+          updated_at: string
+          user_id: string
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          cliente_id?: string | null
+          created_at?: string
+          data: string
+          fornecedor_id?: string | null
+          id?: string
+          observacoes?: string | null
+          status?: string
+          tipo: string
+          updated_at?: string
+          user_id: string
+          valor: number
+        }
+        Update: {
+          categoria?: string
+          cliente_id?: string | null
+          created_at?: string
+          data?: string
+          fornecedor_id?: string | null
+          id?: string
+          observacoes?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+          user_id?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lancamentos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "cadastros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "cadastros"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       saldos_bancarios: {
         Row: {
