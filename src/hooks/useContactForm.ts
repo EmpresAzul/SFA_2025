@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Contact, ContactFormData } from '@/types/contact';
@@ -94,9 +93,12 @@ export const useContactForm = (
     try {
       console.log('ContactForm - Submitting data:', formData);
       
-      const dataToSubmit = editingContact 
-        ? { ...formData, id: editingContact.id } 
-        : { ...formData };
+      // Preparar dados para envio, garantindo que user_id seja incluído
+      const dataToSubmit = {
+        ...formData,
+        user_id: session.user.id,
+        ...(editingContact ? { id: editingContact.id } : {})
+      };
       
       console.log('ContactForm - Data to submit:', dataToSubmit);
       
