@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
 import { TrendingUp, DollarSign, Users, Package, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import LembretesActiveCard from '@/components/dashboard/LembretesActiveCard';
 
 const Dashboard: React.FC = () => {
   // Mock data for charts
@@ -109,6 +110,11 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      {/* Lembretes Ativos */}
+      <div className="mb-6">
+        <LembretesActiveCard />
       </div>
 
       {/* Charts Row 1 */}

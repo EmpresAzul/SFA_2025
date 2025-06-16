@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import type { Lancamento } from '@/hooks/useLancamentos';
+import LancamentosViewModal from './LancamentosViewModal';
 
 type LancamentoComRelacoes = Lancamento & {
   cliente?: { nome: string } | null;
@@ -80,6 +81,7 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                 <TableCell>{lancamento.observacoes || '-'}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
+                    <LancamentosViewModal lancamento={lancamento} />
                     <Button
                       variant="outline"
                       size="sm"

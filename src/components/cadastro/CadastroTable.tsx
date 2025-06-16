@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Cadastro } from '@/hooks/useCadastros';
+import CadastroViewModal from './CadastroViewModal';
 
 interface CadastroTableProps {
   cadastros: Cadastro[];
@@ -63,6 +64,7 @@ export const CadastroTable: React.FC<CadastroTableProps> = ({
                 <TableCell>{format(new Date(cadastro.data), 'dd/MM/yyyy')}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
+                    <CadastroViewModal cadastro={cadastro} />
                     <Button
                       variant="outline"
                       size="sm"

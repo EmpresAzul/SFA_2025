@@ -82,20 +82,18 @@ const LoginForm: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Background com gradiente estático */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-teal-600/20"></div>
+      {/* Background com gradiente mais escuro */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600">
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 to-transparent"></div>
       </div>
 
       <div className="relative z-10 w-full max-w-md px-4 sm:px-6">
-        <Card className="bg-white/95 backdrop-blur-xl shadow-2xl rounded-3xl border-0 overflow-hidden">
-          {/* Header com gradiente */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-center text-white">
-            <div className="flex justify-center mb-4">
+        <Card className="bg-white/95 backdrop-blur-xl shadow-2xl border-0 overflow-hidden" style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+          {/* Header sem gradiente - cor única */}
+          <div className="bg-white p-8 text-center">
+            <div className="flex justify-center mb-6">
               <Logo size="lg" />
             </div>
-            <h1 className="text-xl font-bold mb-2">Bem-vindo ao FluxoAzul</h1>
-            <p className="text-blue-100 text-sm">Gestão financeira inteligente e moderna</p>
           </div>
 
           <div className="p-6 sm:p-8">
@@ -142,7 +140,7 @@ const LoginForm: React.FC = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                className="w-full h-12 bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600 hover:from-slate-800 hover:via-slate-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
               >
                 {loading ? (
                   <div className="flex items-center space-x-2">

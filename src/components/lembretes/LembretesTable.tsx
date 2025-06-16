@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, Power, PowerOff, Clock, Calendar } from 'lucide-react';
 import { useLembretes, type Lembrete } from '@/hooks/useLembretes';
+import LembretesViewModal from './LembretesViewModal';
 
 interface LembretesTableProps {
   lembretes: Lembrete[];
@@ -16,15 +17,25 @@ const LembretesTable: React.FC<LembretesTableProps> = ({ lembretes, onEdit }) =>
 
   const handleToggleStatus = async (lembrete: Lembrete) => {
     const novoStatus = lembrete.status === 'ativo' ? 'inativo' : 'ativo';
-    await updateLembrete.mutateAsync({
-      id: lembrete.id,
-      status: novoStatus
-    });
+    console.log('Atualizando status de:', lembrete.id, 'para:', novoStatus);
+    
+    try {
+      await updateLembrete.mutateAsync({
+        id: lembrete.id,
+        status: novoStatus
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+    }
   };
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Tem certeza que deseja excluir este lembrete?')) {
-      await deleteLembrete.mutateAsync(id);
+      try {
+        await deleteLembrete.mutateAsync(id);
+      } catch (error) {
+        console.error('Erro ao deletar lembrete:', error);
+      }
     }
   };
 
@@ -128,6 +139,7 @@ const LembretesTable: React.FC<LembretesTableProps> = ({ lembretes, onEdit }) =>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex space-x-2">
+                        <LembretesViewModal lembrete={lembrete} />
                         <Button
                           variant="outline"
                           size="sm"

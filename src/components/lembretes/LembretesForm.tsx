@@ -1,17 +1,17 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Bell, Save, X } from 'lucide-react';
-import { useLembretes, type LembreteFormData } from '@/hooks/useLembretes';
+import { useLembretes, type LembreteFormData, type Lembrete } from '@/hooks/useLembretes';
 
 interface LembretesFormProps {
   isOpen: boolean;
   onClose: () => void;
-  editingLembrete?: any;
+  editingLembrete?: Lembrete | null;
 }
 
 const LembretesForm: React.FC<LembretesFormProps> = ({ 
@@ -21,22 +21,45 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
 }) => {
   const { createLembrete, updateLembrete } = useLembretes();
   const [formData, setFormData] = useState<LembreteFormData>({
-    titulo: editingLembrete?.titulo || '',
-    descricao: editingLembrete?.descricao || '',
-    data_lembrete: editingLembrete?.data_lembrete || '',
-    hora_lembrete: editingLembrete?.hora_lembrete || ''
+    titulo: '',
+    descricao: '',
+    data_lembrete: '',
+    hora_lembrete: ''
   });
+
+  // Carrega dados quando está editando
+  useEffect(() => {
+    if (editingLembrete) {
+      console.log('Carregando dados para edição:', editingLembrete);
+      setFormData({
+        titulo: editingLembrete.titulo || '',
+        descricao: editingLembrete.descricao || '',
+        data_lembrete: editingLembrete.data_lembrete || '',
+        hora_lembrete: editingLembrete.hora_lembrete || ''
+      });
+    } else {
+      // Limpa formulário quando não está editando
+      setFormData({
+        titulo: '',
+        descricao: '',
+        data_lembrete: '',
+        hora_lembrete: ''
+      });
+    }
+  }, [editingLembrete, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
       if (editingLembrete) {
+        console.log('Atualizando lembrete:', editingLembrete.id, formData);
         await updateLembrete.mutateAsync({
           id: editingLembrete.id,
           ...formData
         });
       } else {
+        console.log('Criando novo lembrete:', formData);
         await createLembrete.mutateAsync(formData);
       }
       
