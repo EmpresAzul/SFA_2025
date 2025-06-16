@@ -29,6 +29,11 @@ export const useCadastros = () => {
 
         if (error) {
           console.error('useCadastros - Error fetching cadastros:', error);
+          toast({
+            title: "Erro ao carregar cadastros",
+            description: error.message,
+            variant: "destructive",
+          });
           throw error;
         }
         
