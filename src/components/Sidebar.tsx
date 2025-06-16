@@ -60,8 +60,8 @@ const menuItems: MenuItem[] = [
     href: '/dashboard/precificacao'
   },
   {
-    id: 'cadastro',
-    label: 'Cadastro',
+    id: 'cadastros',
+    label: 'Cadastros',
     icon: Users,
     iconColor: 'text-violet-500',
     href: '/dashboard/cadastros'
