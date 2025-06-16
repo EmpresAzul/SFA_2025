@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
@@ -24,6 +25,7 @@ interface MenuItem {
   id: string;
   label: string;
   icon: React.ComponentType<any>;
+  iconColor?: string;
   href?: string;
   children?: MenuItem[];
 }
@@ -33,51 +35,56 @@ const menuItems: MenuItem[] = [
     id: 'indicadores',
     label: 'Indicadores',
     icon: BarChart3,
+    iconColor: 'text-blue-500',
     children: [
-      { id: 'metricas', label: 'Métricas', icon: TrendingUp, href: '/dashboard' },
-      { id: 'dre', label: 'DRE', icon: TrendingUp, href: '/dashboard/dre' },
-      { id: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: CreditCard, href: '/dashboard/fluxo-caixa' }
+      { id: 'bancos', label: 'Bancos', icon: Banknote, iconColor: 'text-green-500', href: '/dashboard/saldos-bancarios' },
+      { id: 'dre', label: 'DRE', icon: TrendingUp, iconColor: 'text-purple-500', href: '/dashboard/dre' },
+      { id: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: CreditCard, iconColor: 'text-orange-500', href: '/dashboard/fluxo-caixa' },
+      { id: 'metricas', label: 'Métricas', icon: TrendingUp, iconColor: 'text-cyan-500', href: '/dashboard' }
     ]
   },
   {
     id: 'financeiro',
     label: 'Financeiro',
     icon: DollarSign,
+    iconColor: 'text-emerald-500',
     children: [
-      { id: 'lancamentos', label: 'Lançamentos', icon: CreditCard, href: '/dashboard/lancamentos' },
-      { id: 'saldos-bancarios', label: 'Saldos Bancários', icon: Banknote, href: '/dashboard/saldos-bancarios' }
+      { id: 'lancamentos', label: 'Lançamentos', icon: CreditCard, iconColor: 'text-indigo-500', href: '/dashboard/lancamentos' }
     ]
   },
   {
     id: 'precificacao',
     label: 'Precificação',
     icon: Tag,
-    children: [
-      { id: 'produtos-servicos', label: 'Produtos e Serviços', icon: ShoppingCart, href: '/dashboard/produtos-servicos' }
-    ]
+    iconColor: 'text-pink-500',
+    href: '/dashboard/precificacao'
   },
   {
     id: 'cadastro',
     label: 'Cadastro',
     icon: Users,
+    iconColor: 'text-violet-500',
     href: '/dashboard/cadastro'
   },
   {
     id: 'estoque',
     label: 'Estoque',
     icon: Package,
+    iconColor: 'text-amber-500',
     href: '/dashboard/estoque'
   },
   {
     id: 'consultor-virtual',
     label: 'Consultor Virtual',
     icon: MessageCircle,
+    iconColor: 'text-teal-500',
     href: '/dashboard/consultor-virtual'
   },
   {
     id: 'perfil',
     label: 'Perfil',
     icon: User,
+    iconColor: 'text-rose-500',
     href: '/dashboard/perfil'
   }
 ];
@@ -112,28 +119,28 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
 
     if (hasChildren) {
       return (
-        <div key={item.id} className="mb-2">
+        <div key={item.id} className="mb-1">
           <button
             onClick={() => toggleExpanded(item.id)}
             className={cn(
-              "w-full flex items-center px-4 py-3 text-left rounded-xl transition-all duration-300 group backdrop-blur-md border border-white/10",
+              "w-full flex items-center px-3 py-2 text-left rounded-lg transition-all duration-300 group backdrop-blur-md border border-white/10",
               parentActive 
                 ? "bg-gradient-to-r from-fluxo-blue-600/90 via-fluxo-blue-500/80 to-fluxo-blue-400/70 text-white shadow-lg shadow-fluxo-blue-500/25 border-fluxo-blue-300/30" 
                 : "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-r hover:from-fluxo-blue-50/80 hover:to-fluxo-blue-100/60 hover:text-fluxo-blue-700 hover:shadow-md hover:shadow-fluxo-blue-200/30",
               collapsed && "justify-center px-2"
             )}
           >
-            <item.icon className={cn("flex-shrink-0", collapsed ? "w-5 h-5" : "w-5 h-5 mr-3")} />
+            <item.icon className={cn("flex-shrink-0", collapsed ? "w-4 h-4" : "w-4 h-4 mr-2", item.iconColor || "text-current")} />
             {!collapsed && (
               <>
-                <span className="flex-1 font-medium">{item.label}</span>
-                {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                <span className="flex-1 font-medium text-sm">{item.label}</span>
+                {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
               </>
             )}
           </button>
 
           {!collapsed && isExpanded && (
-            <div className="ml-4 mt-2 space-y-1 animate-fade-in">
+            <div className="ml-3 mt-1 space-y-0.5 animate-fade-in">
               {item.children?.map(child => renderMenuItem(child, level + 1))}
             </div>
           )}
@@ -147,16 +154,16 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
           key={item.id}
           to={item.href}
           className={cn(
-            "flex items-center px-4 py-3 rounded-xl transition-all duration-300 group mb-2 backdrop-blur-md border border-white/10",
-            level > 0 && "ml-4",
+            "flex items-center px-3 py-2 rounded-lg transition-all duration-300 group mb-1 backdrop-blur-md border border-white/10",
+            level > 0 && "ml-3",
             isActive(item.href) 
               ? "bg-gradient-to-r from-fluxo-blue-600/90 via-fluxo-blue-500/80 to-fluxo-blue-400/70 text-white shadow-lg shadow-fluxo-blue-500/25 border-fluxo-blue-300/30" 
               : "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-r hover:from-fluxo-blue-50/80 hover:to-fluxo-blue-100/60 hover:text-fluxo-blue-700 hover:shadow-md hover:shadow-fluxo-blue-200/30",
             collapsed && "justify-center px-2"
           )}
         >
-          <item.icon className={cn("flex-shrink-0", collapsed ? "w-5 h-5" : "w-5 h-5 mr-3")} />
-          {!collapsed && <span className="font-medium">{item.label}</span>}
+          <item.icon className={cn("flex-shrink-0", collapsed ? "w-4 h-4" : "w-4 h-4 mr-2", item.iconColor || "text-current")} />
+          {!collapsed && <span className="font-medium text-sm">{item.label}</span>}
         </NavLink>
       );
     }
@@ -165,14 +172,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       <div
         key={item.id}
         className={cn(
-          "flex items-center px-4 py-3 rounded-xl transition-all duration-300 group mb-2 backdrop-blur-md border border-white/10",
-          level > 0 && "ml-4",
+          "flex items-center px-3 py-2 rounded-lg transition-all duration-300 group mb-1 backdrop-blur-md border border-white/10",
+          level > 0 && "ml-3",
           "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-r hover:from-fluxo-blue-50/80 hover:to-fluxo-blue-100/60 hover:text-fluxo-blue-700 hover:shadow-md hover:shadow-fluxo-blue-200/30",
           collapsed && "justify-center px-2"
         )}
       >
-        <item.icon className={cn("flex-shrink-0", collapsed ? "w-5 h-5" : "w-5 h-5 mr-3")} />
-        {!collapsed && <span className="font-medium">{item.label}</span>}
+        <item.icon className={cn("flex-shrink-0", collapsed ? "w-4 h-4" : "w-4 h-4 mr-2", item.iconColor || "text-current")} />
+        {!collapsed && <span className="font-medium text-sm">{item.label}</span>}
       </div>
     );
   };
@@ -201,8 +208,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
           )}
         </div>
 
-        <nav className="flex-1 p-4 overflow-y-auto">
-          <div className="space-y-2">
+        <nav className="flex-1 p-3 overflow-y-auto">
+          <div className="space-y-1">
             {menuItems.map(item => renderMenuItem(item))}
           </div>
         </nav>

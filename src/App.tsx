@@ -15,6 +15,7 @@ import LancamentosFinanceiros from '@/pages/LancamentosFinanceiros';
 import SaldosBancarios from '@/pages/SaldosBancarios';
 import FluxoCaixa from '@/pages/FluxoCaixa';
 import DRE from '@/pages/DRE';
+import Precificacao from '@/pages/Precificacao';
 import { Outlet } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -51,6 +52,7 @@ const App = () => {
             <Route index element={<Dashboard />} />
             <Route path="dre" element={<DRE />} />
             <Route path="cadastro" element={<RegisterManagement />} />
+            <Route path="precificacao" element={<Precificacao />} />
             <Route path="estoque" element={<EstoqueManagement />} />
             <Route path="lancamentos" element={<LancamentosFinanceiros />} />
             <Route path="saldos-bancarios" element={<SaldosBancarios />} />
