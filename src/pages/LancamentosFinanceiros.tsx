@@ -42,7 +42,7 @@ const LancamentosFinanceiros: React.FC = () => {
 
   const [formData, setFormData] = useState({
     data: new Date().toISOString().split('T')[0],
-    tipo: '' as 'receita' | 'despesa' | '',
+    tipo: 'receita' as 'receita' | 'despesa',
     valor: '',
     cliente_id: '',
     fornecedor_id: '',
@@ -81,6 +81,16 @@ const LancamentosFinanceiros: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.tipo) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione o tipo de lançamento.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -110,7 +120,7 @@ const LancamentosFinanceiros: React.FC = () => {
   const resetForm = () => {
     setFormData({
       data: new Date().toISOString().split('T')[0],
-      tipo: '',
+      tipo: 'receita',
       valor: '',
       cliente_id: '',
       fornecedor_id: '',

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,7 +37,7 @@ const Cadastros: React.FC = () => {
 
   const [formData, setFormData] = useState({
     nome: '',
-    pessoa: '' as 'Física' | 'Jurídica' | '',
+    pessoa: 'Física' as 'Física' | 'Jurídica',
     cpf_cnpj: '',
     telefone: '',
     email: '',
@@ -83,6 +82,16 @@ const Cadastros: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.pessoa) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione o tipo de pessoa.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -113,7 +122,7 @@ const Cadastros: React.FC = () => {
   const resetForm = () => {
     setFormData({
       nome: '',
-      pessoa: '',
+      pessoa: 'Física',
       cpf_cnpj: '',
       telefone: '',
       email: '',
