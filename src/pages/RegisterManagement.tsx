@@ -1,18 +1,16 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useContactData } from '@/hooks/useContactData';
 import { useContactForm } from '@/hooks/useContactForm';
-import { ContactStatsComponent } from '@/components/cadastro/ContactStats';
-import { ContactFilters } from '@/components/cadastro/ContactFilters';
-import { ContactForm } from '@/components/cadastro/ContactForm';
+import { useContactFilters } from '@/hooks/useContactFilters';
+import { ContactStatsCards } from '@/components/cadastro/ContactStatsCards';
+import { ContactAdvancedFilters } from '@/components/cadastro/ContactAdvancedFilters';
+import { ContactEnhancedForm } from '@/components/cadastro/ContactEnhancedForm';
 import { ContactList } from '@/components/cadastro/ContactList';
 
 const RegisterManagement: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState('all');
-
   const {
     contacts,
     isLoading,
@@ -22,6 +20,18 @@ const RegisterManagement: React.FC = () => {
     session,
     error
   } = useContactData();
+
+  const {
+    searchTerm,
+    setSearchTerm,
+    typeFilter,
+    setTypeFilter,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    filteredContacts
+  } = useContactFilters(contacts);
 
   const {
     formData,
@@ -86,23 +96,6 @@ const RegisterManagement: React.FC = () => {
     }
   };
 
-  const filteredContacts = contacts.filter(contact => {
-    const matchesSearch = contact.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (contact.documento && contact.documento.includes(searchTerm));
-    
-    // Normalizar filtro de tipo para incluir "Funcionario" e "Funcionário"
-    let matchesType = typeFilter === 'all';
-    if (!matchesType) {
-      if (typeFilter === 'Funcionário') {
-        matchesType = contact.tipo === 'Funcionário' || contact.tipo === 'Funcionario';
-      } else {
-        matchesType = contact.tipo === typeFilter;
-      }
-    }
-    
-    return matchesSearch && matchesType;
-  });
-
   // Mostrar erros de carregamento se houver
   if (error) {
     console.error('RegisterManagement - Error loading contacts:', error);
@@ -110,6 +103,7 @@ const RegisterManagement: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {/* Cabeçalho */}
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold gradient-fluxo-text mb-2">
@@ -122,24 +116,31 @@ const RegisterManagement: React.FC = () => {
         
         <Button
           onClick={() => setShowForm(true)}
-          className="gradient-fluxo hover:gradient-fluxo-light text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+          className="gradient-fluxo hover:gradient-fluxo-light text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
         >
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="mr-2 h-5 w-5" />
           Novo Cadastro
         </Button>
       </div>
 
-      <ContactStatsComponent contacts={contacts} />
+      {/* Quadrantes de Estatísticas Coloridos */}
+      <ContactStatsCards contacts={contacts} />
 
-      <ContactFilters
+      {/* Filtros Avançados */}
+      <ContactAdvancedFilters
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         typeFilter={typeFilter}
         setTypeFilter={setTypeFilter}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
       />
 
+      {/* Formulário Enhanced */}
       {showForm && (
-        <ContactForm
+        <ContactEnhancedForm
           formData={formData}
           setFormData={setFormData}
           editingContact={editingContact}
@@ -151,6 +152,7 @@ const RegisterManagement: React.FC = () => {
         />
       )}
 
+      {/* Lista de Contatos */}
       <ContactList
         filteredContacts={filteredContacts}
         isLoading={isLoading}
