@@ -9,12 +9,14 @@ interface BasicInfoFieldsProps {
   formData: ContactFormData;
   setFormData: React.Dispatch<React.SetStateAction<ContactFormData>>;
   tipoOptions: Array<{ value: string; label: string }>;
+  hideTypeField?: boolean;
 }
 
 export const BasicInfoFields: React.FC<BasicInfoFieldsProps> = ({
   formData,
   setFormData,
-  tipoOptions
+  tipoOptions,
+  hideTypeField = false
 }) => {
   return (
     <>
@@ -31,24 +33,26 @@ export const BasicInfoFields: React.FC<BasicInfoFieldsProps> = ({
         />
       </div>
 
-      <div>
-        <Label className="text-fluxo-blue-900 font-medium">Tipo</Label>
-        <Select 
-          value={formData.tipo} 
-          onValueChange={(value) => setFormData({ ...formData, tipo: value })}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {tipoOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {!hideTypeField && (
+        <div>
+          <Label className="text-fluxo-blue-900 font-medium">Tipo</Label>
+          <Select 
+            value={formData.tipo} 
+            onValueChange={(value) => setFormData({ ...formData, tipo: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {tipoOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       <div>
         <Label className="text-fluxo-blue-900 font-medium">Pessoa</Label>
