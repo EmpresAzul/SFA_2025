@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -214,47 +215,47 @@ const RegisterManagement: React.FC = () => {
         </Button>
       </div>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      {/* Statistics - Painéis Reduzidos */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{stats.activeClients}</div>
-            <div className="text-sm text-gray-600">Clientes Ativos</div>
+          <CardContent className="p-3 text-center">
+            <div className="text-lg font-bold text-green-600">{stats.activeClients}</div>
+            <div className="text-xs text-gray-600">Clientes Ativos</div>
           </CardContent>
         </Card>
         
         <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{stats.inactiveClients}</div>
-            <div className="text-sm text-gray-600">Clientes Inativos</div>
+          <CardContent className="p-3 text-center">
+            <div className="text-lg font-bold text-red-600">{stats.inactiveClients}</div>
+            <div className="text-xs text-gray-600">Clientes Inativos</div>
           </CardContent>
         </Card>
         
         <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{stats.activeSuppliers}</div>
-            <div className="text-sm text-gray-600">Fornecedores Ativos</div>
+          <CardContent className="p-3 text-center">
+            <div className="text-lg font-bold text-green-600">{stats.activeSuppliers}</div>
+            <div className="text-xs text-gray-600">Fornecedores Ativos</div>
           </CardContent>
         </Card>
         
         <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{stats.inactiveSuppliers}</div>
-            <div className="text-sm text-gray-600">Fornecedores Inativos</div>
+          <CardContent className="p-3 text-center">
+            <div className="text-lg font-bold text-red-600">{stats.inactiveSuppliers}</div>
+            <div className="text-xs text-gray-600">Fornecedores Inativos</div>
           </CardContent>
         </Card>
         
         <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{stats.activeEmployees}</div>
-            <div className="text-sm text-gray-600">Funcionários Ativos</div>
+          <CardContent className="p-3 text-center">
+            <div className="text-lg font-bold text-green-600">{stats.activeEmployees}</div>
+            <div className="text-xs text-gray-600">Funcionários Ativos</div>
           </CardContent>
         </Card>
         
         <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{stats.inactiveEmployees}</div>
-            <div className="text-sm text-gray-600">Funcionários Inativos</div>
+          <CardContent className="p-3 text-center">
+            <div className="text-lg font-bold text-red-600">{stats.inactiveEmployees}</div>
+            <div className="text-xs text-gray-600">Funcionários Inativos</div>
           </CardContent>
         </Card>
       </div>

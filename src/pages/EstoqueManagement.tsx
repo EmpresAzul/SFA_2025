@@ -290,64 +290,64 @@ const EstoqueManagement: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-8 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="p-6 space-y-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Gestão de Estoques
           </h1>
-          <p className="text-gray-600 mt-2 text-lg">Controle completo e inteligente do seu estoque</p>
+          <p className="text-gray-600 mt-2">Controle completo e inteligente do seu estoque</p>
         </div>
       </div>
 
-      {/* Painéis de Resumo Melhorados */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-          <CardContent className="p-6">
+      {/* Painéis de Resumo Reduzidos */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-emerald-100 font-medium">Total de Itens</p>
-                <p className="text-3xl font-bold">{filteredEstoques.length}</p>
+                <p className="text-emerald-100 text-sm font-medium">Total de Itens</p>
+                <p className="text-xl font-bold">{filteredEstoques.length}</p>
               </div>
-              <Package className="h-12 w-12 text-emerald-200" />
+              <Package className="h-8 w-8 text-emerald-200" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-400 to-blue-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-blue-400 to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-100 font-medium">Quantidade Total</p>
-                <p className="text-3xl font-bold">{getTotalItems().toFixed(2)}</p>
+                <p className="text-blue-100 text-sm font-medium">Quantidade Total</p>
+                <p className="text-xl font-bold">{getTotalItems().toFixed(2)}</p>
               </div>
-              <TrendingUp className="h-12 w-12 text-blue-200" />
+              <TrendingUp className="h-8 w-8 text-blue-200" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-400 to-purple-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-purple-400 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-purple-100 font-medium">Valor Total</p>
-                <p className="text-3xl font-bold">R$ {getTotalValue().toFixed(2)}</p>
+                <p className="text-purple-100 text-sm font-medium">Valor Total</p>
+                <p className="text-xl font-bold">R$ {getTotalValue().toFixed(2)}</p>
               </div>
-              <DollarSign className="h-12 w-12 text-purple-200" />
+              <DollarSign className="h-8 w-8 text-purple-200" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-400 to-orange-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-orange-400 to-orange-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-orange-100 font-medium">Valor Médio</p>
-                <p className="text-3xl font-bold">
+                <p className="text-orange-100 text-sm font-medium">Valor Médio</p>
+                <p className="text-xl font-bold">
                   R$ {filteredEstoques.length > 0 ? (getTotalValue() / filteredEstoques.length).toFixed(2) : '0.00'}
                 </p>
               </div>
-              <BarChart3 className="h-12 w-12 text-orange-200" />
+              <BarChart3 className="h-8 w-8 text-orange-200" />
             </div>
           </CardContent>
         </Card>
