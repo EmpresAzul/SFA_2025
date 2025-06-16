@@ -9,9 +9,10 @@ import { useCadastroForm } from '@/hooks/useCadastroForm';
 import { useParams } from 'react-router-dom';
 import { CadastroHeader } from '@/components/cadastro/CadastroHeader';
 import { CadastroSummaryCards } from '@/components/cadastro/CadastroSummaryCards';
-import { ContactFilters } from '@/components/cadastro/ContactFilters';
 import { CadastroTable } from '@/components/cadastro/CadastroTable';
 import { CadastroForm } from '@/components/cadastro/CadastroForm';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
 
 const Cadastros: React.FC = () => {
   const { tipo } = useParams<{ tipo: string }>();
@@ -20,7 +21,6 @@ const Cadastros: React.FC = () => {
   const [cadastros, setCadastros] = useState<Cadastro[]>([]);
   const [filteredCadastros, setFilteredCadastros] = useState<Cadastro[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState('all');
   const [activeTab, setActiveTab] = useState('lista');
   const { user } = useAuth();
 
@@ -40,13 +40,14 @@ const Cadastros: React.FC = () => {
 
   useEffect(() => {
     if (cadastrosData) {
+      console.log('Cadastros data received:', cadastrosData);
       setCadastros(cadastrosData);
     }
   }, [cadastrosData]);
 
   useEffect(() => {
     filterCadastros();
-  }, [cadastros, searchTerm, typeFilter]);
+  }, [cadastros, searchTerm]);
 
   const filterCadastros = () => {
     let filtered = cadastros;
@@ -59,16 +60,14 @@ const Cadastros: React.FC = () => {
       );
     }
 
-    if (typeFilter !== 'all') {
-      filtered = filtered.filter(cadastro => cadastro.pessoa === typeFilter);
-    }
-
     setFilteredCadastros(filtered);
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
+    console.log('Form submit triggered');
     const success = await handleSubmit(e);
     if (success) {
+      console.log('Form submitted successfully, switching to lista tab');
       setActiveTab('lista');
     }
   };
@@ -144,12 +143,26 @@ const Cadastros: React.FC = () => {
         </TabsList>
 
         <TabsContent value="lista" className="space-y-4">
-          <ContactFilters
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            typeFilter={typeFilter}
-            setTypeFilter={setTypeFilter}
-          />
+          <Card>
+            <CardHeader>
+              <CardTitle>Filtros</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      placeholder="Buscar por nome, CPF/CNPJ ou email..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           <CadastroTable
             cadastros={filteredCadastros}

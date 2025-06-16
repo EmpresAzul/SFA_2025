@@ -78,6 +78,8 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
   };
 
   const validateForm = (): boolean => {
+    console.log('Validating form data:', formData);
+    
     // Validação do nome obrigatório
     if (!formData.nome.trim() && !formData.razao_social?.trim()) {
       toast({
@@ -132,9 +134,11 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted with data:', formData);
     
     if (!validateForm()) {
-      return;
+      console.log('Form validation failed');
+      return false;
     }
 
     setLoading(true);
@@ -159,7 +163,10 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
         data: new Date().toISOString().split('T')[0]
       };
 
+      console.log('Sending cadastro data:', cadastroData);
+
       if (editingCadastro) {
+        console.log('Updating cadastro:', editingCadastro.id);
         await updateCadastro.mutateAsync({ 
           id: editingCadastro.id, 
           ...cadastroData 
@@ -170,6 +177,7 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
         });
         setEditingCadastro(null);
       } else {
+        console.log('Creating new cadastro');
         await createCadastro.mutateAsync(cadastroData);
         toast({
           title: "Sucesso",

@@ -3,7 +3,6 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Cadastro } from '@/hooks/useCadastros';
@@ -33,8 +32,7 @@ export const CadastroTable: React.FC<CadastroTableProps> = ({
           <TableHeader>
             <TableRow>
               <TableHead>Nome</TableHead>
-              {tipo !== 'Funcionários' && <TableHead>Tipo</TableHead>}
-              <TableHead>{tipo === 'Funcionários' ? 'CPF' : 'CPF/CNPJ'}</TableHead>
+              <TableHead>CPF/CNPJ</TableHead>
               <TableHead>Telefone</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Data</TableHead>
@@ -44,14 +42,14 @@ export const CadastroTable: React.FC<CadastroTableProps> = ({
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-gray-500">
+                <TableCell colSpan={6} className="text-center text-gray-500">
                   Carregando...
                 </TableCell>
               </TableRow>
             )}
             {!isLoading && cadastros.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-gray-500">
+                <TableCell colSpan={6} className="text-center text-gray-500">
                   Nenhum cadastro encontrado
                 </TableCell>
               </TableRow>
@@ -59,13 +57,6 @@ export const CadastroTable: React.FC<CadastroTableProps> = ({
             {cadastros.map((cadastro) => (
               <TableRow key={cadastro.id}>
                 <TableCell className="font-medium">{cadastro.nome}</TableCell>
-                {tipo !== 'Funcionários' && (
-                  <TableCell>
-                    <Badge variant="outline">
-                      {cadastro.pessoa}
-                    </Badge>
-                  </TableCell>
-                )}
                 <TableCell>{cadastro.cpf_cnpj || '-'}</TableCell>
                 <TableCell>{cadastro.telefone || '-'}</TableCell>
                 <TableCell>{cadastro.email || '-'}</TableCell>
