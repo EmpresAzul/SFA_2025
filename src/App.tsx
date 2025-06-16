@@ -15,7 +15,7 @@ import SaldosBancarios from '@/pages/SaldosBancarios';
 import FluxoCaixa from '@/pages/FluxoCaixa';
 import DRE from '@/pages/DRE';
 import Precificacao from '@/pages/Precificacao';
-import Cadastros from '@/pages/Cadastros';
+import CadastrosUnified from '@/pages/CadastrosUnified';
 import { Outlet } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -56,7 +56,7 @@ const App = () => {
             <Route path="lancamentos" element={<LancamentosFinanceiros />} />
             <Route path="saldos-bancarios" element={<SaldosBancarios />} />
             <Route path="fluxo-caixa" element={<FluxoCaixa />} />
-            <Route path="cadastros/:tipo" element={<Cadastros />} />
+            <Route path="cadastros" element={<CadastrosUnified />} />
             <Route path="consultor-virtual" element={<VirtualConsultant />} />
             <Route path="perfil" element={<Profile />} />
           </Route>

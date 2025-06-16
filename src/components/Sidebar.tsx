@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
@@ -14,10 +13,7 @@ import {
   CreditCard,
   Banknote,
   Calendar,
-  Users,
-  UserCheck,
-  Building2,
-  UserCog
+  Users
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -49,11 +45,7 @@ const menuItems: MenuItem[] = [
     label: 'Cadastros',
     icon: Users,
     iconColor: 'text-indigo-500',
-    children: [
-      { id: 'clientes', label: 'Clientes', icon: UserCheck, iconColor: 'text-blue-500', href: '/dashboard/cadastros/clientes' },
-      { id: 'fornecedores', label: 'Fornecedores', icon: Building2, iconColor: 'text-green-500', href: '/dashboard/cadastros/fornecedores' },
-      { id: 'funcionarios', label: 'Funcionários', icon: UserCog, iconColor: 'text-purple-500', href: '/dashboard/cadastros/funcionarios' }
-    ]
+    href: '/dashboard/cadastros'
   },
   {
     id: 'precificacao',
