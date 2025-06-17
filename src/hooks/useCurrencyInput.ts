@@ -1,6 +1,6 @@
 
 import { useState, useCallback } from 'react';
-import { createCurrencyValue, parseStringToNumber, validateCurrencyValue } from '@/utils/currency';
+import { createCurrencyValue, parseStringToNumber, validateCurrencyValue, formatNumberToInput } from '@/utils/currency';
 
 interface UseCurrencyInputOptions {
   initialValue?: string | number;
@@ -16,12 +16,13 @@ export const useCurrencyInput = (options: UseCurrencyInputOptions = {}) => {
   );
 
   const updateValue = useCallback((newValue: string | number) => {
-    const currency = createCurrencyValue(newValue);
+    const numericValue = parseStringToNumber(newValue);
     
-    if (!allowNegative && currency.numeric < 0) {
+    if (!allowNegative && numericValue < 0) {
       return;
     }
     
+    const currency = createCurrencyValue(numericValue);
     setCurrencyValue(currency);
     onValueChange?.(currency.numeric, currency.input);
   }, [allowNegative, onValueChange]);

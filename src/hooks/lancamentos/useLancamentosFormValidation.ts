@@ -7,6 +7,8 @@ export const useLancamentosFormValidation = () => {
   const { toast } = useToast();
 
   const validateForm = (formData: FormData): { isValid: boolean; valorNumerico?: number } => {
+    console.log('Validation: Validando formulário:', formData);
+
     if (!formData.tipo) {
       toast({
         title: "Erro",
@@ -34,14 +36,13 @@ export const useLancamentosFormValidation = () => {
       return { isValid: false };
     }
 
-    // Converter string ou número para número para validação
-    const valorNumerico = typeof formData.valor === 'string' 
-      ? parseStringToNumber(formData.valor) 
-      : formData.valor;
+    // Validar valor monetário
+    console.log('Validation: Valor recebido para validação:', formData.valor);
+    const valorNumerico = parseStringToNumber(formData.valor);
+    console.log('Validation: Valor numérico convertido:', valorNumerico);
     
     const valorValidation = validateCurrencyValue(valorNumerico);
-    
-    console.log('Validation: Validação de valor:', valorValidation);
+    console.log('Validation: Resultado da validação:', valorValidation);
 
     if (!valorValidation.isValid || !valorValidation.numeric || valorValidation.numeric <= 0) {
       toast({
@@ -52,6 +53,7 @@ export const useLancamentosFormValidation = () => {
       return { isValid: false };
     }
 
+    console.log('Validation: Formulário válido, valor numérico final:', valorValidation.numeric);
     return { isValid: true, valorNumerico: valorValidation.numeric };
   };
 

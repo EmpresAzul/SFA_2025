@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Eye, Edit, Trash2, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { formatCurrency } from '@/utils/formatters';
-import { useLancamentos } from '@/hooks/useLancamentos';
+import { formatNumberToDisplay } from '@/utils/currency';
 import type { LancamentoComRelacoes } from '@/types/lancamentosForm';
 
 interface LancamentosTableProps {
@@ -103,7 +102,7 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                     <TableCell className={`font-semibold ${
                       lancamento.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      {formatCurrency(lancamento.valor)}
+                      {formatNumberToDisplay(lancamento.valor)}
                     </TableCell>
                     <TableCell>
                       {lancamento.cliente?.nome || lancamento.fornecedor?.nome || '-'}
@@ -148,7 +147,7 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                             <AlertDialogHeader>
                               <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
                               <AlertDialogDescription>
-                                Tem certeza que deseja excluir este lançamento de {formatCurrency(lancamento.valor)}? 
+                                Tem certeza que deseja excluir este lançamento de {formatNumberToDisplay(lancamento.valor)}? 
                                 Esta ação não pode ser desfeita.
                               </AlertDialogDescription>
                             </AlertDialogHeader>

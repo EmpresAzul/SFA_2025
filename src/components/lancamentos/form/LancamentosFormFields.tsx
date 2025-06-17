@@ -23,7 +23,7 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
   clientes,
   fornecedores,
 }) => {
-  const handleInputChange = (field: keyof FormData, value: string | number) => {
+  const handleInputChange = (field: keyof FormData, value: string) => {
     console.log('FormFields: Atualizando campo', field, 'com valor:', value);
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
@@ -34,14 +34,13 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
 
   const handleCurrencyChange = (numericValue: number, formattedValue: string) => {
     console.log('FormFields: Valor monetário atualizado:', { numericValue, formattedValue });
-    // Armazenar como string formatada para manter consistência
+    // Armazenar como string formatada para manter consistência na exibição
     handleInputChange('valor', formattedValue);
   };
 
   // Converter valor para número para o componente de currency
-  const valorNumerico = typeof formData.valor === 'string' 
-    ? parseStringToNumber(formData.valor) 
-    : formData.valor;
+  const valorNumerico = parseStringToNumber(formData.valor);
+  console.log('FormFields: Valor atual do formulário:', formData.valor, 'convertido para:', valorNumerico);
 
   return (
     <div className="space-y-6">
@@ -83,13 +82,13 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
 
         <div className="space-y-2">
           <Label htmlFor="valor" className="text-sm font-medium text-gray-700">
-            Valor * (R$)
+            Valor *
           </Label>
           <EnhancedCurrencyInput
             id="valor"
             value={valorNumerico}
             onChange={handleCurrencyChange}
-            placeholder="R$ 0,00"
+            placeholder="0,00"
             className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
           />
         </div>

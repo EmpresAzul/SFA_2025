@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp, TrendingDown, DollarSign, BarChart3 } from 'lucide-react';
+import { formatNumberToDisplay } from '@/utils/currency';
 import type { Lancamento } from '@/hooks/useLancamentos';
 
 type LancamentoComRelacoes = Lancamento & {
@@ -31,14 +32,14 @@ const LancamentosSummaryCards: React.FC<LancamentosSummaryCardsProps> = ({ lanca
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
         <CardContent className="p-4">
           <div className="flex items-center">
             <TrendingUp className="h-8 w-8 text-emerald-600" />
             <div className="ml-3">
               <p className="text-sm font-medium text-emerald-600">Total Receitas</p>
-              <p className="text-xl font-bold text-emerald-900">R$ {getTotalReceitas().toFixed(2)}</p>
+              <p className="text-xl font-bold text-emerald-900">{formatNumberToDisplay(getTotalReceitas())}</p>
             </div>
           </div>
         </CardContent>
@@ -50,7 +51,7 @@ const LancamentosSummaryCards: React.FC<LancamentosSummaryCardsProps> = ({ lanca
             <TrendingDown className="h-8 w-8 text-red-600" />
             <div className="ml-3">
               <p className="text-sm font-medium text-red-600">Total Despesas</p>
-              <p className="text-xl font-bold text-red-900">R$ {getTotalDespesas().toFixed(2)}</p>
+              <p className="text-xl font-bold text-red-900">{formatNumberToDisplay(getTotalDespesas())}</p>
             </div>
           </div>
         </CardContent>
@@ -63,7 +64,7 @@ const LancamentosSummaryCards: React.FC<LancamentosSummaryCardsProps> = ({ lanca
             <div className="ml-3">
               <p className={`text-sm font-medium ${getSaldo() >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>Saldo</p>
               <p className={`text-xl font-bold ${getSaldo() >= 0 ? 'text-blue-900' : 'text-orange-900'}`}>
-                R$ {getSaldo().toFixed(2)}
+                {formatNumberToDisplay(getSaldo())}
               </p>
             </div>
           </div>
