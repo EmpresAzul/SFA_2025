@@ -40,7 +40,10 @@ export const useLancamentosFormSubmit = ({
         fornecedor_id: formData.fornecedor_id || null,
         observacoes: formData.observacoes.trim() || null,
         user_id: user.id,
-        status: 'ativo'
+        status: 'ativo',
+        recorrente: formData.recorrente,
+        meses_recorrencia: formData.recorrente ? formData.meses_recorrencia : null,
+        lancamento_pai_id: null
       };
 
       console.log('FormSubmit: Dados do lançamento a serem salvos:', lancamentoData);
@@ -57,7 +60,9 @@ export const useLancamentosFormSubmit = ({
           valor: lancamentoData.valor,
           cliente_id: lancamentoData.cliente_id,
           fornecedor_id: lancamentoData.fornecedor_id,
-          observacoes: lancamentoData.observacoes
+          observacoes: lancamentoData.observacoes,
+          recorrente: lancamentoData.recorrente,
+          meses_recorrencia: lancamentoData.meses_recorrencia
         };
         
         console.log('FormSubmit: Dados para atualização (sem user_id e status):', updateData);
@@ -74,9 +79,13 @@ export const useLancamentosFormSubmit = ({
         const result = await createLancamento.mutateAsync(lancamentoData);
         console.log('FormSubmit: Resultado da criação:', result);
         
+        const mensagem = formData.recorrente && formData.meses_recorrencia 
+          ? `Lançamento recorrente criado com sucesso! Serão criados ${formData.meses_recorrencia} lançamentos nos próximos meses.`
+          : "Lançamento criado com sucesso.";
+        
         toast({
           title: "Sucesso!",
-          description: "Lançamento criado com sucesso.",
+          description: mensagem,
         });
       }
 

@@ -11,6 +11,8 @@ const getInitialFormData = (): FormData => ({
   cliente_id: '',
   fornecedor_id: '',
   observacoes: '',
+  recorrente: false,
+  meses_recorrencia: null,
 });
 
 export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes | null) => {
@@ -30,6 +32,8 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
       cliente_id: lancamento.cliente_id || '',
       fornecedor_id: lancamento.fornecedor_id || '',
       observacoes: lancamento.observacoes || '',
+      recorrente: lancamento.recorrente || false,
+      meses_recorrencia: lancamento.meses_recorrencia || null,
     };
     
     console.log('FormData: Dados processados para carregamento:', loadedData);
@@ -42,7 +46,7 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
     setFormData(getInitialFormData());
   }, []);
 
-  const updateFormField = useCallback((field: keyof FormData, value: string) => {
+  const updateFormField = useCallback((field: keyof FormData, value: string | boolean | number | null) => {
     console.log('FormData: Atualizando campo', field, 'com valor:', value);
     setFormData(prev => {
       const updated = { ...prev, [field]: value };

@@ -2,6 +2,7 @@
 import { useQuery as useReactQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { addMonths, format } from 'date-fns';
 
 export interface Lancamento {
   id: string;
@@ -14,6 +15,9 @@ export interface Lancamento {
   fornecedor_id?: string;
   observacoes?: string;
   status: string;
+  recorrente: boolean;
+  meses_recorrencia?: number | null;
+  lancamento_pai_id?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -51,6 +55,56 @@ export const useLancamentos = () => {
     });
   };
 
+  const criarLancamentosRecorrentes = async (lancamentoData: any, mesesRecorrencia: number) => {
+    const lancamentosParaCriar = [];
+    const dataInicial = new Date(lancamentoData.data);
+    
+    // Criar o lançamento principal
+    const { data: lancamentoPrincipal, error: erroLancamentoPrincipal } = await supabase
+      .from('lancamentos')
+      .insert([{
+        ...lancamentoData,
+        recorrente: true,
+        meses_recorrencia: mesesRecorrencia,
+        lancamento_pai_id: null
+      }])
+      .select()
+      .single();
+
+    if (erroLancamentoPrincipal) {
+      throw erroLancamentoPrincipal;
+    }
+
+    console.log('Lançamento principal criado:', lancamentoPrincipal);
+
+    // Criar os lançamentos futuros
+    for (let i = 1; i <= mesesRecorrencia; i++) {
+      const dataFutura = addMonths(dataInicial, i);
+      lancamentosParaCriar.push({
+        ...lancamentoData,
+        data: format(dataFutura, 'yyyy-MM-dd'),
+        recorrente: false,
+        meses_recorrencia: null,
+        lancamento_pai_id: lancamentoPrincipal.id
+      });
+    }
+
+    if (lancamentosParaCriar.length > 0) {
+      const { error: erroLancamentosFuturos } = await supabase
+        .from('lancamentos')
+        .insert(lancamentosParaCriar);
+
+      if (erroLancamentosFuturos) {
+        console.error('Erro ao criar lançamentos futuros:', erroLancamentosFuturos);
+        throw erroLancamentosFuturos;
+      }
+
+      console.log(`${lancamentosParaCriar.length} lançamentos futuros criados`);
+    }
+
+    return lancamentoPrincipal;
+  };
+
   const useCreate = () => {
     return useMutation({
       mutationFn: async (lancamentoData: Omit<Lancamento, 'id' | 'created_at' | 'updated_at'>) => {
@@ -65,9 +119,20 @@ export const useLancamentos = () => {
           throw new Error('User ID é obrigatório');
         }
 
+        // Se for recorrente, usar função especial
+        if (lancamentoData.recorrente && lancamentoData.meses_recorrencia && lancamentoData.meses_recorrencia > 0) {
+          return await criarLancamentosRecorrentes(lancamentoData, lancamentoData.meses_recorrencia);
+        }
+
+        // Lançamento simples
         const { data, error } = await supabase
           .from('lancamentos')
-          .insert([lancamentoData])
+          .insert([{
+            ...lancamentoData,
+            recorrente: false,
+            meses_recorrencia: null,
+            lancamento_pai_id: null
+          }])
           .select()
           .single();
 

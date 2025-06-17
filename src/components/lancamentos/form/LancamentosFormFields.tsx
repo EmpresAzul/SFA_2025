@@ -5,8 +5,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
 import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
 import { parseStringToNumber } from '@/utils/currency';
+import LancamentosFormCategories from './LancamentosFormCategories';
 import type { FormData } from '@/types/lancamentosForm';
 import type { Cadastro } from '@/hooks/useCadastros';
 
@@ -23,7 +25,7 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
   clientes,
   fornecedores,
 }) => {
-  const handleInputChange = (field: keyof FormData, value: string) => {
+  const handleInputChange = (field: keyof FormData, value: string | boolean | number | null) => {
     console.log('FormFields: Atualizando campo', field, 'com valor:', value);
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
@@ -36,6 +38,13 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
     console.log('FormFields: Valor monetário atualizado:', { numericValue, formattedValue });
     // Armazenar como string formatada para manter consistência na exibição
     handleInputChange('valor', formattedValue);
+  };
+
+  const handleRecorrenteChange = (checked: boolean) => {
+    handleInputChange('recorrente', checked);
+    if (!checked) {
+      handleInputChange('meses_recorrencia', null);
+    }
   };
 
   // Converter valor para número para o componente de currency
@@ -94,6 +103,41 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
         </div>
       </div>
 
+      {/* Campo Recorrente */}
+      <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="recorrente"
+            checked={formData.recorrente}
+            onCheckedChange={handleRecorrenteChange}
+          />
+          <Label htmlFor="recorrente" className="text-sm font-medium text-gray-700">
+            Lançamento Recorrente
+          </Label>
+        </div>
+        
+        {formData.recorrente && (
+          <div className="space-y-2">
+            <Label htmlFor="meses_recorrencia" className="text-sm font-medium text-gray-700">
+              Quantidade de Meses *
+            </Label>
+            <Input
+              id="meses_recorrencia"
+              type="number"
+              min="1"
+              max="60"
+              value={formData.meses_recorrencia || ''}
+              onChange={(e) => handleInputChange('meses_recorrencia', parseInt(e.target.value) || null)}
+              placeholder="Ex: 12 (para 12 meses)"
+              className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-600">
+              Este lançamento será repetido automaticamente pelos próximos {formData.meses_recorrencia || 0} meses
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* Cliente/Fornecedor baseado no tipo */}
       {formData.tipo === 'receita' ? (
         <div className="space-y-2">
@@ -141,19 +185,25 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
         </div>
       )}
 
-      {/* Categoria */}
+      {/* Categoria Estruturada */}
       <div className="space-y-2">
         <Label htmlFor="categoria" className="text-sm font-medium text-gray-700">
           Categoria *
         </Label>
-        <Input
-          id="categoria"
-          type="text"
+        <Select
           value={formData.categoria}
-          onChange={(e) => handleInputChange('categoria', e.target.value)}
-          placeholder="Ex: Vendas, Marketing, Alimentação..."
-          className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-        />
+          onValueChange={(value) => handleInputChange('categoria', value)}
+        >
+          <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+            <SelectValue placeholder="Selecione uma categoria" />
+          </SelectTrigger>
+          <SelectContent className="max-h-[300px]">
+            <LancamentosFormCategories tipo={formData.tipo} />
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-gray-600">
+          As categorias são organizadas conforme a estrutura do DRE (Demonstração do Resultado do Exercício)
+        </p>
       </div>
 
       {/* Observações */}

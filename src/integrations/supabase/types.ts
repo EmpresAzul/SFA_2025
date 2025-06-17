@@ -134,7 +134,10 @@ export type Database = {
           data: string
           fornecedor_id: string | null
           id: string
+          lancamento_pai_id: string | null
+          meses_recorrencia: number | null
           observacoes: string | null
+          recorrente: boolean
           status: string
           tipo: string
           updated_at: string
@@ -148,7 +151,10 @@ export type Database = {
           data: string
           fornecedor_id?: string | null
           id?: string
+          lancamento_pai_id?: string | null
+          meses_recorrencia?: number | null
           observacoes?: string | null
+          recorrente?: boolean
           status?: string
           tipo: string
           updated_at?: string
@@ -162,7 +168,10 @@ export type Database = {
           data?: string
           fornecedor_id?: string | null
           id?: string
+          lancamento_pai_id?: string | null
+          meses_recorrencia?: number | null
           observacoes?: string | null
+          recorrente?: boolean
           status?: string
           tipo?: string
           updated_at?: string

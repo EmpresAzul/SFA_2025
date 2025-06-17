@@ -14,6 +14,8 @@ export interface FormData {
   fornecedor_id: string;
   categoria: string;
   observacoes: string;
+  recorrente: boolean;
+  meses_recorrencia: number | null;
 }
 
 export interface LancamentoFormParams {

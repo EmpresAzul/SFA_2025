@@ -16,6 +16,9 @@ export interface Lancamento {
   observacoes?: string;
   status: string;
   user_id: string;
+  recorrente: boolean;
+  meses_recorrencia?: number | null;
+  lancamento_pai_id?: string | null;
   created_at: string;
   updated_at: string;
 }

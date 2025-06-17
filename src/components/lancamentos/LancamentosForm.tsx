@@ -1,10 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import LancamentosFormFields from './form/LancamentosFormFields';
-import LancamentosFormCategories from './form/LancamentosFormCategories';
 import LancamentosFormActions from './form/LancamentosFormActions';
 import type { FormData, LancamentoComRelacoes } from '@/types/lancamentosForm';
 import type { Cadastro } from '@/hooks/useCadastros';
@@ -33,10 +30,6 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
   console.log('LancamentosForm: Dados atuais do formulário:', formData);
   console.log('LancamentosForm: Editando lançamento:', editingLancamento);
 
-  const renderCategoriasByGroup = () => {
-    return <LancamentosFormCategories tipo={formData.tipo} />;
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -45,7 +38,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
           {editingLancamento ? 'Editar Lançamento' : 'Novo Lançamento'}
         </CardTitle>
         <p className="text-sm text-gray-600">
-          As categorias selecionadas alimentarão automaticamente a estrutura do DRE
+          As categorias selecionadas alimentarão automaticamente a estrutura do DRE e Fluxo de Caixa
         </p>
       </CardHeader>
       <CardContent>
@@ -56,17 +49,6 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
             clientes={clientes || []}
             fornecedores={fornecedores || []}
           />
-
-          <div className="space-y-2">
-            <Label htmlFor="observacoes">Observações</Label>
-            <Textarea
-              id="observacoes"
-              value={formData.observacoes}
-              onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
-              placeholder="Observações opcionais sobre este lançamento..."
-              rows={3}
-            />
-          </div>
 
           <LancamentosFormActions
             loading={loading}
