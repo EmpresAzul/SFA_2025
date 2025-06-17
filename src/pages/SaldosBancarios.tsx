@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSaldosBancarios } from '@/hooks/useSaldosBancarios';
 import { CurrencyInput } from '@/components/ui/currency-input';
+import SaldoBancarioSummaryCard from '@/components/saldos-bancarios/SaldoBancarioSummaryCard';
 import {
   Table,
   TableBody,
@@ -143,6 +144,9 @@ const SaldosBancarios: React.FC = () => {
           <p className="text-gray-600 mt-2 text-sm">Controle de saldos em suas contas bancárias</p>
         </div>
       </div>
+
+      {/* Painel Resumo dos Saldos */}
+      <SaldoBancarioSummaryCard />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-12 sm:h-14">

@@ -1,9 +1,11 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Save, ArrowLeft } from 'lucide-react';
 import { useHoraForm } from '@/hooks/useHoraForm';
 import HoraFormFields from './forms/HoraFormFields';
 import DespesasFixasManager from './forms/DespesasFixasManager';
+import TaxasAdicionaisManager from './forms/TaxasAdicionaisManager';
 import HoraCalculationsResults from './forms/HoraCalculationsResults';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -27,6 +29,8 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
     setHoraData,
     despesasFixas,
     setDespesasFixas,
+    taxasAdicionais,
+    setTaxasAdicionais,
     loading,
     handleSubmit,
     handleCancel,
@@ -48,10 +52,13 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
   const diasTrabalhadosNumerico = parseFloat(horaData.diasTrabalhados) || 0;
   const horasPorDiaNumerico = parseFloat(horaData.horasPorDia) || 0;
   const totalCustosFixos = despesasFixas.reduce((total, despesa) => total + despesa.valor, 0);
+  const totalTaxasPercentual = taxasAdicionais.reduce((total, taxa) => total + taxa.percentual, 0);
   const horasTrabalhadasMes = diasTrabalhadosNumerico * horasPorDiaNumerico;
   const custoTotalMensal = horaData.proLabore + totalCustosFixos;
   const valorHoraTrabalhada = horasTrabalhadasMes > 0 ? custoTotalMensal / horasTrabalhadasMes : 0;
-  const valorDiaTrabalhado = horasPorDiaNumerico > 0 ? valorHoraTrabalhada * horasPorDiaNumerico : 0;
+  const valorTaxasHora = (valorHoraTrabalhada * totalTaxasPercentual) / 100;
+  const valorHoraFinal = valorHoraTrabalhada + valorTaxasHora;
+  const valorDiaTrabalhado = horasPorDiaNumerico > 0 ? valorHoraFinal * horasPorDiaNumerico : 0;
 
   return (
     <form onSubmit={onFormSubmit} className="space-y-6">
@@ -84,12 +91,20 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
         onUpdateDespesas={setDespesasFixas}
       />
 
+      <TaxasAdicionaisManager
+        taxasAdicionais={taxasAdicionais}
+        onUpdateTaxas={setTaxasAdicionais}
+      />
+
       <HoraCalculationsResults
         diasTrabalhados={horaData.diasTrabalhados}
         horasPorDia={horaData.horasPorDia}
         horasTrabalhadasMes={horasTrabalhadasMes}
         valorHoraTrabalhada={valorHoraTrabalhada}
+        valorTaxasHora={valorTaxasHora}
+        valorHoraFinal={valorHoraFinal}
         valorDiaTrabalhado={valorDiaTrabalhado}
+        totalTaxasPercentual={totalTaxasPercentual}
       />
 
       <div className="flex gap-4">

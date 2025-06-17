@@ -2,8 +2,8 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
-import { TrendingUp, DollarSign, Users, Package, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import LembretesActiveCard from '@/components/dashboard/LembretesActiveCard';
+import MetricsCards from '@/components/dashboard/MetricsCards';
 
 const Dashboard: React.FC = () => {
   // Mock data for charts
@@ -33,41 +33,6 @@ const Dashboard: React.FC = () => {
     { day: '30', entrada: 4200, saida: 2800 },
   ];
 
-  const kpiCards = [
-    {
-      title: 'Receita Mensal',
-      value: 'R$ 67.000',
-      change: '+12.5%',
-      trend: 'up',
-      icon: DollarSign,
-      gradient: 'from-emerald-500 to-emerald-600'
-    },
-    {
-      title: 'Clientes Ativos',
-      value: '1.234',
-      change: '+8.2%',
-      trend: 'up',
-      icon: Users,
-      gradient: 'from-blue-500 to-blue-600'
-    },
-    {
-      title: 'Produtos Vendidos',
-      value: '2.847',
-      change: '+15.3%',
-      trend: 'up',
-      icon: Package,
-      gradient: 'from-purple-500 to-purple-600'
-    },
-    {
-      title: 'Margem de Lucro',
-      value: '32.4%',
-      change: '-2.1%',
-      trend: 'down',
-      icon: TrendingUp,
-      gradient: 'from-orange-500 to-orange-600'
-    }
-  ];
-
   return (
     <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-indigo-50 min-h-screen">
       {/* Header */}
@@ -80,37 +45,8 @@ const Dashboard: React.FC = () => {
         </p>
       </div>
 
-      {/* KPI Cards */}
-      <div className="responsive-grid mb-6">
-        {kpiCards.map((kpi, index) => (
-          <Card key={index} className="hover:shadow-colorful transition-all duration-300 border-0 shadow-lg bg-white/90 backdrop-blur-sm">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">
-                    {kpi.title}
-                  </p>
-                  <p className="text-lg sm:text-2xl font-bold text-gray-900">
-                    {kpi.value}
-                  </p>
-                  <div className={`flex items-center mt-2 text-xs sm:text-sm ${
-                    kpi.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {kpi.trend === 'up' ? 
-                      <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4 mr-1" /> : 
-                      <ArrowDownRight className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                    }
-                    {kpi.change}
-                  </div>
-                </div>
-                <div className={`p-2 sm:p-3 rounded-full bg-gradient-to-r ${kpi.gradient}`}>
-                  <kpi.icon className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* Métricas com dados reais */}
+      <MetricsCards />
 
       {/* Lembretes Ativos */}
       <div className="mb-6">
