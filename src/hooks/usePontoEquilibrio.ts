@@ -105,7 +105,7 @@ export const usePontoEquilibrio = () => {
       // Converter os dados do Supabase para nosso tipo customizado
       return (data || []).map(item => ({
         ...item,
-        dados_projecao: item.dados_projecao as ProjecaoData
+        dados_projecao: item.dados_projecao as unknown as ProjecaoData
       })) as Projecao[];
     }
   });
@@ -139,7 +139,7 @@ export const usePontoEquilibrio = () => {
       if (error) throw error;
       return {
         ...data,
-        dados_projecao: data.dados_projecao as ProjecaoData
+        dados_projecao: data.dados_projecao as unknown as ProjecaoData
       } as Projecao;
     },
     onSuccess: (data) => {
@@ -182,7 +182,7 @@ export const usePontoEquilibrio = () => {
       if (error) throw error;
       return {
         ...data,
-        dados_projecao: data.dados_projecao as ProjecaoData
+        dados_projecao: data.dados_projecao as unknown as ProjecaoData
       } as Projecao;
     },
     onSuccess: () => {
