@@ -18,6 +18,7 @@ import Precificacao from '@/pages/Precificacao';
 import CadastrosUnified from '@/pages/CadastrosUnified';
 import Lembretes from '@/pages/Lembretes';
 import Pipeline from '@/pages/Pipeline';
+import PontoEquilibrio from '@/pages/PontoEquilibrio';
 import { Outlet } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -58,6 +59,7 @@ const App = () => {
             <Route path="lancamentos" element={<LancamentosFinanceiros />} />
             <Route path="saldos-bancarios" element={<SaldosBancarios />} />
             <Route path="fluxo-caixa" element={<FluxoCaixa />} />
+            <Route path="ponto-equilibrio" element={<PontoEquilibrio />} />
             <Route path="cadastros" element={<CadastrosUnified />} />
             <Route path="pipeline" element={<Pipeline />} />
             <Route path="lembretes" element={<Lembretes />} />

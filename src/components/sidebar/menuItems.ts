@@ -11,7 +11,8 @@ import {
   Banknote,
   Users,
   Bell,
-  Target
+  Target,
+  Calculator
 } from 'lucide-react';
 import type { MenuItem } from './types';
 
@@ -25,6 +26,7 @@ export const menuItems: MenuItem[] = [
       { id: 'bancos', label: 'Bancos', icon: Banknote, iconColor: 'text-green-500', href: '/dashboard/saldos-bancarios' },
       { id: 'dre', label: 'DRE', icon: TrendingUp, iconColor: 'text-purple-500', href: '/dashboard/dre' },
       { id: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: CreditCard, iconColor: 'text-orange-500', href: '/dashboard/fluxo-caixa' },
+      { id: 'ponto-equilibrio', label: 'Ponto de Equilíbrio', icon: Calculator, iconColor: 'text-red-500', href: '/dashboard/ponto-equilibrio' },
       { id: 'metricas', label: 'Métricas', icon: TrendingUp, iconColor: 'text-cyan-500', href: '/dashboard' }
     ]
   },

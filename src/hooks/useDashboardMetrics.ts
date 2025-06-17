@@ -82,8 +82,10 @@ export const useDashboardMetrics = () => {
       const totalDespesas = despesas?.reduce((total, item) => total + (item.valor || 0), 0) || 0;
       const saldoBancario = saldosBancarios?.reduce((total, item) => total + (item.saldo || 0), 0) || 0;
       
-      // Calcular ponto de equilíbrio (despesas fixas como base)
-      const pontoEquilibrio = totalDespesas > 0 ? totalDespesas : 0;
+      // Calcular ponto de equilíbrio simples (usando despesas como base de custos fixos)
+      // Para um cálculo mais preciso, o usuário deve usar a página dedicada de Ponto de Equilíbrio
+      const margemContribuicaoEstimada = 0.4; // 40% de margem estimada
+      const pontoEquilibrio = totalDespesas > 0 ? totalDespesas / margemContribuicaoEstimada : 0;
 
       const metrics = {
         pontoEquilibrio,
