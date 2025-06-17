@@ -222,6 +222,48 @@ export type Database = {
         }
         Relationships: []
       }
+      negocios: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          nome_lead: string
+          observacoes: string | null
+          posicao: number | null
+          status: string
+          updated_at: string
+          user_id: string
+          valor_negocio: number | null
+          whatsapp: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome_lead: string
+          observacoes?: string | null
+          posicao?: number | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          valor_negocio?: number | null
+          whatsapp?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome_lead?: string
+          observacoes?: string | null
+          posicao?: number | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          valor_negocio?: number | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       saldos_bancarios: {
         Row: {
           banco: string

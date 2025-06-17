@@ -10,7 +10,8 @@ import {
   CreditCard,
   Banknote,
   Users,
-  Bell
+  Bell,
+  Target
 } from 'lucide-react';
 import type { MenuItem } from './types';
 
@@ -58,10 +59,17 @@ export const menuItems: MenuItem[] = [
     href: '/dashboard/estoque'
   },
   {
+    id: 'pipeline',
+    label: 'Pipeline',
+    icon: Target,
+    iconColor: 'text-violet-500',
+    href: '/dashboard/pipeline'
+  },
+  {
     id: 'lembretes',
     label: 'Lembretes',
     icon: Bell,
-    iconColor: 'text-violet-500',
+    iconColor: 'text-cyan-500',
     href: '/dashboard/lembretes'
   },
   {

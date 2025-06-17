@@ -81,16 +81,11 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Background com gradiente mais escuro */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600">
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 to-transparent"></div>
-      </div>
-
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gray-100">
       <div className="relative z-10 w-full max-w-md px-4 sm:px-6">
         <Card className="bg-white/95 backdrop-blur-xl shadow-2xl border-0 overflow-hidden" style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
-          {/* Header sem gradiente - cor única */}
-          <div className="bg-white p-8 text-center">
+          {/* Header transparente */}
+          <div className="bg-transparent p-8 text-center">
             <div className="flex justify-center mb-6">
               <Logo size="lg" />
             </div>
