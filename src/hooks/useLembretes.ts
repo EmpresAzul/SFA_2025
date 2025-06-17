@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -41,7 +40,7 @@ export const useLembretes = () => {
         return [];
       }
 
-      console.log('useLembretes: Buscando lembretes para usuário:', user.id);
+      console.log('useLembretes: Iniciando busca de lembretes para usuário:', user.id);
 
       const { data, error } = await supabase
         .from('lembretes')
@@ -50,12 +49,28 @@ export const useLembretes = () => {
         .order('data_lembrete', { ascending: true });
 
       if (error) {
-        console.error('Erro ao buscar lembretes:', error);
+        console.error('useLembretes: Erro ao buscar lembretes:', error);
         throw error;
       }
 
-      console.log('useLembretes: Lembretes encontrados:', data?.length || 0);
-      console.log('useLembretes: Dados completos:', data);
+      console.log('useLembretes: Query executada com sucesso');
+      console.log('useLembretes: Dados retornados:', data);
+      console.log('useLembretes: Total de lembretes encontrados:', data?.length || 0);
+      
+      // Log detalhado de cada lembrete
+      if (data && data.length > 0) {
+        data.forEach((lembrete, index) => {
+          console.log(`useLembretes: Lembrete ${index + 1}:`, {
+            id: lembrete.id,
+            titulo: lembrete.titulo,
+            status: lembrete.status,
+            data_lembrete: lembrete.data_lembrete,
+            user_id: lembrete.user_id
+          });
+        });
+      } else {
+        console.log('useLembretes: Nenhum lembrete encontrado');
+      }
 
       return data as Lembrete[];
     },
@@ -150,7 +165,12 @@ export const useLembretes = () => {
     }
   });
 
-  console.log('useLembretes: Estado atual - Loading:', isLoading, 'Lembretes:', lembretes.length, 'User:', user?.id);
+  console.log('useLembretes: Estado final do hook:', {
+    loading: isLoading,
+    totalLembretes: lembretes.length,
+    userId: user?.id,
+    hasError: !!error
+  });
 
   return {
     lembretes,
