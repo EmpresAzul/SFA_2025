@@ -18,7 +18,7 @@ export const useSupabaseQuery = () => {
     useLancamentos: lancamentos.useQuery,
     useSaldosBancarios: saldosBancarios.useQuery,
     useCadastros: cadastros.useQuery,
-    usePrecificacao: precificacao.useQueryHook,
+    usePrecificacao: precificacao.useQuery,
     
     // Mutations - retornando as funções diretamente
     useCreateEstoque: estoques.useCreate,
