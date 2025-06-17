@@ -7,9 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CurrencyInput } from '@/components/ui/currency-input';
 import type { FormData } from '@/types/lancamentosForm';
-import type { Database } from '@/integrations/supabase/types';
-
-type Cadastro = Database['public']['Tables']['cadastros']['Row'];
+import type { Cadastro } from '@/hooks/useCadastros';
 
 interface LancamentosFormFieldsProps {
   formData: FormData;
