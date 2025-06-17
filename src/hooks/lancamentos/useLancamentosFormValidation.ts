@@ -24,14 +24,29 @@ export const useLancamentosFormValidation = () => {
       return { isValid: false };
     }
 
-    // Converter valor para número
-    const valorNumerico = parseFloat(formData.valor.replace(',', '.'));
-    console.log('Validation: Valor original:', formData.valor, 'Valor numérico:', valorNumerico);
-
-    if (!formData.valor || valorNumerico <= 0) {
+    if (!formData.data) {
       toast({
         title: "Erro",
-        description: "Por favor, informe um valor válido.",
+        description: "Por favor, informe a data.",
+        variant: "destructive",
+      });
+      return { isValid: false };
+    }
+
+    // Converter valor para número, tratando vírgulas e pontos
+    let valorNumerico = 0;
+    if (formData.valor) {
+      // Remove espaços e trata vírgula como separador decimal
+      const valorLimpo = formData.valor.toString().trim().replace(',', '.');
+      valorNumerico = parseFloat(valorLimpo);
+    }
+    
+    console.log('Validation: Valor original:', formData.valor, 'Valor numérico:', valorNumerico);
+
+    if (!formData.valor || isNaN(valorNumerico) || valorNumerico <= 0) {
+      toast({
+        title: "Erro",
+        description: "Por favor, informe um valor válido maior que zero.",
         variant: "destructive",
       });
       return { isValid: false };

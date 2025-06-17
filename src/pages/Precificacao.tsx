@@ -8,8 +8,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CurrencyInput } from '@/components/ui/currency-input';
 import { useToast } from '@/hooks/use-toast';
-import { ShoppingCart, Package, Plus, Calculator } from 'lucide-react';
+import { ShoppingCart, Package, Plus, Calculator, Clock } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatters';
+import CadastrarHora from '@/components/precificacao/CadastrarHora';
 
 const Precificacao: React.FC = () => {
   const { toast } = useToast();
@@ -147,7 +148,7 @@ const Precificacao: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-fluxo-black-900">Precificação</h1>
-          <p className="text-fluxo-black-600 mt-2">Gerencie a precificação de produtos e serviços</p>
+          <p className="text-fluxo-black-600 mt-2">Gerencie a precificação de produtos, serviços e horas</p>
         </div>
       </div>
 
@@ -155,12 +156,12 @@ const Precificacao: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Calculator className="w-5 h-5 mr-2 text-pink-500" />
-            Cadastro de Produtos e Serviços
+            Cadastro de Produtos, Serviços e Horas
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="produto" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="produto" className="flex items-center">
                 <ShoppingCart className="w-4 h-4 mr-2 text-blue-500" />
                 Cadastrar Produto
@@ -168,6 +169,10 @@ const Precificacao: React.FC = () => {
               <TabsTrigger value="servico" className="flex items-center">
                 <Package className="w-4 h-4 mr-2 text-green-500" />
                 Cadastrar Serviço
+              </TabsTrigger>
+              <TabsTrigger value="hora" className="flex items-center">
+                <Clock className="w-4 h-4 mr-2 text-purple-500" />
+                Cadastrar Hora
               </TabsTrigger>
             </TabsList>
 
@@ -391,6 +396,10 @@ const Precificacao: React.FC = () => {
                   {loading ? "Cadastrando..." : "Cadastrar Serviço"}
                 </Button>
               </form>
+            </TabsContent>
+
+            <TabsContent value="hora" className="space-y-6">
+              <CadastrarHora />
             </TabsContent>
           </Tabs>
         </CardContent>

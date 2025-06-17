@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { FormData, LancamentoComRelacoes } from '@/types/lancamentosForm';
 
 export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes | null) => {
@@ -20,7 +20,7 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
     const newFormData = {
       data: lancamento.data,
       tipo: lancamento.tipo,
-      valor: lancamento.valor ? lancamento.valor.toString() : '',
+      valor: lancamento.valor ? lancamento.valor.toString().replace('.', ',') : '',
       cliente_id: lancamento.cliente_id || '',
       fornecedor_id: lancamento.fornecedor_id || '',
       categoria: lancamento.categoria,
@@ -45,17 +45,6 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
     console.log('FormData: Resetando formulário para:', initialFormData);
     setFormData(initialFormData);
   };
-
-  // Effect para carregar dados quando há um lançamento sendo editado
-  useEffect(() => {
-    if (editingLancamento) {
-      console.log('FormData: useEffect - Editando lançamento:', editingLancamento);
-      loadFormData(editingLancamento);
-    } else {
-      console.log('FormData: useEffect - Modo novo lançamento');
-      resetForm();
-    }
-  }, [editingLancamento]);
 
   return {
     formData,
