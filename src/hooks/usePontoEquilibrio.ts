@@ -101,7 +101,12 @@ export const usePontoEquilibrio = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as Projecao[];
+      
+      // Converter os dados do Supabase para nosso tipo customizado
+      return (data || []).map(item => ({
+        ...item,
+        dados_projecao: item.dados_projecao as ProjecaoData
+      })) as Projecao[];
     }
   });
 
@@ -125,14 +130,17 @@ export const usePontoEquilibrio = () => {
         .from('projecoes_ponto_equilibrio')
         .insert({
           nome_projecao: nomeProjecao,
-          dados_projecao: dadosProjecao,
+          dados_projecao: dadosProjecao as any, // Conversão para Json
           user_id: (await supabase.auth.getUser()).data.user?.id
         })
         .select()
         .single();
 
       if (error) throw error;
-      return data;
+      return {
+        ...data,
+        dados_projecao: data.dados_projecao as ProjecaoData
+      } as Projecao;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['projecoes-ponto-equilibrio'] });
@@ -161,7 +169,7 @@ export const usePontoEquilibrio = () => {
         }
       };
 
-      const updateData: any = { dados_projecao: dadosProjecao };
+      const updateData: any = { dados_projecao: dadosProjecao as any };
       if (nomeProjecao) updateData.nome_projecao = nomeProjecao;
 
       const { data, error } = await supabase
@@ -172,7 +180,10 @@ export const usePontoEquilibrio = () => {
         .single();
 
       if (error) throw error;
-      return data;
+      return {
+        ...data,
+        dados_projecao: data.dados_projecao as ProjecaoData
+      } as Projecao;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projecoes-ponto-equilibrio'] });
