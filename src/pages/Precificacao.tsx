@@ -21,6 +21,7 @@ const PrecificacaoPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState('todos');
   const [selectedItem, setSelectedItem] = useState<Precificacao | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<Precificacao | null>(null);
 
   const { useQuery } = usePrecificacao();
   const { data: precificacaoData = [], isLoading } = useQuery();
@@ -52,8 +53,32 @@ const PrecificacaoPage: React.FC = () => {
   };
 
   const handleEdit = (item: Precificacao) => {
-    console.log('Editar item:', item);
-    // TODO: Implementar lógica de edição
+    setEditingItem(item);
+    
+    // Redirecionar para a aba correta baseado no tipo
+    switch (item.tipo) {
+      case 'Produto':
+        setActiveTab('produto');
+        break;
+      case 'Serviço':
+        setActiveTab('servico');
+        break;
+      case 'Hora':
+        setActiveTab('hora');
+        break;
+      default:
+        setActiveTab('produto');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingItem(null);
+    setActiveTab('lista');
+  };
+
+  const handleSaveSuccess = () => {
+    setEditingItem(null);
+    setActiveTab('lista');
   };
 
   return (
@@ -81,21 +106,21 @@ const PrecificacaoPage: React.FC = () => {
             className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
             <Package className="h-4 w-4" />
-            Cadastrar Produto
+            {editingItem?.tipo === 'Produto' ? 'Editar Produto' : 'Cadastrar Produto'}
           </TabsTrigger>
           <TabsTrigger 
             value="servico" 
             className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
             <Wrench className="h-4 w-4" />
-            Cadastrar Serviço
+            {editingItem?.tipo === 'Serviço' ? 'Editar Serviço' : 'Cadastrar Serviço'}
           </TabsTrigger>
           <TabsTrigger 
             value="hora" 
             className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
             <Clock className="h-4 w-4" />
-            Cadastrar Hora
+            {editingItem?.tipo === 'Hora' ? 'Editar Hora' : 'Cadastrar Hora'}
           </TabsTrigger>
         </TabsList>
 
@@ -131,19 +156,31 @@ const PrecificacaoPage: React.FC = () => {
 
         <TabsContent value="produto">
           <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
-            <CadastrarProduto />
+            <CadastrarProduto 
+              editingItem={editingItem?.tipo === 'Produto' ? editingItem : null}
+              onCancelEdit={handleCancelEdit}
+              onSaveSuccess={handleSaveSuccess}
+            />
           </div>
         </TabsContent>
 
         <TabsContent value="servico">
           <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
-            <CadastrarServico />
+            <CadastrarServico 
+              editingItem={editingItem?.tipo === 'Serviço' ? editingItem : null}
+              onCancelEdit={handleCancelEdit}
+              onSaveSuccess={handleSaveSuccess}
+            />
           </div>
         </TabsContent>
 
         <TabsContent value="hora">
           <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
-            <CadastrarHora />
+            <CadastrarHora 
+              editingItem={editingItem?.tipo === 'Hora' ? editingItem : null}
+              onCancelEdit={handleCancelEdit}
+              onSaveSuccess={handleSaveSuccess}
+            />
           </div>
         </TabsContent>
       </Tabs>

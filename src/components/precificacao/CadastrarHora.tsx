@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Save, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { formatNumberToDisplay, parseStringToNumber } from '@/utils/currency';
+import { usePrecificacao } from '@/hooks/usePrecificacao';
+import { supabase } from '@/integrations/supabase/client';
+import { formatNumberToDisplay } from '@/utils/currency';
+import type { Database } from '@/integrations/supabase/types';
+
+type Precificacao = Database['public']['Tables']['precificacao']['Row'];
 
 interface DespesaFixa {
   id: string;
@@ -14,8 +20,21 @@ interface DespesaFixa {
   valor: number;
 }
 
-const CadastrarHora: React.FC = () => {
+interface CadastrarHoraProps {
+  editingItem?: Precificacao | null;
+  onCancelEdit?: () => void;
+  onSaveSuccess?: () => void;
+}
+
+const CadastrarHora: React.FC<CadastrarHoraProps> = ({
+  editingItem,
+  onCancelEdit,
+  onSaveSuccess,
+}) => {
   const { toast } = useToast();
+  const { useCreate, useUpdate } = usePrecificacao();
+  const createPrecificacao = useCreate();
+  const updatePrecificacao = useUpdate();
   const [loading, setLoading] = useState(false);
 
   const [horaData, setHoraData] = useState({
@@ -28,6 +47,30 @@ const CadastrarHora: React.FC = () => {
   const [despesasFixas, setDespesasFixas] = useState<DespesaFixa[]>([
     { id: '1', descricao: '', valor: 0 }
   ]);
+
+  // Preencher formulário quando estiver editando
+  useEffect(() => {
+    if (editingItem && editingItem.tipo === 'Hora') {
+      const dados = editingItem.dados_json as any;
+      
+      setHoraData({
+        nome: editingItem.nome,
+        proLabore: dados?.pro_labore || 0,
+        diasTrabalhados: dados?.dias_trabalhados?.toString() || '',
+        horasPorDia: dados?.horas_por_dia?.toString() || '',
+      });
+
+      // Carregar despesas fixas do JSON
+      if (dados?.despesas_fixas) {
+        const despesasCarregadas = dados.despesas_fixas.map((despesa: any) => ({
+          id: despesa.id || Date.now().toString(),
+          descricao: despesa.descricao,
+          valor: despesa.valor
+        }));
+        setDespesasFixas(despesasCarregadas.length > 0 ? despesasCarregadas : [{ id: '1', descricao: '', valor: 0 }]);
+      }
+    }
+  }, [editingItem]);
 
   const adicionarDespesa = () => {
     if (despesasFixas.length < 50) {
@@ -86,10 +129,58 @@ const CadastrarHora: React.FC = () => {
     setLoading(true);
 
     try {
-      toast({
-        title: "Sucesso!",
-        description: `Precificação de hora para "${horaData.nome}" foi cadastrada.`,
-      });
+      const despesasSerializadas = despesasFixas
+        .filter(d => d.descricao && d.valor > 0)
+        .map(despesa => ({
+          id: despesa.id,
+          descricao: despesa.descricao,
+          valor: despesa.valor
+        }));
+
+      const dadosPrecificacao = {
+        nome: horaData.nome,
+        categoria: 'Hora Trabalhada',
+        tipo: 'Hora' as const,
+        preco_final: valorHoraTrabalhada,
+        dados_json: JSON.parse(JSON.stringify({
+          pro_labore: horaData.proLabore,
+          dias_trabalhados: diasTrabalhadosNumerico,
+          horas_por_dia: horasPorDiaNumerico,
+          horas_trabalhadas_mes: horasTrabalhadasMes,
+          despesas_fixas: despesasSerializadas,
+          total_custos_fixos: totalCustosFixos,
+          custo_total_mensal: custoTotalMensal,
+          valor_hora_trabalhada: valorHoraTrabalhada,
+          valor_dia_trabalhado: valorDiaTrabalhado
+        }))
+      };
+
+      if (editingItem) {
+        // Atualizar item existente
+        await updatePrecificacao.mutateAsync({
+          id: editingItem.id,
+          data: dadosPrecificacao
+        });
+        toast({
+          title: "Sucesso!",
+          description: "Precificação de hora atualizada com êxito.",
+        });
+      } else {
+        // Criar novo item
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          throw new Error('Usuário não autenticado');
+        }
+
+        await createPrecificacao.mutateAsync({
+          ...dadosPrecificacao,
+          user_id: user.id,
+        });
+        toast({
+          title: "Sucesso!",
+          description: "Precificação de hora cadastrada com êxito.",
+        });
+      }
 
       // Reset form
       setHoraData({
@@ -99,9 +190,13 @@ const CadastrarHora: React.FC = () => {
         horasPorDia: '',
       });
       setDespesasFixas([{ id: '1', descricao: '', valor: 0 }]);
+      
+      // Chamar callback de sucesso
+      onSaveSuccess?.();
     } catch (error: any) {
+      console.error('Erro ao salvar hora:', error);
       toast({
-        title: "Erro ao cadastrar",
+        title: "Erro ao salvar",
         description: error.message,
         variant: "destructive",
       });
@@ -110,8 +205,40 @@ const CadastrarHora: React.FC = () => {
     }
   };
 
+  const handleCancel = () => {
+    // Reset form
+    setHoraData({
+      nome: '',
+      proLabore: 0,
+      diasTrabalhados: '',
+      horasPorDia: '',
+    });
+    setDespesasFixas([{ id: '1', descricao: '', valor: 0 }]);
+    
+    onCancelEdit?.();
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {editingItem && (
+        <div className="flex items-center gap-4 p-4 bg-orange-50 rounded-lg">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleCancel}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Cancelar Edição
+          </Button>
+          <div>
+            <h3 className="font-semibold text-orange-800">Editando: {editingItem.nome}</h3>
+            <p className="text-sm text-orange-600">Modifique os campos e clique em "Salvar Alterações"</p>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="nome-hora">Nome *</Label>
@@ -254,14 +381,27 @@ const CadastrarHora: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Button
-        type="submit"
-        disabled={loading}
-        className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
-      >
-        <Plus className="w-4 h-4 mr-2" />
-        {loading ? "Cadastrando..." : "Cadastrar Precificação de Hora"}
-      </Button>
+      <div className="flex gap-4">
+        <Button
+          type="submit"
+          disabled={loading}
+          className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
+        >
+          {editingItem ? <Save className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+          {loading ? "Salvando..." : editingItem ? "Salvar Alterações" : "Cadastrar Precificação de Hora"}
+        </Button>
+        
+        {editingItem && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleCancel}
+            disabled={loading}
+          >
+            Cancelar
+          </Button>
+        )}
+      </div>
     </form>
   );
 };
