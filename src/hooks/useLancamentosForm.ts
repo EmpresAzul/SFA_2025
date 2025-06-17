@@ -47,7 +47,7 @@ export const useLancamentosForm = (
     const newFormData = {
       data: lancamento.data,
       tipo: lancamento.tipo,
-      valor: lancamento.valor ? lancamento.valor.toString() : '', // Garantir conversão para string
+      valor: lancamento.valor ? lancamento.valor.toString() : '',
       cliente_id: lancamento.cliente_id || '',
       fornecedor_id: lancamento.fornecedor_id || '',
       categoria: lancamento.categoria,
@@ -65,7 +65,6 @@ export const useLancamentosForm = (
       loadFormData(editingLancamento);
     } else {
       console.log('useLancamentosForm: useEffect - Modo novo lançamento');
-      // Resetar apenas se não estiver editando
       const initialFormData = {
         data: new Date().toISOString().split('T')[0],
         tipo: 'receita' as 'receita' | 'despesa',
@@ -99,6 +98,7 @@ export const useLancamentosForm = (
     e.preventDefault();
     
     console.log('useLancamentosForm: Submetendo formulário com dados:', formData);
+    console.log('useLancamentosForm: Modo edição:', !!editingLancamento);
     
     if (!formData.tipo) {
       toast({
@@ -131,6 +131,15 @@ export const useLancamentosForm = (
       return;
     }
 
+    if (!user) {
+      toast({
+        title: "Erro",
+        description: "Usuário não autenticado.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -139,10 +148,10 @@ export const useLancamentosForm = (
         tipo: formData.tipo,
         categoria: formData.categoria,
         valor: valorNumerico,
-        cliente_id: formData.cliente_id || undefined,
-        fornecedor_id: formData.fornecedor_id || undefined,
-        observacoes: formData.observacoes.trim() || undefined,
-        user_id: user!.id,
+        cliente_id: formData.cliente_id || null,
+        fornecedor_id: formData.fornecedor_id || null,
+        observacoes: formData.observacoes.trim() || null,
+        user_id: user.id,
         status: 'ativo'
       };
 
@@ -150,14 +159,27 @@ export const useLancamentosForm = (
 
       if (editingLancamento) {
         console.log('useLancamentosForm: Atualizando lançamento existente:', editingLancamento.id);
-        await updateLancamento.mutateAsync({ id: editingLancamento.id, ...lancamentoData });
+        
+        // Garantir que o ID seja incluído corretamente na atualização
+        const updateData = {
+          id: editingLancamento.id,
+          ...lancamentoData
+        };
+        
+        console.log('useLancamentosForm: Dados completos para atualização:', updateData);
+        
+        const result = await updateLancamento.mutateAsync(updateData);
+        console.log('useLancamentosForm: Resultado da atualização:', result);
+        
         toast({
           title: "Sucesso!",
           description: "Lançamento atualizado com sucesso.",
         });
       } else {
         console.log('useLancamentosForm: Criando novo lançamento');
-        await createLancamento.mutateAsync(lancamentoData);
+        const result = await createLancamento.mutateAsync(lancamentoData);
+        console.log('useLancamentosForm: Resultado da criação:', result);
+        
         toast({
           title: "Sucesso!",
           description: "Lançamento criado com sucesso.",
@@ -168,9 +190,16 @@ export const useLancamentosForm = (
       setActiveTab('lista');
     } catch (error: any) {
       console.error('useLancamentosForm: Erro ao salvar lançamento:', error);
+      console.error('useLancamentosForm: Detalhes do erro:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      
       toast({
         title: "Erro ao salvar",
-        description: "Ocorreu um erro ao salvar o lançamento.",
+        description: error.message || "Ocorreu um erro ao salvar o lançamento.",
         variant: "destructive",
       });
     } finally {

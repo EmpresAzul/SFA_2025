@@ -61,6 +61,10 @@ export const useLancamentos = () => {
           throw new Error('Data, tipo, categoria e valor são obrigatórios');
         }
 
+        if (!lancamentoData.user_id) {
+          throw new Error('User ID é obrigatório');
+        }
+
         const { data, error } = await supabase
           .from('lancamentos')
           .insert([lancamentoData])
@@ -77,18 +81,10 @@ export const useLancamentos = () => {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
-        toast({
-          title: "Sucesso",
-          description: "Lançamento criado com sucesso!",
-        });
+        console.log('Query invalidada após criação');
       },
       onError: (error: any) => {
-        console.error('Erro ao criar lançamento:', error);
-        toast({
-          title: "Erro",
-          description: error.message || "Erro ao criar lançamento. Tente novamente.",
-          variant: "destructive",
-        });
+        console.error('Erro na mutation de criação:', error);
       },
     });
   };
@@ -98,35 +94,42 @@ export const useLancamentos = () => {
       mutationFn: async ({ id, ...updateData }: Partial<Lancamento> & { id: string }) => {
         console.log('Atualizando lançamento:', id, updateData);
         
+        if (!id) {
+          throw new Error('ID do lançamento é obrigatório para atualização');
+        }
+
+        // Remove campos que não devem ser atualizados
+        const { created_at, updated_at, ...dataToUpdate } = updateData;
+        
+        console.log('Dados que serão enviados para atualização:', dataToUpdate);
+
         const { data, error } = await supabase
           .from('lancamentos')
-          .update(updateData)
+          .update(dataToUpdate)
           .eq('id', id)
           .select()
           .single();
 
         if (error) {
           console.error('Erro ao atualizar lançamento:', error);
+          console.error('Erro details:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
           throw error;
         }
         
         console.log('Lançamento atualizado com sucesso:', data);
         return data;
       },
-      onSuccess: () => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
-        toast({
-          title: "Sucesso",
-          description: "Lançamento atualizado com sucesso!",
-        });
+        console.log('Query invalidada após atualização, dados:', data);
       },
       onError: (error: any) => {
-        console.error('Erro ao atualizar lançamento:', error);
-        toast({
-          title: "Erro",
-          description: error.message || "Erro ao atualizar lançamento. Tente novamente.",
-          variant: "destructive",
-        });
+        console.error('Erro na mutation de atualização:', error);
       },
     });
   };

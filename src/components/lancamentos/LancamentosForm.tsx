@@ -118,8 +118,10 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
 
   const handleValorChange = (newValue: number) => {
     console.log('LancamentosForm: Valor alterado para:', newValue);
-    // Manter como string no formData
-    setFormData({ ...formData, valor: newValue.toString() });
+    // Manter como string no formData, mas garantir que seja válido
+    const valorString = newValue > 0 ? newValue.toString() : '';
+    console.log('LancamentosForm: Valor convertido para string:', valorString);
+    setFormData({ ...formData, valor: valorString });
   };
 
   const renderCategoriasByGroup = () => {
@@ -138,6 +140,10 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
       </React.Fragment>
     ));
   };
+
+  // Converter valor string para number para o CurrencyInput
+  const valorNumerico = parseFloat(formData.valor) || 0;
+  console.log('LancamentosForm: Valor para CurrencyInput:', valorNumerico);
 
   return (
     <Card>
@@ -182,14 +188,16 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
             <div className="space-y-2">
               <Label htmlFor="valor">Valor (R$) *</Label>
               <CurrencyInput
-                value={parseFloat(formData.valor) || 0}
+                value={valorNumerico}
                 onChange={handleValorChange}
                 placeholder="0,00"
                 required
               />
-              <p className="text-xs text-gray-500">
-                Valor atual no form: {formData.valor || '0'}
-              </p>
+              {editingLancamento && (
+                <p className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                  💡 Editando lançamento ID: {editingLancamento.id}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
