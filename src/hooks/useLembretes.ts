@@ -36,7 +36,12 @@ export const useLembretes = () => {
   } = useQuery({
     queryKey: ['lembretes', user?.id],
     queryFn: async () => {
-      if (!user) return [];
+      if (!user) {
+        console.log('useLembretes: Usuário não autenticado');
+        return [];
+      }
+
+      console.log('useLembretes: Buscando lembretes para usuário:', user.id);
 
       const { data, error } = await supabase
         .from('lembretes')
@@ -49,6 +54,9 @@ export const useLembretes = () => {
         throw error;
       }
 
+      console.log('useLembretes: Lembretes encontrados:', data?.length || 0);
+      console.log('useLembretes: Dados completos:', data);
+
       return data as Lembrete[];
     },
     enabled: !!user
@@ -57,6 +65,8 @@ export const useLembretes = () => {
   const createLembrete = useMutation({
     mutationFn: async (data: LembreteFormData) => {
       if (!user) throw new Error('Usuário não autenticado');
+
+      console.log('useLembretes: Criando lembrete:', data);
 
       const { error } = await supabase
         .from('lembretes')
@@ -86,6 +96,8 @@ export const useLembretes = () => {
 
   const updateLembrete = useMutation({
     mutationFn: async ({ id, ...data }: Partial<Lembrete> & { id: string }) => {
+      console.log('useLembretes: Atualizando lembrete:', id, data);
+
       const { error } = await supabase
         .from('lembretes')
         .update(data)
@@ -112,6 +124,8 @@ export const useLembretes = () => {
 
   const deleteLembrete = useMutation({
     mutationFn: async (id: string) => {
+      console.log('useLembretes: Deletando lembrete:', id);
+
       const { error } = await supabase
         .from('lembretes')
         .delete()
@@ -135,6 +149,8 @@ export const useLembretes = () => {
       });
     }
   });
+
+  console.log('useLembretes: Estado atual - Loading:', isLoading, 'Lembretes:', lembretes.length, 'User:', user?.id);
 
   return {
     lembretes,
