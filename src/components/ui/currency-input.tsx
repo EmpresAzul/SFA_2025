@@ -10,63 +10,57 @@ interface CurrencyInputProps extends Omit<React.ComponentProps<typeof Input>, 'v
 export const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
   ({ value, onChange, ...props }, ref) => {
     const [displayValue, setDisplayValue] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
-      const numValue = typeof value === 'string' ? parseFloat(value) : value;
-      if (!isNaN(numValue) && numValue !== 0) {
-        setDisplayValue(formatCurrency(numValue));
-      } else {
-        setDisplayValue('');
+      // Só atualizar o display se não estiver editando
+      if (!isEditing) {
+        const numValue = typeof value === 'string' ? parseFloat(value) : value;
+        if (!isNaN(numValue) && numValue > 0) {
+          setDisplayValue(numValue.toString().replace('.', ','));
+        } else {
+          setDisplayValue('');
+        }
       }
-    }, [value]);
+    }, [value, isEditing]);
 
-    const formatCurrency = (amount: number): string => {
-      return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-      }).format(amount);
-    };
-
-    const parseCurrency = (value: string): number => {
-      // Remove todos os caracteres que não são dígitos
-      const numbers = value.replace(/\D/g, '');
-      
-      if (!numbers) return 0;
-      
-      // Converte para centavos e depois para reais
-      return parseInt(numbers) / 100;
+    const parseCurrency = (inputValue: string): number => {
+      // Remove tudo que não é dígito ou vírgula
+      const cleaned = inputValue.replace(/[^\d,]/g, '');
+      // Substitui vírgula por ponto
+      const withDot = cleaned.replace(',', '.');
+      const parsed = parseFloat(withDot);
+      return isNaN(parsed) ? 0 : parsed;
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const inputValue = e.target.value;
+      console.log('CurrencyInput: Input digitado:', inputValue);
       
-      // Permite apenas dígitos, vírgulas e pontos
-      const cleanValue = inputValue.replace(/[^\d,.-]/g, '');
+      // Permitir apenas números e vírgula
+      const allowedValue = inputValue.replace(/[^\d,]/g, '');
+      setDisplayValue(allowedValue);
       
-      // Se está digitando, mantém o valor sem formatação
-      setDisplayValue(cleanValue);
-      
-      // Converte para número
-      const numericValue = parseCurrency(cleanValue);
+      // Converter para número e chamar onChange
+      const numericValue = parseCurrency(allowedValue);
+      console.log('CurrencyInput: Valor convertido:', numericValue);
       onChange(numericValue);
     };
 
-    const handleBlur = () => {
-      const numValue = parseCurrency(displayValue);
-      if (numValue > 0) {
-        setDisplayValue(formatCurrency(numValue));
-      } else {
-        setDisplayValue('');
-      }
+    const handleFocus = () => {
+      console.log('CurrencyInput: Campo focado');
+      setIsEditing(true);
     };
 
-    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-      // Remove formatação para facilitar edição
+    const handleBlur = () => {
+      console.log('CurrencyInput: Campo desfocado');
+      setIsEditing(false);
+      
+      // Formatar para visualização se houver valor
       const numValue = parseCurrency(displayValue);
       if (numValue > 0) {
-        setDisplayValue((numValue * 100).toString());
+        setDisplayValue(numValue.toString().replace('.', ','));
       }
-      e.target.select();
     };
 
     return (
@@ -75,9 +69,9 @@ export const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputPro
         ref={ref}
         value={displayValue}
         onChange={handleChange}
-        onBlur={handleBlur}
         onFocus={handleFocus}
-        placeholder="R$ 0,00"
+        onBlur={handleBlur}
+        placeholder="0,00"
         inputMode="numeric"
       />
     );

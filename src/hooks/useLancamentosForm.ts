@@ -47,24 +47,35 @@ export const useLancamentosForm = (
     const newFormData = {
       data: lancamento.data,
       tipo: lancamento.tipo,
-      valor: lancamento.valor.toString(), // Garantir que seja string
+      valor: lancamento.valor ? lancamento.valor.toString() : '', // Garantir conversão para string
       cliente_id: lancamento.cliente_id || '',
       fornecedor_id: lancamento.fornecedor_id || '',
       categoria: lancamento.categoria,
       observacoes: lancamento.observacoes || ''
     };
     
-    console.log('useLancamentosForm: Dados carregados:', newFormData);
+    console.log('useLancamentosForm: Dados carregados para o form:', newFormData);
     setFormData(newFormData);
   };
 
   // Effect para carregar dados quando há um lançamento sendo editado
   useEffect(() => {
     if (editingLancamento) {
-      console.log('useLancamentosForm: useEffect - Carregando dados para edição:', editingLancamento);
+      console.log('useLancamentosForm: useEffect - Editando lançamento:', editingLancamento);
       loadFormData(editingLancamento);
     } else {
-      console.log('useLancamentosForm: useEffect - Nenhum lançamento sendo editado');
+      console.log('useLancamentosForm: useEffect - Modo novo lançamento');
+      // Resetar apenas se não estiver editando
+      const initialFormData = {
+        data: new Date().toISOString().split('T')[0],
+        tipo: 'receita' as 'receita' | 'despesa',
+        valor: '',
+        cliente_id: '',
+        fornecedor_id: '',
+        categoria: '',
+        observacoes: ''
+      };
+      setFormData(initialFormData);
     }
   }, [editingLancamento]);
 
@@ -107,7 +118,8 @@ export const useLancamentosForm = (
       return;
     }
 
-    const valorNumerico = parseFloat(formData.valor);
+    // Converter valor para número
+    const valorNumerico = parseFloat(formData.valor.replace(',', '.'));
     console.log('useLancamentosForm: Valor original:', formData.valor, 'Valor numérico:', valorNumerico);
 
     if (!formData.valor || valorNumerico <= 0) {

@@ -118,6 +118,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
 
   const handleValorChange = (newValue: number) => {
     console.log('LancamentosForm: Valor alterado para:', newValue);
+    // Manter como string no formData
     setFormData({ ...formData, valor: newValue.toString() });
   };
 
@@ -183,11 +184,11 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
               <CurrencyInput
                 value={parseFloat(formData.valor) || 0}
                 onChange={handleValorChange}
-                placeholder="R$ 0,00"
+                placeholder="0,00"
                 required
               />
               <p className="text-xs text-gray-500">
-                Valor atual: {formData.valor || '0'}
+                Valor atual no form: {formData.valor || '0'}
               </p>
             </div>
 
