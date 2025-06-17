@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LancamentosSummaryCards from '@/components/lancamentos/LancamentosSummaryCards';
@@ -112,7 +111,7 @@ const LancamentosFinanceiros: React.FC = () => {
 
           <LancamentosTable
             data={filteredLancamentos}
-            isLoading={isLoading}
+            loading={isLoading}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />
@@ -124,8 +123,8 @@ const LancamentosFinanceiros: React.FC = () => {
             setFormData={setFormData}
             editingLancamento={editingLancamento}
             loading={loading}
-            clientes={clientes}
-            fornecedores={fornecedores}
+            clientes={clientes || []}
+            fornecedores={fornecedores || []}
             onSubmit={handleSubmit}
             onCancel={handleCancel}
           />

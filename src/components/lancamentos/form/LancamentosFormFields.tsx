@@ -92,13 +92,13 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
           </Label>
           <Select
             value={formData.cliente_id}
-            onValueChange={(value) => handleInputChange('cliente_id', value)}
+            onValueChange={(value) => handleInputChange('cliente_id', value === 'none' ? '' : value)}
           >
             <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
               <SelectValue placeholder="Selecione um cliente (opcional)" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Nenhum cliente</SelectItem>
+              <SelectItem value="none">Nenhum cliente</SelectItem>
               {clientes.map((cliente) => (
                 <SelectItem key={cliente.id} value={cliente.id}>
                   {cliente.nome}
@@ -114,13 +114,13 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
           </Label>
           <Select
             value={formData.fornecedor_id}
-            onValueChange={(value) => handleInputChange('fornecedor_id', value)}
+            onValueChange={(value) => handleInputChange('fornecedor_id', value === 'none' ? '' : value)}
           >
             <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
               <SelectValue placeholder="Selecione um fornecedor (opcional)" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Nenhum fornecedor</SelectItem>
+              <SelectItem value="none">Nenhum fornecedor</SelectItem>
               {fornecedores.map((fornecedor) => (
                 <SelectItem key={fornecedor.id} value={fornecedor.id}>
                   {fornecedor.nome}

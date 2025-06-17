@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,8 +20,8 @@ const CadastrarHora: React.FC = () => {
   const [horaData, setHoraData] = useState({
     nome: '',
     proLabore: '',
-    diasTrabalhados: 0,
-    horasPorDia: 0,
+    diasTrabalhados: '',
+    horasPorDia: '',
   });
 
   const [despesasFixas, setDespesasFixas] = useState<DespesaFixa[]>([
@@ -60,12 +59,14 @@ const CadastrarHora: React.FC = () => {
 
   const totalCustosFixos = despesasFixas.reduce((total, despesa) => total + parseValue(despesa.valor), 0);
   const proLaboreNumerico = parseValue(horaData.proLabore);
+  const diasTrabalhadosNumerico = parseFloat(horaData.diasTrabalhados) || 0;
+  const horasPorDiaNumerico = parseFloat(horaData.horasPorDia) || 0;
 
   // Cálculos automáticos
-  const horasTrabalhadasMes = horaData.diasTrabalhados * horaData.horasPorDia;
+  const horasTrabalhadasMes = diasTrabalhadosNumerico * horasPorDiaNumerico;
   const custoTotalMensal = proLaboreNumerico + totalCustosFixos;
   const valorHoraTrabalhada = horasTrabalhadasMes > 0 ? custoTotalMensal / horasTrabalhadasMes : 0;
-  const valorDiaTrabalhado = horaData.horasPorDia > 0 ? valorHoraTrabalhada * horaData.horasPorDia : 0;
+  const valorDiaTrabalhado = horasPorDiaNumerico > 0 ? valorHoraTrabalhada * horasPorDiaNumerico : 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +80,7 @@ const CadastrarHora: React.FC = () => {
       return;
     }
 
-    if (horaData.diasTrabalhados <= 0 || horaData.horasPorDia <= 0) {
+    if (diasTrabalhadosNumerico <= 0 || horasPorDiaNumerico <= 0) {
       toast({
         title: "Erro",
         description: "Dias trabalhados e horas por dia devem ser maiores que zero.",
@@ -100,8 +101,8 @@ const CadastrarHora: React.FC = () => {
       setHoraData({
         nome: '',
         proLabore: '',
-        diasTrabalhados: 0,
-        horasPorDia: 0,
+        diasTrabalhados: '',
+        horasPorDia: '',
       });
       setDespesasFixas([{ id: '1', descricao: '', valor: '' }]);
     } catch (error: any) {
@@ -125,7 +126,6 @@ const CadastrarHora: React.FC = () => {
             value={horaData.nome}
             onChange={(e) => setHoraData({ ...horaData, nome: e.target.value })}
             placeholder="Digite o nome"
-            required
           />
         </div>
 
@@ -134,7 +134,6 @@ const CadastrarHora: React.FC = () => {
           <CurrencyInput
             value={horaData.proLabore}
             onChange={(value) => setHoraData({ ...horaData, proLabore: value })}
-            required
           />
         </div>
 
@@ -146,9 +145,8 @@ const CadastrarHora: React.FC = () => {
             min="1"
             max="31"
             value={horaData.diasTrabalhados}
-            onChange={(e) => setHoraData({ ...horaData, diasTrabalhados: parseInt(e.target.value) || 0 })}
+            onChange={(e) => setHoraData({ ...horaData, diasTrabalhados: e.target.value })}
             placeholder="0"
-            required
           />
         </div>
 
@@ -161,9 +159,8 @@ const CadastrarHora: React.FC = () => {
             max="24"
             step="0.5"
             value={horaData.horasPorDia}
-            onChange={(e) => setHoraData({ ...horaData, horasPorDia: parseFloat(e.target.value) || 0 })}
+            onChange={(e) => setHoraData({ ...horaData, horasPorDia: e.target.value })}
             placeholder="0"
-            required
           />
         </div>
       </div>

@@ -1,432 +1,308 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { CurrencyInput } from '@/components/ui/currency-input';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Search, Banknote, TrendingUp, Eye, Edit, Trash2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useSupabaseQuery } from '@/hooks/useSupabaseQuery';
-import { format } from 'date-fns';
-import { formatCurrency } from '@/utils/formatters';
+import { useSaldosBancarios } from '@/hooks/useSaldosBancarios';
+import { CurrencyInput } from '@/components/ui/currency-input';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Edit, Trash2 } from 'lucide-react';
 
 interface SaldoBancario {
   id: string;
-  data: string;
   banco: string;
+  agencia: string;
+  conta: string;
   saldo: number;
+  observacoes: string | null;
   created_at: string;
-  updated_at: string;
 }
 
-const bancos = [
-  'Banco do Brasil',
-  'Bradesco',
-  'Caixa Econômica Federal',
-  'Itaú',
-  'Santander',
-  'Nubank',
-  'Inter',
-  'C6 Bank',
-  'PicPay',
-  'Sicoob',
-  'Sicredi',
-  'Outros'
-];
-
 const SaldosBancarios: React.FC = () => {
-  const [filteredSaldos, setFilteredSaldos] = useState<SaldoBancario[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [bancoFilter, setBancoFilter] = useState('todos');
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [viewingId, setViewingId] = useState<string | null>(null);
-  const { user, session } = useAuth();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('lista');
+  const [editingSaldo, setEditingSaldo] = useState<SaldoBancario | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const { useSaldosBancarios, useCreateSaldoBancario, useDeleteSaldoBancario } = useSupabaseQuery();
-  const { data: saldos = [], isLoading, refetch } = useSaldosBancarios();
-  const createSaldoBancarioMutation = useCreateSaldoBancario();
-  const deleteSaldoBancarioMutation = useDeleteSaldoBancario();
+  const { useQuery: useSaldosQuery, useCreate, useUpdate, useDelete } = useSaldosBancarios();
+  const { data: saldos, isLoading } = useSaldosQuery();
+  const createSaldo = useCreate();
+  const updateSaldo = useUpdate();
+  const deleteSaldo = useDelete();
 
   const [formData, setFormData] = useState({
-    data: '',
     banco: '',
-    saldo: ''
+    agencia: '',
+    conta: '',
+    saldo: '',
+    observacoes: '',
   });
 
-  console.log('SaldosBancarios - User:', user);
-  console.log('SaldosBancarios - Session:', session);
-
   useEffect(() => {
-    filterSaldos();
-  }, [saldos, searchTerm, bancoFilter]);
-
-  const filterSaldos = () => {
-    let filtered = saldos;
-
-    if (searchTerm) {
-      filtered = filtered.filter(saldo =>
-        saldo.banco.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+    if (editingSaldo) {
+      setFormData({
+        banco: editingSaldo.banco,
+        agencia: editingSaldo.agencia,
+        conta: editingSaldo.conta,
+        saldo: editingSaldo.saldo.toString(),
+        observacoes: editingSaldo.observacoes || '',
+      });
+      setActiveTab('formulario');
     }
+  }, [editingSaldo]);
 
-    if (bancoFilter !== 'todos') {
-      filtered = filtered.filter(saldo => saldo.banco === bancoFilter);
-    }
-
-    setFilteredSaldos(filtered);
+  const resetForm = () => {
+    setFormData({
+      banco: '',
+      agencia: '',
+      conta: '',
+      saldo: '',
+      observacoes: '',
+    });
+    setEditingSaldo(null);
   };
 
-  const parseValue = (value: string): number => {
-    if (!value) return 0;
-    return parseFloat(value.replace(/[^\d,.-]/g, '').replace(',', '.')) || 0;
+  const handleEdit = (saldo: SaldoBancario) => {
+    setEditingSaldo(saldo);
+    setActiveTab('formulario');
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja excluir este saldo bancário?')) {
+      try {
+        await deleteSaldo.mutateAsync(id);
+        toast({
+          title: "Sucesso!",
+          description: "Saldo bancário excluído com sucesso.",
+        });
+      } catch (error: any) {
+        toast({
+          title: "Erro ao excluir",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!session?.user?.id) {
+    if (!formData.banco) {
       toast({
-        title: "Erro de autenticação",
-        description: "Usuário não autenticado",
+        title: "Erro",
+        description: "Nome do banco é obrigatório.",
         variant: "destructive",
       });
       return;
     }
 
-    try {
-      console.log('SaldosBancarios - Submitting data:', formData);
-      
-      const dataToSubmit = {
-        ...formData,
-        saldo: parseValue(formData.saldo),
-        ...(editingId && { id: editingId })
-      };
-      
-      await createSaldoBancarioMutation.mutateAsync(dataToSubmit);
+    setLoading(true);
 
-      resetForm();
-      refetch();
-    } catch (error: any) {
-      console.error('SaldosBancarios - Submit error:', error);
-    }
-  };
+    const saldoNumerico = parseFloat(formData.saldo.replace(/[^\d,.-]/g, '').replace(',', '.')) || 0;
 
-  const resetForm = () => {
-    setFormData({
-      data: '',
-      banco: '',
-      saldo: ''
-    });
-    setEditingId(null);
-    setViewingId(null);
-  };
-
-  const handleEdit = (saldo: SaldoBancario) => {
-    setFormData({
-      data: saldo.data,
-      banco: saldo.banco,
-      saldo: saldo.saldo.toString()
-    });
-    setEditingId(saldo.id);
-    setViewingId(null);
-  };
-
-  const handleView = (saldo: SaldoBancario) => {
-    setViewingId(viewingId === saldo.id ? null : saldo.id);
-    setEditingId(null);
-  };
-
-  const handleDelete = async (id: string, banco: string) => {
-    if (!window.confirm(`Tem certeza que deseja excluir este saldo bancário do ${banco}? Esta ação não pode ser desfeita.`)) {
-      return;
-    }
-
-    if (!session?.user?.id) {
-      toast({
-        title: "Erro de autenticação",
-        description: "Usuário não autenticado",
-        variant: "destructive",
-      });
-      return;
-    }
+    const saldoData = {
+      banco: formData.banco,
+      agencia: formData.agencia,
+      conta: formData.conta,
+      saldo: saldoNumerico,
+      observacoes: formData.observacoes,
+      user_id: user?.id!,
+    };
 
     try {
-      await deleteSaldoBancarioMutation.mutateAsync(id);
-      refetch();
-    } catch (error: any) {
-      console.error('SaldosBancarios - Delete error:', error);
-    }
-  };
-
-  const getSaldoTotalPorBanco = () => {
-    const saldosPorBanco: { [key: string]: number } = {};
-    
-    filteredSaldos.forEach(saldo => {
-      if (!saldosPorBanco[saldo.banco]) {
-        saldosPorBanco[saldo.banco] = 0;
+      if (editingSaldo) {
+        await updateSaldo.mutateAsync({ id: editingSaldo.id, data: saldoData });
+      } else {
+        await createSaldo.mutateAsync(saldoData);
       }
-      saldosPorBanco[saldo.banco] += saldo.saldo;
-    });
-
-    return saldosPorBanco;
+      
+      resetForm();
+      setActiveTab('lista');
+    } catch (error: any) {
+      toast({
+        title: "Erro ao salvar",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const getSaldoTotal = () => {
-    return filteredSaldos.reduce((sum, saldo) => sum + saldo.saldo, 0);
-  };
-
-  const saldosPorBanco = getSaldoTotalPorBanco();
 
   return (
-    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-green-50 min-h-screen">
+    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             🏦 Saldos Bancários
           </h1>
-          <p className="text-gray-600 mt-2 text-sm">Controle inteligente dos saldos em contas bancárias</p>
+          <p className="text-gray-600 mt-2 text-sm">Controle de saldos em suas contas bancárias</p>
         </div>
       </div>
 
-      {/* Painéis de Resumo */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
-        <Card className="lg:col-span-2 shadow-colorful border-0 bg-white/80 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center text-lg">
-              <Banknote className="w-5 h-5 mr-2 text-green-600" />
-              💳 Saldos por Banco
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {Object.entries(saldosPorBanco).map(([banco, saldo]) => (
-                <div key={banco} className="flex justify-between items-center p-3 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl shadow-sm">
-                  <span className="font-medium text-gray-700 text-sm">{banco}</span>
-                  <span className="font-bold text-blue-600 text-sm">{formatCurrency(saldo)}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-12 sm:h-14">
+          <TabsTrigger
+            value="lista"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
+            📋 Lista de Saldos
+          </TabsTrigger>
+          <TabsTrigger
+            value="formulario"
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
+            {editingSaldo ? '✏️ Editar Saldo' : '➕ Novo Saldo'}
+          </TabsTrigger>
+        </TabsList>
 
-        <Card className="bg-gradient-to-br from-green-500 to-blue-600 text-white border-0 shadow-colorful">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center">
-              <TrendingUp className="h-8 w-8 text-white/90" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-white/90">💰 Saldo Total</p>
-                <p className="text-xl sm:text-2xl font-bold text-white">{formatCurrency(getSaldoTotal())}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Formulário */}
-      <Card className="shadow-colorful border-0 bg-white/90 backdrop-blur-sm mb-6">
-        <CardHeader>
-          <CardTitle className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-            {editingId ? '✏️ Editar Saldo' : '➕ Cadastrar Novo Saldo'}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="data" className="text-sm font-medium">Data</Label>
-                <Input
-                  id="data"
-                  type="date"
-                  value={formData.data}
-                  onChange={(e) => setFormData({ ...formData, data: e.target.value })}
-                  required
-                  className="h-10 border-2 border-gray-200 focus:border-green-500 rounded-lg"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="banco" className="text-sm font-medium">Banco</Label>
-                <Select value={formData.banco} onValueChange={(value) => setFormData({ ...formData, banco: value })}>
-                  <SelectTrigger className="h-10 border-2 border-gray-200 focus:border-green-500 rounded-lg">
-                    <SelectValue placeholder="Selecione o banco" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {bancos.map((banco) => (
-                      <SelectItem key={banco} value={banco}>{banco}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="saldo" className="text-sm font-medium">Saldo</Label>
-                <CurrencyInput
-                  value={formData.saldo}
-                  onChange={(value) => setFormData({ ...formData, saldo: value })}
-                  required
-                  className="h-10 border-2 border-gray-200 focus:border-green-500 rounded-lg"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-              <Button
-                type="submit"
-                disabled={createSaldoBancarioMutation.isPending}
-                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg h-10"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                {createSaldoBancarioMutation.isPending ? "Salvando..." : editingId ? "Atualizar Saldo" : "Cadastrar Saldo"}
-              </Button>
-              
-              {editingId && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={resetForm}
-                  className="border-2 border-gray-300 hover:bg-gray-50 rounded-lg h-10"
-                >
-                  Cancelar
-                </Button>
-              )}
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-
-      {/* Filtros */}
-      <Card className="shadow-colorful border-0 bg-white/90 backdrop-blur-sm mb-6">
-        <CardHeader>
-          <CardTitle className="text-lg">🔍 Filtros</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Buscar por Banco</Label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Buscar por nome do banco..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-10 border-2 border-gray-200 focus:border-green-500 rounded-lg"
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Filtrar por Banco</Label>
-              <Select value={bancoFilter} onValueChange={setBancoFilter}>
-                <SelectTrigger className="h-10 border-2 border-gray-200 focus:border-green-500 rounded-lg">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todos">Todos os Bancos</SelectItem>
-                  {bancos.map((banco) => (
-                    <SelectItem key={banco} value={banco}>{banco}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Tabela */}
-      <Card className="shadow-colorful border-0 bg-white/90 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-lg">📊 Histórico de Saldos ({filteredSaldos.length})</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="responsive-table">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-sm">Data</TableHead>
-                  <TableHead className="text-sm">Banco</TableHead>
-                  <TableHead className="text-sm">Saldo</TableHead>
-                  <TableHead className="mobile-hidden text-sm">Data de Registro</TableHead>
-                  <TableHead className="text-right text-sm">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredSaldos.map((saldo) => (
-                  <React.Fragment key={saldo.id}>
-                    <TableRow className={viewingId === saldo.id ? "bg-blue-50" : ""}>
-                      <TableCell className="text-sm">{format(new Date(saldo.data), 'dd/MM/yyyy')}</TableCell>
-                      <TableCell className="text-sm">{saldo.banco}</TableCell>
-                      <TableCell className="font-semibold text-green-600 text-sm">
-                        {formatCurrency(saldo.saldo)}
-                      </TableCell>
-                      <TableCell className="mobile-hidden text-sm">{format(new Date(saldo.created_at), 'dd/MM/yyyy HH:mm')}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end space-x-1">
+        <TabsContent value="lista" className="responsive-margin mt-6 sm:mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Lista de Saldos Bancários</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableCaption>Seus saldos bancários atuais.</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px]">Banco</TableHead>
+                    <TableHead>Agência</TableHead>
+                    <TableHead>Conta</TableHead>
+                    <TableHead>Saldo</TableHead>
+                    <TableHead>Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {saldos && saldos.map((saldo) => (
+                    <TableRow key={saldo.id}>
+                      <TableCell className="font-medium">{saldo.banco}</TableCell>
+                      <TableCell>{saldo.agencia}</TableCell>
+                      <TableCell>{saldo.conta}</TableCell>
+                      <TableCell>R$ {saldo.saldo.toFixed(2)}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
                           <Button
+                            variant="ghost"
                             size="sm"
-                            variant="outline"
-                            onClick={() => handleView(saldo)}
-                            className="hover:bg-blue-50 h-8 w-8 p-0"
-                            title="Visualizar"
-                          >
-                            <Eye className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
                             onClick={() => handleEdit(saldo)}
-                            className="hover:bg-green-50 h-8 w-8 p-0"
-                            title="Editar"
                           >
-                            <Edit className="h-3 w-3" />
+                            <Edit className="w-4 h-4 mr-1" />
+                            Editar
                           </Button>
                           <Button
+                            variant="ghost"
                             size="sm"
-                            variant="outline"
-                            onClick={() => handleDelete(saldo.id, saldo.banco)}
-                            className="hover:bg-red-50 text-red-600 h-8 w-8 p-0"
-                            title="Excluir"
+                            className="text-red-600 hover:text-red-700"
+                            onClick={() => handleDelete(saldo.id)}
                           >
-                            <Trash2 className="h-3 w-3" />
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            Excluir
                           </Button>
                         </div>
                       </TableCell>
                     </TableRow>
-                    {viewingId === saldo.id && (
-                      <TableRow className="bg-blue-50">
-                        <TableCell colSpan={5}>
-                          <div className="p-4 space-y-2">
-                            <h4 className="font-semibold text-blue-900 text-sm">Detalhes do Saldo Bancário</h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                              <div>
-                                <span className="font-medium">ID:</span> {saldo.id}
-                              </div>
-                              <div>
-                                <span className="font-medium">Última Atualização:</span> {format(new Date(saldo.updated_at), 'dd/MM/yyyy HH:mm:ss')}
-                              </div>
-                            </div>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </React.Fragment>
-                ))}
-                
-                {filteredSaldos.length === 0 && (
+                  ))}
+                </TableBody>
+                <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                      <Banknote className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                      <p className="text-sm">Nenhum saldo bancário encontrado</p>
+                    <TableCell colSpan={5} className="text-center">
+                      {isLoading ? 'Carregando...' : 'Fim dos saldos bancários'}
                     </TableCell>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+                </TableFooter>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="formulario" className="mt-6 sm:mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>{editingSaldo ? 'Editar Saldo Bancário' : 'Novo Saldo Bancário'}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="banco">Banco *</Label>
+                    <Input
+                      id="banco"
+                      value={formData.banco}
+                      onChange={(e) => setFormData({ ...formData, banco: e.target.value })}
+                      placeholder="Nome do banco"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="agencia">Agência</Label>
+                    <Input
+                      id="agencia"
+                      value={formData.agencia}
+                      onChange={(e) => setFormData({ ...formData, agencia: e.target.value })}
+                      placeholder="Número da agência"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="conta">Conta</Label>
+                    <Input
+                      id="conta"
+                      value={formData.conta}
+                      onChange={(e) => setFormData({ ...formData, conta: e.target.value })}
+                      placeholder="Número da conta"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="saldo">Saldo *</Label>
+                    <CurrencyInput
+                      value={formData.saldo}
+                      onChange={(value) => setFormData({ ...formData, saldo: value })}
+                      placeholder="R$ 0,00"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="observacoes">Observações</Label>
+                  <Textarea
+                    id="observacoes"
+                    value={formData.observacoes}
+                    onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
+                    placeholder="Observações adicionais"
+                  />
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button variant="ghost" onClick={resetForm}>
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                  >
+                    {loading ? 'Salvando...' : 'Salvar'}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
