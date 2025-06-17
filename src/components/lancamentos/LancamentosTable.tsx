@@ -12,24 +12,21 @@ import type { LancamentoComRelacoes } from '@/types/lancamentosForm';
 
 interface LancamentosTableProps {
   data: LancamentoComRelacoes[];
-  onView: (lancamento: LancamentoComRelacoes) => void;
+  loading: boolean;
   onEdit: (lancamento: LancamentoComRelacoes) => void;
+  onDelete: (id: string) => Promise<void>;
 }
 
 const LancamentosTable: React.FC<LancamentosTableProps> = ({
   data,
-  onView,
+  loading,
   onEdit,
+  onDelete,
 }) => {
-  const { useDelete } = useLancamentos();
-  const deleteMutation = useDelete();
-  const [lancamentoToDelete, setLancamentoToDelete] = useState<LancamentoComRelacoes | null>(null);
+  const [viewingLancamento, setViewingLancamento] = useState<LancamentoComRelacoes | null>(null);
 
-  const handleDelete = async () => {
-    if (lancamentoToDelete) {
-      deleteMutation.mutate(lancamentoToDelete.id);
-      setLancamentoToDelete(null);
-    }
+  const handleView = (lancamento: LancamentoComRelacoes) => {
+    setViewingLancamento(lancamento);
   };
 
   const formatDate = (dateString: string) => {
@@ -43,6 +40,16 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
       <TrendingDown className="h-4 w-4 text-red-600" />
     );
   };
+
+  if (loading) {
+    return (
+      <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+        <CardContent className="p-8">
+          <div className="text-center">Carregando lançamentos...</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
@@ -107,7 +114,7 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => onView(lancamento)}
+                          onClick={() => handleView(lancamento)}
                           className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                           title="Visualizar"
                         >
@@ -133,7 +140,6 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                               size="sm"
                               className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
                               title="Excluir"
-                              onClick={() => setLancamentoToDelete(lancamento)}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -147,15 +153,14 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel onClick={() => setLancamentoToDelete(null)}>
+                              <AlertDialogCancel>
                                 Cancelar
                               </AlertDialogCancel>
                               <AlertDialogAction 
-                                onClick={handleDelete}
+                                onClick={() => onDelete(lancamento.id)}
                                 className="bg-red-600 hover:bg-red-700"
-                                disabled={deleteMutation.isPending}
                               >
-                                {deleteMutation.isPending ? 'Excluindo...' : 'Excluir'}
+                                Excluir
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>

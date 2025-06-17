@@ -36,57 +36,32 @@ export const useSaldosBancarios = () => {
     });
   };
 
-  // Mutation para criar/atualizar saldo bancário
+  // Mutation para criar saldo bancário
   const useSaldosBancariosCreate = () => {
     return useMutation({
       mutationFn: async (data: any) => {
         if (!session?.user?.id) throw new Error('User not authenticated');
         
-        console.log('useSaldosBancarios - Creating/updating saldo bancario:', data);
+        console.log('useSaldosBancarios - Creating saldo bancario:', data);
         
-        if (data.id) {
-          // Atualização
-          const { data: result, error } = await supabase
-            .from('saldos_bancarios')
-            .update({
-              data: data.data,
-              banco: data.banco,
-              saldo: data.saldo,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', data.id)
-            .eq('user_id', session.user.id)
-            .select()
-            .single();
+        const { data: result, error } = await supabase
+          .from('saldos_bancarios')
+          .insert({
+            data: data.data || new Date().toISOString().split('T')[0],
+            banco: data.banco,
+            saldo: data.saldo,
+            user_id: session.user.id,
+          })
+          .select()
+          .single();
 
-          if (error) {
-            console.error('useSaldosBancarios - Error updating saldo bancario:', error);
-            throw error;
-          }
-          
-          console.log('useSaldosBancarios - Updated saldo bancario:', result);
-          return result;
-        } else {
-          // Criação
-          const { data: result, error } = await supabase
-            .from('saldos_bancarios')
-            .insert({
-              data: data.data,
-              banco: data.banco,
-              saldo: data.saldo,
-              user_id: session.user.id,
-            })
-            .select()
-            .single();
-
-          if (error) {
-            console.error('useSaldosBancarios - Error creating saldo bancario:', error);
-            throw error;
-          }
-          
-          console.log('useSaldosBancarios - Created saldo bancario:', result);
-          return result;
+        if (error) {
+          console.error('useSaldosBancarios - Error creating saldo bancario:', error);
+          throw error;
         }
+        
+        console.log('useSaldosBancarios - Created saldo bancario:', result);
+        return result;
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['saldos_bancarios'] });
@@ -100,6 +75,53 @@ export const useSaldosBancarios = () => {
         toast({
           title: "Erro",
           description: "Erro ao salvar saldo bancário: " + error.message,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  // Mutation para atualizar saldo bancário
+  const useSaldosBancariosUpdate = () => {
+    return useMutation({
+      mutationFn: async ({ id, data }: { id: string; data: any }) => {
+        if (!session?.user?.id) throw new Error('User not authenticated');
+        
+        console.log('useSaldosBancarios - Updating saldo bancario:', id, data);
+        
+        const { data: result, error } = await supabase
+          .from('saldos_bancarios')
+          .update({
+            data: data.data || new Date().toISOString().split('T')[0],
+            banco: data.banco,
+            saldo: data.saldo,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id)
+          .eq('user_id', session.user.id)
+          .select()
+          .single();
+
+        if (error) {
+          console.error('useSaldosBancarios - Error updating saldo bancario:', error);
+          throw error;
+        }
+        
+        console.log('useSaldosBancarios - Updated saldo bancario:', result);
+        return result;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['saldos_bancarios'] });
+        toast({
+          title: "Sucesso!",
+          description: "Saldo bancário atualizado com sucesso",
+        });
+      },
+      onError: (error: any) => {
+        console.error('useSaldosBancarios - Error updating saldo bancario:', error);
+        toast({
+          title: "Erro",
+          description: "Erro ao atualizar saldo bancário: " + error.message,
           variant: "destructive",
         });
       },
@@ -149,6 +171,7 @@ export const useSaldosBancarios = () => {
   return {
     useQuery: useSaldosBancariosQuery,
     useCreate: useSaldosBancariosCreate,
+    useUpdate: useSaldosBancariosUpdate,
     useDelete: useSaldosBancariosDelete,
   };
 };

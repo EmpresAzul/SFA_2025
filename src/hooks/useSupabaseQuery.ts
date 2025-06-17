@@ -18,7 +18,7 @@ export const useSupabaseQuery = () => {
     useLancamentos: lancamentos.useQuery,
     useSaldosBancarios: saldosBancarios.useQuery,
     useCadastros: cadastros.useQuery,
-    usePrecificacao: precificacao.useQuery,
+    usePrecificacao: precificacao.useQueryHook,
     
     // Mutations - retornando as funções diretamente
     useCreateEstoque: estoques.useCreate,
@@ -27,6 +27,7 @@ export const useSupabaseQuery = () => {
     useUpdateLancamento: lancamentos.useUpdate,
     useDeleteLancamento: lancamentos.useDelete,
     useCreateSaldoBancario: saldosBancarios.useCreate,
+    useUpdateSaldoBancario: saldosBancarios.useUpdate,
     useDeleteSaldoBancario: saldosBancarios.useDelete,
     useCreateCadastro: cadastros.useCreate,
     useUpdateCadastro: cadastros.useUpdate,

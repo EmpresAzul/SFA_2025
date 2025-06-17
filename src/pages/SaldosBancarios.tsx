@@ -1,10 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSaldosBancarios } from '@/hooks/useSaldosBancarios';
@@ -24,11 +24,11 @@ import { Edit, Trash2 } from 'lucide-react';
 interface SaldoBancario {
   id: string;
   banco: string;
-  agencia: string;
-  conta: string;
   saldo: number;
-  observacoes: string | null;
+  data: string;
   created_at: string;
+  updated_at: string;
+  user_id: string;
 }
 
 const SaldosBancarios: React.FC = () => {
@@ -46,20 +46,14 @@ const SaldosBancarios: React.FC = () => {
 
   const [formData, setFormData] = useState({
     banco: '',
-    agencia: '',
-    conta: '',
     saldo: '',
-    observacoes: '',
   });
 
   useEffect(() => {
     if (editingSaldo) {
       setFormData({
         banco: editingSaldo.banco,
-        agencia: editingSaldo.agencia,
-        conta: editingSaldo.conta,
         saldo: editingSaldo.saldo.toString(),
-        observacoes: editingSaldo.observacoes || '',
       });
       setActiveTab('formulario');
     }
@@ -68,10 +62,7 @@ const SaldosBancarios: React.FC = () => {
   const resetForm = () => {
     setFormData({
       banco: '',
-      agencia: '',
-      conta: '',
       saldo: '',
-      observacoes: '',
     });
     setEditingSaldo(null);
   };
@@ -117,10 +108,8 @@ const SaldosBancarios: React.FC = () => {
 
     const saldoData = {
       banco: formData.banco,
-      agencia: formData.agencia,
-      conta: formData.conta,
       saldo: saldoNumerico,
-      observacoes: formData.observacoes,
+      data: new Date().toISOString().split('T')[0],
       user_id: user?.id!,
     };
 
@@ -181,10 +170,9 @@ const SaldosBancarios: React.FC = () => {
                 <TableCaption>Seus saldos bancários atuais.</TableCaption>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[100px]">Banco</TableHead>
-                    <TableHead>Agência</TableHead>
-                    <TableHead>Conta</TableHead>
+                    <TableHead className="w-[200px]">Banco</TableHead>
                     <TableHead>Saldo</TableHead>
+                    <TableHead>Data</TableHead>
                     <TableHead>Ações</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -192,9 +180,8 @@ const SaldosBancarios: React.FC = () => {
                   {saldos && saldos.map((saldo) => (
                     <TableRow key={saldo.id}>
                       <TableCell className="font-medium">{saldo.banco}</TableCell>
-                      <TableCell>{saldo.agencia}</TableCell>
-                      <TableCell>{saldo.conta}</TableCell>
                       <TableCell>R$ {saldo.saldo.toFixed(2)}</TableCell>
+                      <TableCell>{new Date(saldo.data).toLocaleDateString('pt-BR')}</TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
                           <Button
@@ -221,7 +208,7 @@ const SaldosBancarios: React.FC = () => {
                 </TableBody>
                 <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center">
+                    <TableCell colSpan={4} className="text-center">
                       {isLoading ? 'Carregando...' : 'Fim dos saldos bancários'}
                     </TableCell>
                   </TableRow>
@@ -249,26 +236,6 @@ const SaldosBancarios: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="agencia">Agência</Label>
-                    <Input
-                      id="agencia"
-                      value={formData.agencia}
-                      onChange={(e) => setFormData({ ...formData, agencia: e.target.value })}
-                      placeholder="Número da agência"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="conta">Conta</Label>
-                    <Input
-                      id="conta"
-                      value={formData.conta}
-                      onChange={(e) => setFormData({ ...formData, conta: e.target.value })}
-                      placeholder="Número da conta"
-                    />
-                  </div>
-                  <div className="space-y-2">
                     <Label htmlFor="saldo">Saldo *</Label>
                     <CurrencyInput
                       value={formData.saldo}
@@ -276,15 +243,6 @@ const SaldosBancarios: React.FC = () => {
                       placeholder="R$ 0,00"
                     />
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="observacoes">Observações</Label>
-                  <Textarea
-                    id="observacoes"
-                    value={formData.observacoes}
-                    onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
-                    placeholder="Observações adicionais"
-                  />
                 </div>
                 <div className="flex justify-end space-x-2">
                   <Button variant="ghost" onClick={resetForm}>

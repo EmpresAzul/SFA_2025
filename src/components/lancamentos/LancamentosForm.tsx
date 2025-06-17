@@ -16,8 +16,8 @@ interface LancamentosFormProps {
   setFormData: (data: FormData) => void;
   editingLancamento: LancamentoComRelacoes | null;
   loading: boolean;
-  clientes: Cadastro[] | undefined;
-  fornecedores: Cadastro[] | undefined;
+  clientes: Cadastro[];
+  fornecedores: Cadastro[];
   onSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
 }
