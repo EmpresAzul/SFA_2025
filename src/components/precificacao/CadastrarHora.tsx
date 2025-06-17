@@ -3,14 +3,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CurrencyInput } from '@/components/ui/currency-input';
+import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
 import { Plus, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { formatNumberToDisplay, parseStringToNumber } from '@/utils/currency';
 
 interface DespesaFixa {
   id: string;
   descricao: string;
-  valor: string;
+  valor: number;
 }
 
 const CadastrarHora: React.FC = () => {
@@ -19,13 +20,13 @@ const CadastrarHora: React.FC = () => {
 
   const [horaData, setHoraData] = useState({
     nome: '',
-    proLabore: '',
+    proLabore: 0,
     diasTrabalhados: '',
     horasPorDia: '',
   });
 
   const [despesasFixas, setDespesasFixas] = useState<DespesaFixa[]>([
-    { id: '1', descricao: '', valor: '' }
+    { id: '1', descricao: '', valor: 0 }
   ]);
 
   const adicionarDespesa = () => {
@@ -33,7 +34,7 @@ const CadastrarHora: React.FC = () => {
       const novaDespesa: DespesaFixa = {
         id: Date.now().toString(),
         descricao: '',
-        valor: ''
+        valor: 0
       };
       setDespesasFixas([...despesasFixas, novaDespesa]);
     }
@@ -45,26 +46,19 @@ const CadastrarHora: React.FC = () => {
     }
   };
 
-  const atualizarDespesa = (id: string, campo: 'descricao' | 'valor', valor: string) => {
+  const atualizarDespesa = (id: string, campo: 'descricao' | 'valor', valor: string | number) => {
     setDespesasFixas(despesasFixas.map(despesa => 
       despesa.id === id ? { ...despesa, [campo]: valor } : despesa
     ));
   };
 
-  // Converter valores string para number para cálculos
-  const parseValue = (value: string): number => {
-    if (!value) return 0;
-    return parseFloat(value.replace(/[^\d,.-]/g, '').replace(',', '.')) || 0;
-  };
-
-  const totalCustosFixos = despesasFixas.reduce((total, despesa) => total + parseValue(despesa.valor), 0);
-  const proLaboreNumerico = parseValue(horaData.proLabore);
+  const totalCustosFixos = despesasFixas.reduce((total, despesa) => total + despesa.valor, 0);
   const diasTrabalhadosNumerico = parseFloat(horaData.diasTrabalhados) || 0;
   const horasPorDiaNumerico = parseFloat(horaData.horasPorDia) || 0;
 
   // Cálculos automáticos
   const horasTrabalhadasMes = diasTrabalhadosNumerico * horasPorDiaNumerico;
-  const custoTotalMensal = proLaboreNumerico + totalCustosFixos;
+  const custoTotalMensal = horaData.proLabore + totalCustosFixos;
   const valorHoraTrabalhada = horasTrabalhadasMes > 0 ? custoTotalMensal / horasTrabalhadasMes : 0;
   const valorDiaTrabalhado = horasPorDiaNumerico > 0 ? valorHoraTrabalhada * horasPorDiaNumerico : 0;
 
@@ -100,11 +94,11 @@ const CadastrarHora: React.FC = () => {
       // Reset form
       setHoraData({
         nome: '',
-        proLabore: '',
+        proLabore: 0,
         diasTrabalhados: '',
         horasPorDia: '',
       });
-      setDespesasFixas([{ id: '1', descricao: '', valor: '' }]);
+      setDespesasFixas([{ id: '1', descricao: '', valor: 0 }]);
     } catch (error: any) {
       toast({
         title: "Erro ao cadastrar",
@@ -131,9 +125,10 @@ const CadastrarHora: React.FC = () => {
 
         <div className="space-y-2">
           <Label htmlFor="pro-labore">Pró-labore *</Label>
-          <CurrencyInput
+          <EnhancedCurrencyInput
+            id="pro-labore"
             value={horaData.proLabore}
-            onChange={(value) => setHoraData({ ...horaData, proLabore: value })}
+            onChange={(numericValue) => setHoraData({ ...horaData, proLabore: numericValue })}
           />
         </div>
 
@@ -199,9 +194,9 @@ const CadastrarHora: React.FC = () => {
                   />
                 </div>
                 <div className="col-span-4">
-                  <CurrencyInput
+                  <EnhancedCurrencyInput
                     value={despesa.valor}
-                    onChange={(value) => atualizarDespesa(despesa.id, 'valor', value)}
+                    onChange={(numericValue) => atualizarDespesa(despesa.id, 'valor', numericValue)}
                   />
                 </div>
                 <div className="col-span-2">
@@ -222,7 +217,7 @@ const CadastrarHora: React.FC = () => {
             <div className="border-t pt-3">
               <div className="flex justify-between items-center font-semibold">
                 <span>Total Custos Fixos:</span>
-                <span className="text-lg">R$ {totalCustosFixos.toFixed(2)}</span>
+                <span className="text-lg">{formatNumberToDisplay(totalCustosFixos)}</span>
               </div>
             </div>
           </div>
@@ -248,11 +243,11 @@ const CadastrarHora: React.FC = () => {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span>Valor da hora trabalhada:</span>
-                <span className="font-semibold text-green-600">R$ {valorHoraTrabalhada.toFixed(2)}</span>
+                <span className="font-semibold text-green-600">{formatNumberToDisplay(valorHoraTrabalhada)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Valor do dia trabalhado:</span>
-                <span className="font-semibold text-green-600">R$ {valorDiaTrabalhado.toFixed(2)}</span>
+                <span className="font-semibold text-green-600">{formatNumberToDisplay(valorDiaTrabalhado)}</span>
               </div>
             </div>
           </div>
