@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { CurrencyInput } from '@/components/ui/currency-input';
 import type { Cadastro } from '@/hooks/useCadastros';
 import type { Lancamento } from '@/hooks/useLancamentos';
 
@@ -112,6 +113,14 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
+  console.log('LancamentosForm: Dados atuais do formulário:', formData);
+  console.log('LancamentosForm: Editando lançamento:', editingLancamento);
+
+  const handleValorChange = (newValue: number) => {
+    console.log('LancamentosForm: Valor alterado para:', newValue);
+    setFormData({ ...formData, valor: newValue.toString() });
+  };
+
   const renderCategoriasByGroup = () => {
     const categorias = formData.tipo === 'receita' ? categoriasReceita : categoriasDespesa;
     
@@ -171,15 +180,15 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
 
             <div className="space-y-2">
               <Label htmlFor="valor">Valor (R$) *</Label>
-              <Input
-                id="valor"
-                type="number"
-                step="0.01"
-                value={formData.valor}
-                onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-                placeholder="0.00"
+              <CurrencyInput
+                value={parseFloat(formData.valor) || 0}
+                onChange={handleValorChange}
+                placeholder="R$ 0,00"
                 required
               />
+              <p className="text-xs text-gray-500">
+                Valor atual: {formData.valor || '0'}
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -270,4 +279,3 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
 };
 
 export default LancamentosForm;
-

@@ -42,29 +42,29 @@ export const useLancamentosForm = (
 
   // Função para carregar dados do lançamento para edição
   const loadFormData = (lancamento: LancamentoComRelacoes) => {
-    console.log('loadFormData chamado com:', lancamento);
+    console.log('useLancamentosForm: Carregando dados para edição:', lancamento);
     
     const newFormData = {
       data: lancamento.data,
       tipo: lancamento.tipo,
-      valor: lancamento.valor.toString(),
+      valor: lancamento.valor.toString(), // Garantir que seja string
       cliente_id: lancamento.cliente_id || '',
       fornecedor_id: lancamento.fornecedor_id || '',
       categoria: lancamento.categoria,
       observacoes: lancamento.observacoes || ''
     };
     
-    console.log('Carregando dados do formulário:', newFormData);
+    console.log('useLancamentosForm: Dados carregados:', newFormData);
     setFormData(newFormData);
   };
 
   // Effect para carregar dados quando há um lançamento sendo editado
   useEffect(() => {
     if (editingLancamento) {
-      console.log('useEffect: Carregando dados para edição:', editingLancamento);
+      console.log('useLancamentosForm: useEffect - Carregando dados para edição:', editingLancamento);
       loadFormData(editingLancamento);
     } else {
-      console.log('useEffect: Nenhum lançamento sendo editado, mantendo formulário limpo');
+      console.log('useLancamentosForm: useEffect - Nenhum lançamento sendo editado');
     }
   }, [editingLancamento]);
 
@@ -79,7 +79,7 @@ export const useLancamentosForm = (
       observacoes: ''
     };
     
-    console.log('Resetando formulário para:', initialFormData);
+    console.log('useLancamentosForm: Resetando formulário para:', initialFormData);
     setFormData(initialFormData);
     setEditingLancamento(null);
   };
@@ -87,7 +87,7 @@ export const useLancamentosForm = (
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log('Submetendo formulário com dados:', formData);
+    console.log('useLancamentosForm: Submetendo formulário com dados:', formData);
     
     if (!formData.tipo) {
       toast({
@@ -107,7 +107,10 @@ export const useLancamentosForm = (
       return;
     }
 
-    if (!formData.valor || parseFloat(formData.valor) <= 0) {
+    const valorNumerico = parseFloat(formData.valor);
+    console.log('useLancamentosForm: Valor original:', formData.valor, 'Valor numérico:', valorNumerico);
+
+    if (!formData.valor || valorNumerico <= 0) {
       toast({
         title: "Erro",
         description: "Por favor, informe um valor válido.",
@@ -123,7 +126,7 @@ export const useLancamentosForm = (
         data: formData.data,
         tipo: formData.tipo,
         categoria: formData.categoria,
-        valor: parseFloat(formData.valor),
+        valor: valorNumerico,
         cliente_id: formData.cliente_id || undefined,
         fornecedor_id: formData.fornecedor_id || undefined,
         observacoes: formData.observacoes.trim() || undefined,
@@ -131,17 +134,17 @@ export const useLancamentosForm = (
         status: 'ativo'
       };
 
-      console.log('Dados do lançamento a serem salvos:', lancamentoData);
+      console.log('useLancamentosForm: Dados do lançamento a serem salvos:', lancamentoData);
 
       if (editingLancamento) {
-        console.log('Atualizando lançamento existente:', editingLancamento.id);
+        console.log('useLancamentosForm: Atualizando lançamento existente:', editingLancamento.id);
         await updateLancamento.mutateAsync({ id: editingLancamento.id, ...lancamentoData });
         toast({
           title: "Sucesso!",
           description: "Lançamento atualizado com sucesso.",
         });
       } else {
-        console.log('Criando novo lançamento');
+        console.log('useLancamentosForm: Criando novo lançamento');
         await createLancamento.mutateAsync(lancamentoData);
         toast({
           title: "Sucesso!",
@@ -152,7 +155,7 @@ export const useLancamentosForm = (
       resetForm();
       setActiveTab('lista');
     } catch (error: any) {
-      console.error('Erro ao salvar lançamento:', error);
+      console.error('useLancamentosForm: Erro ao salvar lançamento:', error);
       toast({
         title: "Erro ao salvar",
         description: "Ocorreu um erro ao salvar o lançamento.",
@@ -164,7 +167,7 @@ export const useLancamentosForm = (
   };
 
   const handleCancel = () => {
-    console.log('Cancelando edição/criação');
+    console.log('useLancamentosForm: Cancelando edição/criação');
     resetForm();
     setActiveTab('lista');
   };

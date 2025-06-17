@@ -57,17 +57,51 @@ export const useCadastrosUnified = () => {
   };
 
   const handleEdit = (item: any) => {
+    console.log('useCadastrosUnified: Editando item:', item);
     setEditingItem(item);
     setIsEditModalOpen(true);
   };
 
   const handleSaveEdit = async (data: any) => {
+    console.log('useCadastrosUnified: Salvando edições:', data);
+    console.log('useCadastrosUnified: Item sendo editado:', editingItem);
+    
     try {
-      await updateCadastro.mutateAsync({ id: data.id, ...data });
+      // Preparar dados para atualização
+      const updateData = {
+        nome: data.nome,
+        tipo: editingItem.tipo, // Manter o tipo original
+        pessoa: data.pessoa,
+        cpf_cnpj: data.cpf_cnpj,
+        telefone: data.telefone || undefined,
+        email: data.email || undefined,
+        endereco: data.endereco || undefined,
+        numero: data.numero || undefined,
+        bairro: data.bairro || undefined,
+        cidade: data.cidade || undefined,
+        estado: data.estado || undefined,
+        cep: data.cep || undefined,
+        observacoes: data.observacoes || undefined,
+        status: data.status || editingItem.status
+      };
+
+      console.log('useCadastrosUnified: Dados para atualização:', updateData);
+
+      await updateCadastro.mutateAsync({ 
+        id: editingItem.id, 
+        ...updateData 
+      });
+
+      toast({
+        title: "Sucesso!",
+        description: "Cadastro atualizado com sucesso.",
+      });
+
       setIsEditModalOpen(false);
       setEditingItem(null);
       refetch();
     } catch (error) {
+      console.error('useCadastrosUnified: Erro ao atualizar:', error);
       toast({
         title: "Erro ao atualizar",
         description: "Ocorreu um erro ao salvar as alterações.",
@@ -78,6 +112,8 @@ export const useCadastrosUnified = () => {
 
   const handleToggleStatus = async (item: any) => {
     const newStatus = item.status === 'ativo' ? 'inativo' : 'ativo';
+    console.log('useCadastrosUnified: Alterando status para:', newStatus);
+    
     try {
       await updateCadastro.mutateAsync({ 
         id: item.id, 
@@ -89,6 +125,7 @@ export const useCadastrosUnified = () => {
       });
       refetch();
     } catch (error) {
+      console.error('useCadastrosUnified: Erro ao atualizar status:', error);
       toast({
         title: "Erro ao atualizar status",
         description: "Ocorreu um erro ao alterar o status.",
@@ -102,10 +139,17 @@ export const useCadastrosUnified = () => {
       return;
     }
 
+    console.log('useCadastrosUnified: Deletando item:', id);
+
     try {
       await deleteCadastro.mutateAsync(id);
+      toast({
+        title: "Sucesso!",
+        description: "Cadastro excluído com sucesso.",
+      });
       refetch();
     } catch (error) {
+      console.error('useCadastrosUnified: Erro ao excluir:', error);
       toast({
         title: "Erro ao excluir",
         description: "Ocorreu um erro ao excluir o item.",
