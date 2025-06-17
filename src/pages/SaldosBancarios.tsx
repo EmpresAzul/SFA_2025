@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -55,7 +54,7 @@ const SaldosBancarios: React.FC = () => {
   const [formData, setFormData] = useState({
     data: '',
     banco: '',
-    saldo: 0
+    saldo: ''
   });
 
   console.log('SaldosBancarios - User:', user);
@@ -81,6 +80,11 @@ const SaldosBancarios: React.FC = () => {
     setFilteredSaldos(filtered);
   };
 
+  const parseValue = (value: string): number => {
+    if (!value) return 0;
+    return parseFloat(value.replace(/[^\d,.-]/g, '').replace(',', '.')) || 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -96,7 +100,12 @@ const SaldosBancarios: React.FC = () => {
     try {
       console.log('SaldosBancarios - Submitting data:', formData);
       
-      const dataToSubmit = editingId ? { ...formData, id: editingId } : formData;
+      const dataToSubmit = {
+        ...formData,
+        saldo: parseValue(formData.saldo),
+        ...(editingId && { id: editingId })
+      };
+      
       await createSaldoBancarioMutation.mutateAsync(dataToSubmit);
 
       resetForm();
@@ -110,7 +119,7 @@ const SaldosBancarios: React.FC = () => {
     setFormData({
       data: '',
       banco: '',
-      saldo: 0
+      saldo: ''
     });
     setEditingId(null);
     setViewingId(null);
@@ -120,7 +129,7 @@ const SaldosBancarios: React.FC = () => {
     setFormData({
       data: saldo.data,
       banco: saldo.banco,
-      saldo: saldo.saldo
+      saldo: saldo.saldo.toString()
     });
     setEditingId(saldo.id);
     setViewingId(null);
@@ -256,7 +265,6 @@ const SaldosBancarios: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="saldo" className="text-sm font-medium">Saldo</Label>
                 <CurrencyInput
-                  id="saldo"
                   value={formData.saldo}
                   onChange={(value) => setFormData({ ...formData, saldo: value })}
                   required

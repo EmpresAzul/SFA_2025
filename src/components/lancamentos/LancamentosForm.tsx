@@ -6,8 +6,10 @@ import { Textarea } from '@/components/ui/textarea';
 import LancamentosFormFields from './form/LancamentosFormFields';
 import LancamentosFormCategories from './form/LancamentosFormCategories';
 import LancamentosFormActions from './form/LancamentosFormActions';
-import type { Cadastro } from '@/hooks/useCadastros';
+import type { Database } from '@/integrations/supabase/types';
 import type { FormData, LancamentoComRelacoes } from '@/types/lancamentosForm';
+
+type Cadastro = Database['public']['Tables']['cadastros']['Row'];
 
 interface LancamentosFormProps {
   formData: FormData;
@@ -53,10 +55,8 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
           <LancamentosFormFields
             formData={formData}
             setFormData={setFormData}
-            editingLancamento={editingLancamento}
-            clientes={clientes}
-            fornecedores={fornecedores}
-            renderCategoriasByGroup={renderCategoriasByGroup}
+            clientes={clientes || []}
+            fornecedores={fornecedores || []}
           />
 
           <div className="space-y-2">

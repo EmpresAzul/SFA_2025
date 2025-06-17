@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LancamentosSummaryCards from '@/components/lancamentos/LancamentosSummaryCards';
@@ -110,7 +111,7 @@ const LancamentosFinanceiros: React.FC = () => {
           />
 
           <LancamentosTable
-            lancamentos={filteredLancamentos}
+            data={filteredLancamentos}
             isLoading={isLoading}
             onEdit={handleEdit}
             onDelete={handleDelete}

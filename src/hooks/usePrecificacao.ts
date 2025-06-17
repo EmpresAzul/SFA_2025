@@ -12,7 +12,7 @@ export const usePrecificacao = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const useQuery = () => {
+  const useQueryHook = () => {
     return useQuery({
       queryKey: ['precificacao'],
       queryFn: async () => {
@@ -137,7 +137,7 @@ export const usePrecificacao = () => {
   };
 
   return {
-    useQuery,
+    useQuery: useQueryHook,
     useCreate,
     useUpdate,
     useDelete,

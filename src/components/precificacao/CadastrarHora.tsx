@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 interface DespesaFixa {
   id: string;
   descricao: string;
-  valor: number;
+  valor: string;
 }
 
 const CadastrarHora: React.FC = () => {
@@ -20,13 +20,13 @@ const CadastrarHora: React.FC = () => {
 
   const [horaData, setHoraData] = useState({
     nome: '',
-    proLabore: 0,
+    proLabore: '',
     diasTrabalhados: 0,
     horasPorDia: 0,
   });
 
   const [despesasFixas, setDespesasFixas] = useState<DespesaFixa[]>([
-    { id: '1', descricao: '', valor: 0 }
+    { id: '1', descricao: '', valor: '' }
   ]);
 
   const adicionarDespesa = () => {
@@ -34,7 +34,7 @@ const CadastrarHora: React.FC = () => {
       const novaDespesa: DespesaFixa = {
         id: Date.now().toString(),
         descricao: '',
-        valor: 0
+        valor: ''
       };
       setDespesasFixas([...despesasFixas, novaDespesa]);
     }
@@ -46,17 +46,24 @@ const CadastrarHora: React.FC = () => {
     }
   };
 
-  const atualizarDespesa = (id: string, campo: 'descricao' | 'valor', valor: string | number) => {
+  const atualizarDespesa = (id: string, campo: 'descricao' | 'valor', valor: string) => {
     setDespesasFixas(despesasFixas.map(despesa => 
       despesa.id === id ? { ...despesa, [campo]: valor } : despesa
     ));
   };
 
-  const totalCustosFixos = despesasFixas.reduce((total, despesa) => total + (despesa.valor || 0), 0);
+  // Converter valores string para number para cálculos
+  const parseValue = (value: string): number => {
+    if (!value) return 0;
+    return parseFloat(value.replace(/[^\d,.-]/g, '').replace(',', '.')) || 0;
+  };
+
+  const totalCustosFixos = despesasFixas.reduce((total, despesa) => total + parseValue(despesa.valor), 0);
+  const proLaboreNumerico = parseValue(horaData.proLabore);
 
   // Cálculos automáticos
   const horasTrabalhadasMes = horaData.diasTrabalhados * horaData.horasPorDia;
-  const custoTotalMensal = horaData.proLabore + totalCustosFixos;
+  const custoTotalMensal = proLaboreNumerico + totalCustosFixos;
   const valorHoraTrabalhada = horasTrabalhadasMes > 0 ? custoTotalMensal / horasTrabalhadasMes : 0;
   const valorDiaTrabalhado = horaData.horasPorDia > 0 ? valorHoraTrabalhada * horaData.horasPorDia : 0;
 
@@ -92,11 +99,11 @@ const CadastrarHora: React.FC = () => {
       // Reset form
       setHoraData({
         nome: '',
-        proLabore: 0,
+        proLabore: '',
         diasTrabalhados: 0,
         horasPorDia: 0,
       });
-      setDespesasFixas([{ id: '1', descricao: '', valor: 0 }]);
+      setDespesasFixas([{ id: '1', descricao: '', valor: '' }]);
     } catch (error: any) {
       toast({
         title: "Erro ao cadastrar",
@@ -125,7 +132,6 @@ const CadastrarHora: React.FC = () => {
         <div className="space-y-2">
           <Label htmlFor="pro-labore">Pró-labore *</Label>
           <CurrencyInput
-            id="pro-labore"
             value={horaData.proLabore}
             onChange={(value) => setHoraData({ ...horaData, proLabore: value })}
             required
