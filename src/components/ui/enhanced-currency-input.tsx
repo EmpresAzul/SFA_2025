@@ -1,7 +1,7 @@
 
 import React, { forwardRef, useEffect, useState } from 'react';
 import { Input } from './input';
-import { formatNumberToInput, parseStringToNumber, formatNumberToDisplay } from '@/utils/currency';
+import { formatNumberToInput, parseStringToNumber } from '@/utils/currency';
 import { cn } from '@/lib/utils';
 
 interface EnhancedCurrencyInputProps {
@@ -36,13 +36,15 @@ export const EnhancedCurrencyInput = forwardRef<HTMLInputElement, EnhancedCurren
         const numericValue = typeof value === 'number' ? value : parseStringToNumber(String(value));
         const formattedValue = formatNumberToInput(numericValue);
         setInputValue(formattedValue);
+      } else {
+        setInputValue('');
       }
     }, [value]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value;
       
-      // Permitir apenas números, vírgulas e pontos
+      // Permitir apenas números, vírgulas, pontos e sinal negativo
       const cleanValue = rawValue.replace(/[^0-9,.-]/g, '');
       
       const numericValue = parseStringToNumber(cleanValue);
@@ -52,7 +54,10 @@ export const EnhancedCurrencyInput = forwardRef<HTMLInputElement, EnhancedCurren
       }
       
       setInputValue(cleanValue);
-      onChange?.(numericValue, formatNumberToInput(numericValue));
+      
+      // Formatar valor para salvar
+      const formattedForSave = formatNumberToInput(numericValue);
+      onChange?.(numericValue, formattedForSave);
     };
 
     const handleFocus = () => {
@@ -68,14 +73,12 @@ export const EnhancedCurrencyInput = forwardRef<HTMLInputElement, EnhancedCurren
       onChange?.(numericValue, formattedValue);
     };
 
-    const displayValue = isFocused ? inputValue : inputValue;
-
     return (
       <Input
         ref={ref}
         id={id}
         type="text"
-        value={displayValue}
+        value={inputValue}
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}

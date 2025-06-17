@@ -1,7 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import DashboardLayout from '@/components/DashboardLayout';
 import CadastrarHora from '@/components/precificacao/CadastrarHora';
 import CadastrarProduto from '@/components/precificacao/CadastrarProduto';
 import CadastrarServico from '@/components/precificacao/CadastrarServico';
@@ -57,103 +56,107 @@ const PrecificacaoPage: React.FC = () => {
     // TODO: Implementar lógica de edição
   };
 
-  const resetFilters = () => {
-    setSearchTerm('');
-    setSelectedTipo('todos');
-    setSelectedStatus('todos');
-  };
-
   return (
-    <DashboardLayout>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Sistema de Precificação
-            </h1>
-            <p className="text-gray-600">
-              Gerencie seus produtos, serviços e horas cadastrados
-            </p>
-          </div>
-
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-6 bg-white/80 backdrop-blur-sm">
-              <TabsTrigger value="lista" className="flex items-center gap-2">
-                <List className="h-4 w-4" />
-                Lista de Itens
-              </TabsTrigger>
-              <TabsTrigger value="produto" className="flex items-center gap-2">
-                <Package className="h-4 w-4" />
-                Cadastrar Produto
-              </TabsTrigger>
-              <TabsTrigger value="servico" className="flex items-center gap-2">
-                <Wrench className="h-4 w-4" />
-                Cadastrar Serviço
-              </TabsTrigger>
-              <TabsTrigger value="hora" className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                Cadastrar Hora
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="lista" className="space-y-6">
-              <PrecificacaoSummaryCards
-                totalItens={stats.total}
-                totalProdutos={stats.produtos}
-                totalServicos={stats.servicos}
-                totalHoras={stats.horas}
-              />
-
-              <PrecificacaoFilters
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                selectedTipo={selectedTipo}
-                onTipoChange={setSelectedTipo}
-                selectedStatus={selectedStatus}
-                onStatusChange={setSelectedStatus}
-              />
-
-              {isLoading ? (
-                <div className="flex justify-center items-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                </div>
-              ) : (
-                <PrecificacaoTable
-                  data={filteredData}
-                  onView={handleView}
-                  onEdit={handleEdit}
-                />
-              )}
-            </TabsContent>
-
-            <TabsContent value="produto">
-              <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
-                <CadastrarProduto />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="servico">
-              <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
-                <CadastrarServico />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="hora">
-              <CadastrarHora />
-            </TabsContent>
-          </Tabs>
-
-          <PrecificacaoViewModal
-            item={selectedItem}
-            isOpen={isViewModalOpen}
-            onClose={() => {
-              setIsViewModalOpen(false);
-              setSelectedItem(null);
-            }}
-          />
+    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            📊 Sistema de Precificação
+          </h1>
+          <p className="text-gray-600 mt-2 text-sm">Gerencie seus produtos, serviços e horas cadastrados</p>
         </div>
       </div>
-    </DashboardLayout>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4 mb-6 bg-white/80 backdrop-blur-sm shadow-lg rounded-xl h-12 sm:h-14">
+          <TabsTrigger 
+            value="lista" 
+            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
+            <List className="h-4 w-4" />
+            Lista de Itens
+          </TabsTrigger>
+          <TabsTrigger 
+            value="produto" 
+            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
+            <Package className="h-4 w-4" />
+            Cadastrar Produto
+          </TabsTrigger>
+          <TabsTrigger 
+            value="servico" 
+            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
+            <Wrench className="h-4 w-4" />
+            Cadastrar Serviço
+          </TabsTrigger>
+          <TabsTrigger 
+            value="hora" 
+            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
+            <Clock className="h-4 w-4" />
+            Cadastrar Hora
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="lista" className="space-y-6">
+          <PrecificacaoSummaryCards
+            totalItens={stats.total}
+            totalProdutos={stats.produtos}
+            totalServicos={stats.servicos}
+            totalHoras={stats.horas}
+          />
+
+          <PrecificacaoFilters
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            selectedTipo={selectedTipo}
+            onTipoChange={setSelectedTipo}
+            selectedStatus={selectedStatus}
+            onStatusChange={setSelectedStatus}
+          />
+
+          {isLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          ) : (
+            <PrecificacaoTable
+              data={filteredData}
+              onView={handleView}
+              onEdit={handleEdit}
+            />
+          )}
+        </TabsContent>
+
+        <TabsContent value="produto">
+          <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+            <CadastrarProduto />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="servico">
+          <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+            <CadastrarServico />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="hora">
+          <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+            <CadastrarHora />
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      <PrecificacaoViewModal
+        item={selectedItem}
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false);
+          setSelectedItem(null);
+        }}
+      />
+    </div>
   );
 };
 

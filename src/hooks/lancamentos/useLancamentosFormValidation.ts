@@ -34,8 +34,11 @@ export const useLancamentosFormValidation = () => {
       return { isValid: false };
     }
 
-    // Converter string para número para validação
-    const valorNumerico = parseStringToNumber(formData.valor);
+    // Converter string ou número para número para validação
+    const valorNumerico = typeof formData.valor === 'string' 
+      ? parseStringToNumber(formData.valor) 
+      : formData.valor;
+    
     const valorValidation = validateCurrencyValue(valorNumerico);
     
     console.log('Validation: Validação de valor:', valorValidation);

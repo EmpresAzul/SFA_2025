@@ -1,13 +1,13 @@
 
 import { useState, useCallback } from 'react';
 import type { FormData, LancamentoComRelacoes } from '@/types/lancamentosForm';
-import { parseStringToNumber, formatNumberToInput } from '@/utils/currency';
+import { formatNumberToInput } from '@/utils/currency';
 
 const getInitialFormData = (): FormData => ({
   data: new Date().toISOString().split('T')[0],
   tipo: 'receita',
   categoria: '',
-  valor: '0,00',
+  valor: '',
   cliente_id: '',
   fornecedor_id: '',
   observacoes: '',
