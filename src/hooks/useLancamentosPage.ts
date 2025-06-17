@@ -61,6 +61,7 @@ export const useLancamentosPage = () => {
   };
 
   const handleEdit = (lancamento: LancamentoComRelacoes) => {
+    console.log('Editando lançamento:', lancamento);
     setEditingLancamento(lancamento);
     setActiveTab('formulario');
   };
@@ -69,8 +70,17 @@ export const useLancamentosPage = () => {
     if (window.confirm('Tem certeza que deseja excluir este lançamento?')) {
       try {
         await deleteLancamento.mutateAsync(id);
+        toast({
+          title: "Sucesso!",
+          description: "Lançamento excluído com sucesso.",
+        });
       } catch (error) {
         console.error('Erro ao excluir lançamento:', error);
+        toast({
+          title: "Erro ao excluir",
+          description: "Ocorreu um erro ao excluir o lançamento.",
+          variant: "destructive",
+        });
       }
     }
   };

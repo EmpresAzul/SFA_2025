@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Lancamento } from '@/hooks/useLancamentos';
@@ -40,6 +40,22 @@ export const useLancamentosForm = (
     observacoes: ''
   });
 
+  // Carregar dados do lançamento quando estiver editando
+  useEffect(() => {
+    if (editingLancamento) {
+      console.log('Carregando dados para edição:', editingLancamento);
+      setFormData({
+        data: editingLancamento.data,
+        tipo: editingLancamento.tipo,
+        valor: editingLancamento.valor.toString(),
+        cliente_id: editingLancamento.cliente_id || '',
+        fornecedor_id: editingLancamento.fornecedor_id || '',
+        categoria: editingLancamento.categoria,
+        observacoes: editingLancamento.observacoes || ''
+      });
+    }
+  }, [editingLancamento]);
+
   const resetForm = () => {
     setFormData({
       data: new Date().toISOString().split('T')[0],
@@ -54,6 +70,7 @@ export const useLancamentosForm = (
   };
 
   const loadFormData = (lancamento: LancamentoComRelacoes) => {
+    console.log('loadFormData chamado com:', lancamento);
     setFormData({
       data: lancamento.data,
       tipo: lancamento.tipo,
@@ -113,15 +130,30 @@ export const useLancamentosForm = (
       console.log('Dados do lançamento a serem salvos:', lancamentoData);
 
       if (editingLancamento) {
+        console.log('Atualizando lançamento existente:', editingLancamento.id);
         await updateLancamento.mutateAsync({ id: editingLancamento.id, ...lancamentoData });
+        toast({
+          title: "Sucesso!",
+          description: "Lançamento atualizado com sucesso.",
+        });
       } else {
+        console.log('Criando novo lançamento');
         await createLancamento.mutateAsync(lancamentoData);
+        toast({
+          title: "Sucesso!",
+          description: "Lançamento criado com sucesso.",
+        });
       }
 
       resetForm();
       setActiveTab('lista');
     } catch (error: any) {
       console.error('Erro ao salvar lançamento:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Ocorreu um erro ao salvar o lançamento.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

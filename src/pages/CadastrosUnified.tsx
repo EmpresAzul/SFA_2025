@@ -10,8 +10,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { useCadastros } from '@/hooks/useCadastros';
 import { useCadastroForm } from '@/hooks/useCadastroForm';
-import { Edit, Trash2, Plus, Search, Users, Building, UserCheck } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, Users, Building, UserCheck, Eye, ToggleLeft, ToggleRight } from 'lucide-react';
 import CadastroEditModal from '@/components/cadastro/CadastroEditModal';
+import CadastroViewModal from '@/components/cadastro/CadastroViewModal';
 
 const CadastrosUnified: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -89,6 +90,27 @@ const CadastrosUnified: React.FC = () => {
       toast({
         title: "Erro ao atualizar",
         description: "Ocorreu um erro ao salvar as alterações.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleToggleStatus = async (item: any) => {
+    const newStatus = item.status === 'ativo' ? 'inativo' : 'ativo';
+    try {
+      await updateCadastro.mutateAsync({ 
+        id: item.id, 
+        status: newStatus 
+      });
+      toast({
+        title: "Status atualizado",
+        description: `Cadastro ${newStatus === 'ativo' ? 'ativado' : 'desativado'} com sucesso.`,
+      });
+      refetch();
+    } catch (error) {
+      toast({
+        title: "Erro ao atualizar status",
+        description: "Ocorreu um erro ao alterar o status.",
         variant: "destructive",
       });
     }
@@ -297,6 +319,21 @@ const CadastrosUnified: React.FC = () => {
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end space-x-1">
+                            <CadastroViewModal cadastro={item} />
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleToggleStatus(item)}
+                              className={`hover:bg-gray-50 h-6 w-6 sm:h-8 sm:w-8 p-0 ${
+                                item.status === 'ativo' ? 'text-green-600' : 'text-red-600'
+                              }`}
+                              title={item.status === 'ativo' ? 'Desativar' : 'Ativar'}
+                            >
+                              {item.status === 'ativo' ? 
+                                <ToggleRight className="h-2 w-2 sm:h-3 sm:w-3" /> : 
+                                <ToggleLeft className="h-2 w-2 sm:h-3 sm:w-3" />
+                              }
+                            </Button>
                             <Button
                               size="sm"
                               variant="outline"
