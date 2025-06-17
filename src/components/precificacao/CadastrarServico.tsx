@@ -9,8 +9,10 @@ import { Plus, Trash2, Save, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { usePrecificacao } from '@/hooks/usePrecificacao';
 import { supabase } from '@/integrations/supabase/client';
-import { formatNumberToDisplay } from '@/utils/currency';
+import TaxasAdicionaisManager from './forms/TaxasAdicionaisManager';
+import ServicoCalculationsResults from './forms/ServicoCalculationsResults';
 import type { Database } from '@/integrations/supabase/types';
+import type { TaxaAdicional } from './forms/TaxasAdicionaisManager';
 
 type Precificacao = Database['public']['Tables']['precificacao']['Row'];
 
@@ -49,6 +51,10 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
     { id: '1', descricao: '', valor: 0 }
   ]);
 
+  const [taxasAdicionais, setTaxasAdicionais] = useState<TaxaAdicional[]>([
+    { id: '1', descricao: '', percentual: 0 }
+  ]);
+
   // Preencher formulário quando estiver editando
   useEffect(() => {
     if (editingItem && editingItem.tipo === 'Serviço') {
@@ -70,6 +76,16 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
           valor: custo.valor
         }));
         setCustos(custosCarregados.length > 0 ? custosCarregados : [{ id: '1', descricao: '', valor: 0 }]);
+      }
+
+      // Carregar taxas adicionais do JSON
+      if (dados?.taxas_adicionais) {
+        const taxasCarregadas = dados.taxas_adicionais.map((taxa: any) => ({
+          id: taxa.id || Date.now().toString(),
+          descricao: taxa.descricao,
+          percentual: taxa.percentual
+        }));
+        setTaxasAdicionais(taxasCarregadas.length > 0 ? taxasCarregadas : [{ id: '1', descricao: '', percentual: 0 }]);
       }
     }
   }, [editingItem]);
@@ -97,14 +113,17 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
     ));
   };
 
-  // Cálculos automáticos
+  // Cálculos automáticos com taxas adicionais
   const custoMateriais = custos.reduce((total, custo) => total + custo.valor, 0);
   const horasNumerico = parseFloat(servicoData.tempoEstimado) || 0;
   const custoMaoObra = horasNumerico * servicoData.valorHora;
   const custoTotal = custoMateriais + custoMaoObra;
-  const margemDecimal = servicoData.margemLucro / 100;
+  const totalTaxasPercentual = taxasAdicionais.reduce((total, taxa) => total + taxa.percentual, 0);
+  const percentualTotal = servicoData.margemLucro + totalTaxasPercentual;
+  const margemDecimal = percentualTotal / 100;
   const precoFinal = custoTotal > 0 ? custoTotal / (1 - margemDecimal) : 0;
   const lucroValor = precoFinal - custoTotal;
+  const valorTaxas = (custoTotal * totalTaxasPercentual) / 100;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,6 +166,14 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
           valor: custo.valor
         }));
 
+      const taxasSerializadas = taxasAdicionais
+        .filter(t => t.descricao && t.percentual > 0)
+        .map(taxa => ({
+          id: taxa.id,
+          descricao: taxa.descricao,
+          percentual: taxa.percentual
+        }));
+
       const dadosPrecificacao = {
         nome: servicoData.nome,
         categoria: servicoData.categoria,
@@ -158,9 +185,13 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
           valor_hora: servicoData.valorHora,
           custo_mao_obra: custoMaoObra,
           custos_materiais: custosMateriaisSerializados,
+          taxas_adicionais: taxasSerializadas,
           custo_materiais_total: custoMateriais,
           custo_total: custoTotal,
-          lucro_valor: lucroValor
+          total_taxas_percentual: totalTaxasPercentual,
+          percentual_total: percentualTotal,
+          lucro_valor: lucroValor,
+          valor_taxas: valorTaxas
         }))
       };
 
@@ -200,6 +231,7 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
         margemLucro: 20,
       });
       setCustos([{ id: '1', descricao: '', valor: 0 }]);
+      setTaxasAdicionais([{ id: '1', descricao: '', percentual: 0 }]);
       
       // Chamar callback de sucesso
       onSaveSuccess?.();
@@ -225,6 +257,7 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
       margemLucro: 20,
     });
     setCustos([{ id: '1', descricao: '', valor: 0 }]);
+    setTaxasAdicionais([{ id: '1', descricao: '', percentual: 0 }]);
     
     onCancelEdit?.();
   };
@@ -365,35 +398,23 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Resumo da Precificação</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span>Custo Mão de Obra ({horasNumerico}h × {formatNumberToDisplay(servicoData.valorHora)}):</span>
-              <span className="font-semibold">{formatNumberToDisplay(custoMaoObra)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Custo Materiais:</span>
-              <span className="font-semibold">{formatNumberToDisplay(custoMateriais)}</span>
-            </div>
-            <div className="flex justify-between border-t pt-2">
-              <span className="font-medium">Custo Total:</span>
-              <span className="font-semibold">{formatNumberToDisplay(custoTotal)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-medium">Margem de Lucro ({servicoData.margemLucro}%):</span>
-              <span className="font-semibold text-green-600">{formatNumberToDisplay(lucroValor)}</span>
-            </div>
-            <div className="flex justify-between border-t pt-2">
-              <span className="font-bold">Preço Final:</span>
-              <span className="text-xl font-bold text-blue-600">{formatNumberToDisplay(precoFinal)}</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <TaxasAdicionaisManager
+        taxasAdicionais={taxasAdicionais}
+        onUpdateTaxas={setTaxasAdicionais}
+      />
+
+      <ServicoCalculationsResults
+        tempoEstimado={horasNumerico}
+        valorHora={servicoData.valorHora}
+        custoMaoObra={custoMaoObra}
+        custoMateriais={custoMateriais}
+        custoTotal={custoTotal}
+        margemLucro={servicoData.margemLucro}
+        totalTaxasPercentual={totalTaxasPercentual}
+        precoFinal={precoFinal}
+        lucroValor={lucroValor}
+        valorTaxas={valorTaxas}
+      />
 
       <div className="flex gap-4">
         <Button

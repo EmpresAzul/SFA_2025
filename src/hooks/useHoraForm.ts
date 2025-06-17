@@ -4,7 +4,6 @@ import { useToast } from '@/hooks/use-toast';
 import { usePrecificacao } from '@/hooks/usePrecificacao';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
-import type { TaxaAdicional } from '@/components/precificacao/forms/TaxasAdicionaisManager';
 
 type Precificacao = Database['public']['Tables']['precificacao']['Row'];
 
@@ -43,10 +42,6 @@ export const useHoraForm = (
     { id: '1', descricao: '', valor: 0 }
   ]);
 
-  const [taxasAdicionais, setTaxasAdicionais] = useState<TaxaAdicional[]>([
-    { id: '1', descricao: '', percentual: 0 }
-  ]);
-
   // Preencher formulário quando estiver editando
   useEffect(() => {
     if (editingItem && editingItem.tipo === 'Hora') {
@@ -68,16 +63,6 @@ export const useHoraForm = (
         }));
         setDespesasFixas(despesasCarregadas.length > 0 ? despesasCarregadas : [{ id: '1', descricao: '', valor: 0 }]);
       }
-
-      // Carregar taxas adicionais do JSON
-      if (dados?.taxas_adicionais) {
-        const taxasCarregadas = dados.taxas_adicionais.map((taxa: any) => ({
-          id: taxa.id || Date.now().toString(),
-          descricao: taxa.descricao,
-          percentual: taxa.percentual
-        }));
-        setTaxasAdicionais(taxasCarregadas.length > 0 ? taxasCarregadas : [{ id: '1', descricao: '', percentual: 0 }]);
-      }
     }
   }, [editingItem]);
 
@@ -90,7 +75,6 @@ export const useHoraForm = (
       horasPorDia: '',
     });
     setDespesasFixas([{ id: '1', descricao: '', valor: 0 }]);
-    setTaxasAdicionais([{ id: '1', descricao: '', percentual: 0 }]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -98,7 +82,6 @@ export const useHoraForm = (
     console.log('🚀 INICIANDO handleSubmit...');
     console.log('📊 Dados do formulário:', horaData);
     console.log('💰 Despesas fixas:', despesasFixas);
-    console.log('💸 Taxas adicionais:', taxasAdicionais);
     
     // Verificar autenticação primeiro
     console.log('🔐 Verificando autenticação...');
@@ -119,24 +102,18 @@ export const useHoraForm = (
     const diasTrabalhadosNumerico = parseFloat(horaData.diasTrabalhados) || 0;
     const horasPorDiaNumerico = parseFloat(horaData.horasPorDia) || 0;
     const totalCustosFixos = despesasFixas.reduce((total, despesa) => total + despesa.valor, 0);
-    const totalTaxasPercentual = taxasAdicionais.reduce((total, taxa) => total + taxa.percentual, 0);
     const horasTrabalhadasMes = diasTrabalhadosNumerico * horasPorDiaNumerico;
     const custoTotalMensal = horaData.proLabore + totalCustosFixos;
     const valorHoraTrabalhada = horasTrabalhadasMes > 0 ? custoTotalMensal / horasTrabalhadasMes : 0;
-    const valorTaxasHora = (valorHoraTrabalhada * totalTaxasPercentual) / 100;
-    const valorHoraFinal = valorHoraTrabalhada + valorTaxasHora;
-    const valorDiaTrabalhado = horasPorDiaNumerico > 0 ? valorHoraFinal * horasPorDiaNumerico : 0;
+    const valorDiaTrabalhado = horasPorDiaNumerico > 0 ? valorHoraTrabalhada * horasPorDiaNumerico : 0;
 
     console.log('📈 Cálculos realizados:', {
       diasTrabalhadosNumerico,
       horasPorDiaNumerico,
       totalCustosFixos,
-      totalTaxasPercentual,
       horasTrabalhadasMes,
       custoTotalMensal,
       valorHoraTrabalhada,
-      valorTaxasHora,
-      valorHoraFinal,
       valorDiaTrabalhado
     });
 
@@ -176,35 +153,22 @@ export const useHoraForm = (
           valor: despesa.valor
         }));
 
-      const taxasSerializadas = taxasAdicionais
-        .filter(t => t.descricao && t.percentual > 0)
-        .map(taxa => ({
-          id: taxa.id,
-          descricao: taxa.descricao,
-          percentual: taxa.percentual
-        }));
-
       console.log('💾 Despesas serializadas:', despesasSerializadas);
-      console.log('💾 Taxas serializadas:', taxasSerializadas);
 
       const dadosPrecificacao = {
         nome: horaData.nome,
         categoria: 'Hora Trabalhada',
         tipo: 'Hora' as const,
-        preco_final: valorHoraFinal,
+        preco_final: valorHoraTrabalhada,
         dados_json: JSON.parse(JSON.stringify({
           pro_labore: horaData.proLabore,
           dias_trabalhados: diasTrabalhadosNumerico,
           horas_por_dia: horasPorDiaNumerico,
           horas_trabalhadas_mes: horasTrabalhadasMes,
           despesas_fixas: despesasSerializadas,
-          taxas_adicionais: taxasSerializadas,
           total_custos_fixos: totalCustosFixos,
-          total_taxas_percentual: totalTaxasPercentual,
           custo_total_mensal: custoTotalMensal,
           valor_hora_trabalhada: valorHoraTrabalhada,
-          valor_taxas_hora: valorTaxasHora,
-          valor_hora_final: valorHoraFinal,
           valor_dia_trabalhado: valorDiaTrabalhado
         }))
       };
@@ -276,8 +240,6 @@ export const useHoraForm = (
     setHoraData,
     despesasFixas,
     setDespesasFixas,
-    taxasAdicionais,
-    setTaxasAdicionais,
     loading,
     handleSubmit,
     handleCancel,
