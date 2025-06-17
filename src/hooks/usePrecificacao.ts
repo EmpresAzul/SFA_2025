@@ -16,15 +16,17 @@ export const usePrecificacao = () => {
     return useQuery({
       queryKey: ['precificacao'],
       queryFn: async () => {
-        console.log('Buscando dados de precificação...');
+        console.log('🔍 Buscando dados de precificação...');
         
         // Obter o usuário atual
         const { data: { user } } = await supabase.auth.getUser();
         
         if (!user) {
-          console.log('Usuário não autenticado');
+          console.log('❌ Usuário não autenticado na query');
           return [];
         }
+
+        console.log('👤 Usuário autenticado na query:', user.id);
 
         const { data, error } = await supabase
           .from('precificacao')
@@ -33,11 +35,11 @@ export const usePrecificacao = () => {
           .order('created_at', { ascending: false });
 
         if (error) {
-          console.error('Erro ao buscar precificação:', error);
+          console.error('❌ Erro ao buscar precificação:', error);
           throw error;
         }
 
-        console.log('Dados de precificação carregados:', data);
+        console.log('✅ Dados de precificação carregados:', data);
         return data as Precificacao[];
       },
     });
@@ -46,16 +48,21 @@ export const usePrecificacao = () => {
   const useCreate = () => {
     return useMutation({
       mutationFn: async (data: PrecificacaoInsert) => {
-        console.log('Criando item de precificação:', data);
+        console.log('🚀 MUTATION CREATE - Iniciando criação de item:', data);
         
         // Garantir que o user_id está presente
         if (!data.user_id) {
+          console.log('⚠️ user_id não fornecido, buscando...');
           const { data: { user } } = await supabase.auth.getUser();
           if (!user) {
+            console.log('❌ Usuário não autenticado na mutation create');
             throw new Error('Usuário não autenticado');
           }
           data.user_id = user.id;
+          console.log('✅ user_id definido:', user.id);
         }
+
+        console.log('📦 Dados finais para inserir:', data);
 
         const { data: result, error } = await supabase
           .from('precificacao')
@@ -64,19 +71,26 @@ export const usePrecificacao = () => {
           .single();
 
         if (error) {
-          console.error('Erro ao criar precificação:', error);
+          console.error('❌ Erro no Supabase ao criar precificação:', error);
+          console.error('❌ Detalhes do erro:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
           throw error;
         }
 
-        console.log('Item de precificação criado com sucesso:', result);
+        console.log('✅ Item de precificação criado com sucesso:', result);
         return result;
       },
-      onSuccess: () => {
+      onSuccess: (data) => {
+        console.log('🎉 Mutation CREATE bem-sucedida, invalidando queries...');
         queryClient.invalidateQueries({ queryKey: ['precificacao'] });
-        console.log('Query de precificação invalidada após criação');
+        console.log('✅ Queries invalidadas após criação');
       },
       onError: (error) => {
-        console.error('Erro na mutação de criação:', error);
+        console.error('💥 Erro na mutation de criação:', error);
       },
     });
   };
@@ -84,7 +98,7 @@ export const usePrecificacao = () => {
   const useUpdate = () => {
     return useMutation({
       mutationFn: async ({ id, data }: { id: string; data: PrecificacaoUpdate }) => {
-        console.log('Atualizando item de precificação:', id, data);
+        console.log('✏️ MUTATION UPDATE - Atualizando item:', id, data);
         const { data: result, error } = await supabase
           .from('precificacao')
           .update(data)
@@ -93,10 +107,11 @@ export const usePrecificacao = () => {
           .single();
 
         if (error) {
-          console.error('Erro ao atualizar precificação:', error);
+          console.error('❌ Erro ao atualizar precificação:', error);
           throw error;
         }
 
+        console.log('✅ Item atualizado com sucesso:', result);
         return result;
       },
       onSuccess: () => {
@@ -107,7 +122,7 @@ export const usePrecificacao = () => {
         });
       },
       onError: (error) => {
-        console.error('Erro na mutação de atualização:', error);
+        console.error('❌ Erro na mutação de atualização:', error);
         toast({
           title: "Erro",
           description: "Erro ao atualizar item. Tente novamente.",
@@ -120,14 +135,14 @@ export const usePrecificacao = () => {
   const useDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
-        console.log('Excluindo item de precificação:', id);
+        console.log('🗑️ MUTATION DELETE - Excluindo item:', id);
         const { error } = await supabase
           .from('precificacao')
           .delete()
           .eq('id', id);
 
         if (error) {
-          console.error('Erro ao excluir precificação:', error);
+          console.error('❌ Erro ao excluir precificação:', error);
           throw error;
         }
       },
@@ -139,7 +154,7 @@ export const usePrecificacao = () => {
         });
       },
       onError: (error) => {
-        console.error('Erro na mutação de exclusão:', error);
+        console.error('❌ Erro na mutação de exclusão:', error);
         toast({
           title: "Erro",
           description: "Erro ao excluir item. Tente novamente.",

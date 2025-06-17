@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Save, ArrowLeft } from 'lucide-react';
@@ -21,6 +20,8 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
   onCancelEdit,
   onSaveSuccess,
 }) => {
+  console.log('🏗️ CadastrarHora renderizando com props:', { editingItem, onCancelEdit, onSaveSuccess });
+
   const {
     horaData,
     setHoraData,
@@ -32,7 +33,15 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
   } = useHoraForm(editingItem, onCancelEdit, onSaveSuccess);
 
   const handleUpdateHora = (updates: Partial<typeof horaData>) => {
+    console.log('📝 Atualizando dados da hora:', updates);
     setHoraData(prev => ({ ...prev, ...updates }));
+  };
+
+  const onFormSubmit = (e: React.FormEvent) => {
+    console.log('📝 Form submit disparado no CadastrarHora');
+    console.log('📊 Estado atual do loading:', loading);
+    console.log('📊 Estado atual dos dados:', horaData);
+    handleSubmit(e);
   };
 
   // Cálculos automáticos
@@ -45,7 +54,7 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
   const valorDiaTrabalhado = horasPorDiaNumerico > 0 ? valorHoraTrabalhada * horasPorDiaNumerico : 0;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={onFormSubmit} className="space-y-6">
       {editingItem && (
         <div className="flex items-center gap-4 p-4 bg-orange-50 rounded-lg">
           <Button
@@ -88,6 +97,7 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
           type="submit"
           disabled={loading}
           className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
+          onClick={() => console.log('🖱️ Botão de submit clicado!')}
         >
           {editingItem ? <Save className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
           {loading ? "Salvando..." : editingItem ? "Salvar Alterações" : "Cadastrar Precificação de Hora"}

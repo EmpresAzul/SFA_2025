@@ -67,6 +67,7 @@ export const useHoraForm = (
   }, [editingItem]);
 
   const resetForm = () => {
+    console.log('🔄 Resetando formulário...');
     setHoraData({
       nome: '',
       proLabore: 0,
@@ -78,6 +79,25 @@ export const useHoraForm = (
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🚀 INICIANDO handleSubmit...');
+    console.log('📊 Dados do formulário:', horaData);
+    console.log('💰 Despesas fixas:', despesasFixas);
+    
+    // Verificar autenticação primeiro
+    console.log('🔐 Verificando autenticação...');
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    console.log('👤 Usuário atual:', user);
+    console.log('❌ Erro de auth:', authError);
+    
+    if (!user) {
+      console.log('🚫 ERRO: Usuário não autenticado!');
+      toast({
+        title: "Erro de Autenticação",
+        description: "Você precisa estar logado para cadastrar uma precificação.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     const diasTrabalhadosNumerico = parseFloat(horaData.diasTrabalhados) || 0;
     const horasPorDiaNumerico = parseFloat(horaData.horasPorDia) || 0;
@@ -87,7 +107,20 @@ export const useHoraForm = (
     const valorHoraTrabalhada = horasTrabalhadasMes > 0 ? custoTotalMensal / horasTrabalhadasMes : 0;
     const valorDiaTrabalhado = horasPorDiaNumerico > 0 ? valorHoraTrabalhada * horasPorDiaNumerico : 0;
 
+    console.log('📈 Cálculos realizados:', {
+      diasTrabalhadosNumerico,
+      horasPorDiaNumerico,
+      totalCustosFixos,
+      horasTrabalhadasMes,
+      custoTotalMensal,
+      valorHoraTrabalhada,
+      valorDiaTrabalhado
+    });
+
+    // Validações
+    console.log('✅ Iniciando validações...');
     if (!horaData.nome) {
+      console.log('❌ VALIDAÇÃO FALHOU: Nome vazio');
       toast({
         title: "Erro",
         description: "Nome é obrigatório.",
@@ -97,6 +130,7 @@ export const useHoraForm = (
     }
 
     if (diasTrabalhadosNumerico <= 0 || horasPorDiaNumerico <= 0) {
+      console.log('❌ VALIDAÇÃO FALHOU: Dias ou horas inválidos');
       toast({
         title: "Erro",
         description: "Dias trabalhados e horas por dia devem ser maiores que zero.",
@@ -105,7 +139,10 @@ export const useHoraForm = (
       return;
     }
 
+    console.log('✅ Todas as validações passaram!');
+
     setLoading(true);
+    console.log('⏳ Loading state ativado');
 
     try {
       const despesasSerializadas = despesasFixas
@@ -115,6 +152,8 @@ export const useHoraForm = (
           descricao: despesa.descricao,
           valor: despesa.valor
         }));
+
+      console.log('💾 Despesas serializadas:', despesasSerializadas);
 
       const dadosPrecificacao = {
         nome: horaData.nome,
@@ -134,46 +173,64 @@ export const useHoraForm = (
         }))
       };
 
+      console.log('📦 Dados para salvar:', dadosPrecificacao);
+
       if (editingItem) {
+        console.log('✏️ Modo EDIÇÃO - atualizando item:', editingItem.id);
         await updatePrecificacao.mutateAsync({
           id: editingItem.id,
           data: dadosPrecificacao
         });
+        console.log('✅ Atualização bem-sucedida!');
         toast({
           title: "Sucesso!",
           description: "Precificação de hora atualizada com êxito.",
         });
       } else {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          throw new Error('Usuário não autenticado');
-        }
-
-        await createPrecificacao.mutateAsync({
+        console.log('➕ Modo CRIAÇÃO - criando novo item');
+        
+        const dadosCompletos = {
           ...dadosPrecificacao,
           user_id: user.id,
-        });
+        };
+
+        console.log('📦 Dados completos para criar:', dadosCompletos);
+
+        const resultado = await createPrecificacao.mutateAsync(dadosCompletos);
+        console.log('✅ Criação bem-sucedida! Resultado:', resultado);
+        
         toast({
           title: "Sucesso!",
           description: "Precificação de hora cadastrada com êxito.",
         });
       }
 
+      console.log('🔄 Resetando formulário após sucesso...');
       resetForm();
+      console.log('🎯 Chamando onSaveSuccess...');
       onSaveSuccess?.();
+      
     } catch (error: any) {
-      console.error('Erro ao salvar hora:', error);
+      console.error('💥 ERRO ao salvar hora:', error);
+      console.error('💥 Detalhes do erro:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+      
       toast({
         title: "Erro ao salvar",
-        description: error.message,
+        description: error.message || "Erro desconhecido ao salvar",
         variant: "destructive",
       });
     } finally {
+      console.log('🏁 Finalizando - desativando loading...');
       setLoading(false);
     }
   };
 
   const handleCancel = () => {
+    console.log('❌ Cancelando formulário...');
     resetForm();
     onCancelEdit?.();
   };
