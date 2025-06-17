@@ -3,13 +3,15 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+interface ProdutoData {
+  nome: string;
+  categoria: string;
+  margemLucro: number;
+}
+
 interface ProdutoFormFieldsProps {
-  produtoData: {
-    nome: string;
-    categoria: string;
-    margemLucro: number;
-  };
-  onUpdateProduto: (updates: Partial<typeof produtoData>) => void;
+  produtoData: ProdutoData;
+  onUpdateProduto: (updates: Partial<ProdutoData>) => void;
 }
 
 const ProdutoFormFields: React.FC<ProdutoFormFieldsProps> = ({
