@@ -80,7 +80,6 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
   const validateForm = (): boolean => {
     console.log('Validating form data:', formData);
     
-    // Validação do nome obrigatório
     if (!formData.nome.trim() && !formData.razao_social?.trim()) {
       toast({
         title: "Erro de validação",
@@ -90,7 +89,6 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
       return false;
     }
 
-    // Validação do CPF/CNPJ obrigatório
     if (!formData.cpf_cnpj.trim()) {
       toast({
         title: "Erro de validação",
@@ -100,7 +98,6 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
       return false;
     }
 
-    // Validações específicas por tipo
     if (tipo === 'Funcionário') {
       if (!formData.cargo?.trim()) {
         toast({
@@ -201,6 +198,8 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
   };
 
   const handleEdit = (cadastro: Cadastro) => {
+    console.log('Editando cadastro:', cadastro);
+    
     const editData: FormData = {
       nome: cadastro.nome,
       pessoa: cadastro.pessoa,
@@ -216,14 +215,17 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
       observacoes: cadastro.observacoes || ''
     };
 
+    // Campos específicos por tipo
     if (tipo === 'Fornecedor') {
-      editData.razao_social = cadastro.nome;
-      editData.tipo_fornecedor = '';
+      editData.razao_social = cadastro.nome; // Para fornecedor, o nome é a razão social
+      editData.nome = ''; // Limpa o nome para que razao_social seja usado
+      editData.tipo_fornecedor = cadastro.observacoes || ''; // Pode estar nas observações
     } else if (tipo === 'Funcionário') {
-      editData.cargo = '';
-      editData.data_admissao = '';
+      editData.cargo = cadastro.observacoes?.split('|')[0] || ''; // Assumindo que cargo pode estar nas observações
+      editData.data_admissao = cadastro.data || ''; // Usa a data do cadastro
     }
 
+    console.log('Form data para edição:', editData);
     setFormData(editData);
     setEditingCadastro(cadastro);
   };

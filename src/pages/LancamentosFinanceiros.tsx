@@ -55,6 +55,14 @@ const LancamentosFinanceiros: React.FC = () => {
     }
   }, [editingLancamento]);
 
+  // Handle tab change - reset editing state when going to "formulario" without editing
+  const handleTabChange = (value: string) => {
+    if (value === 'formulario' && !editingLancamento) {
+      handleNewLancamento();
+    }
+    setActiveTab(value);
+  };
+
   return (
     <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
@@ -68,7 +76,7 @@ const LancamentosFinanceiros: React.FC = () => {
 
       <LancamentosSummaryCards lancamentos={filteredLancamentos} />
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-12 sm:h-14">
           <TabsTrigger 
             value="lista"
@@ -77,8 +85,7 @@ const LancamentosFinanceiros: React.FC = () => {
             📋 Lista de Lançamentos
           </TabsTrigger>
           <TabsTrigger 
-            value="formulario" 
-            onClick={handleNewLancamento}
+            value="formulario"
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
             ➕ {editingLancamento ? 'Editar Lançamento' : 'Novo Lançamento'}
