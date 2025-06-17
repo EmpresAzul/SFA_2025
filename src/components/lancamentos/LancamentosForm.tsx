@@ -6,10 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import LancamentosFormFields from './form/LancamentosFormFields';
 import LancamentosFormCategories from './form/LancamentosFormCategories';
 import LancamentosFormActions from './form/LancamentosFormActions';
-import type { Database } from '@/integrations/supabase/types';
 import type { FormData, LancamentoComRelacoes } from '@/types/lancamentosForm';
-
-type Cadastro = Database['public']['Tables']['cadastros']['Row'];
+import type { Cadastro } from '@/hooks/useCadastros';
 
 interface LancamentosFormProps {
   formData: FormData;
