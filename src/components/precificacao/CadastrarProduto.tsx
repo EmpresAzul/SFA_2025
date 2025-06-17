@@ -1,15 +1,13 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { usePrecificacao } from '@/hooks/usePrecificacao';
 import { supabase } from '@/integrations/supabase/client';
+import ProdutoFormFields from './forms/ProdutoFormFields';
+import CustosManager from './forms/CustosManager';
+import PrecificacaoCalculations from './forms/PrecificacaoCalculations';
 
 interface CustoProduto {
   id: string;
@@ -33,27 +31,8 @@ const CadastrarProduto: React.FC = () => {
     { id: '1', descricao: '', valor: 0 }
   ]);
 
-  const adicionarCusto = () => {
-    if (custos.length < 20) {
-      const novoCusto: CustoProduto = {
-        id: Date.now().toString(),
-        descricao: '',
-        valor: 0
-      };
-      setCustos([...custos, novoCusto]);
-    }
-  };
-
-  const removerCusto = (id: string) => {
-    if (custos.length > 1) {
-      setCustos(custos.filter(custo => custo.id !== id));
-    }
-  };
-
-  const atualizarCusto = (id: string, campo: 'descricao' | 'valor', valor: string | number) => {
-    setCustos(custos.map(custo => 
-      custo.id === id ? { ...custo, [campo]: valor } : custo
-    ));
+  const handleUpdateProduto = (updates: Partial<typeof produtoData>) => {
+    setProdutoData(prev => ({ ...prev, ...updates }));
   };
 
   // Cálculos automáticos
@@ -95,14 +74,12 @@ const CadastrarProduto: React.FC = () => {
     setLoading(true);
 
     try {
-      // Obter o user_id atual
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
         throw new Error('Usuário não autenticado');
       }
 
-      // Converter objetos complexos para JSON compatível
       const custosSerializados = custos
         .filter(c => c.descricao && c.valor > 0)
         .map(custo => ({
@@ -154,113 +131,22 @@ const CadastrarProduto: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="nome-produto">Nome do Produto *</Label>
-          <Input
-            id="nome-produto"
-            value={produtoData.nome}
-            onChange={(e) => setProdutoData({ ...produtoData, nome: e.target.value })}
-            placeholder="Digite o nome do produto"
-          />
-        </div>
+      <ProdutoFormFields
+        produtoData={produtoData}
+        onUpdateProduto={handleUpdateProduto}
+      />
 
-        <div className="space-y-2">
-          <Label htmlFor="categoria-produto">Categoria *</Label>
-          <Input
-            id="categoria-produto"
-            value={produtoData.categoria}
-            onChange={(e) => setProdutoData({ ...produtoData, categoria: e.target.value })}
-            placeholder="Ex: Eletrônicos, Roupas, Alimentação"
-          />
-        </div>
+      <CustosManager
+        custos={custos}
+        onUpdateCustos={setCustos}
+      />
 
-        <div className="space-y-2">
-          <Label htmlFor="margem-lucro">Margem de Lucro (%) *</Label>
-          <Input
-            id="margem-lucro"
-            type="number"
-            min="0"
-            max="100"
-            step="0.1"
-            value={produtoData.margemLucro}
-            onChange={(e) => setProdutoData({ ...produtoData, margemLucro: parseFloat(e.target.value) || 0 })}
-            placeholder="30"
-          />
-        </div>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-lg">Custos do Produto</CardTitle>
-            <Button
-              type="button"
-              onClick={adicionarCusto}
-              disabled={custos.length >= 20}
-              variant="outline"
-              size="sm"
-            >
-              <Plus className="w-4 h-4 mr-1" />
-              Adicionar Custo
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="grid grid-cols-12 gap-2 font-medium text-sm text-gray-600">
-              <div className="col-span-6">Descrição do Custo</div>
-              <div className="col-span-4">Valor</div>
-              <div className="col-span-2">Ação</div>
-            </div>
-            
-            {custos.map((custo) => (
-              <div key={custo.id} className="grid grid-cols-12 gap-2">
-                <div className="col-span-6">
-                  <Input
-                    value={custo.descricao}
-                    onChange={(e) => atualizarCusto(custo.id, 'descricao', e.target.value)}
-                    placeholder="Descrição do custo"
-                  />
-                </div>
-                <div className="col-span-4">
-                  <EnhancedCurrencyInput
-                    value={custo.valor}
-                    onChange={(numericValue) => atualizarCusto(custo.id, 'valor', numericValue)}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Button
-                    type="button"
-                    onClick={() => removerCusto(custo.id)}
-                    disabled={custos.length <= 1}
-                    variant="outline"
-                    size="sm"
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-            
-            <div className="border-t pt-3 space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="font-medium">Custo Total:</span>
-                <span className="text-lg font-semibold">R$ {custoTotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="font-medium">Margem de Lucro ({produtoData.margemLucro}%):</span>
-                <span className="text-lg font-semibold text-green-600">R$ {lucroValor.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between items-center border-t pt-2">
-                <span className="font-bold">Preço Final:</span>
-                <span className="text-xl font-bold text-blue-600">R$ {precoFinal.toFixed(2)}</span>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <PrecificacaoCalculations
+        custoTotal={custoTotal}
+        margemLucro={produtoData.margemLucro}
+        precoFinal={precoFinal}
+        lucroValor={lucroValor}
+      />
 
       <Button
         type="submit"
