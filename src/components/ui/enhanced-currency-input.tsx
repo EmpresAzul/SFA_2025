@@ -1,7 +1,7 @@
 
-import React, { forwardRef, useEffect } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { Input } from './input';
-import { useCurrencyInput } from '@/hooks/useCurrencyInput';
+import { formatNumberToInput, parseStringToNumber, formatNumberToDisplay } from '@/utils/currency';
 import { cn } from '@/lib/utils';
 
 interface EnhancedCurrencyInputProps {
@@ -27,41 +27,57 @@ export const EnhancedCurrencyInput = forwardRef<HTMLInputElement, EnhancedCurren
     id,
     ...props 
   }, ref) => {
-    const {
-      value: inputValue,
-      numericValue,
-      handleInputChange,
-      setValue,
-      validate
-    } = useCurrencyInput({
-      initialValue: value || 0,
-      allowNegative,
-      onValueChange: onChange
-    });
+    const [inputValue, setInputValue] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
 
     // Sincronizar com valor externo
     useEffect(() => {
-      if (value !== undefined && value !== numericValue) {
-        setValue(value);
+      if (value !== undefined) {
+        const numericValue = typeof value === 'number' ? value : parseStringToNumber(String(value));
+        const formattedValue = formatNumberToInput(numericValue);
+        setInputValue(formattedValue);
       }
-    }, [value, numericValue, setValue]);
+    }, [value]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      handleInputChange(e.target.value);
+      const rawValue = e.target.value;
+      
+      // Permitir apenas números, vírgulas e pontos
+      const cleanValue = rawValue.replace(/[^0-9,.-]/g, '');
+      
+      const numericValue = parseStringToNumber(cleanValue);
+      
+      if (!allowNegative && numericValue < 0) {
+        return;
+      }
+      
+      setInputValue(cleanValue);
+      onChange?.(numericValue, formatNumberToInput(numericValue));
+    };
+
+    const handleFocus = () => {
+      setIsFocused(true);
     };
 
     const handleBlur = () => {
+      setIsFocused(false);
       // Reformat on blur para garantir formato consistente
-      setValue(numericValue);
+      const numericValue = parseStringToNumber(inputValue);
+      const formattedValue = formatNumberToInput(numericValue);
+      setInputValue(formattedValue);
+      onChange?.(numericValue, formattedValue);
     };
+
+    const displayValue = isFocused ? inputValue : inputValue;
 
     return (
       <Input
         ref={ref}
         id={id}
         type="text"
-        value={inputValue}
+        value={displayValue}
         onChange={handleChange}
+        onFocus={handleFocus}
         onBlur={handleBlur}
         placeholder={placeholder}
         className={cn(

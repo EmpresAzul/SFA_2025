@@ -107,24 +107,34 @@ const CadastrarServico: React.FC = () => {
         throw new Error('Usuário não autenticado');
       }
 
+      // Converter objetos complexos para JSON compatível
+      const custosMateriaisSerializados = custos
+        .filter(c => c.descricao && c.valor > 0)
+        .map(custo => ({
+          id: custo.id,
+          descricao: custo.descricao,
+          valor: custo.valor
+        }));
+
       const dadosPrecificacao = {
         nome: servicoData.nome,
         categoria: servicoData.categoria,
-        tipo: 'Serviço',
+        tipo: 'Serviço' as const,
         preco_final: precoFinal,
         margem_lucro: servicoData.margemLucro,
         user_id: user.id,
-        dados_json: {
+        dados_json: JSON.parse(JSON.stringify({
           tempo_estimado: horasNumerico,
           valor_hora: servicoData.valorHora,
           custo_mao_obra: custoMaoObra,
-          custos_materiais: custos.filter(c => c.descricao && c.valor > 0),
+          custos_materiais: custosMateriaisSerializados,
           custo_materiais_total: custoMateriais,
           custo_total: custoTotal,
           lucro_valor: lucroValor
-        }
+        }))
       };
 
+      console.log('Cadastrando serviço:', dadosPrecificacao);
       await createPrecificacao.mutateAsync(dadosPrecificacao);
 
       // Reset form
@@ -136,7 +146,13 @@ const CadastrarServico: React.FC = () => {
         margemLucro: 20,
       });
       setCustos([{ id: '1', descricao: '', valor: 0 }]);
+      
+      toast({
+        title: "Sucesso!",
+        description: "Serviço cadastrado com êxito.",
+      });
     } catch (error: any) {
+      console.error('Erro ao cadastrar serviço:', error);
       toast({
         title: "Erro ao cadastrar",
         description: error.message,

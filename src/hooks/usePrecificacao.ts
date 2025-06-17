@@ -17,9 +17,19 @@ export const usePrecificacao = () => {
       queryKey: ['precificacao'],
       queryFn: async () => {
         console.log('Buscando dados de precificação...');
+        
+        // Obter o usuário atual
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          console.log('Usuário não autenticado');
+          return [];
+        }
+
         const { data, error } = await supabase
           .from('precificacao')
           .select('*')
+          .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
         if (error) {
@@ -37,6 +47,16 @@ export const usePrecificacao = () => {
     return useMutation({
       mutationFn: async (data: PrecificacaoInsert) => {
         console.log('Criando item de precificação:', data);
+        
+        // Garantir que o user_id está presente
+        if (!data.user_id) {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) {
+            throw new Error('Usuário não autenticado');
+          }
+          data.user_id = user.id;
+        }
+
         const { data: result, error } = await supabase
           .from('precificacao')
           .insert(data)
@@ -48,22 +68,15 @@ export const usePrecificacao = () => {
           throw error;
         }
 
+        console.log('Item de precificação criado com sucesso:', result);
         return result;
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['precificacao'] });
-        toast({
-          title: "Sucesso!",
-          description: "Item cadastrado com êxito.",
-        });
+        console.log('Query de precificação invalidada após criação');
       },
       onError: (error) => {
         console.error('Erro na mutação de criação:', error);
-        toast({
-          title: "Erro",
-          description: "Erro ao cadastrar item. Tente novamente.",
-          variant: "destructive",
-        });
       },
     });
   };

@@ -102,20 +102,30 @@ const CadastrarProduto: React.FC = () => {
         throw new Error('Usuário não autenticado');
       }
 
+      // Converter objetos complexos para JSON compatível
+      const custosSerializados = custos
+        .filter(c => c.descricao && c.valor > 0)
+        .map(custo => ({
+          id: custo.id,
+          descricao: custo.descricao,
+          valor: custo.valor
+        }));
+
       const dadosPrecificacao = {
         nome: produtoData.nome,
         categoria: produtoData.categoria,
-        tipo: 'Produto',
+        tipo: 'Produto' as const,
         preco_final: precoFinal,
         margem_lucro: produtoData.margemLucro,
         user_id: user.id,
-        dados_json: {
-          custos: custos.filter(c => c.descricao && c.valor > 0),
+        dados_json: JSON.parse(JSON.stringify({
+          custos: custosSerializados,
           custo_total: custoTotal,
           lucro_valor: lucroValor
-        }
+        }))
       };
 
+      console.log('Cadastrando produto:', dadosPrecificacao);
       await createPrecificacao.mutateAsync(dadosPrecificacao);
 
       // Reset form
@@ -125,7 +135,13 @@ const CadastrarProduto: React.FC = () => {
         margemLucro: 30,
       });
       setCustos([{ id: '1', descricao: '', valor: 0 }]);
+      
+      toast({
+        title: "Sucesso!",
+        description: "Produto cadastrado com êxito.",
+      });
     } catch (error: any) {
+      console.error('Erro ao cadastrar produto:', error);
       toast({
         title: "Erro ao cadastrar",
         description: error.message,
