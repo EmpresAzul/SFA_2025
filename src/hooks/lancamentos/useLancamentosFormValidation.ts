@@ -1,5 +1,6 @@
 
 import { useToast } from '@/hooks/use-toast';
+import { validateCurrencyValue } from '@/utils/currency';
 import type { FormData } from '@/types/lancamentosForm';
 
 export const useLancamentosFormValidation = () => {
@@ -33,26 +34,21 @@ export const useLancamentosFormValidation = () => {
       return { isValid: false };
     }
 
-    // Converter valor para número, tratando vírgulas e pontos
-    let valorNumerico = 0;
-    if (formData.valor) {
-      // Remove espaços e trata vírgula como separador decimal
-      const valorLimpo = formData.valor.toString().trim().replace(',', '.');
-      valorNumerico = parseFloat(valorLimpo);
-    }
+    // Usar utilitário de validação centralizado
+    const valorValidation = validateCurrencyValue(formData.valor);
     
-    console.log('Validation: Valor original:', formData.valor, 'Valor numérico:', valorNumerico);
+    console.log('Validation: Validação de valor:', valorValidation);
 
-    if (!formData.valor || isNaN(valorNumerico) || valorNumerico <= 0) {
+    if (!valorValidation.isValid || !valorValidation.numeric || valorValidation.numeric <= 0) {
       toast({
         title: "Erro",
-        description: "Por favor, informe um valor válido maior que zero.",
+        description: valorValidation.error || "Por favor, informe um valor válido maior que zero.",
         variant: "destructive",
       });
       return { isValid: false };
     }
 
-    return { isValid: true, valorNumerico };
+    return { isValid: true, valorNumerico: valorValidation.numeric };
   };
 
   return { validateForm };

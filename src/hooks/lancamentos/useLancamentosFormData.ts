@@ -1,55 +1,47 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { FormData, LancamentoComRelacoes } from '@/types/lancamentosForm';
+import { parseStringToNumber } from '@/utils/currency';
+
+const getInitialFormData = (): FormData => ({
+  data: new Date().toISOString().split('T')[0],
+  tipo: 'receita',
+  categoria: '',
+  valor: 0,
+  cliente_id: '',
+  fornecedor_id: '',
+  observacoes: '',
+});
 
 export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes | null) => {
-  const [formData, setFormData] = useState<FormData>({
-    data: new Date().toISOString().split('T')[0],
-    tipo: 'receita' as 'receita' | 'despesa',
-    valor: '',
-    cliente_id: '',
-    fornecedor_id: '',
-    categoria: '',
-    observacoes: ''
-  });
+  const [formData, setFormData] = useState<FormData>(getInitialFormData);
 
-  // Função para carregar dados do lançamento para edição
-  const loadFormData = (lancamento: LancamentoComRelacoes) => {
-    console.log('FormData: Carregando dados para edição:', lancamento);
+  const loadFormData = useCallback((lancamento: LancamentoComRelacoes) => {
+    console.log('FormData: Carregando dados do lançamento:', lancamento);
     
-    const newFormData = {
+    const loadedData: FormData = {
       data: lancamento.data,
       tipo: lancamento.tipo,
-      valor: lancamento.valor ? lancamento.valor.toString().replace('.', ',') : '',
+      categoria: lancamento.categoria,
+      valor: typeof lancamento.valor === 'number' ? lancamento.valor : parseStringToNumber(String(lancamento.valor)),
       cliente_id: lancamento.cliente_id || '',
       fornecedor_id: lancamento.fornecedor_id || '',
-      categoria: lancamento.categoria,
-      observacoes: lancamento.observacoes || ''
+      observacoes: lancamento.observacoes || '',
     };
     
-    console.log('FormData: Dados carregados para o form:', newFormData);
-    setFormData(newFormData);
-  };
+    console.log('FormData: Dados processados para carregamento:', loadedData);
+    setFormData(loadedData);
+  }, []);
 
-  const resetForm = () => {
-    const initialFormData = {
-      data: new Date().toISOString().split('T')[0],
-      tipo: 'receita' as 'receita' | 'despesa',
-      valor: '',
-      cliente_id: '',
-      fornecedor_id: '',
-      categoria: '',
-      observacoes: ''
-    };
-    
-    console.log('FormData: Resetando formulário para:', initialFormData);
-    setFormData(initialFormData);
-  };
+  const resetForm = useCallback(() => {
+    console.log('FormData: Resetando formulário');
+    setFormData(getInitialFormData());
+  }, []);
 
   return {
     formData,
     setFormData,
     loadFormData,
-    resetForm
+    resetForm,
   };
 };

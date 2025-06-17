@@ -3,6 +3,8 @@ import React, { useState, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLayout from '@/components/DashboardLayout';
 import CadastrarHora from '@/components/precificacao/CadastrarHora';
+import CadastrarProduto from '@/components/precificacao/CadastrarProduto';
+import CadastrarServico from '@/components/precificacao/CadastrarServico';
 import PrecificacaoSummaryCards from '@/components/precificacao/PrecificacaoSummaryCards';
 import PrecificacaoFilters from '@/components/precificacao/PrecificacaoFilters';
 import PrecificacaoTable from '@/components/precificacao/PrecificacaoTable';
@@ -53,7 +55,6 @@ const PrecificacaoPage: React.FC = () => {
   const handleEdit = (item: Precificacao) => {
     console.log('Editar item:', item);
     // TODO: Implementar lógica de edição
-    // Pode abrir modal de edição ou navegar para formulário de edição
   };
 
   const resetFilters = () => {
@@ -127,15 +128,13 @@ const PrecificacaoPage: React.FC = () => {
 
             <TabsContent value="produto">
               <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
-                <h2 className="text-xl font-semibold mb-4">Cadastrar Produto</h2>
-                <p className="text-gray-600">Formulário de cadastro de produto em desenvolvimento...</p>
+                <CadastrarProduto />
               </div>
             </TabsContent>
 
             <TabsContent value="servico">
               <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
-                <h2 className="text-xl font-semibold mb-4">Cadastrar Serviço</h2>
-                <p className="text-gray-600">Formulário de cadastro de serviço em desenvolvimento...</p>
+                <CadastrarServico />
               </div>
             </TabsContent>
 

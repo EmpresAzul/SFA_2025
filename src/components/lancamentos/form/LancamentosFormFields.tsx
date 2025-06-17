@@ -5,7 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { CurrencyInput } from '@/components/ui/currency-input';
+import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
+import { parseStringToNumber } from '@/utils/currency';
 import type { FormData } from '@/types/lancamentosForm';
 import type { Cadastro } from '@/hooks/useCadastros';
 
@@ -22,13 +23,18 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
   clientes,
   fornecedores,
 }) => {
-  const handleInputChange = (field: keyof FormData, value: string) => {
+  const handleInputChange = (field: keyof FormData, value: string | number) => {
     console.log('FormFields: Atualizando campo', field, 'com valor:', value);
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
       console.log('FormFields: Estado atualizado:', updated);
       return updated;
     });
+  };
+
+  const handleCurrencyChange = (numericValue: number, formattedValue: string) => {
+    console.log('FormFields: Valor monetário atualizado:', { numericValue, formattedValue });
+    handleInputChange('valor', numericValue);
   };
 
   return (
@@ -73,9 +79,10 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
           <Label htmlFor="valor" className="text-sm font-medium text-gray-700">
             Valor * (R$)
           </Label>
-          <CurrencyInput
-            value={formData.valor}
-            onChange={(value) => handleInputChange('valor', value)}
+          <EnhancedCurrencyInput
+            id="valor"
+            value={typeof formData.valor === 'number' ? formData.valor : parseStringToNumber(formData.valor)}
+            onChange={handleCurrencyChange}
             placeholder="R$ 0,00"
             className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
           />
