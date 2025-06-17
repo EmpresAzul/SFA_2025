@@ -80,12 +80,12 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-white">
       <div className="relative z-10 w-full max-w-md px-4 sm:px-6">
-        <Card className="bg-white/95 backdrop-blur-xl shadow-2xl border-0 overflow-hidden" style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
-          {/* Header transparente */}
+        <Card className="bg-white shadow-2xl border border-gray-200 overflow-hidden">
+          {/* Header com logo */}
           <div className="bg-transparent p-8 text-center">
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-4">
               <Logo size="lg" />
             </div>
           </div>
