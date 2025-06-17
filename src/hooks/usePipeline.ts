@@ -1,6 +1,6 @@
 
-import { useState, useEffect } from 'react';
-import { useSupabaseQuery } from './useSupabaseQuery';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -29,10 +29,17 @@ export const usePipeline = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data: negocios = [], refetch } = useSupabaseQuery({
-    table: 'negocios',
-    select: '*',
-    orderBy: { column: 'posicao', ascending: true }
+  const { data: negocios = [], refetch } = useQuery({
+    queryKey: ['negocios'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('negocios')
+        .select('*')
+        .order('posicao', { ascending: true });
+
+      if (error) throw error;
+      return data as Negocio[];
+    }
   });
 
   const createNegocio = async (data: Omit<Negocio, 'id' | 'created_at' | 'updated_at' | 'user_id' | 'posicao'>) => {

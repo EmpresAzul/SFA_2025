@@ -28,7 +28,7 @@ const PipelineForm: React.FC<PipelineFormProps> = ({
     email: '',
     whatsapp: '',
     observacoes: '',
-    status: 'em_desenvolvimento' as const,
+    status: 'em_desenvolvimento' as keyof typeof PIPELINE_STATUSES,
     valor_negocio: 0
   });
 
@@ -67,11 +67,6 @@ const PipelineForm: React.FC<PipelineFormProps> = ({
       ...prev,
       [field]: value
     }));
-  };
-
-  const formatCurrency = (value: string) => {
-    const numericValue = parseFloat(value.replace(/[^\d.,]/g, '').replace(',', '.'));
-    return isNaN(numericValue) ? 0 : numericValue;
   };
 
   return (
