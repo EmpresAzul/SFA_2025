@@ -1,6 +1,6 @@
 
 import { useToast } from '@/hooks/use-toast';
-import { validateCurrencyValue } from '@/utils/currency';
+import { validateCurrencyValue, parseStringToNumber } from '@/utils/currency';
 import type { FormData } from '@/types/lancamentosForm';
 
 export const useLancamentosFormValidation = () => {
@@ -34,8 +34,9 @@ export const useLancamentosFormValidation = () => {
       return { isValid: false };
     }
 
-    // Usar utilitário de validação centralizado
-    const valorValidation = validateCurrencyValue(formData.valor);
+    // Converter string para número para validação
+    const valorNumerico = parseStringToNumber(formData.valor);
+    const valorValidation = validateCurrencyValue(valorNumerico);
     
     console.log('Validation: Validação de valor:', valorValidation);
 

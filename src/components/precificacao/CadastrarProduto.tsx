@@ -9,6 +9,7 @@ import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
 import { Plus, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { usePrecificacao } from '@/hooks/usePrecificacao';
+import { supabase } from '@/integrations/supabase/client';
 
 interface CustoProduto {
   id: string;
@@ -94,12 +95,20 @@ const CadastrarProduto: React.FC = () => {
     setLoading(true);
 
     try {
+      // Obter o user_id atual
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('Usuário não autenticado');
+      }
+
       const dadosPrecificacao = {
         nome: produtoData.nome,
         categoria: produtoData.categoria,
         tipo: 'Produto',
         preco_final: precoFinal,
         margem_lucro: produtoData.margemLucro,
+        user_id: user.id,
         dados_json: {
           custos: custos.filter(c => c.descricao && c.valor > 0),
           custo_total: custoTotal,

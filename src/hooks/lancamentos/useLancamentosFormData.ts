@@ -1,13 +1,13 @@
 
 import { useState, useCallback } from 'react';
 import type { FormData, LancamentoComRelacoes } from '@/types/lancamentosForm';
-import { parseStringToNumber } from '@/utils/currency';
+import { parseStringToNumber, formatNumberToInput } from '@/utils/currency';
 
 const getInitialFormData = (): FormData => ({
   data: new Date().toISOString().split('T')[0],
   tipo: 'receita',
   categoria: '',
-  valor: 0,
+  valor: '0,00',
   cliente_id: '',
   fornecedor_id: '',
   observacoes: '',
@@ -23,7 +23,9 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
       data: lancamento.data,
       tipo: lancamento.tipo,
       categoria: lancamento.categoria,
-      valor: typeof lancamento.valor === 'number' ? lancamento.valor : parseStringToNumber(String(lancamento.valor)),
+      valor: typeof lancamento.valor === 'number' 
+        ? formatNumberToInput(lancamento.valor) 
+        : String(lancamento.valor),
       cliente_id: lancamento.cliente_id || '',
       fornecedor_id: lancamento.fornecedor_id || '',
       observacoes: lancamento.observacoes || '',
