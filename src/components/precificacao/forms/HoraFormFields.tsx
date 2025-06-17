@@ -4,14 +4,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
 
+interface HoraData {
+  nome: string;
+  proLabore: number;
+  diasTrabalhados: string;
+  horasPorDia: string;
+}
+
 interface HoraFormFieldsProps {
-  horaData: {
-    nome: string;
-    proLabore: number;
-    diasTrabalhados: string;
-    horasPorDia: string;
-  };
-  onUpdateHora: (updates: Partial<typeof horaData>) => void;
+  horaData: HoraData;
+  onUpdateHora: (updates: Partial<HoraData>) => void;
 }
 
 const HoraFormFields: React.FC<HoraFormFieldsProps> = ({
