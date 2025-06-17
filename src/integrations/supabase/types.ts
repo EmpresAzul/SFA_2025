@@ -306,6 +306,33 @@ export type Database = {
         }
         Relationships: []
       }
+      projecoes_ponto_equilibrio: {
+        Row: {
+          created_at: string
+          dados_projecao: Json
+          id: string
+          nome_projecao: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dados_projecao: Json
+          id?: string
+          nome_projecao: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dados_projecao?: Json
+          id?: string
+          nome_projecao?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       saldos_bancarios: {
         Row: {
           banco: string

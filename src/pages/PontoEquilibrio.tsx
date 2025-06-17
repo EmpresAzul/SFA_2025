@@ -7,6 +7,7 @@ import GastosFixosEstimativa from '@/components/ponto-equilibrio/GastosFixosEsti
 import SaidasNaoOperacionais from '@/components/ponto-equilibrio/SaidasNaoOperacionais';
 import ProLaboreCalculado from '@/components/ponto-equilibrio/ProLaboreCalculado';
 import ResultadosPontoEquilibrio from '@/components/ponto-equilibrio/ResultadosPontoEquilibrio';
+import ProjecoesSalvas from '@/components/ponto-equilibrio/ProjecoesSalvas';
 import { usePontoEquilibrio } from '@/hooks/usePontoEquilibrio';
 
 const PontoEquilibrio: React.FC = () => {
@@ -22,7 +23,17 @@ const PontoEquilibrio: React.FC = () => {
     pontoEquilibrio,
     proLaboreMaximo,
     percentualPE,
-    margemContribuicao
+    margemContribuicao,
+    // Projeções
+    projecoes,
+    isLoadingProjecoes,
+    projecaoAtual,
+    salvarProjecao,
+    carregarProjecao,
+    deletarProjecao,
+    novaProjecao,
+    isSaving,
+    isDeleting
   } = usePontoEquilibrio();
 
   return (
@@ -37,10 +48,10 @@ const PontoEquilibrio: React.FC = () => {
         </p>
       </div>
 
-      {/* Formulário de Inputs */}
-      <div className="responsive-grid-2 mb-6 gap-6">
+      {/* Layout Principal */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Coluna Esquerda - Inputs */}
-        <div className="space-y-6">
+        <div className="lg:col-span-1 space-y-6">
           <FaturamentoEstimativa 
             value={faturamento}
             onChange={setFaturamento}
@@ -66,13 +77,27 @@ const PontoEquilibrio: React.FC = () => {
           />
         </div>
 
-        {/* Coluna Direita - Resultados */}
-        <div>
+        {/* Coluna Central - Resultados */}
+        <div className="lg:col-span-1">
           <ResultadosPontoEquilibrio 
             faturamentoAtual={faturamento}
             pontoEquilibrio={pontoEquilibrio}
             percentualPE={percentualPE}
             margemContribuicao={margemContribuicao}
+          />
+        </div>
+
+        {/* Coluna Direita - Projeções Salvas */}
+        <div className="lg:col-span-1">
+          <ProjecoesSalvas
+            projecoes={projecoes}
+            projecaoAtual={projecaoAtual}
+            onSalvarProjecao={salvarProjecao}
+            onCarregarProjecao={carregarProjecao}
+            onDeletarProjecao={deletarProjecao}
+            onNovaProjecao={novaProjecao}
+            isSaving={isSaving}
+            isDeleting={isDeleting}
           />
         </div>
       </div>
