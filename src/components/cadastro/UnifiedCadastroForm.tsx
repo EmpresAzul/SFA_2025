@@ -25,9 +25,16 @@ interface FormData {
   cidade: string;
   estado: string;
   observacoes: string;
+  telefone: string;
+  email: string;
+  cpf_cnpj: string;
 }
 
-export const UnifiedCadastroForm: React.FC = () => {
+interface UnifiedCadastroFormProps {
+  onSuccess?: () => void;
+}
+
+export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSuccess }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { useCreate } = useCadastros();
@@ -41,7 +48,10 @@ export const UnifiedCadastroForm: React.FC = () => {
     numero: '',
     cidade: '',
     estado: '',
-    observacoes: ''
+    observacoes: '',
+    telefone: '',
+    email: '',
+    cpf_cnpj: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -81,6 +91,22 @@ export const UnifiedCadastroForm: React.FC = () => {
     return true;
   };
 
+  const resetForm = () => {
+    setFormData({
+      data: new Date().toISOString().split('T')[0],
+      tipo: '',
+      nome: '',
+      endereco: '',
+      numero: '',
+      cidade: '',
+      estado: '',
+      observacoes: '',
+      telefone: '',
+      email: '',
+      cpf_cnpj: ''
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -101,11 +127,11 @@ export const UnifiedCadastroForm: React.FC = () => {
         cidade: formData.cidade.trim() || undefined,
         estado: formData.estado || undefined,
         observacoes: formData.observacoes.trim() || undefined,
+        telefone: formData.telefone.trim() || undefined,
+        email: formData.email.trim() || undefined,
+        cpf_cnpj: formData.cpf_cnpj.trim() || undefined,
         user_id: user!.id,
         status: 'ativo',
-        cpf_cnpj: undefined,
-        telefone: undefined,
-        email: undefined,
         bairro: undefined,
         cep: undefined,
         salario: undefined
@@ -118,17 +144,10 @@ export const UnifiedCadastroForm: React.FC = () => {
         description: "Cadastro salvo com sucesso!",
       });
 
-      // Reset form
-      setFormData({
-        data: new Date().toISOString().split('T')[0],
-        tipo: '',
-        nome: '',
-        endereco: '',
-        numero: '',
-        cidade: '',
-        estado: '',
-        observacoes: ''
-      });
+      resetForm();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error: any) {
       console.error('Erro ao salvar cadastro:', error);
       toast({
@@ -142,9 +161,11 @@ export const UnifiedCadastroForm: React.FC = () => {
   };
 
   return (
-    <Card>
+    <Card className="shadow-colorful border-0 bg-white/90 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle>Novo Cadastro</CardTitle>
+        <CardTitle className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent text-sm sm:text-base">
+          ➕ Novo Cadastro
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -182,6 +203,37 @@ export const UnifiedCadastroForm: React.FC = () => {
                 onChange={(e) => handleInputChange('nome', e.target.value)}
                 placeholder="Digite o nome completo"
                 required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cpf_cnpj">CPF/CNPJ</Label>
+              <Input
+                id="cpf_cnpj"
+                value={formData.cpf_cnpj}
+                onChange={(e) => handleInputChange('cpf_cnpj', e.target.value)}
+                placeholder="Digite o CPF ou CNPJ"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="telefone">Telefone</Label>
+              <Input
+                id="telefone"
+                value={formData.telefone}
+                onChange={(e) => handleInputChange('telefone', e.target.value)}
+                placeholder="Digite o telefone"
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="email">E-mail</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                placeholder="Digite o e-mail"
               />
             </div>
 
@@ -246,7 +298,7 @@ export const UnifiedCadastroForm: React.FC = () => {
           <Button
             type="submit"
             disabled={loading}
-            className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
+            className="bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700"
           >
             {loading ? "Salvando..." : "Salvar"}
           </Button>

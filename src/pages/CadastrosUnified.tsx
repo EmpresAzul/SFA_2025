@@ -1,13 +1,12 @@
 
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus } from 'lucide-react';
 import { useCadastrosUnified } from '@/hooks/useCadastrosUnified';
 import CadastroEditModal from '@/components/cadastro/CadastroEditModal';
 import CadastrosStats from '@/components/cadastro/CadastrosStats';
 import CadastrosFilters from '@/components/cadastro/CadastrosFilters';
 import CadastrosTable from '@/components/cadastro/CadastrosTable';
+import { UnifiedCadastroForm } from '@/components/cadastro/UnifiedCadastroForm';
 
 const CadastrosUnified: React.FC = () => {
   const {
@@ -92,19 +91,7 @@ const CadastrosUnified: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="formulario" className="mt-4 sm:mt-6">
-          <Card className="shadow-colorful border-0 bg-white/90 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent text-sm sm:text-base">
-                ➕ Novo Cadastro
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-6 sm:py-8 text-gray-500">
-                <Plus className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-gray-300 mb-3 sm:mb-4" />
-                <p className="text-xs sm:text-sm">Formulário de cadastro será implementado aqui</p>
-              </div>
-            </CardContent>
-          </Card>
+          <UnifiedCadastroForm onSuccess={() => setActiveTab('lista')} />
         </TabsContent>
       </Tabs>
 
