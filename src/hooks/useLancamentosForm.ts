@@ -40,38 +40,11 @@ export const useLancamentosForm = (
     observacoes: ''
   });
 
-  // Carregar dados do lançamento quando estiver editando
-  useEffect(() => {
-    if (editingLancamento) {
-      console.log('Carregando dados para edição:', editingLancamento);
-      setFormData({
-        data: editingLancamento.data,
-        tipo: editingLancamento.tipo,
-        valor: editingLancamento.valor.toString(),
-        cliente_id: editingLancamento.cliente_id || '',
-        fornecedor_id: editingLancamento.fornecedor_id || '',
-        categoria: editingLancamento.categoria,
-        observacoes: editingLancamento.observacoes || ''
-      });
-    }
-  }, [editingLancamento]);
-
-  const resetForm = () => {
-    setFormData({
-      data: new Date().toISOString().split('T')[0],
-      tipo: 'receita',
-      valor: '',
-      cliente_id: '',
-      fornecedor_id: '',
-      categoria: '',
-      observacoes: ''
-    });
-    setEditingLancamento(null);
-  };
-
+  // Função para carregar dados do lançamento para edição
   const loadFormData = (lancamento: LancamentoComRelacoes) => {
     console.log('loadFormData chamado com:', lancamento);
-    setFormData({
+    
+    const newFormData = {
       data: lancamento.data,
       tipo: lancamento.tipo,
       valor: lancamento.valor.toString(),
@@ -79,11 +52,42 @@ export const useLancamentosForm = (
       fornecedor_id: lancamento.fornecedor_id || '',
       categoria: lancamento.categoria,
       observacoes: lancamento.observacoes || ''
-    });
+    };
+    
+    console.log('Carregando dados do formulário:', newFormData);
+    setFormData(newFormData);
+  };
+
+  // Effect para carregar dados quando há um lançamento sendo editado
+  useEffect(() => {
+    if (editingLancamento) {
+      console.log('useEffect: Carregando dados para edição:', editingLancamento);
+      loadFormData(editingLancamento);
+    } else {
+      console.log('useEffect: Nenhum lançamento sendo editado, mantendo formulário limpo');
+    }
+  }, [editingLancamento]);
+
+  const resetForm = () => {
+    const initialFormData = {
+      data: new Date().toISOString().split('T')[0],
+      tipo: 'receita' as 'receita' | 'despesa',
+      valor: '',
+      cliente_id: '',
+      fornecedor_id: '',
+      categoria: '',
+      observacoes: ''
+    };
+    
+    console.log('Resetando formulário para:', initialFormData);
+    setFormData(initialFormData);
+    setEditingLancamento(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    console.log('Submetendo formulário com dados:', formData);
     
     if (!formData.tipo) {
       toast({
@@ -160,6 +164,7 @@ export const useLancamentosForm = (
   };
 
   const handleCancel = () => {
+    console.log('Cancelando edição/criação');
     resetForm();
     setActiveTab('lista');
   };

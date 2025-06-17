@@ -51,15 +51,23 @@ const LancamentosFinanceiros: React.FC = () => {
   // Load form data when editing
   useEffect(() => {
     if (editingLancamento) {
+      console.log('Componente: Carregando dados para edição:', editingLancamento);
       loadFormData(editingLancamento);
     }
-  }, [editingLancamento]);
+  }, [editingLancamento, loadFormData]);
 
-  // Handle tab change - reset editing state when going to "formulario" without editing
+  // Handle tab change - só chama handleNewLancamento se não estiver editando
   const handleTabChange = (value: string) => {
+    console.log('Mudança de aba para:', value, 'editingLancamento:', !!editingLancamento);
+    
     if (value === 'formulario' && !editingLancamento) {
+      console.log('Indo para formulário - modo novo lançamento');
       handleNewLancamento();
+    } else if (value === 'lista' && editingLancamento) {
+      console.log('Saindo do modo de edição');
+      setEditingLancamento(null);
     }
+    
     setActiveTab(value);
   };
 

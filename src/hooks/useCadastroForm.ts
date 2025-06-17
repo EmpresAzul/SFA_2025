@@ -199,7 +199,9 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
 
   const handleEdit = (cadastro: Cadastro) => {
     console.log('Editando cadastro:', cadastro);
+    console.log('Tipo do cadastro:', tipo);
     
+    // Mapeamento base comum para todos os tipos
     const editData: FormData = {
       nome: cadastro.nome,
       pessoa: cadastro.pessoa,
@@ -215,17 +217,21 @@ export const useCadastroForm = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário')
       observacoes: cadastro.observacoes || ''
     };
 
-    // Campos específicos por tipo
+    // Mapeamento específico por tipo
     if (tipo === 'Fornecedor') {
-      editData.razao_social = cadastro.nome; // Para fornecedor, o nome é a razão social
-      editData.nome = ''; // Limpa o nome para que razao_social seja usado
-      editData.tipo_fornecedor = cadastro.observacoes || ''; // Pode estar nas observações
+      // Para fornecedor, usar o nome como razão social e limpar o nome
+      editData.razao_social = cadastro.nome;
+      editData.nome = '';
+      editData.tipo_fornecedor = ''; // Campo opcional, deixar vazio se não houver dados específicos
     } else if (tipo === 'Funcionário') {
-      editData.cargo = cadastro.observacoes?.split('|')[0] || ''; // Assumindo que cargo pode estar nas observações
-      editData.data_admissao = cadastro.data || ''; // Usa a data do cadastro
+      // Para funcionário, tentar extrair cargo das observações ou deixar vazio
+      // Se houver um padrão específico nas observações, adaptar aqui
+      editData.cargo = ''; // Campo obrigatório, mas pode estar vazio na edição
+      editData.data_admissao = cadastro.data || ''; // Usar a data do cadastro como data de admissão
     }
+    // Para Cliente, usar os dados como estão (já mapeados acima)
 
-    console.log('Form data para edição:', editData);
+    console.log('Form data mapeado para edição:', editData);
     setFormData(editData);
     setEditingCadastro(cadastro);
   };
