@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -128,7 +127,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
     const categorias = formData.tipo === 'receita' ? categoriasReceita : categoriasDespesa;
     
     return Object.entries(categorias).map(([grupo, items]) => (
-      <React.Fragment key={grupo}>
+      <div key={grupo}>
         <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
           {grupo}
         </div>
@@ -137,7 +136,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
             {categoria}
           </SelectItem>
         ))}
-      </React.Fragment>
+      </div>
     ));
   };
 

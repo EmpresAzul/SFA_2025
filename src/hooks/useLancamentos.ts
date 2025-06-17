@@ -92,22 +92,27 @@ export const useLancamentos = () => {
   const useUpdate = () => {
     return useMutation({
       mutationFn: async ({ id, ...updateData }: Partial<Lancamento> & { id: string }) => {
-        console.log('Atualizando lançamento:', id, updateData);
+        console.log('Atualizando lançamento ID:', id);
+        console.log('Dados recebidos para atualização:', updateData);
         
         if (!id) {
           throw new Error('ID do lançamento é obrigatório para atualização');
         }
 
         // Remove campos que não devem ser atualizados
-        const { created_at, updated_at, ...dataToUpdate } = updateData;
+        const { created_at, updated_at, user_id, status, ...dataToUpdate } = updateData;
         
-        console.log('Dados que serão enviados para atualização:', dataToUpdate);
+        console.log('Dados que serão enviados para atualização (limpos):', dataToUpdate);
 
         const { data, error } = await supabase
           .from('lancamentos')
           .update(dataToUpdate)
           .eq('id', id)
-          .select()
+          .select(`
+            *,
+            cliente:cadastros!cliente_id(nome),
+            fornecedor:cadastros!fornecedor_id(nome)
+          `)
           .single();
 
         if (error) {
@@ -127,9 +132,18 @@ export const useLancamentos = () => {
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
         console.log('Query invalidada após atualização, dados:', data);
+        toast({
+          title: "Sucesso",
+          description: "Lançamento atualizado com sucesso!",
+        });
       },
       onError: (error: any) => {
         console.error('Erro na mutation de atualização:', error);
+        toast({
+          title: "Erro",
+          description: error.message || "Erro ao atualizar lançamento. Tente novamente.",
+          variant: "destructive",
+        });
       },
     });
   };

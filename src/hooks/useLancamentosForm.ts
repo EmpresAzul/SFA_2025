@@ -158,15 +158,21 @@ export const useLancamentosForm = (
       console.log('useLancamentosForm: Dados do lançamento a serem salvos:', lancamentoData);
 
       if (editingLancamento) {
-        console.log('useLancamentosForm: Atualizando lançamento existente:', editingLancamento.id);
+        console.log('useLancamentosForm: Atualizando lançamento existente ID:', editingLancamento.id);
         
-        // Garantir que o ID seja incluído corretamente na atualização
+        // Incluir ID para atualização e remover campos que não devem ser atualizados
         const updateData = {
           id: editingLancamento.id,
-          ...lancamentoData
+          data: lancamentoData.data,
+          tipo: lancamentoData.tipo,
+          categoria: lancamentoData.categoria,
+          valor: lancamentoData.valor,
+          cliente_id: lancamentoData.cliente_id,
+          fornecedor_id: lancamentoData.fornecedor_id,
+          observacoes: lancamentoData.observacoes
         };
         
-        console.log('useLancamentosForm: Dados completos para atualização:', updateData);
+        console.log('useLancamentosForm: Dados para atualização (sem user_id e status):', updateData);
         
         const result = await updateLancamento.mutateAsync(updateData);
         console.log('useLancamentosForm: Resultado da atualização:', result);
