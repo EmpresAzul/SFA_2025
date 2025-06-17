@@ -25,11 +25,11 @@ const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
 
   const getTipoColor = (tipo: string) => {
     switch (tipo) {
-      case 'cliente':
+      case 'Cliente':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'fornecedor':
+      case 'Fornecedor':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'funcionario':
+      case 'Funcionário':
         return 'bg-purple-100 text-purple-800 border-purple-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -64,7 +64,7 @@ const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
                 Informações Básicas
               </h3>
               <Badge className={getTipoColor(cadastro.tipo)}>
-                {cadastro.tipo.charAt(0).toUpperCase() + cadastro.tipo.slice(1)}
+                {cadastro.tipo}
               </Badge>
             </div>
             
@@ -73,16 +73,16 @@ const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
                 <p className="text-sm font-medium text-gray-600">Nome</p>
                 <p className="text-gray-900">{cadastro.nome}</p>
               </div>
-              {cadastro.cpf && (
+              <div>
+                <p className="text-sm font-medium text-gray-600">Pessoa</p>
+                <p className="text-gray-900">{cadastro.pessoa}</p>
+              </div>
+              {cadastro.cpf_cnpj && (
                 <div>
-                  <p className="text-sm font-medium text-gray-600">CPF</p>
-                  <p className="text-gray-900">{cadastro.cpf}</p>
-                </div>
-              )}
-              {cadastro.cnpj && (
-                <div>
-                  <p className="text-sm font-medium text-gray-600">CNPJ</p>
-                  <p className="text-gray-900">{cadastro.cnpj}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    {cadastro.pessoa === 'Física' ? 'CPF' : 'CNPJ'}
+                  </p>
+                  <p className="text-gray-900">{cadastro.cpf_cnpj}</p>
                 </div>
               )}
               <div>
@@ -124,16 +124,12 @@ const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-600">Logradouro</p>
-                <p className="text-gray-900">{cadastro.logradouro || 'Não informado'}</p>
+                <p className="text-sm font-medium text-gray-600">Endereço</p>
+                <p className="text-gray-900">{cadastro.endereco || 'Não informado'}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Número</p>
                 <p className="text-gray-900">{cadastro.numero || 'Não informado'}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-600">Complemento</p>
-                <p className="text-gray-900">{cadastro.complemento || 'Não informado'}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Bairro</p>
@@ -155,17 +151,13 @@ const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
           </div>
 
           {/* Informações Específicas por Tipo */}
-          {cadastro.tipo === 'funcionario' && (
+          {cadastro.tipo === 'Funcionário' && (
             <div>
               <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
                 <DollarSign className="h-4 w-4 mr-1" />
                 Informações Profissionais
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Cargo</p>
-                  <p className="text-gray-900">{cadastro.cargo || 'Não informado'}</p>
-                </div>
                 <div>
                   <p className="text-sm font-medium text-gray-600">Salário</p>
                   <p className="text-gray-900">{formatSalary(cadastro.salario)}</p>
