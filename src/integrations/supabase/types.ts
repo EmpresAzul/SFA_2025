@@ -264,6 +264,48 @@ export type Database = {
         }
         Relationships: []
       }
+      precificacao: {
+        Row: {
+          categoria: string
+          created_at: string
+          dados_json: Json | null
+          id: string
+          margem_lucro: number | null
+          nome: string
+          preco_final: number
+          status: string
+          tipo: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          dados_json?: Json | null
+          id?: string
+          margem_lucro?: number | null
+          nome: string
+          preco_final?: number
+          status?: string
+          tipo: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          dados_json?: Json | null
+          id?: string
+          margem_lucro?: number | null
+          nome?: string
+          preco_final?: number
+          status?: string
+          tipo?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       saldos_bancarios: {
         Row: {
           banco: string

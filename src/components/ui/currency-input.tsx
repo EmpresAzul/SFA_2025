@@ -1,81 +1,103 @@
 
 import React, { useState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
+import { Input } from './input';
 
-interface CurrencyInputProps extends Omit<React.ComponentProps<typeof Input>, 'value' | 'onChange'> {
-  value: number | string;
-  onChange: (value: number) => void;
+interface CurrencyInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
+  disabled?: boolean;
 }
 
-export const CurrencyInput = React.forwardRef<HTMLInputElement, CurrencyInputProps>(
-  ({ value, onChange, ...props }, ref) => {
-    const [displayValue, setDisplayValue] = useState('');
-    const [isEditing, setIsEditing] = useState(false);
+export const CurrencyInput: React.FC<CurrencyInputProps> = ({
+  value,
+  onChange,
+  placeholder = "R$ 0,00",
+  className,
+  disabled = false,
+}) => {
+  const [displayValue, setDisplayValue] = useState('');
 
-    useEffect(() => {
-      // Só atualizar o display se não estiver editando
-      if (!isEditing) {
-        const numValue = typeof value === 'string' ? parseFloat(value) : value;
-        if (!isNaN(numValue) && numValue > 0) {
-          setDisplayValue(numValue.toString().replace('.', ','));
+  useEffect(() => {
+    if (value) {
+      // Se o valor já contém vírgula, usar como está
+      if (value.includes(',')) {
+        setDisplayValue(value);
+      } else {
+        // Se é um número com ponto, converter para vírgula
+        const numericValue = parseFloat(value);
+        if (!isNaN(numericValue)) {
+          setDisplayValue(formatCurrency(numericValue));
         } else {
-          setDisplayValue('');
+          setDisplayValue(value);
         }
       }
-    }, [value, isEditing]);
+    } else {
+      setDisplayValue('');
+    }
+  }, [value]);
 
-    const parseCurrency = (inputValue: string): number => {
-      // Remove tudo que não é dígito ou vírgula
-      const cleaned = inputValue.replace(/[^\d,]/g, '');
-      // Substitui vírgula por ponto
-      const withDot = cleaned.replace(',', '.');
-      const parsed = parseFloat(withDot);
-      return isNaN(parsed) ? 0 : parsed;
-    };
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const inputValue = e.target.value;
-      console.log('CurrencyInput: Input digitado:', inputValue);
-      
-      // Permitir apenas números e vírgula
-      const allowedValue = inputValue.replace(/[^\d,]/g, '');
-      setDisplayValue(allowedValue);
-      
-      // Converter para número e chamar onChange
-      const numericValue = parseCurrency(allowedValue);
-      console.log('CurrencyInput: Valor convertido:', numericValue);
-      onChange(numericValue);
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let inputValue = e.target.value;
 
-    const handleFocus = () => {
-      console.log('CurrencyInput: Campo focado');
-      setIsEditing(true);
-    };
+    // Remove tudo que não for número, vírgula ou ponto
+    inputValue = inputValue.replace(/[^\d,.-]/g, '');
 
-    const handleBlur = () => {
-      console.log('CurrencyInput: Campo desfocado');
-      setIsEditing(false);
-      
-      // Formatar para visualização se houver valor
-      const numValue = parseCurrency(displayValue);
-      if (numValue > 0) {
-        setDisplayValue(numValue.toString().replace('.', ','));
+    // Permite apenas uma vírgula ou ponto
+    const commaCount = (inputValue.match(/,/g) || []).length;
+    const dotCount = (inputValue.match(/\./g) || []).length;
+    
+    if (commaCount > 1) {
+      inputValue = inputValue.replace(/,(?=.*,)/, '');
+    }
+    if (dotCount > 1) {
+      inputValue = inputValue.replace(/\.(?=.*\.)/, '');
+    }
+
+    // Limita casas decimais após vírgula
+    if (inputValue.includes(',')) {
+      const parts = inputValue.split(',');
+      if (parts[1] && parts[1].length > 2) {
+        parts[1] = parts[1].substring(0, 2);
+        inputValue = parts.join(',');
       }
-    };
+    }
 
-    return (
-      <Input
-        {...props}
-        ref={ref}
-        value={displayValue}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        placeholder="0,00"
-        inputMode="numeric"
-      />
-    );
-  }
-);
+    setDisplayValue(inputValue);
+    onChange(inputValue);
+  };
 
-CurrencyInput.displayName = "CurrencyInput";
+  const handleBlur = () => {
+    if (displayValue && displayValue !== '') {
+      // Converte vírgula para ponto para validação
+      const valueForValidation = displayValue.replace(',', '.');
+      const numericValue = parseFloat(valueForValidation);
+      
+      if (!isNaN(numericValue) && numericValue > 0) {
+        const formatted = formatCurrency(numericValue);
+        setDisplayValue(formatted);
+        onChange(formatted);
+      }
+    }
+  };
+
+  return (
+    <Input
+      type="text"
+      value={displayValue}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      placeholder={placeholder}
+      className={className}
+      disabled={disabled}
+    />
+  );
+};
