@@ -49,18 +49,18 @@ const CadastrosUnified: React.FC = () => {
     resetForm
   } = useCadastroForm('Cliente');
 
-  // Combinar todos os dados
+  // Combinar todos os dados - CORRIGINDO OS TIPOS
   const allItems = [
-    ...clientes.map(item => ({ ...item, tipo: 'cliente' })),
-    ...fornecedores.map(item => ({ ...item, tipo: 'fornecedor' })),
-    ...funcionarios.map(item => ({ ...item, tipo: 'funcionario' }))
+    ...clientes.map(item => ({ ...item, tipoDisplay: 'Cliente' })),
+    ...fornecedores.map(item => ({ ...item, tipoDisplay: 'Fornecedor' })),
+    ...funcionarios.map(item => ({ ...item, tipoDisplay: 'Funcionário' }))
   ];
 
   // Filtrar dados
   const filteredItems = allItems.filter(item => {
     const matchesSearch = item.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.email?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTipo = tipoFilter === 'todos' || item.tipo === tipoFilter;
+    const matchesTipo = tipoFilter === 'todos' || item.tipoDisplay.toLowerCase() === tipoFilter;
     const matchesStatus = statusFilter === 'todos' || item.status === statusFilter;
     
     return matchesSearch && matchesTipo && matchesStatus;
@@ -253,7 +253,7 @@ const CadastrosUnified: React.FC = () => {
                       <SelectItem value="todos">Todos</SelectItem>
                       <SelectItem value="cliente">Clientes</SelectItem>
                       <SelectItem value="fornecedor">Fornecedores</SelectItem>
-                      <SelectItem value="funcionario">Funcionários</SelectItem>
+                      <SelectItem value="funcionário">Funcionários</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -295,16 +295,16 @@ const CadastrosUnified: React.FC = () => {
                   </TableHeader>
                   <TableBody>
                     {filteredItems.map((item) => (
-                      <TableRow key={`${item.tipo}-${item.id}`}>
+                      <TableRow key={`${item.tipoDisplay}-${item.id}`}>
                         <TableCell className="font-medium text-xs sm:text-sm">{item.nome}</TableCell>
                         <TableCell className="text-xs sm:text-sm">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            item.tipo === 'cliente' ? 'bg-blue-100 text-blue-800' :
-                            item.tipo === 'fornecedor' ? 'bg-purple-100 text-purple-800' :
+                            item.tipoDisplay === 'Cliente' ? 'bg-blue-100 text-blue-800' :
+                            item.tipoDisplay === 'Fornecedor' ? 'bg-purple-100 text-purple-800' :
                             'bg-orange-100 text-orange-800'
                           }`}>
-                            {item.tipo === 'cliente' ? '👤 Cliente' :
-                             item.tipo === 'fornecedor' ? '🏢 Fornecedor' :
+                            {item.tipoDisplay === 'Cliente' ? '👤 Cliente' :
+                             item.tipoDisplay === 'Fornecedor' ? '🏢 Fornecedor' :
                              '👨‍💼 Funcionário'}
                           </span>
                         </TableCell>
