@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Edit, Trash2 } from 'lucide-react';
-import { parseStringToNumber } from '@/utils/currency';
+import { parseStringToNumber, formatNumberToInput } from '@/utils/currency';
 
 interface SaldoBancario {
   id: string;
@@ -57,9 +57,13 @@ const SaldosBancarios: React.FC = () => {
   useEffect(() => {
     if (editingSaldo) {
       console.log('SaldosBancarios: Carregando dados para edição:', editingSaldo);
+      // Usar formatNumberToInput para garantir formato correto
+      const saldoFormatado = formatNumberToInput(editingSaldo.saldo);
+      console.log('SaldosBancarios: Saldo formatado para edição:', saldoFormatado);
+      
       setFormData({
         banco: editingSaldo.banco,
-        saldo: editingSaldo.saldo.toString(),
+        saldo: saldoFormatado,
       });
       setActiveTab('formulario');
     }
@@ -148,12 +152,14 @@ const SaldosBancarios: React.FC = () => {
 
     try {
       if (editingSaldo) {
+        console.log('SaldosBancarios: Atualizando saldo existente');
         await updateSaldo.mutateAsync({ id: editingSaldo.id, data: saldoData });
         toast({
           title: "Sucesso!",
           description: "Saldo bancário atualizado com sucesso.",
         });
       } else {
+        console.log('SaldosBancarios: Criando novo saldo');
         await createSaldo.mutateAsync(saldoData);
         toast({
           title: "Sucesso!",
@@ -191,7 +197,6 @@ const SaldosBancarios: React.FC = () => {
         </div>
       </div>
 
-      {/* Painel Resumo dos Saldos */}
       <div className="mb-4 sm:mb-6">
         <SaldoBancarioSummaryCard />
       </div>
@@ -322,7 +327,7 @@ const SaldosBancarios: React.FC = () => {
                     disabled={loading}
                     className="responsive-button mobile-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                   >
-                    {loading ? 'Salvando...' : 'Salvar'}
+                    {loading ? 'Salvando...' : (editingSaldo ? 'Atualizar Saldo' : 'Salvar')}
                   </Button>
                 </div>
               </form>

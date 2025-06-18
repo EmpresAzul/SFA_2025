@@ -4,12 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Eye, DollarSign, Calendar, User, Building, FileText, Tag } from 'lucide-react';
-import type { Lancamento } from '@/hooks/useLancamentos';
-
-type LancamentoComRelacoes = Lancamento & {
-  cliente?: { nome: string } | null;
-  fornecedor?: { nome: string } | null;
-};
+import { formatNumberToDisplay } from '@/utils/currency';
+import type { LancamentoComRelacoes } from '@/types/lancamentosForm';
 
 interface LancamentosViewModalProps {
   lancamento: LancamentoComRelacoes;
@@ -18,13 +14,6 @@ interface LancamentosViewModalProps {
 const LancamentosViewModal: React.FC<LancamentosViewModalProps> = ({ lancamento }) => {
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('pt-BR');
-  };
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
   };
 
   const getTipoColor = (tipo: string) => {
@@ -37,11 +26,12 @@ const LancamentosViewModal: React.FC<LancamentosViewModalProps> = ({ lancamento 
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
-          className="hover:bg-blue-50"
+          className="h-7 w-7 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+          title="Visualizar"
         >
-          <Eye className="h-4 w-4" />
+          <Eye className="h-3 w-3" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-lg">
@@ -62,7 +52,7 @@ const LancamentosViewModal: React.FC<LancamentosViewModalProps> = ({ lancamento 
               <div className={`text-xl font-bold ${
                 lancamento.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
               }`}>
-                {formatCurrency(lancamento.valor)}
+                {formatNumberToDisplay(lancamento.valor)}
               </div>
             </div>
           </div>
@@ -112,6 +102,16 @@ const LancamentosViewModal: React.FC<LancamentosViewModalProps> = ({ lancamento 
                 Observações
               </h3>
               <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">{lancamento.observacoes}</p>
+            </div>
+          )}
+
+          {/* Informações de Recorrência */}
+          {lancamento.recorrente && (
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Recorrência</h3>
+              <p className="text-gray-700 bg-blue-50 p-3 rounded-lg">
+                Lançamento recorrente {lancamento.meses_recorrencia ? `por ${lancamento.meses_recorrencia} meses` : ''}
+              </p>
             </div>
           )}
 

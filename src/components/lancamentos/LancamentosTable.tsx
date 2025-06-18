@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Eye, Edit, Trash2, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { formatNumberToDisplay } from '@/utils/currency';
+import { usePagination } from '@/hooks/usePagination';
+import LancamentosViewModal from './LancamentosViewModal';
+import LancamentosPagination from './LancamentosPagination';
 import type { LancamentoComRelacoes } from '@/types/lancamentosForm';
 
 interface LancamentosTableProps {
@@ -22,11 +25,19 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const [viewingLancamento, setViewingLancamento] = useState<LancamentoComRelacoes | null>(null);
-
-  const handleView = (lancamento: LancamentoComRelacoes) => {
-    setViewingLancamento(lancamento);
-  };
+  const {
+    currentPage,
+    totalPages,
+    paginatedData,
+    goToPage,
+    goToPreviousPage,
+    goToNextPage,
+    hasNextPage,
+    hasPreviousPage,
+    startIndex,
+    endIndex,
+    totalItems,
+  } = usePagination({ data, itemsPerPage: 20 });
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR');
@@ -34,9 +45,9 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
 
   const getTipoIcon = (tipo: string) => {
     return tipo === 'receita' ? (
-      <TrendingUp className="h-4 w-4 text-green-600" />
+      <TrendingUp className="h-3 w-3 text-green-600" />
     ) : (
-      <TrendingDown className="h-4 w-4 text-red-600" />
+      <TrendingDown className="h-3 w-3 text-red-600" />
     );
   };
 
@@ -52,27 +63,27 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
 
   return (
     <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-      <CardHeader>
+      <CardHeader className="pb-4">
         <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
           <DollarSign className="h-5 w-5 text-green-600" />
-          Lançamentos Financeiros ({data.length})
+          Lançamentos Financeiros ({totalItems})
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-gray-50/50">
-                <TableHead className="font-semibold text-gray-700">Data</TableHead>
-                <TableHead className="font-semibold text-gray-700">Tipo</TableHead>
-                <TableHead className="font-semibold text-gray-700">Categoria</TableHead>
-                <TableHead className="font-semibold text-gray-700">Valor</TableHead>
-                <TableHead className="font-semibold text-gray-700">Cliente/Fornecedor</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-center">Ações</TableHead>
+              <TableRow className="bg-gray-50/50 h-10">
+                <TableHead className="font-semibold text-gray-700 py-2 text-sm">Data</TableHead>
+                <TableHead className="font-semibold text-gray-700 py-2 text-sm">Tipo</TableHead>
+                <TableHead className="font-semibold text-gray-700 py-2 text-sm">Categoria</TableHead>
+                <TableHead className="font-semibold text-gray-700 py-2 text-sm">Valor</TableHead>
+                <TableHead className="font-semibold text-gray-700 py-2 text-sm">Cliente/Fornecedor</TableHead>
+                <TableHead className="font-semibold text-gray-700 text-center py-2 text-sm">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.length === 0 ? (
+              {paginatedData.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8">
                     <div className="flex flex-col items-center gap-2 text-gray-500">
@@ -83,52 +94,47 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                   </TableCell>
                 </TableRow>
               ) : (
-                data.map((lancamento) => (
-                  <TableRow key={lancamento.id} className="hover:bg-gray-50/50 transition-colors">
-                    <TableCell className="font-medium">
+                paginatedData.map((lancamento) => (
+                  <TableRow key={lancamento.id} className="hover:bg-gray-50/50 transition-colors h-12">
+                    <TableCell className="font-medium py-2 text-sm">
                       {formatDate(lancamento.data)}
                     </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
+                    <TableCell className="py-2">
+                      <div className="flex items-center gap-1">
                         {getTipoIcon(lancamento.tipo)}
                         <Badge
                           variant={lancamento.tipo === 'receita' ? 'default' : 'destructive'}
+                          className="text-xs py-0 px-2 h-5"
                         >
                           {lancamento.tipo === 'receita' ? 'Receita' : 'Despesa'}
                         </Badge>
                       </div>
                     </TableCell>
-                    <TableCell>{lancamento.categoria}</TableCell>
-                    <TableCell className={`font-semibold ${
+                    <TableCell className="py-2 text-sm max-w-[120px] truncate" title={lancamento.categoria}>
+                      {lancamento.categoria}
+                    </TableCell>
+                    <TableCell className={`font-semibold py-2 text-sm ${
                       lancamento.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
                     }`}>
                       {formatNumberToDisplay(lancamento.valor)}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-2 text-sm max-w-[150px] truncate">
                       {lancamento.cliente?.nome || lancamento.fornecedor?.nome || '-'}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-2">
                       <div className="flex items-center justify-center gap-1">
                         {/* Visualizar */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleView(lancamento)}
-                          className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                          title="Visualizar"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
+                        <LancamentosViewModal lancamento={lancamento} />
 
                         {/* Editar */}
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => onEdit(lancamento)}
-                          className="h-8 w-8 p-0 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                          className="h-7 w-7 p-0 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
                           title="Editar"
                         >
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-3 w-3" />
                         </Button>
 
                         {/* Excluir */}
@@ -137,10 +143,10 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                              className="h-7 w-7 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
                               title="Excluir"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3 w-3" />
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
@@ -172,6 +178,19 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
             </TableBody>
           </Table>
         </div>
+        
+        <LancamentosPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalItems={totalItems}
+          onPreviousPage={goToPreviousPage}
+          onNextPage={goToNextPage}
+          onGoToPage={goToPage}
+        />
       </CardContent>
     </Card>
   );

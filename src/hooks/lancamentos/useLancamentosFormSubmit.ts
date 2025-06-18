@@ -102,8 +102,12 @@ export const useLancamentosFormSubmit = ({
       resetForm();
       setEditingLancamento(null);
       setActiveTab('lista');
+      
+      // Feedback adicional para confirmar que foi salvo
+      console.log('FormSubmit: ✅ Formulário resetado e redirecionado para lista');
+      
     } catch (error: any) {
-      console.error('FormSubmit: Erro ao salvar lançamento:', error);
+      console.error('FormSubmit: ❌ Erro ao salvar lançamento:', error);
       console.error('FormSubmit: Detalhes do erro:', {
         message: error?.message,
         details: error?.details,

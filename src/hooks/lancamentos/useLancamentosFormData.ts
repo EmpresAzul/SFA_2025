@@ -1,7 +1,7 @@
 
 import { useState, useCallback } from 'react';
 import type { FormData, LancamentoComRelacoes } from '@/types/lancamentosForm';
-import { formatNumberToInput, parseStringToNumber } from '@/utils/currency';
+import { formatNumberToInput } from '@/utils/currency';
 
 const getInitialFormData = (): FormData => ({
   data: new Date().toISOString().split('T')[0],
@@ -19,11 +19,11 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
   const [formData, setFormData] = useState<FormData>(getInitialFormData);
 
   const loadFormData = useCallback((lancamento: LancamentoComRelacoes) => {
-    console.log('FormData: Carregando dados do lançamento para edição:', lancamento);
+    console.log('FormData: 📝 Carregando dados do lançamento para edição:', lancamento);
     
     // Garantir que o valor seja formatado corretamente
     const valorFormatado = formatNumberToInput(lancamento.valor);
-    console.log('FormData: Valor original:', lancamento.valor, 'formatado:', valorFormatado);
+    console.log('FormData: 💰 Valor original:', lancamento.valor, 'formatado:', valorFormatado);
     
     const loadedData: FormData = {
       data: lancamento.data,
@@ -37,20 +37,22 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
       meses_recorrencia: lancamento.meses_recorrencia || null,
     };
     
-    console.log('FormData: Dados processados para carregamento:', loadedData);
+    console.log('FormData: ✅ Dados processados para carregamento:', loadedData);
     setFormData(loadedData);
   }, []);
 
   const resetForm = useCallback(() => {
-    console.log('FormData: Resetando formulário');
-    setFormData(getInitialFormData());
+    console.log('FormData: 🔄 Resetando formulário');
+    const initialData = getInitialFormData();
+    console.log('FormData: 📋 Dados iniciais:', initialData);
+    setFormData(initialData);
   }, []);
 
   const updateFormField = useCallback((field: keyof FormData, value: string | boolean | number | null) => {
-    console.log('FormData: Atualizando campo', field, 'com valor:', value);
+    console.log('FormData: 🔧 Atualizando campo', field, 'com valor:', value);
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
-      console.log('FormData: Estado atualizado:', updated);
+      console.log('FormData: 📊 Estado atualizado:', updated);
       return updated;
     });
   }, []);
