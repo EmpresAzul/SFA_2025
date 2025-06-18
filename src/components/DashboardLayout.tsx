@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Sidebar from './Sidebar';
 import Header from './Header';
@@ -10,10 +11,23 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
+  // Mostrar loading enquanto verifica autenticação
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="flex items-center space-x-2 text-gray-600">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span>Carregando...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Se não há usuário autenticado, redirecionar para login
   if (!user) {
-    return null;
+    return <Navigate to="/login" replace />;
   }
 
   return (

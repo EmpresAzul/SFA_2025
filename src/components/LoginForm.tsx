@@ -16,7 +16,7 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login, user, logout } = useAuth();
+  const { login, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { validateEmail, sanitizeText, errors, setFieldError, clearFieldError } = useInputValidation();
@@ -27,25 +27,6 @@ const LoginForm: React.FC = () => {
       navigate('/dashboard');
     }
   }, [user, navigate]);
-
-  // Fazer logout sempre que acessar a página de login
-  useEffect(() => {
-    const handleLogout = async () => {
-      try {
-        await logout();
-        toast({
-          title: "Logout realizado com êxito!",
-          description: "Você foi desconectado do sistema com segurança.",
-        });
-      } catch (error) {
-        // Log silencioso
-      }
-    };
-
-    if (user) {
-      handleLogout();
-    }
-  }, []);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitizedEmail = sanitizeText(e.target.value);

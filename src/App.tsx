@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import DashboardLayout from "./components/DashboardLayout";
 import Index from "./pages/Index";
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import LancamentosFinanceiros from "./pages/LancamentosFinanceiros";
 import FluxoCaixa from "./pages/FluxoCaixa";
@@ -19,6 +20,7 @@ import Lembretes from "./pages/Lembretes";
 import Pipeline from "./pages/Pipeline";
 import PontoEquilibrio from "./pages/PontoEquilibrio";
 import Security from "./pages/Security";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,8 +34,9 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Index />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
+            <Route path="/dashboard/perfil" element={<DashboardLayout><Profile /></DashboardLayout>} />
             <Route path="/lancamentos" element={<DashboardLayout><LancamentosFinanceiros /></DashboardLayout>} />
             <Route path="/fluxo-caixa" element={<DashboardLayout><FluxoCaixa /></DashboardLayout>} />
             <Route path="/dre" element={<DashboardLayout><DRE /></DashboardLayout>} />
