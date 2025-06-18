@@ -19,6 +19,7 @@ import SaldosBancarios from "./pages/SaldosBancarios";
 import Lembretes from "./pages/Lembretes";
 import Pipeline from "./pages/Pipeline";
 import PontoEquilibrio from "./pages/PontoEquilibrio";
+import Suporte from "./pages/Suporte";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/lembretes" element={<DashboardLayout><Lembretes /></DashboardLayout>} />
             <Route path="/pipeline" element={<DashboardLayout><Pipeline /></DashboardLayout>} />
             <Route path="/ponto-equilibrio" element={<DashboardLayout><PontoEquilibrio /></DashboardLayout>} />
+            <Route path="/suporte" element={<DashboardLayout><Suporte /></DashboardLayout>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

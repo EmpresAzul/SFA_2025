@@ -9,7 +9,8 @@ import {
   CreditCard, 
   Calendar, 
   Target,
-  Calculator
+  Calculator,
+  HelpCircle
 } from 'lucide-react';
 import type { MenuItem } from './types';
 
@@ -101,5 +102,13 @@ export const menuItems: MenuItem[] = [
     iconColor: 'text-emerald-500',
     href: '/ponto-equilibrio',
     description: 'Análise de viabilidade'
+  },
+  {
+    id: 'suporte',
+    label: 'Suporte',
+    icon: HelpCircle,
+    iconColor: 'text-violet-500',
+    href: '/suporte',
+    description: 'Agente inteligente e contatos'
   }
 ];
