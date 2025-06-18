@@ -15,26 +15,48 @@ export const useSupport = () => {
   const checkConfiguration = async () => {
     setIsCheckingConfig(true);
     try {
+      console.log('Verificando configuração do agente inteligente...');
+      
       const { data, error } = await supabase
         .from('system_settings')
         .select('key, value')
         .in('key', ['openai_api_key', 'openai_assistant_id']);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro ao verificar configuração:', error);
+        throw error;
+      }
+
+      console.log('Dados de configuração recebidos:', data);
 
       const settings = data.reduce((acc, setting) => {
         acc[setting.key] = setting.value;
         return acc;
       }, {} as Record<string, string>);
 
-      const hasRequiredConfig = settings['openai_api_key'] && settings['openai_assistant_id'];
-      setHasApiKey(!!hasRequiredConfig);
+      console.log('Settings processadas:', settings);
+
+      // Verificar se ambas as configurações existem e não são nulas/vazias
+      const apiKey = settings['openai_api_key'];
+      const assistantId = settings['openai_assistant_id'];
+      
+      console.log('API Key existe:', !!apiKey);
+      console.log('Assistant ID existe:', !!assistantId);
+
+      const hasRequiredConfig = !!(apiKey && apiKey.trim() && assistantId && assistantId.trim());
+      
+      console.log('Configuração válida:', hasRequiredConfig);
+      
+      setHasApiKey(hasRequiredConfig);
       
       if (hasRequiredConfig) {
+        console.log('Configuração válida encontrada, iniciando chat...');
         addBotMessage("Olá! Sou seu assistente inteligente do FluxoAzul. Como posso ajudá-lo hoje?");
+      } else {
+        console.log('Configuração incompleta - API Key ou Assistant ID não encontrados');
       }
     } catch (error) {
-      console.log('Configuração não encontrada:', error);
+      console.error('Erro ao verificar configuração:', error);
       setHasApiKey(false);
     } finally {
       setIsCheckingConfig(false);
@@ -64,6 +86,7 @@ export const useSupport = () => {
   const sendMessage = async (message: string = inputMessage) => {
     if (!message.trim() || isLoading) return;
 
+    console.log('Enviando mensagem:', message);
     addUserMessage(message);
     setInputMessage('');
     setIsLoading(true);
@@ -71,16 +94,23 @@ export const useSupport = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
+      console.log('Chamando edge function chat-support-advanced...');
       const { data, error } = await supabase.functions.invoke('chat-support-advanced', {
         body: { message },
         headers: session ? { Authorization: `Bearer ${session.access_token}` } : {}
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro na edge function:', error);
+        throw error;
+      }
 
-      if (data.response) {
+      console.log('Resposta da edge function:', data);
+
+      if (data && data.response) {
         addBotMessage(data.response);
       } else {
+        console.warn('Resposta vazia ou inválida da edge function');
         addBotMessage("Desculpe, não consegui processar sua mensagem. Tente novamente.");
       }
     } catch (error) {
@@ -109,5 +139,6 @@ export const useSupport = () => {
     hasApiKey,
     isCheckingConfig,
     sendMessage,
+    recheckConfiguration: checkConfiguration,
   };
 };

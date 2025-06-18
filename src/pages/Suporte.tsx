@@ -5,7 +5,8 @@ import ChatInterface from '@/components/support/ChatInterface';
 import SupportSidebar from '@/components/support/SupportSidebar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Bot, Settings, Phone, Mail, MapPin } from 'lucide-react';
+import { Bot, Settings, Phone, Mail, MapPin, RefreshCw } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Suporte: React.FC = () => {
   const {
@@ -16,6 +17,7 @@ const Suporte: React.FC = () => {
     hasApiKey,
     isCheckingConfig,
     sendMessage,
+    recheckConfiguration,
   } = useSupport();
 
   const openWhatsApp = () => {
@@ -51,10 +53,26 @@ const Suporte: React.FC = () => {
               
               <p className="text-gray-600 mb-6">
                 O agente inteligente ainda não foi configurado pelo administrador. 
-                Entre em contato com o suporte através dos canais abaixo.
+                Configure as credenciais da OpenAI para ativar o assistente.
               </p>
               
               <div className="space-y-4">
+                <Link to="/admin/settings">
+                  <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white flex items-center gap-2">
+                    <Settings className="w-4 h-4" />
+                    Configurar Agente Inteligente
+                  </Button>
+                </Link>
+                
+                <Button
+                  onClick={recheckConfiguration}
+                  variant="outline"
+                  className="w-full flex items-center gap-2"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Verificar Configurações Novamente
+                </Button>
+                
                 <Button
                   onClick={openWhatsApp}
                   className="w-full bg-green-500 hover:bg-green-600 text-white flex items-center gap-2"

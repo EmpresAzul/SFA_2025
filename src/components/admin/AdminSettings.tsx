@@ -7,13 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Settings, Key, MessageSquare, Bot, CheckCircle, XCircle } from 'lucide-react';
+import { Settings, Key, MessageSquare, Bot, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 
 const AdminSettings: React.FC = () => {
   const [openaiApiKey, setOpenaiApiKey] = useState('');
   const [threadId, setThreadId] = useState('');
   const [assistantId, setAssistantId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingSettings, setIsLoadingSettings] = useState(true);
   const [testingConnection, setTestingConnection] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const { toast } = useToast();
@@ -23,11 +24,20 @@ const AdminSettings: React.FC = () => {
   }, []);
 
   const loadSettings = async () => {
+    setIsLoadingSettings(true);
     try {
-      const { data } = await supabase
+      console.log('Carregando configurações...');
+      const { data, error } = await supabase
         .from('system_settings')
         .select('key, value')
         .in('key', ['openai_api_key', 'openai_thread_id', 'openai_assistant_id']);
+
+      if (error) {
+        console.error('Erro ao carregar configurações:', error);
+        throw error;
+      }
+
+      console.log('Configurações carregadas:', data);
 
       data?.forEach(setting => {
         switch (setting.key) {
@@ -44,23 +54,40 @@ const AdminSettings: React.FC = () => {
       });
     } catch (error) {
       console.error('Erro ao carregar configurações:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar as configurações.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingSettings(false);
     }
   };
 
   const saveSetting = async (key: string, value: string) => {
     try {
-      const { error } = await supabase
+      console.log(`Salvando configuração: ${key} = ${value ? '[SET]' : '[EMPTY]'}`);
+      
+      const { data, error } = await supabase
         .from('system_settings')
         .upsert({
           key,
-          value,
+          value: value || null,
           updated_at: new Date().toISOString()
-        });
+        }, {
+          onConflict: 'key'
+        })
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error(`Erro ao salvar ${key}:`, error);
+        throw error;
+      }
+
+      console.log(`Configuração ${key} salva com sucesso:`, data);
       return true;
     } catch (error) {
-      console.error('Erro ao salvar configuração:', error);
+      console.error(`Erro ao salvar configuração ${key}:`, error);
       return false;
     }
   };
@@ -69,21 +96,30 @@ const AdminSettings: React.FC = () => {
     setIsLoading(true);
     
     try {
+      console.log('Iniciando salvamento de todas as configurações...');
+      
       const results = await Promise.all([
         saveSetting('openai_api_key', openaiApiKey),
         saveSetting('openai_thread_id', threadId),
         saveSetting('openai_assistant_id', assistantId)
       ]);
 
-      if (results.every(r => r)) {
+      const allSucceeded = results.every(r => r);
+      console.log('Resultados do salvamento:', results, 'Todos bem-sucedidos:', allSucceeded);
+
+      if (allSucceeded) {
         toast({
           title: "Sucesso",
           description: "Configurações salvas com sucesso!",
         });
+        
+        // Recarregar as configurações para confirmar que foram salvas
+        await loadSettings();
       } else {
         throw new Error('Erro ao salvar algumas configurações');
       }
     } catch (error) {
+      console.error('Erro no salvamento:', error);
       toast({
         title: "Erro",
         description: "Erro ao salvar configurações. Tente novamente.",
@@ -108,6 +144,7 @@ const AdminSettings: React.FC = () => {
     setConnectionStatus('idle');
 
     try {
+      console.log('Testando conexão com OpenAI...');
       const { data, error } = await supabase.functions.invoke('test-openai-connection', {
         body: { 
           apiKey: openaiApiKey,
@@ -116,7 +153,12 @@ const AdminSettings: React.FC = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro na função de teste:', error);
+        throw error;
+      }
+
+      console.log('Resultado do teste de conexão:', data);
 
       if (data.success) {
         setConnectionStatus('success');
@@ -137,6 +179,7 @@ const AdminSettings: React.FC = () => {
         });
       }
     } catch (error) {
+      console.error('Erro no teste de conexão:', error);
       setConnectionStatus('error');
       toast({
         title: "Erro no teste",
@@ -147,6 +190,19 @@ const AdminSettings: React.FC = () => {
       setTestingConnection(false);
     }
   };
+
+  if (isLoadingSettings) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <Loader2 className="animate-spin h-12 w-12 text-violet-500 mx-auto mb-4" />
+            <p className="text-gray-600">Carregando configurações...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -169,7 +225,7 @@ const AdminSettings: React.FC = () => {
                 <div className="space-y-2">
                   <Label htmlFor="apikey" className="flex items-center gap-2">
                     <Key className="w-4 h-4" />
-                    API Key da OpenAI
+                    API Key da OpenAI *
                   </Label>
                   <Input
                     id="apikey"
@@ -186,7 +242,7 @@ const AdminSettings: React.FC = () => {
                 <div className="space-y-2">
                   <Label htmlFor="assistantid" className="flex items-center gap-2">
                     <Bot className="w-4 h-4" />
-                    Assistant ID
+                    Assistant ID *
                   </Label>
                   <Input
                     id="assistantid"
@@ -220,7 +276,14 @@ const AdminSettings: React.FC = () => {
                   disabled={isLoading}
                   className="w-full"
                 >
-                  {isLoading ? 'Salvando...' : 'Salvar Configurações'}
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Salvando...
+                    </>
+                  ) : (
+                    'Salvar Configurações'
+                  )}
                 </Button>
               </div>
             </TabsContent>
@@ -232,7 +295,14 @@ const AdminSettings: React.FC = () => {
                   disabled={testingConnection || !openaiApiKey || !assistantId}
                   className="mb-4"
                 >
-                  {testingConnection ? 'Testando...' : 'Testar Conexão'}
+                  {testingConnection ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Testando...
+                    </>
+                  ) : (
+                    'Testar Conexão'
+                  )}
                 </Button>
 
                 {connectionStatus !== 'idle' && (
