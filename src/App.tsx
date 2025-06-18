@@ -19,6 +19,7 @@ import CadastrosUnified from '@/pages/CadastrosUnified';
 import Lembretes from '@/pages/Lembretes';
 import Pipeline from '@/pages/Pipeline';
 import PontoEquilibrio from '@/pages/PontoEquilibrio';
+import PWAInstallBanner from './components/PWAInstallBanner';
 import { Outlet } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -68,6 +69,7 @@ const App = () => {
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <PWAInstallBanner />
       </BrowserRouter>
     </AuthProvider>
   );

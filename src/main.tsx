@@ -14,6 +14,19 @@ const queryClient = new QueryClient({
   },
 });
 
+// Register service worker for PWA functionality
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('FluxoAzul PWA: Service Worker registered successfully:', registration.scope);
+      })
+      .catch((error) => {
+        console.log('FluxoAzul PWA: Service Worker registration failed:', error);
+      });
+  });
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
