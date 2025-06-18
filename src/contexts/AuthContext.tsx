@@ -2,6 +2,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
+import { useInactivityTimer } from '@/hooks/useInactivityTimer';
+import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
@@ -19,6 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   // Log de evento de segurança
   const logSecurityEvent = async (eventType: string, details?: any) => {
@@ -35,6 +38,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Log silencioso para não afetar a experiência do usuário
     }
   };
+
+  const logout = async (): Promise<void> => {
+    try {
+      // Log logout antes de fazer logout
+      if (user) {
+        await logSecurityEvent('logout', {
+          logout_time: new Date().toISOString()
+        });
+      }
+      
+      await supabase.auth.signOut();
+    } catch (error) {
+      // Log silencioso
+    }
+  };
+
+  // Logout automático por inatividade
+  const handleInactivityLogout = async () => {
+    toast({
+      title: "Sessão expirada",
+      description: "Você foi desconectado devido à inatividade.",
+      variant: "destructive",
+    });
+    
+    await logSecurityEvent('logout_inactivity', {
+      logout_time: new Date().toISOString(),
+      reason: 'inactivity_timeout'
+    });
+    
+    await logout();
+  };
+
+  // Configurar timer de inatividade apenas se há usuário logado
+  useInactivityTimer({
+    timeout: 600000, // 10 minutos
+    onTimeout: handleInactivityLogout,
+    warningTime: 60000, // 1 minuto de aviso
+  });
 
   useEffect(() => {
     // Set up auth state listener
@@ -138,21 +179,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return true;
     } catch (error) {
       return false;
-    }
-  };
-
-  const logout = async (): Promise<void> => {
-    try {
-      // Log logout antes de fazer logout
-      if (user) {
-        await logSecurityEvent('logout', {
-          logout_time: new Date().toISOString()
-        });
-      }
-      
-      await supabase.auth.signOut();
-    } catch (error) {
-      // Log silencioso
     }
   };
 

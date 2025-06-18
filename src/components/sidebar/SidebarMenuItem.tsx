@@ -41,8 +41,8 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
           className={cn(
             "w-full flex items-center px-3 py-2 text-left rounded-lg transition-all duration-300 group backdrop-blur-md border border-white/10",
             parentActive 
-              ? "bg-gradient-to-r from-fluxo-blue-600/90 via-fluxo-blue-500/80 to-fluxo-blue-400/70 text-white shadow-lg shadow-fluxo-blue-500/25 border-fluxo-blue-300/30" 
-              : "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-r hover:from-fluxo-blue-50/80 hover:to-fluxo-blue-100/60 hover:text-fluxo-blue-700 hover:shadow-md hover:shadow-fluxo-blue-200/30",
+              ? "bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600 text-white shadow-lg shadow-blue-500/25 border-blue-300/30" 
+              : "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-br hover:from-slate-700 hover:via-slate-600 hover:to-blue-500 hover:text-white hover:shadow-md hover:shadow-blue-200/30",
             collapsed && "justify-center px-2"
           )}
         >
@@ -81,8 +81,8 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
           "flex items-center px-3 py-2 rounded-lg transition-all duration-300 group mb-1 backdrop-blur-md border border-white/10",
           level > 0 && "ml-3",
           isActive(item.href) 
-            ? "bg-gradient-to-r from-fluxo-blue-600/90 via-fluxo-blue-500/80 to-fluxo-blue-400/70 text-white shadow-lg shadow-fluxo-blue-500/25 border-fluxo-blue-300/30" 
-            : "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-r hover:from-fluxo-blue-50/80 hover:to-fluxo-blue-100/60 hover:text-fluxo-blue-700 hover:shadow-md hover:shadow-fluxo-blue-200/30",
+            ? "bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600 text-white shadow-lg shadow-blue-500/25 border-blue-300/30" 
+            : "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-br hover:from-slate-700 hover:via-slate-600 hover:to-blue-500 hover:text-white hover:shadow-md hover:shadow-blue-200/30",
           collapsed && "justify-center px-2"
         )}
       >
@@ -97,7 +97,7 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
       className={cn(
         "flex items-center px-3 py-2 rounded-lg transition-all duration-300 group mb-1 backdrop-blur-md border border-white/10",
         level > 0 && "ml-3",
-        "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-r hover:from-fluxo-blue-50/80 hover:to-fluxo-blue-100/60 hover:text-fluxo-blue-700 hover:shadow-md hover:shadow-fluxo-blue-200/30",
+        "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-br hover:from-slate-700 hover:via-slate-600 hover:to-blue-500 hover:text-white hover:shadow-md hover:shadow-blue-200/30",
         collapsed && "justify-center px-2"
       )}
     >
