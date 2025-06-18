@@ -2,13 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { useLancamentos, type Lancamento } from '@/hooks/useLancamentos';
+import { useLancamentos, type LancamentoComRelacoes } from '@/hooks/useLancamentos';
 import { useCadastros } from '@/hooks/useCadastros';
-
-type LancamentoComRelacoes = Lancamento & {
-  cliente?: { nome: string } | null;
-  fornecedor?: { nome: string } | null;
-};
 
 export const useLancamentosPage = () => {
   const [filteredLancamentos, setFilteredLancamentos] = useState<LancamentoComRelacoes[]>([]);

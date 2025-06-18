@@ -1,5 +1,5 @@
 
-import type { Lancamento } from '@/hooks/useLancamentos';
+import type { Lancamento } from '@/types/lancamentos';
 
 export type LancamentoComRelacoes = Lancamento & {
   cliente?: { nome: string } | null;

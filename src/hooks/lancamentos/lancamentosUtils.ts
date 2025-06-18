@@ -1,0 +1,53 @@
+
+import { supabase } from '@/integrations/supabase/client';
+import { addMonths, format } from 'date-fns';
+
+export const criarLancamentosRecorrentes = async (lancamentoData: any, mesesRecorrencia: number) => {
+  const lancamentosParaCriar = [];
+  const dataInicial = new Date(lancamentoData.data);
+  
+  // Criar o lançamento principal
+  const { data: lancamentoPrincipal, error: erroLancamentoPrincipal } = await supabase
+    .from('lancamentos')
+    .insert([{
+      ...lancamentoData,
+      recorrente: true,
+      meses_recorrencia: mesesRecorrencia,
+      lancamento_pai_id: null
+    }])
+    .select()
+    .single();
+
+  if (erroLancamentoPrincipal) {
+    throw erroLancamentoPrincipal;
+  }
+
+  console.log('Lançamento principal criado:', lancamentoPrincipal);
+
+  // Criar os lançamentos futuros
+  for (let i = 1; i <= mesesRecorrencia; i++) {
+    const dataFutura = addMonths(dataInicial, i);
+    lancamentosParaCriar.push({
+      ...lancamentoData,
+      data: format(dataFutura, 'yyyy-MM-dd'),
+      recorrente: false,
+      meses_recorrencia: null,
+      lancamento_pai_id: lancamentoPrincipal.id
+    });
+  }
+
+  if (lancamentosParaCriar.length > 0) {
+    const { error: erroLancamentosFuturos } = await supabase
+      .from('lancamentos')
+      .insert(lancamentosParaCriar);
+
+    if (erroLancamentosFuturos) {
+      console.error('Erro ao criar lançamentos futuros:', erroLancamentosFuturos);
+      throw erroLancamentosFuturos;
+    }
+
+    console.log(`${lancamentosParaCriar.length} lançamentos futuros criados`);
+  }
+
+  return lancamentoPrincipal;
+};
