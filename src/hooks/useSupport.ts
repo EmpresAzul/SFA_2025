@@ -8,64 +8,36 @@ export const useSupport = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [openaiApiKey, setOpenaiApiKey] = useState('');
   const [hasApiKey, setHasApiKey] = useState(false);
-  const [isSettingUp, setIsSettingUp] = useState(false);
+  const [isCheckingConfig, setIsCheckingConfig] = useState(true);
   const { toast } = useToast();
 
-  const checkApiKey = async () => {
+  const checkConfiguration = async () => {
+    setIsCheckingConfig(true);
     try {
       const { data, error } = await supabase
         .from('system_settings')
-        .select('value')
-        .eq('key', 'openai_api_key')
-        .maybeSingle();
-
-      if (data && data.value) {
-        setHasApiKey(true);
-      }
-    } catch (error) {
-      console.log('API key não configurada ainda');
-    }
-  };
-
-  const saveApiKey = async () => {
-    if (!openaiApiKey.trim()) {
-      toast({
-        title: "Erro",
-        description: "Por favor, insira uma API key válida.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSettingUp(true);
-
-    try {
-      const { error } = await supabase
-        .from('system_settings')
-        .upsert({
-          key: 'openai_api_key',
-          value: openaiApiKey,
-          updated_at: new Date().toISOString()
-        });
+        .select('key, value')
+        .in('key', ['openai_api_key', 'openai_assistant_id']);
 
       if (error) throw error;
 
-      setHasApiKey(true);
-      setOpenaiApiKey('');
-      toast({
-        title: "Sucesso",
-        description: "API key configurada com sucesso!",
-      });
+      const settings = data.reduce((acc, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+      }, {} as Record<string, string>);
+
+      const hasRequiredConfig = settings['openai_api_key'] && settings['openai_assistant_id'];
+      setHasApiKey(!!hasRequiredConfig);
+      
+      if (hasRequiredConfig) {
+        addBotMessage("Olá! Sou seu assistente inteligente do FluxoAzul. Como posso ajudá-lo hoje?");
+      }
     } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Erro ao salvar API key. Tente novamente.",
-        variant: "destructive",
-      });
+      console.log('Configuração não encontrada:', error);
+      setHasApiKey(false);
     } finally {
-      setIsSettingUp(false);
+      setIsCheckingConfig(false);
     }
   };
 
@@ -97,38 +69,45 @@ export const useSupport = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('chat-support', {
-        body: { message }
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const { data, error } = await supabase.functions.invoke('chat-support-advanced', {
+        body: { message },
+        headers: session ? { Authorization: `Bearer ${session.access_token}` } : {}
       });
 
       if (error) throw error;
 
-      addBotMessage(data.response);
+      if (data.response) {
+        addBotMessage(data.response);
+      } else {
+        addBotMessage("Desculpe, não consegui processar sua mensagem. Tente novamente.");
+      }
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
       addBotMessage("Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente ou entre em contato pelo WhatsApp.");
+      
+      toast({
+        title: "Erro na comunicação",
+        description: "Não foi possível enviar sua mensagem. Tente novamente.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    checkApiKey();
-    if (hasApiKey) {
-      addBotMessage("Olá! Sou seu assistente inteligente do FluxoAzul. Como posso ajudá-lo hoje?");
-    }
-  }, [hasApiKey]);
+    checkConfiguration();
+  }, []);
 
   return {
     messages,
     inputMessage,
     setInputMessage,
     isLoading,
-    openaiApiKey,
-    setOpenaiApiKey,
     hasApiKey,
-    isSettingUp,
-    saveApiKey,
+    isCheckingConfig,
     sendMessage,
   };
 };

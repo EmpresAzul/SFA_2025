@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +21,7 @@ import PontoEquilibrio from "./pages/PontoEquilibrio";
 import Suporte from "./pages/Suporte";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import AdminSettings from "./pages/AdminSettings";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +48,7 @@ const App = () => (
             <Route path="/pipeline" element={<DashboardLayout><Pipeline /></DashboardLayout>} />
             <Route path="/ponto-equilibrio" element={<DashboardLayout><PontoEquilibrio /></DashboardLayout>} />
             <Route path="/suporte" element={<DashboardLayout><Suporte /></DashboardLayout>} />
+            <Route path="/admin/settings" element={<DashboardLayout><AdminSettings /></DashboardLayout>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

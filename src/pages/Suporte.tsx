@@ -1,9 +1,11 @@
 
 import React from 'react';
 import { useSupport } from '@/hooks/useSupport';
-import ApiKeySetup from '@/components/support/ApiKeySetup';
 import ChatInterface from '@/components/support/ChatInterface';
 import SupportSidebar from '@/components/support/SupportSidebar';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Bot, Settings, Phone, Mail, MapPin } from 'lucide-react';
 
 const Suporte: React.FC = () => {
   const {
@@ -11,11 +13,8 @@ const Suporte: React.FC = () => {
     inputMessage,
     setInputMessage,
     isLoading,
-    openaiApiKey,
-    setOpenaiApiKey,
     hasApiKey,
-    isSettingUp,
-    saveApiKey,
+    isCheckingConfig,
     sendMessage,
   } = useSupport();
 
@@ -23,15 +22,68 @@ const Suporte: React.FC = () => {
     window.open('https://wa.me/5519990068219', '_blank');
   };
 
+  if (isCheckingConfig) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500 mx-auto mb-4"></div>
+            <p className="text-gray-600">Verificando configurações...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!hasApiKey) {
     return (
-      <ApiKeySetup
-        openaiApiKey={openaiApiKey}
-        setOpenaiApiKey={setOpenaiApiKey}
-        isSettingUp={isSettingUp}
-        onSave={saveApiKey}
-        onOpenWhatsApp={openWhatsApp}
-      />
+      <div className="container mx-auto py-8 px-4">
+        <div className="max-w-2xl mx-auto">
+          <Card>
+            <CardContent className="p-8 text-center">
+              <div className="mx-auto w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mb-6">
+                <Bot className="w-8 h-8 text-violet-600" />
+              </div>
+              
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                Agente Inteligente Não Configurado
+              </h2>
+              
+              <p className="text-gray-600 mb-6">
+                O agente inteligente ainda não foi configurado pelo administrador. 
+                Entre em contato com o suporte através dos canais abaixo.
+              </p>
+              
+              <div className="space-y-4">
+                <Button
+                  onClick={openWhatsApp}
+                  className="w-full bg-green-500 hover:bg-green-600 text-white flex items-center gap-2"
+                >
+                  <Phone className="w-4 h-4" />
+                  Suporte WhatsApp
+                </Button>
+                
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+                  <Mail className="w-4 h-4" />
+                  suporte@fluxoazul.com
+                </div>
+                
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+                  <MapPin className="w-4 h-4" />
+                  São Paulo | SP
+                </div>
+              </div>
+              
+              <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+                <p className="text-sm text-gray-600">
+                  <Settings className="w-4 h-4 inline mr-1" />
+                  Administradores podem configurar o agente inteligente nas configurações do sistema.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     );
   }
 
