@@ -21,11 +21,13 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Buscar configurações
+    // Buscar configurações - buscar API Key dos secrets e Assistant ID do banco
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    
     const { data: settings, error: settingsError } = await supabase
       .from('system_settings')
       .select('key, value')
-      .in('key', ['openai_api_key', 'openai_thread_id', 'openai_assistant_id']);
+      .in('key', ['openai_thread_id', 'openai_assistant_id']);
 
     if (settingsError) {
       throw new Error('Erro ao buscar configurações: ' + settingsError.message);
@@ -36,13 +38,14 @@ serve(async (req) => {
       return acc;
     }, {} as Record<string, string>);
 
-    const openAIApiKey = settingsMap['openai_api_key'];
     const threadId = settingsMap['openai_thread_id'];
     const assistantId = settingsMap['openai_assistant_id'];
 
     if (!openAIApiKey || !assistantId) {
       throw new Error('Configurações da OpenAI não encontradas');
     }
+
+    console.log('Configurações encontradas - Assistant ID:', !!assistantId, 'API Key:', !!openAIApiKey);
 
     // Função para fazer requisições à OpenAI
     const makeOpenAIRequest = async (url: string, method: string, body?: any) => {
@@ -67,6 +70,7 @@ serve(async (req) => {
     // Obter or criar thread
     let currentThreadId = threadId;
     if (!currentThreadId) {
+      console.log('Criando nova thread...');
       const threadResponse = await makeOpenAIRequest('https://api.openai.com/v1/threads', 'POST');
       currentThreadId = threadResponse.id;
 
@@ -76,22 +80,28 @@ serve(async (req) => {
         .upsert({
           key: 'openai_thread_id',
           value: currentThreadId,
+          description: 'Thread ID da OpenAI para o agente inteligente',
           updated_at: new Date().toISOString()
         });
+      
+      console.log('Nova thread criada:', currentThreadId);
     }
 
     // Adicionar mensagem à thread
+    console.log('Adicionando mensagem à thread:', currentThreadId);
     await makeOpenAIRequest(`https://api.openai.com/v1/threads/${currentThreadId}/messages`, 'POST', {
       role: 'user',
       content: message
     });
 
     // Executar assistant
+    console.log('Executando assistant:', assistantId);
     const runResponse = await makeOpenAIRequest(`https://api.openai.com/v1/threads/${currentThreadId}/runs`, 'POST', {
       assistant_id: assistantId
     });
 
     const runId = runResponse.id;
+    console.log('Run criado:', runId);
 
     // Aguardar conclusão da execução
     let runStatus = 'in_progress';
@@ -108,6 +118,8 @@ serve(async (req) => {
       const statusResponse = await makeOpenAIRequest(`https://api.openai.com/v1/threads/${currentThreadId}/runs/${runId}`, 'GET');
       runStatus = statusResponse.status;
       attempts++;
+      
+      console.log(`Tentativa ${attempts}: Status do run: ${runStatus}`);
     }
 
     if (runStatus !== 'completed') {
@@ -115,6 +127,7 @@ serve(async (req) => {
     }
 
     // Obter mensagens da thread
+    console.log('Obtendo resposta do assistant...');
     const messagesResponse = await makeOpenAIRequest(`https://api.openai.com/v1/threads/${currentThreadId}/messages?order=desc&limit=1`, 'GET');
     const latestMessage = messagesResponse.data[0];
     
@@ -123,6 +136,7 @@ serve(async (req) => {
     }
 
     const assistantResponse = latestMessage.content[0]?.text?.value || 'Desculpe, não consegui processar sua mensagem.';
+    console.log('Resposta obtida com sucesso');
 
     // Obter user_id do token
     const authHeader = req.headers.get('authorization');
@@ -144,6 +158,7 @@ serve(async (req) => {
             message,
             response: assistantResponse
           });
+        console.log('Conversa salva no histórico');
       } catch (error) {
         console.error('Erro ao salvar conversa:', error);
         // Não falhar a resposta por causa do histórico

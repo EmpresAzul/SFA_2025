@@ -18,7 +18,7 @@ export const useSupport = () => {
       const { data, error } = await supabase
         .from('system_settings')
         .select('key, value')
-        .in('key', ['openai_api_key', 'openai_assistant_id']);
+        .eq('key', 'openai_assistant_id');
 
       if (error) {
         console.error('Erro ao verificar configuração:', error);
@@ -27,20 +27,11 @@ export const useSupport = () => {
 
       console.log('Dados de configuração recebidos:', data);
 
-      const settings = data.reduce((acc, setting) => {
-        acc[setting.key] = setting.value;
-        return acc;
-      }, {} as Record<string, string>);
-
-      console.log('Settings processadas:', settings);
-
-      const apiKey = settings['openai_api_key'];
-      const assistantId = settings['openai_assistant_id'];
+      const assistantId = data[0]?.value;
       
-      console.log('API Key existe:', !!apiKey);
       console.log('Assistant ID existe:', !!assistantId);
 
-      const hasRequiredConfig = !!(apiKey && apiKey.trim() && assistantId && assistantId.trim());
+      const hasRequiredConfig = !!(assistantId && assistantId.trim());
       
       console.log('Configuração válida:', hasRequiredConfig);
       setHasApiKey(hasRequiredConfig);
