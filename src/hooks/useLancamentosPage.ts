@@ -23,11 +23,13 @@ export const useLancamentosPage = () => {
 
   console.log('useLancamentosPage: Usuário autenticado:', !!user);
   console.log('useLancamentosPage: Sessão ativa:', !!session);
+  console.log('useLancamentosPage: User ID:', user?.id);
 
   const { useQuery: useLancamentosQuery, useCreate, useUpdate, useDelete } = useLancamentos();
   const { data: lancamentos, isLoading, error } = useLancamentosQuery();
   
   console.log('useLancamentosPage: Dados de lançamentos:', lancamentos);
+  console.log('useLancamentosPage: Quantidade de lançamentos:', lancamentos?.length || 0);
   console.log('useLancamentosPage: Carregando:', isLoading);
   console.log('useLancamentosPage: Erro:', error);
 
@@ -42,6 +44,7 @@ export const useLancamentosPage = () => {
   useEffect(() => {
     console.log('useLancamentosPage: useEffect chamado - lancamentos:', lancamentos?.length || 0);
     if (lancamentos) {
+      console.log('useLancamentosPage: Aplicando filtros aos lançamentos');
       filterLancamentos();
     }
   }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
@@ -49,6 +52,7 @@ export const useLancamentosPage = () => {
   const filterLancamentos = () => {
     if (!lancamentos) {
       console.log('useLancamentosPage: Sem lançamentos para filtrar');
+      setFilteredLancamentos([]);
       return;
     }
     
@@ -71,6 +75,7 @@ export const useLancamentosPage = () => {
     }
 
     console.log('useLancamentosPage: Lançamentos filtrados:', filtered.length);
+    console.log('useLancamentosPage: Primeiros 3 lançamentos filtrados:', filtered.slice(0, 3));
     setFilteredLancamentos(filtered);
   };
 

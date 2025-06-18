@@ -1,4 +1,3 @@
-
 import { useQuery as useReactQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -30,7 +29,8 @@ export const useLancamentos = () => {
     return useReactQuery({
       queryKey: ['lancamentos'],
       queryFn: async () => {
-        console.log('Buscando lançamentos');
+        console.log('useLancamentos: Iniciando busca de lançamentos');
+        console.log('useLancamentos: Session atual:', await supabase.auth.getSession());
         
         const { data, error } = await supabase
           .from('lancamentos')
@@ -42,16 +42,26 @@ export const useLancamentos = () => {
           .order('data', { ascending: false });
 
         if (error) {
-          console.error('Erro ao buscar lançamentos:', error);
+          console.error('useLancamentos: Erro ao buscar lançamentos:', error);
+          console.error('useLancamentos: Detalhes do erro:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
           throw error;
         }
 
-        console.log('Lançamentos encontrados:', data);
+        console.log('useLancamentos: Lançamentos encontrados:', data?.length || 0);
+        console.log('useLancamentos: Primeiros 3 lançamentos:', data?.slice(0, 3));
+        
         return data as (Lancamento & {
           cliente?: { nome: string } | null;
           fornecedor?: { nome: string } | null;
         })[];
       },
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     });
   };
 
