@@ -49,13 +49,28 @@ const Suporte: React.FC = () => {
 
   const checkApiKey = async () => {
     try {
-      const { data, error } = await supabase
-        .from('system_settings')
-        .select('value')
-        .eq('key', 'openai_api_key')
-        .single();
+      // Usando uma query raw SQL através de RPC para acessar a nova tabela
+      const { data, error } = await supabase.rpc('custom_query', {
+        query_text: "SELECT value FROM system_settings WHERE key = 'openai_api_key'"
+      });
 
-      if (data && data.value) {
+      // Fallback: tentar acessar diretamente via REST API
+      if (error || !data) {
+        const response = await fetch(`${supabase.supabaseUrl}/rest/v1/system_settings?key=eq.openai_api_key&select=value`, {
+          headers: {
+            'apikey': supabase.supabaseKey,
+            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          if (result && result.length > 0 && result[0].value) {
+            setHasApiKey(true);
+          }
+        }
+      } else if (data && data.length > 0 && data[0].value) {
         setHasApiKey(true);
       }
     } catch (error) {
@@ -76,15 +91,27 @@ const Suporte: React.FC = () => {
     setIsSettingUp(true);
 
     try {
-      const { error } = await supabase
-        .from('system_settings')
-        .upsert({
+      // Usando REST API direta para inserir/atualizar
+      const { data: session } = await supabase.auth.getSession();
+      
+      const response = await fetch(`${supabase.supabaseUrl}/rest/v1/system_settings`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabase.supabaseKey,
+          'Authorization': `Bearer ${session.session?.access_token}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({
           key: 'openai_api_key',
           value: openaiApiKey,
           updated_at: new Date().toISOString()
-        });
+        })
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error('Erro ao salvar API key');
+      }
 
       setHasApiKey(true);
       setOpenaiApiKey('');
