@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Save, User, Lock, Calendar } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 
 const Profile: React.FC = () => {
   const { user, session, updateUser, updatePassword } = useAuth();
@@ -34,20 +33,17 @@ const Profile: React.FC = () => {
   // Atualiza o formulário quando o usuário muda
   useEffect(() => {
     if (user) {
+      const metadata = user.user_metadata || {};
       setFormData({
-        name: user.name || '',
-        address: user.address || '',
-        number: user.number || '',
-        neighborhood: user.neighborhood || '',
-        city: user.city || '',
-        state: user.state || ''
+        name: metadata.name || '',
+        address: metadata.address || '',
+        number: metadata.number || '',
+        neighborhood: metadata.neighborhood || '',
+        city: metadata.city || '',
+        state: metadata.state || ''
       });
     }
   }, [user]);
-
-  console.log('Profile - User:', user);
-  console.log('Profile - Session:', session);
-  console.log('Profile - Form Data:', formData);
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,36 +60,13 @@ const Profile: React.FC = () => {
     setLoading(true);
 
     try {
-      console.log('Profile - Updating user metadata:', formData);
-      
-      // Atualizar metadados do usuário no Supabase Auth
-      const { data, error: updateError } = await supabase.auth.updateUser({
-        data: {
-          name: formData.name,
-          address: formData.address,
-          number: formData.number,
-          neighborhood: formData.neighborhood,
-          city: formData.city,
-          state: formData.state
-        }
-      });
-
-      if (updateError) {
-        console.error('Profile - Error updating user metadata:', updateError);
-        throw updateError;
-      }
-
-      console.log('Profile - User metadata updated successfully:', data);
-
-      // Atualizar estado local imediatamente
-      updateUser(formData);
+      await updateUser(formData);
       
       toast({
         title: "Perfil atualizado!",
         description: "Suas informações foram salvas com sucesso.",
       });
     } catch (error: any) {
-      console.error('Profile - Update error:', error);
       toast({
         title: "Erro ao atualizar perfil",
         description: error.message,
@@ -128,7 +101,6 @@ const Profile: React.FC = () => {
     setLoading(true);
 
     try {
-      console.log('Profile - Updating password');
       const success = await updatePassword(passwordData.currentPassword, passwordData.newPassword);
       if (success) {
         toast({
@@ -144,7 +116,6 @@ const Profile: React.FC = () => {
         });
       }
     } catch (error: any) {
-      console.error('Profile - Password update error:', error);
       toast({
         title: "Erro ao atualizar senha",
         description: error.message,
@@ -154,6 +125,9 @@ const Profile: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuário';
+  const registrationDate = user?.created_at ? new Date(user.created_at) : new Date();
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -273,7 +247,7 @@ const Profile: React.FC = () => {
 
               <div className="flex items-center text-sm text-gray-600">
                 <Calendar className="mr-2 h-4 w-4" />
-                Data de cadastro: {new Date(user?.registrationDate || '').toLocaleDateString('pt-BR')}
+                Data de cadastro: {registrationDate.toLocaleDateString('pt-BR')}
               </div>
 
               <Button

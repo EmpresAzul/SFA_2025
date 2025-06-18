@@ -7,5 +7,6 @@ export interface MenuItem {
   icon: LucideIcon;
   iconColor?: string;
   href?: string;
+  description?: string;
   children?: MenuItem[];
 }

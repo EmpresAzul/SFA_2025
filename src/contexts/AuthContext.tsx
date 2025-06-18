@@ -8,6 +8,8 @@ interface AuthContextType {
   session: Session | null;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
+  updateUser: (userData: any) => Promise<void>;
+  updatePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
   loading: boolean;
 }
 
@@ -100,6 +102,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateUser = async (userData: any): Promise<void> => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: userData
+      });
+      
+      if (error) throw error;
+      
+      // Atualizar estado local
+      if (user) {
+        setUser({
+          ...user,
+          user_metadata: {
+            ...user.user_metadata,
+            ...userData
+          }
+        });
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updatePassword = async (currentPassword: string, newPassword: string): Promise<boolean> => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+      
+      if (error) {
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const logout = async (): Promise<void> => {
     try {
       // Log logout antes de fazer logout
@@ -122,6 +163,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         session,
         login,
         logout,
+        updateUser,
+        updatePassword,
         loading,
       }}
     >
