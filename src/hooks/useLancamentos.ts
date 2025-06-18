@@ -1,3 +1,4 @@
+
 import { useQuery as useReactQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -118,7 +119,7 @@ export const useLancamentos = () => {
   const useCreate = () => {
     return useMutation({
       mutationFn: async (lancamentoData: Omit<Lancamento, 'id' | 'created_at' | 'updated_at'>) => {
-        console.log('Criando lançamento:', lancamentoData);
+        console.log('useLancamentos: Criando lançamento:', lancamentoData);
         
         // Validar dados obrigatórios
         if (!lancamentoData.data || !lancamentoData.tipo || !lancamentoData.categoria || !lancamentoData.valor) {
@@ -147,19 +148,19 @@ export const useLancamentos = () => {
           .single();
 
         if (error) {
-          console.error('Erro ao criar lançamento:', error);
+          console.error('useLancamentos: Erro ao criar lançamento:', error);
           throw error;
         }
         
-        console.log('Lançamento criado com sucesso:', data);
+        console.log('useLancamentos: Lançamento criado com sucesso:', data);
         return data;
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
-        console.log('Query invalidada após criação');
+        console.log('useLancamentos: Query invalidada após criação');
       },
       onError: (error: any) => {
-        console.error('Erro na mutation de criação:', error);
+        console.error('useLancamentos: Erro na mutation de criação:', error);
       },
     });
   };
@@ -167,17 +168,24 @@ export const useLancamentos = () => {
   const useUpdate = () => {
     return useMutation({
       mutationFn: async ({ id, ...updateData }: Partial<Lancamento> & { id: string }) => {
-        console.log('Atualizando lançamento ID:', id);
-        console.log('Dados recebidos para atualização:', updateData);
+        console.log('useLancamentos: Iniciando atualização do lançamento ID:', id);
+        console.log('useLancamentos: Dados recebidos para atualização:', updateData);
         
         if (!id) {
           throw new Error('ID do lançamento é obrigatório para atualização');
         }
 
-        // Remove campos que não devem ser atualizados
-        const { created_at, updated_at, user_id, status, ...dataToUpdate } = updateData;
+        // Remove campos que não devem ser atualizados diretamente
+        const { 
+          created_at, 
+          updated_at, 
+          user_id, 
+          status, 
+          lancamento_pai_id,
+          ...dataToUpdate 
+        } = updateData;
         
-        console.log('Dados que serão enviados para atualização (limpos):', dataToUpdate);
+        console.log('useLancamentos: Dados limpos para atualização:', dataToUpdate);
 
         const { data, error } = await supabase
           .from('lancamentos')
@@ -191,8 +199,8 @@ export const useLancamentos = () => {
           .single();
 
         if (error) {
-          console.error('Erro ao atualizar lançamento:', error);
-          console.error('Erro details:', {
+          console.error('useLancamentos: Erro ao atualizar lançamento:', error);
+          console.error('useLancamentos: Detalhes do erro:', {
             message: error.message,
             details: error.details,
             hint: error.hint,
@@ -201,19 +209,19 @@ export const useLancamentos = () => {
           throw error;
         }
         
-        console.log('Lançamento atualizado com sucesso:', data);
+        console.log('useLancamentos: Lançamento atualizado com sucesso:', data);
         return data;
       },
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
-        console.log('Query invalidada após atualização, dados:', data);
+        console.log('useLancamentos: Query invalidada após atualização, dados:', data);
         toast({
           title: "Sucesso",
           description: "Lançamento atualizado com sucesso!",
         });
       },
       onError: (error: any) => {
-        console.error('Erro na mutation de atualização:', error);
+        console.error('useLancamentos: Erro na mutation de atualização:', error);
         toast({
           title: "Erro",
           description: error.message || "Erro ao atualizar lançamento. Tente novamente.",
@@ -226,7 +234,7 @@ export const useLancamentos = () => {
   const useDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
-        console.log('Excluindo lançamento:', id);
+        console.log('useLancamentos: Excluindo lançamento:', id);
         
         const { error } = await supabase
           .from('lancamentos')
@@ -234,11 +242,11 @@ export const useLancamentos = () => {
           .eq('id', id);
 
         if (error) {
-          console.error('Erro ao excluir lançamento:', error);
+          console.error('useLancamentos: Erro ao excluir lançamento:', error);
           throw error;
         }
         
-        console.log('Lançamento excluído com sucesso');
+        console.log('useLancamentos: Lançamento excluído com sucesso');
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
@@ -248,7 +256,7 @@ export const useLancamentos = () => {
         });
       },
       onError: (error: any) => {
-        console.error('Erro ao excluir lançamento:', error);
+        console.error('useLancamentos: Erro ao excluir lançamento:', error);
         toast({
           title: "Erro",
           description: error.message || "Erro ao excluir lançamento. Tente novamente.",

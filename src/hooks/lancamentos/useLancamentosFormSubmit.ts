@@ -19,7 +19,14 @@ export const useLancamentosFormSubmit = ({
     editingLancamento: LancamentoComRelacoes | null,
     resetForm: () => void
   ) => {
+    console.log('FormSubmit: Iniciando submissão do formulário');
+    console.log('FormSubmit: Dados do formulário:', formData);
+    console.log('FormSubmit: Valor numérico calculado:', valorNumerico);
+    console.log('FormSubmit: Modo edição:', !!editingLancamento);
+    console.log('FormSubmit: ID do lançamento (se editando):', editingLancamento?.id);
+
     if (!user) {
+      console.error('FormSubmit: Usuário não autenticado');
       toast({
         title: "Erro",
         description: "Usuário não autenticado.",
@@ -28,44 +35,28 @@ export const useLancamentosFormSubmit = ({
       return;
     }
 
+    console.log('FormSubmit: Usuário autenticado:', user.id);
     setLoading(true);
 
     try {
-      const lancamentoData = {
-        data: formData.data,
-        tipo: formData.tipo,
-        categoria: formData.categoria,
-        valor: valorNumerico,
-        cliente_id: formData.cliente_id || null,
-        fornecedor_id: formData.fornecedor_id || null,
-        observacoes: formData.observacoes.trim() || null,
-        user_id: user.id,
-        status: 'ativo',
-        recorrente: formData.recorrente,
-        meses_recorrencia: formData.recorrente ? formData.meses_recorrencia : null,
-        lancamento_pai_id: null
-      };
-
-      console.log('FormSubmit: Dados do lançamento a serem salvos:', lancamentoData);
-
       if (editingLancamento) {
-        console.log('FormSubmit: Atualizando lançamento existente ID:', editingLancamento.id);
+        console.log('FormSubmit: Atualizando lançamento existente');
         
-        // Incluir ID para atualização e remover campos que não devem ser atualizados
+        // Dados para atualização - apenas campos editáveis
         const updateData = {
           id: editingLancamento.id,
-          data: lancamentoData.data,
-          tipo: lancamentoData.tipo,
-          categoria: lancamentoData.categoria,
-          valor: lancamentoData.valor,
-          cliente_id: lancamentoData.cliente_id,
-          fornecedor_id: lancamentoData.fornecedor_id,
-          observacoes: lancamentoData.observacoes,
-          recorrente: lancamentoData.recorrente,
-          meses_recorrencia: lancamentoData.meses_recorrencia
+          data: formData.data,
+          tipo: formData.tipo,
+          categoria: formData.categoria,
+          valor: valorNumerico,
+          cliente_id: formData.cliente_id || null,
+          fornecedor_id: formData.fornecedor_id || null,
+          observacoes: formData.observacoes.trim() || null,
+          recorrente: formData.recorrente,
+          meses_recorrencia: formData.recorrente ? formData.meses_recorrencia : null
         };
         
-        console.log('FormSubmit: Dados para atualização (sem user_id e status):', updateData);
+        console.log('FormSubmit: Dados para atualização:', updateData);
         
         const result = await updateLancamento.mutateAsync(updateData);
         console.log('FormSubmit: Resultado da atualização:', result);
@@ -76,6 +67,24 @@ export const useLancamentosFormSubmit = ({
         });
       } else {
         console.log('FormSubmit: Criando novo lançamento');
+        
+        const lancamentoData = {
+          data: formData.data,
+          tipo: formData.tipo,
+          categoria: formData.categoria,
+          valor: valorNumerico,
+          cliente_id: formData.cliente_id || null,
+          fornecedor_id: formData.fornecedor_id || null,
+          observacoes: formData.observacoes.trim() || null,
+          user_id: user.id,
+          status: 'ativo',
+          recorrente: formData.recorrente,
+          meses_recorrencia: formData.recorrente ? formData.meses_recorrencia : null,
+          lancamento_pai_id: null
+        };
+
+        console.log('FormSubmit: Dados do novo lançamento:', lancamentoData);
+        
         const result = await createLancamento.mutateAsync(lancamentoData);
         console.log('FormSubmit: Resultado da criação:', result);
         
@@ -89,24 +98,29 @@ export const useLancamentosFormSubmit = ({
         });
       }
 
+      console.log('FormSubmit: Operação concluída com sucesso, limpando formulário');
       resetForm();
       setEditingLancamento(null);
       setActiveTab('lista');
     } catch (error: any) {
       console.error('FormSubmit: Erro ao salvar lançamento:', error);
       console.error('FormSubmit: Detalhes do erro:', {
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-        code: error.code
+        message: error?.message,
+        details: error?.details,
+        hint: error?.hint,
+        code: error?.code,
+        stack: error?.stack
       });
+      
+      const errorMessage = error?.message || "Ocorreu um erro ao salvar o lançamento.";
       
       toast({
         title: "Erro ao salvar",
-        description: error.message || "Ocorreu um erro ao salvar o lançamento.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
+      console.log('FormSubmit: Finalizando operação, removendo loading');
       setLoading(false);
     }
   };

@@ -19,10 +19,11 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
   const [formData, setFormData] = useState<FormData>(getInitialFormData);
 
   const loadFormData = useCallback((lancamento: LancamentoComRelacoes) => {
-    console.log('FormData: Carregando dados do lançamento:', lancamento);
+    console.log('FormData: Carregando dados do lançamento para edição:', lancamento);
     
     // Garantir que o valor seja formatado corretamente
     const valorFormatado = formatNumberToInput(lancamento.valor);
+    console.log('FormData: Valor original:', lancamento.valor, 'formatado:', valorFormatado);
     
     const loadedData: FormData = {
       data: lancamento.data,
@@ -37,7 +38,6 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
     };
     
     console.log('FormData: Dados processados para carregamento:', loadedData);
-    console.log('FormData: Valor formatado:', valorFormatado);
     setFormData(loadedData);
   }, []);
 
