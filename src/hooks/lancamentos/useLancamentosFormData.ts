@@ -19,11 +19,8 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
   const [formData, setFormData] = useState<FormData>(getInitialFormData);
 
   const loadFormData = useCallback((lancamento: LancamentoComRelacoes) => {
-    console.log('FormData: 📝 Carregando dados do lançamento para edição:', lancamento);
-    
     // Garantir que o valor seja formatado corretamente
     const valorFormatado = formatNumberToInput(lancamento.valor);
-    console.log('FormData: 💰 Valor original:', lancamento.valor, 'formatado:', valorFormatado);
     
     const loadedData: FormData = {
       data: lancamento.data,
@@ -37,24 +34,16 @@ export const useLancamentosFormData = (editingLancamento: LancamentoComRelacoes 
       meses_recorrencia: lancamento.meses_recorrencia || null,
     };
     
-    console.log('FormData: ✅ Dados processados para carregamento:', loadedData);
     setFormData(loadedData);
   }, []);
 
   const resetForm = useCallback(() => {
-    console.log('FormData: 🔄 Resetando formulário');
     const initialData = getInitialFormData();
-    console.log('FormData: 📋 Dados iniciais:', initialData);
     setFormData(initialData);
   }, []);
 
   const updateFormField = useCallback((field: keyof FormData, value: string | boolean | number | null) => {
-    console.log('FormData: 🔧 Atualizando campo', field, 'com valor:', value);
-    setFormData(prev => {
-      const updated = { ...prev, [field]: value };
-      console.log('FormData: 📊 Estado atualizado:', updated);
-      return updated;
-    });
+    setFormData(prev => ({ ...prev, [field]: value }));
   }, []);
 
   return {

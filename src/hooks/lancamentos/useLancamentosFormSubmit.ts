@@ -19,14 +19,7 @@ export const useLancamentosFormSubmit = ({
     editingLancamento: LancamentoComRelacoes | null,
     resetForm: () => void
   ) => {
-    console.log('FormSubmit: Iniciando submissão do formulário');
-    console.log('FormSubmit: Dados do formulário:', formData);
-    console.log('FormSubmit: Valor numérico calculado:', valorNumerico);
-    console.log('FormSubmit: Modo edição:', !!editingLancamento);
-    console.log('FormSubmit: ID do lançamento (se editando):', editingLancamento?.id);
-
     if (!user) {
-      console.error('FormSubmit: Usuário não autenticado');
       toast({
         title: "Erro",
         description: "Usuário não autenticado.",
@@ -35,13 +28,10 @@ export const useLancamentosFormSubmit = ({
       return;
     }
 
-    console.log('FormSubmit: Usuário autenticado:', user.id);
     setLoading(true);
 
     try {
       if (editingLancamento) {
-        console.log('FormSubmit: Atualizando lançamento existente');
-        
         // Dados para atualização - apenas campos editáveis
         const updateData = {
           id: editingLancamento.id,
@@ -56,18 +46,13 @@ export const useLancamentosFormSubmit = ({
           meses_recorrencia: formData.recorrente ? formData.meses_recorrencia : null
         };
         
-        console.log('FormSubmit: Dados para atualização:', updateData);
-        
-        const result = await updateLancamento.mutateAsync(updateData);
-        console.log('FormSubmit: Resultado da atualização:', result);
+        await updateLancamento.mutateAsync(updateData);
         
         toast({
           title: "Sucesso!",
           description: "Lançamento atualizado com sucesso.",
         });
       } else {
-        console.log('FormSubmit: Criando novo lançamento');
-        
         const lancamentoData = {
           data: formData.data,
           tipo: formData.tipo,
@@ -83,10 +68,7 @@ export const useLancamentosFormSubmit = ({
           lancamento_pai_id: null
         };
 
-        console.log('FormSubmit: Dados do novo lançamento:', lancamentoData);
-        
-        const result = await createLancamento.mutateAsync(lancamentoData);
-        console.log('FormSubmit: Resultado da criação:', result);
+        await createLancamento.mutateAsync(lancamentoData);
         
         const mensagem = formData.recorrente && formData.meses_recorrencia 
           ? `Lançamento recorrente criado com sucesso! Serão criados ${formData.meses_recorrencia} lançamentos nos próximos meses.`
@@ -98,24 +80,11 @@ export const useLancamentosFormSubmit = ({
         });
       }
 
-      console.log('FormSubmit: Operação concluída com sucesso, limpando formulário');
       resetForm();
       setEditingLancamento(null);
       setActiveTab('lista');
       
-      // Feedback adicional para confirmar que foi salvo
-      console.log('FormSubmit: ✅ Formulário resetado e redirecionado para lista');
-      
     } catch (error: any) {
-      console.error('FormSubmit: ❌ Erro ao salvar lançamento:', error);
-      console.error('FormSubmit: Detalhes do erro:', {
-        message: error?.message,
-        details: error?.details,
-        hint: error?.hint,
-        code: error?.code,
-        stack: error?.stack
-      });
-      
       const errorMessage = error?.message || "Ocorreu um erro ao salvar o lançamento.";
       
       toast({
@@ -124,7 +93,6 @@ export const useLancamentosFormSubmit = ({
         variant: "destructive",
       });
     } finally {
-      console.log('FormSubmit: Finalizando operação, removendo loading');
       setLoading(false);
     }
   };

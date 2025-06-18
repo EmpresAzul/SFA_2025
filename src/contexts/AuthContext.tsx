@@ -1,117 +1,70 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { User, Session } from '@supabase/supabase-js';
-
-interface AuthUser {
-  id: string;
-  email: string;
-  name: string;
-  registrationDate: string;
-  address: string;
-  number: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-}
+import type { User, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
-  user: AuthUser | null;
+  user: User | null;
   session: Session | null;
-  isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
-  updateUser: (userData: Partial<AuthUser>) => void;
-  updatePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  loading: boolean;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [lastActivity, setLastActivity] = useState<number>(Date.now());
+  const [loading, setLoading] = useState(true);
 
-  // Auto-logout após 10 minutos de inatividade
-  useEffect(() => {
-    const checkInactivity = () => {
-      const now = Date.now();
-      const inactiveTime = now - lastActivity;
-      const tenMinutes = 10 * 60 * 1000; // 10 minutos em milliseconds
-
-      if (inactiveTime > tenMinutes && session) {
-        console.log('Auto-logout por inatividade');
-        logout();
-      }
-    };
-
-    const interval = setInterval(checkInactivity, 60000); // Verifica a cada minuto
-
-    // Monitora atividade do usuário
-    const updateActivity = () => setLastActivity(Date.now());
-    
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    events.forEach(event => {
-      document.addEventListener(event, updateActivity, true);
-    });
-
-    return () => {
-      clearInterval(interval);
-      events.forEach(event => {
-        document.removeEventListener(event, updateActivity, true);
-      });
-    };
-  }, [session, lastActivity]);
-
-  const createAuthUserFromSession = (session: Session): AuthUser => {
-    const userData = session.user.user_metadata || {};
-    return {
-      id: session.user.id,
-      email: session.user.email || '',
-      name: userData.name || session.user.email?.split('@')[0] || '',
-      registrationDate: session.user.created_at || '',
-      address: userData.address || '',
-      number: userData.number || '',
-      neighborhood: userData.neighborhood || '',
-      city: userData.city || '',
-      state: userData.state || ''
-    };
+  // Log de evento de segurança
+  const logSecurityEvent = async (eventType: string, details?: any) => {
+    try {
+      await supabase
+        .from('security_logs')
+        .insert({
+          user_id: user?.id,
+          event_type: eventType,
+          details,
+          created_at: new Date().toISOString()
+        });
+    } catch (error) {
+      // Log silencioso para não afetar a experiência do usuário
+    }
   };
 
   useEffect(() => {
-    // Configurar listener de mudanças de autenticação
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state change:', event, session);
         setSession(session);
-        
-        if (session?.user) {
-          const authUser = createAuthUserFromSession(session);
-          setUser(authUser);
-          setLastActivity(Date.now());
-        } else {
-          setUser(null);
+        setUser(session?.user ?? null);
+        setLoading(false);
+
+        // Log eventos de autenticação
+        if (event === 'SIGNED_IN' && session?.user) {
+          setTimeout(() => {
+            logSecurityEvent('login_success', {
+              login_method: 'email_password',
+              timestamp: new Date().toISOString()
+            });
+          }, 100);
+        } else if (event === 'SIGNED_OUT') {
+          setTimeout(() => {
+            logSecurityEvent('logout', {
+              logout_time: new Date().toISOString()
+            });
+          }, 100);
         }
       }
     );
 
-    // Verificar sessão existente
+    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Sessão existente encontrada:', session);
       setSession(session);
-      if (session?.user) {
-        const authUser = createAuthUserFromSession(session);
-        setUser(authUser);
-        setLastActivity(Date.now());
-      }
+      setUser(session?.user ?? null);
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -119,76 +72,68 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      console.log('Iniciando login para:', email);
-      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
-        console.error('Erro no login:', error);
+        // Log failed login attempt
+        await supabase
+          .from('security_logs')
+          .insert({
+            user_id: null,
+            event_type: 'login_failed',
+            details: {
+              email,
+              error: error.message,
+              timestamp: new Date().toISOString()
+            },
+            created_at: new Date().toISOString()
+          });
         return false;
       }
 
-      console.log('Login bem-sucedido:', data);
       return !!data.user;
     } catch (error) {
-      console.error('Erro durante login:', error);
       return false;
     }
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
-      console.log('Fazendo logout...');
-      await supabase.auth.signOut();
-      setUser(null);
-      setSession(null);
-    } catch (error) {
-      console.error('Erro no logout:', error);
-    }
-  };
-
-  const updateUser = (userData: Partial<AuthUser>) => {
-    if (user) {
-      const updatedUser = { ...user, ...userData };
-      setUser(updatedUser);
-      console.log('AuthContext - User updated:', updatedUser);
-    }
-  };
-
-  const updatePassword = async (currentPassword: string, newPassword: string): Promise<boolean> => {
-    try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
-      });
-
-      if (error) {
-        console.error('Erro ao atualizar senha:', error);
-        return false;
+      // Log logout antes de fazer logout
+      if (user) {
+        await logSecurityEvent('logout', {
+          logout_time: new Date().toISOString()
+        });
       }
-
-      return true;
+      
+      await supabase.auth.signOut();
     } catch (error) {
-      console.error('Erro ao atualizar senha:', error);
-      return false;
+      // Log silencioso
     }
-  };
-
-  const value = {
-    user,
-    session,
-    isAuthenticated: !!session,
-    login,
-    logout,
-    updateUser,
-    updatePassword
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        login,
+        logout,
+        loading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };

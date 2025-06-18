@@ -1,91 +1,102 @@
 
 import { 
-  BarChart3, 
+  LayoutDashboard, 
+  TrendingUp, 
   DollarSign, 
-  Tag, 
+  BarChart3, 
   Package, 
-  MessageCircle, 
-  User,
-  TrendingUp,
-  CreditCard,
-  Banknote,
-  Users,
-  Bell,
+  Users, 
+  CreditCard, 
+  Calendar, 
   Target,
-  Calculator
+  Calculator,
+  Shield
 } from 'lucide-react';
 import type { MenuItem } from './types';
 
 export const menuItems: MenuItem[] = [
   {
-    id: 'indicadores',
-    label: 'Indicadores',
-    icon: BarChart3,
-    iconColor: 'text-blue-500',
-    children: [
-      { id: 'bancos', label: 'Bancos', icon: Banknote, iconColor: 'text-green-500', href: '/dashboard/saldos-bancarios' },
-      { id: 'dre', label: 'DRE', icon: TrendingUp, iconColor: 'text-purple-500', href: '/dashboard/dre' },
-      { id: 'fluxo-caixa', label: 'Fluxo de Caixa', icon: CreditCard, iconColor: 'text-orange-500', href: '/dashboard/fluxo-caixa' },
-      { id: 'ponto-equilibrio', label: 'Ponto de Equilíbrio', icon: Calculator, iconColor: 'text-red-500', href: '/dashboard/ponto-equilibrio' },
-      { id: 'metricas', label: 'Métricas', icon: TrendingUp, iconColor: 'text-cyan-500', href: '/dashboard' }
-    ]
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: LayoutDashboard,
+    href: '/dashboard',
+    description: 'Visão geral do negócio'
   },
   {
-    id: 'cadastros',
-    label: 'Cadastros',
-    icon: Users,
-    iconColor: 'text-indigo-500',
-    href: '/dashboard/cadastros'
+    id: 'lancamentos',
+    label: 'Lançamentos',
+    icon: TrendingUp,
+    href: '/lancamentos',
+    description: 'Gestão financeira'
+  },
+  {
+    id: 'fluxo-caixa',
+    label: 'Fluxo de Caixa',
+    icon: DollarSign,
+    href: '/fluxo-caixa',
+    description: 'Controle de entradas e saídas'
+  },
+  {
+    id: 'dre',
+    label: 'DRE',
+    icon: BarChart3,
+    href: '/dre',
+    description: 'Demonstrativo de resultado'
   },
   {
     id: 'precificacao',
     label: 'Precificação',
-    icon: Tag,
-    iconColor: 'text-pink-500',
-    href: '/dashboard/precificacao'
-  },
-  {
-    id: 'financeiro',
-    label: 'Financeiro',
-    icon: DollarSign,
-    iconColor: 'text-emerald-500',
-    children: [
-      { id: 'lancamentos', label: 'Lançamentos', icon: CreditCard, iconColor: 'text-indigo-500', href: '/dashboard/lancamentos' }
-    ]
+    icon: Calculator,
+    href: '/precificacao',
+    description: 'Cálculo de preços'
   },
   {
     id: 'estoque',
     label: 'Estoque',
     icon: Package,
-    iconColor: 'text-amber-500',
-    href: '/dashboard/estoque'
+    href: '/estoque',
+    description: 'Controle de produtos'
+  },
+  {
+    id: 'cadastros',
+    label: 'Cadastros',
+    icon: Users,
+    href: '/cadastros',
+    description: 'Clientes e fornecedores'
+  },
+  {
+    id: 'saldos-bancarios',
+    label: 'Saldos Bancários',
+    icon: CreditCard,
+    href: '/saldos-bancarios',
+    description: 'Controle bancário'
+  },
+  {
+    id: 'lembretes',
+    label: 'Lembretes',
+    icon: Calendar,
+    href: '/lembretes',
+    description: 'Agenda e notificações'
   },
   {
     id: 'pipeline',
     label: 'Pipeline',
     icon: Target,
-    iconColor: 'text-violet-500',
-    href: '/dashboard/pipeline'
+    href: '/pipeline',
+    description: 'Funil de vendas'
   },
   {
-    id: 'lembretes',
-    label: 'Lembretes',
-    icon: Bell,
-    iconColor: 'text-cyan-500',
-    href: '/dashboard/lembretes'
+    id: 'ponto-equilibrio',
+    label: 'Ponto de Equilíbrio',
+    icon: TrendingUp,
+    href: '/ponto-equilibrio',
+    description: 'Análise de viabilidade'
   },
   {
-    id: 'consultor-virtual',
-    label: 'Consultor Virtual',
-    icon: MessageCircle,
-    iconColor: 'text-teal-500',
-    href: '/dashboard/consultor-virtual'
-  },
-  {
-    id: 'perfil',
-    label: 'Perfil',
-    icon: User,
-    iconColor: 'text-rose-500',
-    href: '/dashboard/perfil'
+    id: 'security',
+    label: 'Segurança',
+    icon: Shield,
+    href: '/security',
+    description: 'Privacidade e logs'
   }
 ];

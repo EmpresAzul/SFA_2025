@@ -1,78 +1,56 @@
 
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import DashboardLayout from './components/DashboardLayout';
-import Dashboard from './pages/Dashboard';
-import Index from './pages/Index';
-import NotFound from './pages/NotFound';
-import VirtualConsultant from './pages/VirtualConsultant';
-import Profile from './pages/Profile';
-import LoginForm from './components/LoginForm';
-import EstoqueManagement from '@/pages/EstoqueManagement';
-import LancamentosFinanceiros from '@/pages/LancamentosFinanceiros';
-import SaldosBancarios from '@/pages/SaldosBancarios';
-import FluxoCaixa from '@/pages/FluxoCaixa';
-import DRE from '@/pages/DRE';
-import Precificacao from '@/pages/Precificacao';
-import CadastrosUnified from '@/pages/CadastrosUnified';
-import Lembretes from '@/pages/Lembretes';
-import Pipeline from '@/pages/Pipeline';
-import PontoEquilibrio from '@/pages/PontoEquilibrio';
-import PWAInstallBanner from './components/PWAInstallBanner';
-import { Outlet } from 'react-router-dom';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import DashboardLayout from "./components/DashboardLayout";
+import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
+import LancamentosFinanceiros from "./pages/LancamentosFinanceiros";
+import FluxoCaixa from "./pages/FluxoCaixa";
+import DRE from "./pages/DRE";
+import Precificacao from "./pages/Precificacao";
+import EstoqueManagement from "./pages/EstoqueManagement";
+import CadastrosUnified from "./pages/CadastrosUnified";
+import SaldosBancarios from "./pages/SaldosBancarios";
+import Lembretes from "./pages/Lembretes";
+import Pipeline from "./pages/Pipeline";
+import PontoEquilibrio from "./pages/PontoEquilibrio";
+import Security from "./pages/Security";
+import NotFound from "./pages/NotFound";
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useAuth();
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-  return <>{children}</>;
-};
+const queryClient = new QueryClient();
 
-const DashboardLayoutWrapper = () => {
-  return (
-    <DashboardLayout>
-      <Outlet />
-    </DashboardLayout>
-  );
-};
-
-const App = () => {
-  return (
-    <AuthProvider>
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardLayoutWrapper />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="dre" element={<DRE />} />
-            <Route path="precificacao" element={<Precificacao />} />
-            <Route path="estoque" element={<EstoqueManagement />} />
-            <Route path="lancamentos" element={<LancamentosFinanceiros />} />
-            <Route path="saldos-bancarios" element={<SaldosBancarios />} />
-            <Route path="fluxo-caixa" element={<FluxoCaixa />} />
-            <Route path="ponto-equilibrio" element={<PontoEquilibrio />} />
-            <Route path="cadastros" element={<CadastrosUnified />} />
-            <Route path="pipeline" element={<Pipeline />} />
-            <Route path="lembretes" element={<Lembretes />} />
-            <Route path="consultor-virtual" element={<VirtualConsultant />} />
-            <Route path="perfil" element={<Profile />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <PWAInstallBanner />
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Index />} />
+            <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
+            <Route path="/lancamentos" element={<DashboardLayout><LancamentosFinanceiros /></DashboardLayout>} />
+            <Route path="/fluxo-caixa" element={<DashboardLayout><FluxoCaixa /></DashboardLayout>} />
+            <Route path="/dre" element={<DashboardLayout><DRE /></DashboardLayout>} />
+            <Route path="/precificacao" element={<DashboardLayout><Precificacao /></DashboardLayout>} />
+            <Route path="/estoque" element={<DashboardLayout><EstoqueManagement /></DashboardLayout>} />
+            <Route path="/cadastros" element={<DashboardLayout><CadastrosUnified /></DashboardLayout>} />
+            <Route path="/saldos-bancarios" element={<DashboardLayout><SaldosBancarios /></DashboardLayout>} />
+            <Route path="/lembretes" element={<DashboardLayout><Lembretes /></DashboardLayout>} />
+            <Route path="/pipeline" element={<DashboardLayout><Pipeline /></DashboardLayout>} />
+            <Route path="/ponto-equilibrio" element={<DashboardLayout><PontoEquilibrio /></DashboardLayout>} />
+            <Route path="/security" element={<DashboardLayout><Security /></DashboardLayout>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
-    </AuthProvider>
-  );
-};
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
