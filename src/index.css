@@ -95,35 +95,90 @@
     @apply bg-background text-foreground font-sans text-sm;
   }
 
-  /* Tipografia responsiva reduzida */
+  /* Tipografia responsiva melhorada */
   h1 {
-    @apply text-xl sm:text-2xl lg:text-2xl font-bold;
+    @apply text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold;
   }
 
   h2 {
-    @apply text-lg sm:text-xl lg:text-xl font-semibold;
+    @apply text-base sm:text-lg md:text-xl lg:text-xl font-semibold;
   }
 
   h3 {
-    @apply text-base sm:text-lg font-medium;
+    @apply text-sm sm:text-base md:text-lg font-medium;
   }
 
-  /* Responsividade para cards */
+  /* Responsividade para cards melhorada */
   .responsive-grid {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6;
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-6;
   }
 
   .responsive-grid-2 {
-    @apply grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6;
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-6;
   }
 
-  /* Padding responsivo */
+  /* Padding responsivo melhorado */
   .responsive-padding {
-    @apply p-3 sm:p-4 lg:p-6;
+    @apply p-2 sm:p-3 md:p-4 lg:p-6;
   }
 
   .responsive-margin {
-    @apply space-y-3 sm:space-y-4 lg:space-y-6;
+    @apply space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-6;
+  }
+
+  /* Componentes responsivos */
+  .responsive-button {
+    @apply text-xs sm:text-sm md:text-base px-2 sm:px-3 md:px-4 py-1 sm:py-2 md:py-3;
+  }
+
+  .responsive-input {
+    @apply text-sm sm:text-base h-8 sm:h-10 md:h-11;
+  }
+
+  .responsive-table-container {
+    @apply overflow-x-auto -mx-2 sm:-mx-3 md:-mx-4 lg:-mx-6;
+  }
+
+  .responsive-table {
+    @apply min-w-full text-xs sm:text-sm;
+  }
+
+  .responsive-table th,
+  .responsive-table td {
+    @apply px-1 sm:px-2 md:px-4 py-1 sm:py-2;
+  }
+
+  /* Cards responsivos */
+  .responsive-card {
+    @apply p-2 sm:p-3 md:p-4 lg:p-6 rounded-lg sm:rounded-xl;
+  }
+
+  .responsive-card-header {
+    @apply mb-2 sm:mb-3 md:mb-4;
+  }
+
+  /* Formulários responsivos */
+  .responsive-form-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4;
+  }
+
+  .responsive-form-actions {
+    @apply flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4 sm:mt-6;
+  }
+
+  /* Navigation responsiva */
+  .responsive-nav {
+    @apply flex flex-col sm:flex-row gap-2 sm:gap-4;
+  }
+
+  /* Tabs responsivas */
+  .responsive-tabs {
+    @apply text-xs sm:text-sm md:text-base;
+  }
+
+  /* Espaçamentos responsivos globais */
+  .container-responsive {
+    @apply mx-auto px-2 sm:px-4 md:px-6 lg:px-8 max-w-7xl;
   }
 }
 
@@ -236,15 +291,6 @@
   box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
 }
 
-/* Responsive table */
-.responsive-table {
-  @apply overflow-x-auto;
-}
-
-.responsive-table table {
-  @apply min-w-full;
-}
-
 /* Mobile optimizations */
 @media (max-width: 640px) {
   .mobile-stack {
@@ -257,5 +303,55 @@
 
   .mobile-hidden {
     @apply hidden;
+  }
+
+  /* Melhor experiência de toque em mobile */
+  .mobile-touch {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Textos otimizados para mobile */
+  .mobile-text-sm {
+    @apply text-xs;
+  }
+
+  .mobile-text-base {
+    @apply text-sm;
+  }
+
+  /* Padding reduzido em mobile */
+  .mobile-padding-sm {
+    @apply p-2;
+  }
+
+  /* Formulários otimizados para mobile */
+  .mobile-form-stack {
+    @apply flex-col space-y-3;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tablet-grid-2 {
+    @apply grid-cols-2;
+  }
+
+  .tablet-padding {
+    @apply p-4;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1025px) {
+  .desktop-grid-3 {
+    @apply grid-cols-3;
+  }
+
+  .desktop-grid-4 {
+    @apply grid-cols-4;
+  }
+
+  .desktop-padding-lg {
+    @apply p-8;
   }
 }

@@ -18,11 +18,19 @@ export const useLancamentosPage = () => {
   const [categoriaFilter, setCategoriaFilter] = useState('todas');
   const [activeTab, setActiveTab] = useState('lista');
   const [editingLancamento, setEditingLancamento] = useState<LancamentoComRelacoes | null>(null);
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const { toast } = useToast();
 
+  console.log('useLancamentosPage: Usuário autenticado:', !!user);
+  console.log('useLancamentosPage: Sessão ativa:', !!session);
+
   const { useQuery: useLancamentosQuery, useCreate, useUpdate, useDelete } = useLancamentos();
-  const { data: lancamentos, isLoading } = useLancamentosQuery();
+  const { data: lancamentos, isLoading, error } = useLancamentosQuery();
+  
+  console.log('useLancamentosPage: Dados de lançamentos:', lancamentos);
+  console.log('useLancamentosPage: Carregando:', isLoading);
+  console.log('useLancamentosPage: Erro:', error);
+
   const createLancamento = useCreate();
   const updateLancamento = useUpdate();
   const deleteLancamento = useDelete();
@@ -32,14 +40,19 @@ export const useLancamentosPage = () => {
   const { data: fornecedores } = useCadastrosQuery('Fornecedor');
 
   useEffect(() => {
+    console.log('useLancamentosPage: useEffect chamado - lancamentos:', lancamentos?.length || 0);
     if (lancamentos) {
       filterLancamentos();
     }
   }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
 
   const filterLancamentos = () => {
-    if (!lancamentos) return;
+    if (!lancamentos) {
+      console.log('useLancamentosPage: Sem lançamentos para filtrar');
+      return;
+    }
     
+    console.log('useLancamentosPage: Filtrando', lancamentos.length, 'lançamentos');
     let filtered: LancamentoComRelacoes[] = [...lancamentos];
 
     if (searchTerm) {
@@ -57,6 +70,7 @@ export const useLancamentosPage = () => {
       filtered = filtered.filter(lancamento => lancamento.categoria === categoriaFilter);
     }
 
+    console.log('useLancamentosPage: Lançamentos filtrados:', filtered.length);
     setFilteredLancamentos(filtered);
   };
 
