@@ -53,12 +53,8 @@ export const usePWALifecycle = () => {
       setState(prev => ({ ...prev, updateAvailable: true }));
       toast({
         title: "Atualização disponível",
-        description: "Uma nova versão do FluxoAzul está disponível. Clique para atualizar.",
+        description: "Uma nova versão do FluxoAzul está disponível.",
         duration: 0, // Don't auto-dismiss
-        action: {
-          altText: "Atualizar",
-          onClick: () => updateServiceWorker(),
-        },
       });
     };
 
@@ -125,9 +121,14 @@ export const usePWALifecycle = () => {
   };
 
   const registerBackgroundSync = (tag: string) => {
-    if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+    if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then((registration) => {
-        return registration.sync.register(tag);
+        // Check if sync is supported
+        if ('sync' in registration) {
+          return (registration as any).sync.register(tag);
+        } else {
+          console.log('Background sync not supported');
+        }
       }).catch((error) => {
         console.error('Background sync registration failed:', error);
       });
