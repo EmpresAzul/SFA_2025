@@ -3,70 +3,39 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FluxoAzul - Gestão Financeira PME</title>
-    <meta name="description" content="Sistema completo de gestão financeira para pequenas e médias empresas - Dashboard, Fluxo de Caixa, DRE, Precificação e muito mais" />
+    <meta name="description" content="Sistema de gestão financeira para pequenas e médias empresas" />
     <meta name="author" content="FluxoAzul" />
-    <meta name="keywords" content="gestão financeira, PME, fluxo de caixa, DRE, precificação, dashboard financeiro" />
 
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#1e3a8a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="FluxoAzul" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="application-name" content="FluxoAzul" />
     
-    <!-- iOS Specific Meta Tags -->
-    <meta name="apple-touch-fullscreen" content="yes" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="apple-mobile-web-app-orientation" content="portrait" />
+    <!-- iOS Splash Screens -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     
     <!-- Favicons and App Icons -->
     <link rel="icon" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" type="image/png">
     <link rel="apple-touch-icon" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
-    <link rel="apple-touch-icon" sizes="144x144" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
-    <link rel="apple-touch-icon" sizes="120x120" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
-    <link rel="apple-touch-icon" sizes="76x76" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
-    <link rel="apple-touch-icon" sizes="60x60" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
-    <link rel="apple-touch-icon" sizes="57x57" href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
-    
-    <!-- iOS Splash Screens -->
-    <link rel="apple-touch-startup-image" href="/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png" />
-    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png" />
-    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png" />
-    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png" />
     
     <!-- Microsoft Tiles -->
     <meta name="msapplication-TileImage" content="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png" />
     <meta name="msapplication-TileColor" content="#1e3a8a" />
-    <meta name="msapplication-config" content="none" />
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://fluxoazul.com/" />
     <meta property="og:title" content="FluxoAzul - Gestão Financeira PME" />
-    <meta property="og:description" content="Sistema completo de gestão financeira para pequenas e médias empresas" />
-    <meta property="og:image" content="/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png" />
+    <meta property="og:description" content="Sistema de gestão financeira para pequenas e médias empresas" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://fluxoazul.com/" />
-    <meta property="twitter:title" content="FluxoAzul - Gestão Financeira PME" />
-    <meta property="twitter:description" content="Sistema completo de gestão financeira para pequenas e médias empresas" />
-    <meta property="twitter:image" content="/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png" />
-
-    <!-- Performance and Security -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
   </head>
 
   <body>

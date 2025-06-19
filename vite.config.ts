@@ -27,27 +27,12 @@ export default defineConfig(({ mode }) => ({
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
-          charts: ['recharts'],
-          supabase: ['@supabase/supabase-js'],
         },
-      },
-    },
-    // Optimize for PWA
-    target: 'es2015',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: mode === 'production',
-        drop_debugger: mode === 'production',
       },
     },
   },
   // PWA Configuration
   define: {
-    __PWA_VERSION__: JSON.stringify(process.env.npm_package_version || '2.0.0'),
-  },
-  // Optimize performance
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
+    __PWA_VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
   },
 }));

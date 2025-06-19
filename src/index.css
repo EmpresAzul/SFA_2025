@@ -1,36 +1,42 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
 
 @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
+
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
+
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.75rem;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -44,32 +50,35 @@
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
+
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
+
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
+
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
+
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --ring: 212.7 26.8% 83.9%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 94.1%;
-    --sidebar-primary-foreground: 240 5.9% 10%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
@@ -81,123 +90,268 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground font-sans;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    font-feature-settings: 'cv11', 'ss01';
-    font-variation-settings: 'opsz' 32;
-    scroll-behavior: smooth;
+    @apply bg-background text-foreground font-sans text-sm;
   }
-  
-  /* PWA specific styles */
-  .ios-standalone {
-    /* iOS standalone mode adjustments */
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
+
+  /* Tipografia responsiva melhorada */
+  h1 {
+    @apply text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold;
   }
-  
-  /* Mobile optimizations */
-  @media (max-width: 768px) {
-    body {
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    
-    /* Improve touch targets */
-    button, [role="button"], input, select, textarea {
-      min-height: 44px;
-    }
-    
-    /* Better scrolling on mobile */
-    * {
-      -webkit-overflow-scrolling: touch;
-    }
+
+  h2 {
+    @apply text-base sm:text-lg md:text-xl lg:text-xl font-semibold;
   }
-  
-  /* High DPI display optimizations */
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    img {
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-    }
+
+  h3 {
+    @apply text-sm sm:text-base md:text-lg font-medium;
   }
-  
-  /* Reduce motion for accessibility */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
+
+  /* Responsividade para cards melhorada */
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-6;
+  }
+
+  .responsive-grid-2 {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-6;
+  }
+
+  /* Padding responsivo melhorado */
+  .responsive-padding {
+    @apply p-2 sm:p-3 md:p-4 lg:p-6;
+  }
+
+  .responsive-margin {
+    @apply space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-6;
+  }
+
+  /* Componentes responsivos */
+  .responsive-button {
+    @apply text-xs sm:text-sm md:text-base px-2 sm:px-3 md:px-4 py-1 sm:py-2 md:py-3;
+  }
+
+  .responsive-input {
+    @apply text-sm sm:text-base h-8 sm:h-10 md:h-11;
+  }
+
+  .responsive-table-container {
+    @apply overflow-x-auto -mx-2 sm:-mx-3 md:-mx-4 lg:-mx-6;
+  }
+
+  .responsive-table {
+    @apply min-w-full text-xs sm:text-sm;
+  }
+
+  .responsive-table th,
+  .responsive-table td {
+    @apply px-1 sm:px-2 md:px-4 py-1 sm:py-2;
+  }
+
+  /* Cards responsivos */
+  .responsive-card {
+    @apply p-2 sm:p-3 md:p-4 lg:p-6 rounded-lg sm:rounded-xl;
+  }
+
+  .responsive-card-header {
+    @apply mb-2 sm:mb-3 md:mb-4;
+  }
+
+  /* Formulários responsivos */
+  .responsive-form-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4;
+  }
+
+  .responsive-form-actions {
+    @apply flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4 sm:mt-6;
+  }
+
+  /* Navigation responsiva */
+  .responsive-nav {
+    @apply flex flex-col sm:flex-row gap-2 sm:gap-4;
+  }
+
+  /* Tabs responsivas */
+  .responsive-tabs {
+    @apply text-xs sm:text-sm md:text-base;
+  }
+
+  /* Espaçamentos responsivos globais */
+  .container-responsive {
+    @apply mx-auto px-2 sm:px-4 md:px-6 lg:px-8 max-w-7xl;
   }
 }
 
-@layer components {
-  /* Custom scrollbar */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
+/* Custom gradient utilities */
+.gradient-fluxo {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+}
+
+.gradient-fluxo-light {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+}
+
+.gradient-fluxo-dark {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.gradient-professional {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
+}
+
+.gradient-modern {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.gradient-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.gradient-fluxo-text {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Professional black accents */
+.bg-professional-dark {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.text-professional {
+  color: #0f172a;
+}
+
+.border-professional {
+  border-color: #1e293b;
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
   }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: hsl(var(--muted));
-    border-radius: 4px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground));
-    border-radius: 4px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--foreground));
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
-@layer utilities {
-  /* Animation utilities */
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
+.animate-slideInDown {
+  animation: slideInDown 0.6s ease-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+}
+
+/* Professional card shadows */
+.shadow-professional {
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -1px rgba(15, 23, 42, 0.06);
+}
+
+.shadow-professional-lg {
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05);
+}
+
+.shadow-colorful {
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 0 8px 10px -6px rgba(59, 130, 246, 0.1);
+}
+
+.shadow-colorful-lg {
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .mobile-stack {
+    @apply flex-col space-y-2 space-x-0;
   }
-  
-  .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
+
+  .mobile-full {
+    @apply w-full;
   }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+
+  .mobile-hidden {
+    @apply hidden;
   }
-  
-  @keyframes slideUp {
-    from {
-      transform: translateY(20px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
+
+  /* Melhor experiência de toque em mobile */
+  .mobile-touch {
+    @apply min-h-[44px] min-w-[44px];
   }
-  
-  /* Safe area utilities for iOS */
-  .pt-safe {
-    padding-top: env(safe-area-inset-top);
+
+  /* Textos otimizados para mobile */
+  .mobile-text-sm {
+    @apply text-xs;
   }
-  
-  .pb-safe {
-    padding-bottom: env(safe-area-inset-bottom);
+
+  .mobile-text-base {
+    @apply text-sm;
   }
-  
-  .pl-safe {
-    padding-left: env(safe-area-inset-left);
+
+  /* Padding reduzido em mobile */
+  .mobile-padding-sm {
+    @apply p-2;
   }
-  
-  .pr-safe {
-    padding-right: env(safe-area-inset-right);
+
+  /* Formulários otimizados para mobile */
+  .mobile-form-stack {
+    @apply flex-col space-y-3;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tablet-grid-2 {
+    @apply grid-cols-2;
+  }
+
+  .tablet-padding {
+    @apply p-4;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1025px) {
+  .desktop-grid-3 {
+    @apply grid-cols-3;
+  }
+
+  .desktop-grid-4 {
+    @apply grid-cols-4;
+  }
+
+  .desktop-padding-lg {
+    @apply p-8;
   }
 }

@@ -2,10 +2,8 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import ResponsiveSidebar from './ResponsiveSidebar';
+import Sidebar from './Sidebar';
 import Header from './Header';
-import PWAStatusIndicator from './PWAStatusIndicator';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -14,7 +12,6 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { user, loading } = useAuth();
-  const isMobile = useIsMobile();
 
   // Mostrar loading enquanto verifica autenticação
   if (loading) {
@@ -34,19 +31,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 relative">
-      <PWAStatusIndicator />
-      <ResponsiveSidebar 
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar 
         collapsed={sidebarCollapsed} 
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
       
-      <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
-        isMobile ? 'ml-0' : sidebarCollapsed ? 'ml-16' : 'ml-64'
-      }`}>
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header onMenuToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
         
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
+        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>
