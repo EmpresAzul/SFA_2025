@@ -155,7 +155,7 @@ const PWAInstallBanner: React.FC = () => {
               size="sm"
               className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 text-sm"
             >
-              {isIOS || isAndroid ? 'Ver como' : 'Instalar'}
+              Instalar
             </Button>
             <Button
               variant="ghost"
