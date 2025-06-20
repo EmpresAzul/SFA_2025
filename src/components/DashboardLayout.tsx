@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import PWAStatusIndicator from './PWAStatusIndicator';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -39,6 +40,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header onMenuToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
+        <PWAStatusIndicator />
         
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
           <div className="max-w-7xl mx-auto">

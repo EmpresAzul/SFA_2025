@@ -2,7 +2,7 @@
 {
   "name": "FluxoAzul - Gestão Financeira PME",
   "short_name": "FluxoAzul",
-  "description": "Sistema de gestão financeira para pequenas e médias empresas",
+  "description": "Sistema de gestão financeira completo para pequenas e médias empresas",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -29,7 +29,7 @@
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "description": "Acesso rápido ao dashboard",
+      "description": "Acesso rápido ao dashboard financeiro",
       "url": "/dashboard",
       "icons": [
         {
@@ -42,7 +42,19 @@
       "name": "Lançamentos",
       "short_name": "Lançamentos",
       "description": "Gerenciar lançamentos financeiros",
-      "url": "/dashboard/lancamentos",
+      "url": "/lancamentos",
+      "icons": [
+        {
+          "src": "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Fluxo de Caixa",
+      "short_name": "Fluxo Caixa",
+      "description": "Visualizar fluxo de caixa",
+      "url": "/fluxo-caixa",
       "icons": [
         {
           "src": "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
@@ -50,5 +62,6 @@
         }
       ]
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }
