@@ -38,9 +38,10 @@ export const useAutoSave = () => {
 
       // Salvar dados não submetidos se houver algum
       if (unsavedData.length > 0) {
+        // Use insert instead of upsert to avoid conflicts
         await supabase
           .from('user_session_data')
-          .upsert({
+          .insert({
             user_id: user.id,
             page: window.location.pathname,
             unsaved_data: unsavedData,
