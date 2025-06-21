@@ -22,7 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  // Log de evento de segurança
+  // Log de evento de segurança simplificado
   const logSecurityEvent = async (eventType: string, details?: any) => {
     try {
       await supabase
@@ -35,6 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
     } catch (error) {
       // Log silencioso para não afetar a experiência do usuário
+      console.log('Security log error:', error);
     }
   };
 
@@ -49,45 +50,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       await supabase.auth.signOut();
     } catch (error) {
-      // Log silencioso
+      console.error('Logout error:', error);
     }
   };
-
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-
-        // Log eventos de autenticação
-        if (event === 'SIGNED_IN' && session?.user) {
-          setTimeout(() => {
-            logSecurityEvent('login_success', {
-              login_method: 'email_password',
-              timestamp: new Date().toISOString()
-            });
-          }, 100);
-        } else if (event === 'SIGNED_OUT') {
-          setTimeout(() => {
-            logSecurityEvent('logout', {
-              logout_time: new Date().toISOString()
-            });
-          }, 100);
-        }
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
@@ -115,6 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return !!data.user;
     } catch (error) {
+      console.error('Login error:', error);
       return false;
     }
   };
@@ -154,9 +120,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       return true;
     } catch (error) {
+      console.error('Password update error:', error);
       return false;
     }
   };
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state change:', event, session?.user?.email);
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+
+        // Log eventos de autenticação de forma assíncrona
+        if (event === 'SIGNED_IN' && session?.user) {
+          // Use setTimeout to avoid blocking the auth state change
+          setTimeout(() => {
+            logSecurityEvent('login_success', {
+              login_method: 'email_password',
+              timestamp: new Date().toISOString()
+            });
+          }, 100);
+        } else if (event === 'SIGNED_OUT') {
+          setTimeout(() => {
+            logSecurityEvent('logout', {
+              logout_time: new Date().toISOString()
+            });
+          }, 100);
+        }
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.email);
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <AuthContext.Provider

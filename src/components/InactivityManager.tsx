@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 const InactivityManager: React.FC = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
-  const { saveFormData } = useAutoSave();
+  const { saveFormData } = useAutoSave(user?.id);
 
   // Logout automático por inatividade
   const handleInactivityLogout = async () => {
@@ -17,23 +17,6 @@ const InactivityManager: React.FC = () => {
       description: "Você foi desconectado devido à inatividade. Seus dados foram salvos automaticamente.",
       variant: "destructive",
     });
-    
-    // Log security event before logout
-    try {
-      await fetch('/api/log-security-event', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          eventType: 'logout_inactivity',
-          details: {
-            logout_time: new Date().toISOString(),
-            reason: 'inactivity_timeout'
-          }
-        })
-      });
-    } catch (error) {
-      // Silent log
-    }
     
     await logout();
   };

@@ -1,13 +1,10 @@
 
 import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 
-export const useAutoSave = () => {
-  const { user } = useAuth();
-
+export const useAutoSave = (userId?: string) => {
   const saveFormData = useCallback(async () => {
-    if (!user) return;
+    if (!userId) return;
 
     try {
       // Capturar dados de formulários não submetidos
@@ -38,11 +35,10 @@ export const useAutoSave = () => {
 
       // Salvar dados não submetidos se houver algum
       if (unsavedData.length > 0) {
-        // Use insert instead of upsert to avoid conflicts
         await supabase
           .from('user_session_data')
           .insert({
-            user_id: user.id,
+            user_id: userId,
             page: window.location.pathname,
             unsaved_data: unsavedData,
             updated_at: new Date().toISOString()
@@ -52,7 +48,7 @@ export const useAutoSave = () => {
       console.error('Erro ao salvar dados da sessão:', error);
       throw error;
     }
-  }, [user]);
+  }, [userId]);
 
   return { saveFormData };
 };
