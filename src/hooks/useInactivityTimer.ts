@@ -1,6 +1,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 interface UseInactivityTimerProps {
   timeout: number; // tempo em milissegundos
@@ -41,17 +42,22 @@ export const useInactivityTimer = ({
           title: "Sessão expirando",
           description: `Sua sessão expirará em ${remainingTime} segundos devido à inatividade.`,
           variant: "destructive",
-          action: {
-            altText: "Manter ativa",
-            onClick: () => {
-              resetTimer();
-              dismiss();
-              toast({
-                title: "Sessão mantida",
-                description: "Sua sessão foi renovada com sucesso.",
-              });
-            }
-          }
+          action: (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                resetTimer();
+                dismiss();
+                toast({
+                  title: "Sessão mantida",
+                  description: "Sua sessão foi renovada com sucesso.",
+                });
+              }}
+            >
+              Manter ativa
+            </Button>
+          )
         });
 
         // Timer para salvar dados 30 segundos antes do logout
