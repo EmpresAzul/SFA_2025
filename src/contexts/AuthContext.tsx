@@ -1,8 +1,8 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
 import { useInactivityTimer } from '@/hooks/useInactivityTimer';
+import { useAutoSave } from '@/hooks/useAutoSave';
 import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
@@ -22,6 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { saveFormData } = useAutoSave();
 
   // Log de evento de segurança
   const logSecurityEvent = async (eventType: string, details?: any) => {
@@ -58,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const handleInactivityLogout = async () => {
     toast({
       title: "Sessão expirada",
-      description: "Você foi desconectado devido à inatividade.",
+      description: "Você foi desconectado devido à inatividade. Seus dados foram salvos automaticamente.",
       variant: "destructive",
     });
     
@@ -75,6 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     timeout: 600000, // 10 minutos
     onTimeout: handleInactivityLogout,
     warningTime: 60000, // 1 minuto de aviso
+    onSaveData: saveFormData, // Função para salvar dados automaticamente
   });
 
   useEffect(() => {
