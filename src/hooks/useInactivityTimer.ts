@@ -35,27 +35,23 @@ export const useInactivityTimer = ({
     // Configurar aviso
     if (warningTime && warningTime < timeout) {
       warningRef.current = setTimeout(() => {
-        let remainingTime = Math.floor(warningTime / 1000);
+        const remainingTime = Math.floor(warningTime / 1000);
         
         const { dismiss } = toast({
           title: "Sessão expirando",
           description: `Sua sessão expirará em ${remainingTime} segundos devido à inatividade.`,
           variant: "destructive",
-          action: (
-            <button 
-              onClick={() => {
-                resetTimer();
-                dismiss();
-                toast({
-                  title: "Sessão mantida",
-                  description: "Sua sessão foi renovada com sucesso.",
-                });
-              }}
-              className="bg-white text-red-600 px-3 py-1 rounded text-sm font-medium hover:bg-gray-100"
-            >
-              Manter ativa
-            </button>
-          ),
+          action: {
+            label: "Manter ativa",
+            onClick: () => {
+              resetTimer();
+              dismiss();
+              toast({
+                title: "Sessão mantida",
+                description: "Sua sessão foi renovada com sucesso.",
+              });
+            }
+          }
         });
 
         // Timer para salvar dados 30 segundos antes do logout
