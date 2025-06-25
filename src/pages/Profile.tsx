@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Save, User, Lock, Calendar } from 'lucide-react';
+import { Save, User, Lock, Calendar, Shield } from 'lucide-react';
 
 const Profile: React.FC = () => {
   const { user, session, updateUser, updatePassword } = useAuth();
@@ -128,6 +128,10 @@ const Profile: React.FC = () => {
 
   const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuário';
   const registrationDate = user?.created_at ? new Date(user.created_at) : new Date();
+  
+  // Calcular a vigência da licença (365 dias após o cadastro)
+  const licenseExpiryDate = new Date(registrationDate);
+  licenseExpiryDate.setDate(licenseExpiryDate.getDate() + 365);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -245,15 +249,41 @@ const Profile: React.FC = () => {
 
               <Separator />
 
-              <div className="flex items-center text-sm text-gray-600">
-                <Calendar className="mr-2 h-4 w-4" />
-                Data de cadastro: {registrationDate.toLocaleDateString('pt-BR')}
+              {/* Cards destacados para as datas importantes */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                {/* Data de Cadastro */}
+                <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-fluxo-blue-500 to-fluxo-blue-600 p-4 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                  <div className="flex items-center space-x-3">
+                    <div className="rounded-full bg-white/20 p-2">
+                      <Calendar className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-white/80">Data de Cadastro</p>
+                      <p className="text-lg font-bold">{registrationDate.toLocaleDateString('pt-BR')}</p>
+                    </div>
+                  </div>
+                  <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-white/10"></div>
+                </div>
+
+                {/* Vigência da Licença */}
+                <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                  <div className="flex items-center space-x-3">
+                    <div className="rounded-full bg-white/20 p-2">
+                      <Shield className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-white/80">Vigência da Licença</p>
+                      <p className="text-lg font-bold">{licenseExpiryDate.toLocaleDateString('pt-BR')}</p>
+                    </div>
+                  </div>
+                  <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-white/10"></div>
+                </div>
               </div>
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full gradient-fluxo hover:gradient-fluxo-light text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                className="w-full gradient-fluxo hover:gradient-fluxo-light text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 mt-6"
               >
                 <Save className="mr-2 h-4 w-4" />
                 {loading ? 'Salvando...' : 'Salvar Alterações'}
