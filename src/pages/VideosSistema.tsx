@@ -1,6 +1,6 @@
 import React from 'react';
-import VideoList from '@/components/videos/VideoList';
 import { Video } from 'lucide-react';
+import VideoGallery from '@/components/videos/VideoGallery';
 
 const VideosSistema: React.FC = () => {
   return (
@@ -16,21 +16,12 @@ const VideosSistema: React.FC = () => {
         </div>
         <p className="text-gray-600 text-lg leading-relaxed">
           Aprenda a usar todas as funcionalidades do FluxoAzul com nossos tutoriais em vídeo. 
-          Clique no título de qualquer vídeo para assistir e dominar o sistema.
+          Selecione um vídeo da lista para assistir.
         </p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md border-0 p-6">
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold gradient-fluxo-text mb-2">
-            Tutoriais Disponíveis
-          </h2>
-          <p className="text-gray-600">
-            Selecione um vídeo da lista abaixo para começar a assistir
-          </p>
-        </div>
-
-        <VideoList />
+      <div className="bg-white rounded-lg shadow-md border-0 p-0">
+        <VideoGallery />
       </div>
     </div>
   );
