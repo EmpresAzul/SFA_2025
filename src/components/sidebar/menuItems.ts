@@ -10,7 +10,8 @@ import {
   Calendar, 
   Target,
   Calculator,
-  HelpCircle
+  HelpCircle,
+  Video
 } from 'lucide-react';
 import type { MenuItem } from './types';
 
@@ -110,5 +111,13 @@ export const menuItems: MenuItem[] = [
     iconColor: 'text-violet-500',
     href: '/suporte',
     description: 'Agente inteligente e contatos'
+  },
+  {
+    id: 'videos-sistema',
+    label: 'Vídeos do Sistema',
+    icon: Video,
+    iconColor: 'text-rose-500',
+    href: '/videos-sistema',
+    description: 'Tutoriais e guias em vídeo'
   }
 ];
