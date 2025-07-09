@@ -560,6 +560,98 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_leads: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          company: string
+          email: string
+          phone: string | null
+          source: string
+          status: string
+          value: number
+          probability: number
+          next_follow_up: string | null
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          company: string
+          email: string
+          phone?: string | null
+          source?: string
+          status?: string
+          value?: number
+          probability?: number
+          next_follow_up?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          company?: string
+          email?: string
+          phone?: string | null
+          source?: string
+          status?: string
+          value?: number
+          probability?: number
+          next_follow_up?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      crm_interactions: {
+        Row: {
+          id: string
+          user_id: string
+          lead_id: string
+          type: string
+          description: string
+          outcome: string | null
+          interaction_date: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          lead_id: string
+          type: string
+          description: string
+          outcome?: string | null
+          interaction_date?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          lead_id?: string
+          type?: string
+          description?: string
+          outcome?: string | null
+          interaction_date?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_interactions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "crm_leads"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       user_consents: {
         Row: {
           consent_date: string | null
