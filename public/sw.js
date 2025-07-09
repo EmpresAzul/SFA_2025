@@ -11,7 +11,6 @@ const urlsToCache = [
   '/cadastros',
   '/saldos-bancarios',
   '/lembretes',
-  '/pipeline',
   '/ponto-equilibrio',
   '/suporte',
   '/manifest.json',

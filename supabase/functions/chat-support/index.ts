@@ -48,7 +48,6 @@ Funcionalidades do sistema:
 - Cadastros: Gestão de clientes, fornecedores e funcionários
 - Saldos Bancários: Controle bancário
 - Lembretes: Agenda e notificações
-- Pipeline: Funil de vendas
 - Ponto de Equilíbrio: Análise de viabilidade
 
 Responda de forma clara, objetiva e amigável. Ajude o usuário com dúvidas sobre:
