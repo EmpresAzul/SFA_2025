@@ -8,7 +8,6 @@ import {
   Users, 
   CreditCard, 
   Calendar, 
-  Target,
   Calculator,
   HelpCircle,
   Video,
@@ -88,14 +87,6 @@ export const menuItems: MenuItem[] = [
     iconColor: 'text-red-500',
     href: '/lembretes',
     description: 'Agenda e notificações'
-  },
-  {
-    id: 'pipeline',
-    label: 'Pipeline',
-    icon: Target,
-    iconColor: 'text-cyan-500',
-    href: '/pipeline',
-    description: 'Funil de vendas'
   },
   {
     id: 'crm',

@@ -18,7 +18,6 @@ import EstoqueManagement from "./pages/EstoqueManagement";
 import CadastrosUnified from "./pages/CadastrosUnified";
 import SaldosBancarios from "./pages/SaldosBancarios";
 import Lembretes from "./pages/Lembretes";
-import Pipeline from "./pages/Pipeline";
 import CRM from "./pages/CRM";
 import PontoEquilibrio from "./pages/PontoEquilibrio";
 import Suporte from "./pages/Suporte";
@@ -49,7 +48,6 @@ const App = () => (
             <Route path="/cadastros" element={<DashboardLayout><CadastrosUnified /></DashboardLayout>} />
             <Route path="/saldos-bancarios" element={<DashboardLayout><SaldosBancarios /></DashboardLayout>} />
             <Route path="/lembretes" element={<DashboardLayout><Lembretes /></DashboardLayout>} />
-            <Route path="/pipeline" element={<DashboardLayout><Pipeline /></DashboardLayout>} />
             <Route path="/crm" element={<DashboardLayout><CRM /></DashboardLayout>} />
             <Route path="/ponto-equilibrio" element={<DashboardLayout><PontoEquilibrio /></DashboardLayout>} />
             <Route path="/suporte" element={<DashboardLayout><Suporte /></DashboardLayout>} />
