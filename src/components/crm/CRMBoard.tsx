@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -49,12 +50,32 @@ import {
 const mockLeads: any[] = [];
 const mockInteractions: any[] = [];
 
+// Mock hooks that accept arguments properly
 const useCRMLeads = () => ({ data: mockLeads, isLoading: false });
-const useCreateLead = () => ({ mutateAsync: async () => {}, isPending: false });
-const useUpdateLead = () => ({ mutateAsync: async () => {}, isPending: false });
-const useDeleteLead = () => ({ mutateAsync: async () => {} });
-const useCreateInteraction = () => ({ mutateAsync: async () => {}, isPending: false });
-const useCRMInteractions = () => ({ data: mockInteractions });
+const useCreateLead = () => ({ 
+  mutateAsync: async (data: any) => { 
+    console.log('Mock create lead:', data);
+  }, 
+  isPending: false 
+});
+const useUpdateLead = () => ({ 
+  mutateAsync: async (data: any) => { 
+    console.log('Mock update lead:', data);
+  }, 
+  isPending: false 
+});
+const useDeleteLead = () => ({ 
+  mutateAsync: async (id: string) => { 
+    console.log('Mock delete lead:', id);
+  }
+});
+const useCreateInteraction = () => ({ 
+  mutateAsync: async (data: any) => { 
+    console.log('Mock create interaction:', data);
+  }, 
+  isPending: false 
+});
+const useCRMInteractions = (leadId?: string) => ({ data: mockInteractions });
 
 import { useToast } from "@/hooks/use-toast";
 
@@ -142,7 +163,7 @@ export function CRMBoard() {
   });
   const [interactionData, setInteractionData] = useState<any>({
     lead_id: "",
-    type: "call",
+    type: "call" as InteractionType,
     description: "",
     outcome: "",
     interaction_date: new Date().toISOString().split("T")[0],
@@ -198,7 +219,7 @@ export function CRMBoard() {
     setSelectedLead(lead);
     setInteractionData({
       lead_id: lead.id,
-      type: "call",
+      type: "call" as InteractionType,
       description: "",
       outcome: "",
       interaction_date: new Date().toISOString().split("T")[0],
@@ -246,7 +267,7 @@ export function CRMBoard() {
       setIsInteractionDrawerOpen(false);
       setInteractionData({
         lead_id: "",
-        type: "call",
+        type: "call" as InteractionType,
         description: "",
         outcome: "",
         interaction_date: new Date().toISOString().split("T")[0],
