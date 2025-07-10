@@ -1,3 +1,4 @@
+
 import type { Lancamento } from "@/types/lancamentos";
 
 export type LancamentoComRelacoes = Lancamento & {
@@ -34,8 +35,8 @@ export interface LancamentoFormErrors {
 }
 
 export interface LancamentoFormParams {
-  createLancamento: (data: Omit<Lancamento, "id" | "created_at" | "updated_at">) => Promise<void>;
-  updateLancamento: (id: string, data: Partial<Lancamento>) => Promise<void>;
+  createLancamento: { mutateAsync: (data: Omit<Lancamento, "id" | "created_at" | "updated_at">) => Promise<void> };
+  updateLancamento: { mutateAsync: (data: { id: string } & Partial<Lancamento>) => Promise<void> };
   editingLancamento: LancamentoComRelacoes | null;
   setLoading: (loading: boolean) => void;
   setActiveTab: (tab: string) => void;

@@ -1,7 +1,8 @@
+
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import type {
-  FormData,
+  LancamentoFormData,
   LancamentoComRelacoes,
   LancamentoFormParams,
 } from "@/types/lancamentosForm";
@@ -17,7 +18,7 @@ export const useLancamentosFormSubmit = ({
   const { toast } = useToast();
 
   const submitForm = async (
-    formData: FormData,
+    formData: LancamentoFormData,
     valorNumerico: number,
     editingLancamento: LancamentoComRelacoes | null,
     resetForm: () => void,

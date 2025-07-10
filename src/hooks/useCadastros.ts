@@ -1,10 +1,53 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { CadastroData, CadastroFormData } from '@/types/cadastros';
 import { useToast } from '@/hooks/use-toast';
 
+export interface Cadastro {
+  id: string;
+  user_id: string;
+  nome: string;
+  tipo: string;
+  pessoa: string;
+  cpf_cnpj?: string;
+  telefone?: string;
+  email?: string;
+  endereco?: string;
+  numero?: string;
+  bairro?: string;
+  cidade?: string;
+  estado?: string;
+  cep?: string;
+  observacoes?: string;
+  salario?: number;
+  status: string;
+  data: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CadastroFormData {
+  nome: string;
+  tipo: string;
+  pessoa: string;
+  cpf_cnpj?: string;
+  telefone?: string;
+  email?: string;
+  endereco?: string;
+  numero?: string;
+  bairro?: string;
+  cidade?: string;
+  estado?: string;
+  cep?: string;
+  observacoes?: string;
+  salario?: number;
+  status: string;
+  data: string;
+  user_id: string;
+}
+
 interface UseCadastrosReturn {
-  cadastros: CadastroData[];
+  cadastros: Cadastro[];
   loading: boolean;
   error: string | null;
   createCadastro: (data: CadastroFormData) => Promise<void>;
@@ -12,10 +55,11 @@ interface UseCadastrosReturn {
   deleteCadastro: (id: string) => Promise<void>;
   toggleStatus: (id: string) => Promise<void>;
   refreshCadastros: () => Promise<void>;
+  useCreate: () => ({ mutateAsync: (data: CadastroFormData) => Promise<void> });
 }
 
 export const useCadastros = (): UseCadastrosReturn => {
-  const [cadastros, setCadastros] = useState<CadastroData[]>([]);
+  const [cadastros, setCadastros] = useState<Cadastro[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
@@ -91,7 +135,7 @@ export const useCadastros = (): UseCadastrosReturn => {
         throw updateError;
       }
 
-        toast({
+      toast({
         title: 'Sucesso',
         description: 'Cadastro atualizado com sucesso!',
       });
@@ -100,7 +144,7 @@ export const useCadastros = (): UseCadastrosReturn => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao atualizar cadastro';
       setError(errorMessage);
-        toast({
+      toast({
         title: 'Erro',
         description: errorMessage,
         variant: 'destructive',
@@ -122,7 +166,7 @@ export const useCadastros = (): UseCadastrosReturn => {
         throw deleteError;
       }
 
-        toast({
+      toast({
         title: 'Sucesso',
         description: 'Cadastro excluído com sucesso!',
       });
@@ -131,7 +175,7 @@ export const useCadastros = (): UseCadastrosReturn => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao excluir cadastro';
       setError(errorMessage);
-        toast({
+      toast({
         title: 'Erro',
         description: errorMessage,
         variant: 'destructive',
@@ -160,7 +204,7 @@ export const useCadastros = (): UseCadastrosReturn => {
         throw updateError;
       }
 
-        toast({
+      toast({
         title: 'Sucesso',
         description: `Status alterado para ${newStatus}!`,
       });
@@ -169,7 +213,7 @@ export const useCadastros = (): UseCadastrosReturn => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao alterar status';
       setError(errorMessage);
-        toast({
+      toast({
         title: 'Erro',
         description: errorMessage,
         variant: 'destructive',
@@ -181,6 +225,10 @@ export const useCadastros = (): UseCadastrosReturn => {
   const refreshCadastros = useCallback(async () => {
     await fetchCadastros();
   }, [fetchCadastros]);
+
+  const useCreate = useCallback(() => ({
+    mutateAsync: createCadastro
+  }), [createCadastro]);
 
   useEffect(() => {
     fetchCadastros();
@@ -195,5 +243,6 @@ export const useCadastros = (): UseCadastrosReturn => {
     deleteCadastro,
     toggleStatus,
     refreshCadastros,
+    useCreate,
   };
 };

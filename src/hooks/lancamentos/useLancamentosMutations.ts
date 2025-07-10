@@ -1,3 +1,4 @@
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -45,17 +46,25 @@ export const useLancamentosMutations = () => {
           );
         }
 
-        // Lançamento simples
+        // Lançamento simples - preparar dados corretamente
+        const insertData = {
+          data: lancamentoData.data,
+          tipo: lancamentoData.tipo,
+          categoria: lancamentoData.categoria,
+          valor: lancamentoData.valor,
+          cliente_id: lancamentoData.cliente_id,
+          fornecedor_id: lancamentoData.fornecedor_id,
+          observacoes: lancamentoData.observacoes,
+          user_id: lancamentoData.user_id,
+          status: lancamentoData.status,
+          recorrente: false,
+          meses_recorrencia: null,
+          lancamento_pai_id: null,
+        };
+
         const { data, error } = await supabase
           .from("lancamentos")
-          .insert([
-            {
-              ...lancamentoData,
-              recorrente: false,
-              meses_recorrencia: null,
-              lancamento_pai_id: null,
-            },
-          ])
+          .insert([insertData])
           .select()
           .single();
 

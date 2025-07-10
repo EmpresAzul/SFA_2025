@@ -1,187 +1,130 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import type { User, Session } from "@supabase/supabase-js";
-import { useToast } from "@/hooks/use-toast";
+
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
-}
-
-interface AuthProviderProps {
-  children: React.ReactNode;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
-  // Log de evento de segurança simplificado
-  const logSecurityEvent = async (eventType: string, details?: Record<string, unknown>) => {
+  const logSecurityEvent = async (eventType: string, details: Record<string, any> = {}) => {
     try {
-      await supabase.from("security_logs").insert({
-        user_id: user?.id,
+      await supabase.from('security_logs').insert([{
         event_type: eventType,
-        details,
-        created_at: new Date().toISOString(),
-      });
+        user_id: user?.id || null,
+        details: details as any, // Cast to any to avoid type conflicts
+        ip_address: null,
+        user_agent: navigator.userAgent,
+      }]);
     } catch (error) {
-      // Log silencioso para não afetar a experiência do usuário
-      console.log("Security log error:", error);
+      console.error('Error logging security event:', error);
     }
   };
 
   useEffect(() => {
-    // Get initial session
-    const getInitialSession = async () => {
-      try {
-        const { data: { session: initialSession } } = await supabase.auth.getSession();
-        setSession(initialSession);
-        setUser(initialSession?.user ?? null);
-      } catch (error: unknown) {
-        console.error('Erro ao obter sessão inicial:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getInitialSession();
-
-    // Listen for auth changes
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
 
-        if (event === 'SIGNED_IN' && session?.user) {
-          toast({
-            title: 'Bem-vindo!',
-            description: 'Login realizado com sucesso.',
-          });
-        } else if (event === 'SIGNED_OUT') {
-          toast({
-            title: 'Logout realizado',
-            description: 'Você foi desconectado com sucesso.',
-          });
-        }
+        // Log auth events
+        setTimeout(() => {
+          if (event === 'SIGNED_IN') {
+            logSecurityEvent('login_success', { method: 'email' });
+          } else if (event === 'SIGNED_OUT') {
+            logSecurityEvent('logout', {});
+          }
+        }, 0);
       }
     );
 
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
     return () => subscription.unsubscribe();
-  }, [toast]);
+  }, []);
 
   const signIn = async (email: string, password: string) => {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      if (error) throw error;
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Erro ao fazer login';
-      toast({
-        title: 'Erro no login',
-        description: errorMessage,
-        variant: 'destructive',
+    if (error) {
+      await logSecurityEvent('login_failed', { 
+        error: error.message,
+        email: email 
       });
-      throw error;
     }
+
+    return { error };
   };
 
   const signUp = async (email: string, password: string) => {
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl
+      }
+    });
 
-      if (error) throw error;
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Erro ao fazer cadastro';
-      toast({
-        title: 'Erro no cadastro',
-        description: errorMessage,
-        variant: 'destructive',
+    if (error) {
+      await logSecurityEvent('signup_failed', { 
+        error: error.message,
+        email: email 
       });
-      throw error;
+    } else {
+      await logSecurityEvent('signup_success', { email: email });
     }
+
+    return { error };
   };
 
   const signOut = async () => {
-    try {
-      // Log logout antes de fazer logout
-      if (user) {
-        await logSecurityEvent("logout", {
-          logout_time: new Date().toISOString(),
-        });
-      }
-
-      await supabase.auth.signOut();
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Erro ao fazer logout';
-      toast({
-        title: 'Erro no logout',
-        description: errorMessage,
-        variant: 'destructive',
-      });
-      throw error;
-    }
+    await supabase.auth.signOut();
   };
 
-  const resetPassword = async (email: string) => {
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-
-      if (error) throw error;
-      toast({
-        title: 'Redefinição de senha enviada',
-        description: 'Se o email for válido, você receberá um link para redefinir sua senha.',
-      });
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Erro ao enviar redefinição de senha';
-      toast({
-        title: 'Erro na redefinição de senha',
-        description: errorMessage,
-        variant: 'destructive',
-      });
-      throw error;
-    }
+  const value = {
+    user,
+    session,
+    loading,
+    signIn,
+    signUp,
+    signOut,
   };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        session,
-        loading,
-        signIn,
-        signUp,
-        signOut,
-        resetPassword,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

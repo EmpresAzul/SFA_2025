@@ -1,11 +1,12 @@
+
 import { useToast } from "@/hooks/use-toast";
 import { parseStringToNumber } from "@/utils/currency";
-import type { FormData } from "@/types/lancamentosForm";
+import type { LancamentoFormData } from "@/types/lancamentosForm";
 
 export const useLancamentosFormValidation = () => {
   const { toast } = useToast();
 
-  const validateForm = (formData: FormData) => {
+  const validateForm = (formData: LancamentoFormData) => {
     console.log("Validando formulário:", formData);
 
     // Validar campos obrigatórios

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { useCadastros } from "@/hooks/useCadastros";
+import { useCadastros, type CadastroFormData } from "@/hooks/useCadastros";
 import { useAuth } from "@/contexts/AuthContext";
 
 const ESTADOS = [
@@ -138,7 +138,7 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
     });
   };
 
-  const handleSubmit = async (data: CadastroFormData) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -148,7 +148,7 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
     setLoading(true);
 
     try {
-      const cadastroData = {
+      const cadastroData: CadastroFormData = {
         data: formData.data,
         nome: formData.nome.trim(),
         tipo: formData.tipo as "Cliente" | "Fornecedor" | "Funcionário",
@@ -163,9 +163,6 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
         cpf_cnpj: formData.cpf_cnpj.trim() || undefined,
         user_id: user!.id,
         status: "ativo",
-        bairro: undefined,
-        cep: undefined,
-        salario: undefined,
       };
 
       await createCadastro.mutateAsync(cadastroData);
