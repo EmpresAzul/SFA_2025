@@ -34,10 +34,14 @@ export const useSupabaseQuery = () => {
     useCreatePrecificacao: () => ({ mutateAsync: async () => {} }),
     useUpdatePrecificacao: () => ({ mutateAsync: async () => {} }),
     useDeletePrecificacao: () => ({ mutateAsync: async () => {} }),
-    // Lembretes
-    useQueryLembretes: lembretes.useQuery,
-    useCreateLembrete: lembretes.useCreate,
-    useUpdateLembrete: lembretes.useUpdate,
-    useDeleteLembrete: lembretes.useDelete,
+    // Lembretes - use actual properties from useLembretes
+    useQueryLembretes: () => ({ 
+      data: lembretes.lembretes,
+      isLoading: lembretes.isLoading,
+      error: lembretes.error 
+    }),
+    useCreateLembrete: () => lembretes.createLembrete,
+    useUpdateLembrete: () => lembretes.updateLembrete,
+    useDeleteLembrete: () => lembretes.deleteLembrete,
   };
 };

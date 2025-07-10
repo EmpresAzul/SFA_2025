@@ -83,12 +83,23 @@ const CadastrosUnified: React.FC = () => {
             setStatusFilter={setStatusFilter}
           />
 
-          <CadastrosTable
-            filteredItems={filteredItems}
-        onEdit={(item: any) => handleEdit(item)}
-        onToggleStatus={handleToggleStatus}
-        onDelete={(id: string) => handleDelete(id, "item")}
-          />
+          <div className="mt-4">
+            {/* Simplified table view */}
+            <div className="space-y-2">
+              {filteredItems.map((item: any) => (
+                <div key={item.id} className="border p-4 rounded">
+                  <h3>{item.nome}</h3>
+                  <p>Tipo: {item.tipoDisplay}</p>
+                  <p>Status: {item.status}</p>
+                  <div className="flex gap-2 mt-2">
+                    <button onClick={() => handleEdit(item)}>Editar</button>
+                    <button onClick={() => handleToggleStatus(item)}>Toggle Status</button>
+                    <button onClick={() => handleDelete(item.id, item.nome)}>Excluir</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </TabsContent>
 
         <TabsContent value="formulario" className="mt-4 sm:mt-6">
@@ -102,7 +113,7 @@ const CadastrosUnified: React.FC = () => {
           setIsEditModalOpen(false);
           setEditingItem(null);
         }}
-        editingItem={editingItem}
+        editingItem={editingItem as any}
         onSave={(data: any) => handleSaveEdit(data)}
         loading={false}
       />

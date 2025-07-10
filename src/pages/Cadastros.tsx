@@ -27,7 +27,10 @@ const Cadastros: React.FC = () => {
   const { user } = useAuth();
 
   const { useQuery, useDelete } = useCadastros();
-  const { data: cadastrosData, isLoading } = useQuery(tipoCapitalized);
+  const queryResult = useQuery();
+  const allCadastros = queryResult.data || [];
+  const cadastrosData = allCadastros.filter((item: any) => item.tipo === tipoCapitalized);
+  const isLoading = queryResult.isLoading;
   const deleteCadastro = useDelete();
 
   const {
@@ -195,8 +198,8 @@ const Cadastros: React.FC = () => {
           <CadastroForm
             tipo={tipoCapitalized}
             formData={formData}
-            setFormData={setFormData}
-            editingCadastro={editingCadastro}
+            setFormData={(data: any) => setFormData(data)}
+            editingCadastro={editingCadastro as any}
             loading={loading}
             onSubmit={handleFormSubmit}
             onCancel={handleCancelEdit}

@@ -49,9 +49,13 @@ export interface SecurityEvent {
         newData?: Record<string, unknown>;
 }
 
-export interface SuspiciousActivity {
-  type: string;
-  threshold: number;
+interface SuspiciousActivity {
+  id: string;
+  timestamp: Date;
+  type: 'multiple_failed_logins' | 'unusual_access_pattern' | 'data_breach_attempt';
+  description: string;
+  severity: 'low' | 'medium' | 'high';
+  details: Record<string, unknown>;
 }
 
 export const useSecurity = () => {
@@ -100,7 +104,7 @@ export const useSecurity = () => {
             severity: activity.severity,
             details: activity.details,
             timestamp: new Date().toISOString(),
-          },
+          } as any,
           created_at: new Date().toISOString(),
         });
 
