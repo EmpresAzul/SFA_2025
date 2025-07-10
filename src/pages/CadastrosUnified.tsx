@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCadastrosUnified } from "@/hooks/useCadastrosUnified";
@@ -12,6 +11,8 @@ const CadastrosUnified: React.FC = () => {
   const {
     searchTerm,
     setSearchTerm,
+    tipoFilter,
+    setTipoFilter,
     statusFilter,
     setStatusFilter,
     activeTab,
@@ -23,6 +24,7 @@ const CadastrosUnified: React.FC = () => {
     filteredItems,
     stats,
     loading,
+    updateCadastro,
     handleEdit,
     handleSaveEdit,
     handleToggleStatus,
@@ -75,22 +77,17 @@ const CadastrosUnified: React.FC = () => {
           <CadastrosFilters
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
-            tipoFilter=""
-            setTipoFilter={() => {}}
+            tipoFilter={tipoFilter}
+            setTipoFilter={setTipoFilter}
             statusFilter={statusFilter}
             setStatusFilter={setStatusFilter}
           />
 
           <CadastrosTable
-            cadastros={filteredItems as any}
-            onEdit={(cadastro) => handleEdit(cadastro as any)}
-            onView={(cadastro) => handleEdit(cadastro as any)}
-            onDelete={(id) => handleDelete(id)}
-            onAdd={() => setActiveTab("formulario")}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            selectedType=""
-            onTypeChange={() => {}}
+            filteredItems={filteredItems}
+            onEdit={handleEdit}
+            onToggleStatus={handleToggleStatus}
+            onDelete={handleDelete}
           />
         </TabsContent>
 
@@ -107,7 +104,7 @@ const CadastrosUnified: React.FC = () => {
         }}
         editingItem={editingItem}
         onSave={handleSaveEdit}
-        loading={false}
+        loading={updateCadastro.isPending}
       />
     </div>
   );

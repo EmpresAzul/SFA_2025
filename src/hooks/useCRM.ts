@@ -1,209 +1,274 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import type { CRMLead, CRMInteraction, CreateLeadData, UpdateLeadData, CreateInteractionData } from "@/types/crm";
+import { useAuth } from "@/contexts/AuthContext";
+import type {
+  CRMLead,
+  CRMInteraction,
+  CreateLeadData,
+  UpdateLeadData,
+  CreateInteractionData,
+} from "@/types/crm";
 
-// Hook para buscar leads
 export const useCRMLeads = () => {
+  const { user } = useAuth();
+
   return useQuery({
-    queryKey: ["crm-leads"],
-    queryFn: async () => {
+    queryKey: ["crm-leads", user?.id],
+    queryFn: async (): Promise<CRMLead[]> => {
+      if (!user) throw new Error("Usuário não autenticado");
+
       const { data, error } = await supabase
         .from("crm_leads")
         .select("*")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      return data as CRMLead[];
+      if (error) {
+        console.error("Erro ao buscar leads:", error);
+        throw error;
+      }
+
+      return (data || []) as CRMLead[];
     },
+    enabled: !!user,
+    staleTime: 1000 * 30, // 30 segundos (reduzido de 5 minutos)
+    gcTime: 1000 * 60 * 10, // 10 minutos
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
   });
 };
 
-// Hook para buscar interações de um lead
 export const useCRMInteractions = (leadId?: string) => {
+  const { user } = useAuth();
+
   return useQuery({
-    queryKey: ["crm-interactions", leadId],
-    queryFn: async () => {
-      if (!leadId) return [];
-      
-      const { data, error } = await supabase
+    queryKey: ["crm-interactions", user?.id, leadId],
+    queryFn: async (): Promise<CRMInteraction[]> => {
+      if (!user) throw new Error("Usuário não autenticado");
+
+      let query = supabase
         .from("crm_interactions")
         .select("*")
-        .eq("lead_id", leadId)
-        .order("interaction_date", { ascending: false });
+        .eq("user_id", user.id);
 
-      if (error) throw error;
-      return data as CRMInteraction[];
+      if (leadId) {
+        query = query.eq("lead_id", leadId);
+      }
+
+      const { data, error } = await query.order("created_at", {
+        ascending: false,
+      });
+
+      if (error) {
+        console.error("Erro ao buscar interações:", error);
+        throw error;
+      }
+
+      return (data || []) as CRMInteraction[];
     },
-    enabled: !!leadId,
+    enabled: !!user && !!leadId,
+    staleTime: 1000 * 30, // 30 segundos
+    gcTime: 1000 * 60 * 10, // 10 minutos
+    refetchOnWindowFocus: false,
   });
 };
 
-// Hook para criar lead
 export const useCreateLead = () => {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (leadData: CreateLeadData) => {
-      const { data: { user } } = await supabase.auth.getUser();
+    mutationFn: async (leadData: CreateLeadData): Promise<CRMLead> => {
       if (!user) throw new Error("Usuário não autenticado");
 
       const { data, error } = await supabase
         .from("crm_leads")
-        .insert([{ ...leadData, user_id: user.id }])
+        .insert({
+          ...leadData,
+          user_id: user.id,
+          source: leadData.source || "Website",
+          value: leadData.value || 0,
+          probability: leadData.probability || 25,
+          next_follow_up:
+            leadData.next_follow_up || new Date().toISOString().split("T")[0],
+        })
         .select()
         .single();
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error("Erro ao criar lead:", error);
+        throw error;
+      }
+
+      return data as CRMLead;
     },
-    onSuccess: () => {
+    onSuccess: (newLead) => {
+      // Otimisticamente atualizar o cache
+      queryClient.setQueryData(
+        ["crm-leads", user?.id],
+        (oldData: CRMLead[] | undefined) => {
+          if (!oldData) return [newLead];
+          return [newLead, ...oldData];
+        },
+      );
+    },
+    onError: () => {
+      // Em caso de erro, invalidar para refetch
       queryClient.invalidateQueries({ queryKey: ["crm-leads"] });
-      toast({
-        title: "Lead criado",
-        description: "Lead criado com sucesso!",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Erro",
-        description: "Erro ao criar lead: " + error.message,
-        variant: "destructive",
-      });
     },
   });
 };
 
-// Hook para atualizar lead
 export const useUpdateLead = () => {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async ({ id, ...updates }: { id: string } & UpdateLeadData) => {
+    mutationFn: async ({
+      id,
+      ...updateData
+    }: { id: string } & UpdateLeadData): Promise<CRMLead> => {
+      if (!user) throw new Error("Usuário não autenticado");
+
       const { data, error } = await supabase
         .from("crm_leads")
-        .update(updates)
+        .update(updateData)
         .eq("id", id)
+        .eq("user_id", user.id)
         .select()
         .single();
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error("Erro ao atualizar lead:", error);
+        throw error;
+      }
+
+      return data as CRMLead;
     },
-    onSuccess: () => {
+    onSuccess: (updatedLead) => {
+      // Otimisticamente atualizar o cache
+      queryClient.setQueryData(
+        ["crm-leads", user?.id],
+        (oldData: CRMLead[] | undefined) => {
+          if (!oldData) return [updatedLead];
+          return oldData.map((lead) =>
+            lead.id === updatedLead.id ? updatedLead : lead,
+          );
+        },
+      );
+    },
+    onError: () => {
+      // Em caso de erro, invalidar para refetch
       queryClient.invalidateQueries({ queryKey: ["crm-leads"] });
-      toast({
-        title: "Lead atualizado",
-        description: "Lead atualizado com sucesso!",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Erro",
-        description: "Erro ao atualizar lead: " + error.message,
-        variant: "destructive",
-      });
     },
   });
 };
 
-// Hook para deletar lead
 export const useDeleteLead = () => {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (leadId: string) => {
+    mutationFn: async (leadId: string): Promise<void> => {
+      if (!user) throw new Error("Usuário não autenticado");
+
       const { error } = await supabase
         .from("crm_leads")
         .delete()
-        .eq("id", leadId);
+        .eq("id", leadId)
+        .eq("user_id", user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erro ao deletar lead:", error);
+        throw error;
+      }
     },
-    onSuccess: () => {
+    onSuccess: (_, deletedLeadId) => {
+      // Otimisticamente atualizar o cache
+      queryClient.setQueryData(
+        ["crm-leads", user?.id],
+        (oldData: CRMLead[] | undefined) => {
+          if (!oldData) return [];
+          return oldData.filter((lead) => lead.id !== deletedLeadId);
+        },
+      );
+      queryClient.invalidateQueries({ queryKey: ["crm-interactions"] });
+    },
+    onError: () => {
+      // Em caso de erro, invalidar para refetch
       queryClient.invalidateQueries({ queryKey: ["crm-leads"] });
-      toast({
-        title: "Lead excluído",
-        description: "Lead excluído com sucesso!",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Erro",
-        description: "Erro ao excluir lead: " + error.message,
-        variant: "destructive",
-      });
     },
   });
 };
 
-// Hook para criar interação
 export const useCreateInteraction = () => {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (interactionData: CreateInteractionData) => {
-      const { data: { user } } = await supabase.auth.getUser();
+    mutationFn: async (
+      interactionData: CreateInteractionData,
+    ): Promise<CRMInteraction> => {
       if (!user) throw new Error("Usuário não autenticado");
 
       const { data, error } = await supabase
         .from("crm_interactions")
-        .insert([{ ...interactionData, user_id: user.id }])
+        .insert({
+          ...interactionData,
+          user_id: user.id,
+          interaction_date:
+            interactionData.interaction_date ||
+            new Date().toISOString().split("T")[0],
+        })
         .select()
         .single();
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error("Erro ao criar interação:", error);
+        throw error;
+      }
+
+      return data as CRMInteraction;
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["crm-interactions", variables.lead_id] });
-      toast({
-        title: "Interação criada",
-        description: "Interação registrada com sucesso!",
-      });
+    onSuccess: (newInteraction) => {
+      // Otimisticamente atualizar o cache
+      queryClient.setQueryData(
+        ["crm-interactions", user?.id, newInteraction.lead_id],
+        (oldData: CRMInteraction[] | undefined) => {
+          if (!oldData) return [newInteraction];
+          return [newInteraction, ...oldData];
+        },
+      );
     },
-    onError: (error) => {
-      toast({
-        title: "Erro",
-        description: "Erro ao criar interação: " + error.message,
-        variant: "destructive",
-      });
+    onError: () => {
+      // Em caso de erro, invalidar para refetch
+      queryClient.invalidateQueries({ queryKey: ["crm-interactions"] });
     },
   });
 };
 
-// Hook para deletar interação
 export const useDeleteInteraction = () => {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (interactionId: string) => {
+    mutationFn: async (interactionId: string): Promise<void> => {
+      if (!user) throw new Error("Usuário não autenticado");
+
       const { error } = await supabase
         .from("crm_interactions")
         .delete()
-        .eq("id", interactionId);
+        .eq("id", interactionId)
+        .eq("user_id", user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erro ao deletar interação:", error);
+        throw error;
+      }
     },
-    onSuccess: () => {
+    onSuccess: (_, deletedInteractionId) => {
+      // Invalidar queries de interações
       queryClient.invalidateQueries({ queryKey: ["crm-interactions"] });
-      toast({
-        title: "Interação excluída",
-        description: "Interação excluída com sucesso!",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Erro",
-        description: "Erro ao excluir interação: " + error.message,
-        variant: "destructive",
-      });
     },
   });
 };

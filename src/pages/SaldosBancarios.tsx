@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,11 +39,16 @@ const SaldosBancarios: React.FC = () => {
   const [editingSaldo, setEditingSaldo] = useState<SaldoBancario | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const saldoBancarios = useSaldosBancarios();
-  const { data: saldos, isLoading } = saldoBancarios.useQuery();
-  const createSaldo = saldoBancarios.useCreate();
-  const updateSaldo = saldoBancarios.useUpdate();
-  const deleteSaldo = saldoBancarios.useDelete();
+  const {
+    useQuery: useSaldosQuery,
+    useCreate,
+    useUpdate,
+    useDelete,
+  } = useSaldosBancarios();
+  const { data: saldos, isLoading } = useSaldosQuery();
+  const createSaldo = useCreate();
+  const updateSaldo = useUpdate();
+  const deleteSaldo = useDelete();
 
   const [formData, setFormData] = useState({
     banco: "",
@@ -271,7 +275,7 @@ const SaldosBancarios: React.FC = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => handleEdit(saldo as SaldoBancario)}
+                                onClick={() => handleEdit(saldo)}
                                 className="h-6 sm:h-8 px-1 sm:px-2 text-xs sm:text-sm"
                               >
                                 <Edit className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />

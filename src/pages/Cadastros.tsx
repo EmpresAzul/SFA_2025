@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,7 +27,7 @@ const Cadastros: React.FC = () => {
   const { user } = useAuth();
 
   const { useQuery, useDelete } = useCadastros();
-  const { data: cadastrosData, isLoading } = useQuery();
+  const { data: cadastrosData, isLoading } = useQuery(tipoCapitalized);
   const deleteCadastro = useDelete();
 
   const {
@@ -39,7 +38,7 @@ const Cadastros: React.FC = () => {
     handleSubmit,
     handleEdit,
     resetForm,
-  } = useCadastroForm();
+  } = useCadastroForm(tipoCapitalized);
 
   useEffect(() => {
     if (cadastrosData) {
@@ -73,9 +72,11 @@ const Cadastros: React.FC = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     console.log("Form submit triggered");
-    await handleSubmit(e);
-    console.log("Form submitted successfully, switching to lista tab");
-    setActiveTab("lista");
+    const success = await handleSubmit(e);
+    if (success) {
+      console.log("Form submitted successfully, switching to lista tab");
+      setActiveTab("lista");
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -193,9 +194,9 @@ const Cadastros: React.FC = () => {
         <TabsContent value="formulario">
           <CadastroForm
             tipo={tipoCapitalized}
-            formData={formData as any}
-            setFormData={setFormData as any}
-            editingCadastro={editingCadastro as any}
+            formData={formData}
+            setFormData={setFormData}
+            editingCadastro={editingCadastro}
             loading={loading}
             onSubmit={handleFormSubmit}
             onCancel={handleCancelEdit}

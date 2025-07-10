@@ -1,123 +1,125 @@
-
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { useCallback, useState } from "react";
 
-export interface SaldoBancarioData {
+interface SaldoBancarioData {
   id?: string;
+  data: string;
   banco: string;
   saldo: number;
-  data: string;
-  user_id?: string;
+  user_id: string;
   created_at?: string;
   updated_at?: string;
 }
 
 export const useSaldosBancarios = () => {
-  const { user } = useAuth();
+  const { session } = useAuth();
   const { toast } = useToast();
-  const [saldos, setSaldos] = useState<SaldoBancarioData[]>([]);
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
+  const [saldos, setSaldos] = useState<SaldoBancarioData[]>([]);
 
   const fetchSaldos = useCallback(async () => {
-    if (!user?.id) return;
-    
-    setLoading(true);
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from('saldos_bancarios')
         .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .order('data', { ascending: false });
 
       if (error) throw error;
       setSaldos(data || []);
-    } catch (error) {
-      console.error('Erro ao buscar saldos:', error);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao carregar saldos bancários';
       toast({
-        title: "Erro",
-        description: "Erro ao carregar saldos bancários",
-        variant: "destructive",
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  }, [user?.id, toast]);
+  }, [toast]);
 
   const createSaldo = useCallback(async (data: SaldoBancarioData) => {
-    if (!user?.id) throw new Error("Usuário não autenticado");
+    try {
+      const { error } = await supabase
+        .from('saldos_bancarios')
+        .insert([data]);
 
-    const { error } = await supabase
-      .from('saldos_bancarios')
-      .insert({ ...data, user_id: user.id });
-
-    if (error) throw error;
-    await fetchSaldos();
-  }, [user?.id, fetchSaldos]);
+      if (error) throw error;
+      toast({
+        title: 'Sucesso',
+        description: 'Saldo bancário criado com sucesso!',
+      });
+      await fetchSaldos();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao criar saldo bancário';
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw error;
+    }
+  }, [fetchSaldos, toast]);
 
   const updateSaldo = useCallback(async (id: string, data: Partial<SaldoBancarioData>) => {
-    if (!user?.id) throw new Error("Usuário não autenticado");
+    try {
+      const { error } = await supabase
+        .from('saldos_bancarios')
+        .update(data)
+        .eq('id', id);
 
-    const { error } = await supabase
-      .from('saldos_bancarios')  
-      .update(data)
-      .eq('id', id)
-      .eq('user_id', user.id);
-
-    if (error) throw error;
-    await fetchSaldos();
-  }, [user?.id, fetchSaldos]);
+      if (error) throw error;
+      toast({
+        title: 'Sucesso',
+        description: 'Saldo bancário atualizado com sucesso!',
+      });
+      await fetchSaldos();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao atualizar saldo bancário';
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw error;
+    }
+  }, [fetchSaldos, toast]);
 
   const deleteSaldo = useCallback(async (id: string) => {
-    if (!user?.id) throw new Error("Usuário não autenticado");
+    try {
+      const { error } = await supabase
+        .from('saldos_bancarios')
+        .delete()
+        .eq('id', id);
 
-    const { error } = await supabase
-      .from('saldos_bancarios')
-      .delete()
-      .eq('id', id)
-      .eq('user_id', user.id);
-
-    if (error) throw error;
-    await fetchSaldos();
-  }, [user?.id, fetchSaldos]);
-
-  useEffect(() => {
-    fetchSaldos();
-  }, [fetchSaldos]);
-
-  const useQuery = useCallback(() => ({
-    data: saldos,
-    isLoading: loading,
-  }), [saldos, loading]);
-
-  const useCreate = useCallback(() => ({
-    mutateAsync: createSaldo,
-    isPending: loading,
-  }), [createSaldo, loading]);
-
-  const useUpdate = useCallback(() => ({
-    mutateAsync: async ({ id, data }: { id: string; data: Partial<SaldoBancarioData> }) => {
-      await updateSaldo(id, data);
-    },
-    isPending: loading,
-  }), [updateSaldo, loading]);
-
-  const useDelete = useCallback(() => ({
-    mutateAsync: deleteSaldo,
-    isPending: loading,
-  }), [deleteSaldo, loading]);
+      if (error) throw error;
+      toast({
+        title: 'Sucesso',
+        description: 'Saldo bancário excluído com sucesso!',
+      });
+      await fetchSaldos();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao excluir saldo bancário';
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw error;
+    }
+  }, [fetchSaldos, toast]);
 
   return {
-    saldos,
     loading,
+    saldos,
     fetchSaldos,
     createSaldo,
     updateSaldo,
     deleteSaldo,
-    useQuery,
-    useCreate,
-    useUpdate,
-    useDelete,
   };
 };

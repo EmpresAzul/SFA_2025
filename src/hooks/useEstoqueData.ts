@@ -1,28 +1,51 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import type { Database } from "@/integrations/supabase/types";
 
-// Use the actual database schema types
-type EstoqueRow = Database['public']['Tables']['estoques']['Row'];
-type EstoqueInsert = Database['public']['Tables']['estoques']['Insert'];
+interface EstoqueItem {
+  id: string;
+  nome: string;
+  descricao?: string;
+  categoria: string;
+  quantidade: number;
+  preco_unitario: number;
+  preco_venda: number;
+  fornecedor?: string;
+  codigo_barras?: string;
+  localizacao?: string;
+  estoque_minimo: number;
+  status: 'ativo' | 'inativo';
+  created_at: string;
+  updated_at: string;
+}
+
+interface EstoqueFormData {
+  nome: string;
+  descricao?: string;
+  categoria: string;
+  quantidade: number;
+  preco_unitario: number;
+  preco_venda: number;
+  fornecedor?: string;
+  codigo_barras?: string;
+  localizacao?: string;
+  estoque_minimo: number;
+  status: 'ativo' | 'inativo';
+}
 
 interface UseEstoqueDataReturn {
-  estoques: EstoqueRow[];
+  estoques: EstoqueItem[];
   loading: boolean;
   error: string | null;
   fetchEstoques: () => Promise<void>;
-  createEstoque: (data: EstoqueInsert) => Promise<void>;
-  updateEstoque: (id: string, data: Partial<EstoqueInsert>) => Promise<void>;
+  createEstoque: (data: EstoqueFormData) => Promise<void>;
+  updateEstoque: (id: string, data: Partial<EstoqueFormData>) => Promise<void>;
   deleteEstoque: (id: string) => Promise<void>;
   adjustQuantity: (id: string, quantidade: number) => Promise<void>;
-  handleToggleStatus: (id: string) => Promise<void>;
-  handleDelete: (id: string) => Promise<void>;
 }
 
 export const useEstoqueData = (): UseEstoqueDataReturn => {
-  const [estoques, setEstoques] = useState<EstoqueRow[]>([]);
+  const [estoques, setEstoques] = useState<EstoqueItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
@@ -35,7 +58,7 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
       const { data, error: fetchError } = await supabase
         .from('estoques')
         .select('*')
-        .order('nome_produto', { ascending: true });
+        .order('nome', { ascending: true });
 
       if (fetchError) {
         throw fetchError;
@@ -55,13 +78,13 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
     }
   }, [toast]);
 
-  const createEstoque = useCallback(async (data: EstoqueInsert) => {
+  const createEstoque = useCallback(async (data: EstoqueFormData) => {
     try {
       setError(null);
 
       const { error: insertError } = await supabase
         .from('estoques')
-        .insert(data);
+        .insert([data]);
 
       if (insertError) {
         throw insertError;
@@ -85,7 +108,7 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
     }
   }, [fetchEstoques, toast]);
 
-  const updateEstoque = useCallback(async (id: string, data: Partial<EstoqueInsert>) => {
+  const updateEstoque = useCallback(async (id: string, data: Partial<EstoqueFormData>) => {
     try {
       setError(null);
 
@@ -178,26 +201,6 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
     }
   }, [fetchEstoques, toast]);
 
-  const handleToggleStatus = useCallback(async (id: string) => {
-    try {
-      const estoque = estoques.find(e => e.id === id);
-      if (!estoque) return;
-
-      const newStatus = estoque.status === 'ativo' ? 'inativo' : 'ativo';
-      await updateEstoque(id, { status: newStatus });
-    } catch (err) {
-      console.error('Erro ao alterar status:', err);
-    }
-  }, [estoques, updateEstoque]);
-
-  const handleDelete = useCallback(async (id: string) => {
-    try {
-      await deleteEstoque(id);
-    } catch (err) {
-      console.error('Erro ao excluir item:', err);
-    }
-  }, [deleteEstoque]);
-
   useEffect(() => {
     fetchEstoques();
   }, [fetchEstoques]);
@@ -211,7 +214,5 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
     updateEstoque,
     deleteEstoque,
     adjustQuantity,
-    handleToggleStatus,
-    handleDelete,
   };
 };

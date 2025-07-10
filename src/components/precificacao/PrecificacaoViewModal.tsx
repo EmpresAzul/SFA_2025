@@ -51,25 +51,25 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
         setProdutoData({
           nome: item.nome,
           categoria: item.categoria,
-          custoMateriais: Number(dados.custo_materiais || 0),
-          custoMaoObra: Number(dados.custo_mao_obra || 0),
+          custoMateriais: (dados.custo_materiais as number) || 0,
+          custoMaoObra: (dados.custo_mao_obra as number) || 0,
           margemLucro: item.margem_lucro || 20,
         });
 
-        if (dados.custos_materiais && Array.isArray(dados.custos_materiais)) {
-          const custosCarregados = dados.custos_materiais.map((custo: any) => ({
-            id: String(custo.id || Date.now()),
-            descricao: String(custo.descricao || ""),
-            valor: Number(custo.valor || 0),
+        if (dados.custos_materiais) {
+          const custosCarregados = (dados.custos_materiais as Array<Record<string, unknown>>).map((custo) => ({
+            id: (custo.id as string) || Date.now().toString(),
+            descricao: custo.descricao as string,
+            valor: custo.valor as number,
           }));
           setCustos(custosCarregados);
         }
 
-        if (dados.taxas_adicionais && Array.isArray(dados.taxas_adicionais)) {
-          const taxasCarregadas = dados.taxas_adicionais.map((taxa: any) => ({
-            id: String(taxa.id || Date.now()),
-            descricao: String(taxa.descricao || ""),
-            percentual: Number(taxa.percentual || 0),
+        if (dados.taxas_adicionais) {
+          const taxasCarregadas = (dados.taxas_adicionais as Array<Record<string, unknown>>).map((taxa) => ({
+            id: (taxa.id as string) || Date.now().toString(),
+            descricao: taxa.descricao as string,
+            percentual: taxa.percentual as number,
           }));
           setTaxasAdicionais(taxasCarregadas);
         }
@@ -105,7 +105,7 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
   const renderDetalhesEspecificos = () => {
     if (!item.dados_json) return null;
 
-    const dados = item.dados_json as Record<string, unknown>;
+            const dados = item.dados_json as Record<string, unknown>;
 
     if (item.tipo === "Produto") {
       return (
@@ -115,20 +115,20 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
             Detalhes do Produto
           </h3>
           <div className="space-y-3">
-            {dados.custos && Array.isArray(dados.custos) && dados.custos.length > 0 && (
+            {dados.custos && (dados.custos as Array<Record<string, unknown>>).length > 0 && (
               <div>
                 <h4 className="font-medium text-gray-700 mb-2">
                   Custos de Produção:
                 </h4>
                 <div className="space-y-2">
-                  {dados.custos.map((custo: any, index: number) => (
+                  {(dados.custos as Array<Record<string, unknown>>).map((custo, index: number) => (
                     <div
                       key={index}
                       className="flex justify-between items-center bg-white rounded p-2"
                     >
-                      <span className="text-sm">{String(custo.descricao || "")}</span>
+                      <span className="text-sm">{custo.descricao as string}</span>
                       <span className="font-semibold">
-                        {formatNumberToDisplay(Number(custo.valor || 0))}
+                        {formatNumberToDisplay(custo.valor as number)}
                       </span>
                     </div>
                   ))}
@@ -136,7 +136,7 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
                 <div className="border-t pt-2 mt-2">
                   <div className="flex justify-between items-center font-semibold">
                     <span>Custo Total:</span>
-                    <span>{formatNumberToDisplay(Number(dados.custo_total || 0))}</span>
+                    <span>{formatNumberToDisplay(dados.custo_total || 0)}</span>
                   </div>
                 </div>
               </div>
@@ -144,7 +144,7 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
             <div className="flex justify-between items-center">
               <span>Lucro Estimado:</span>
               <span className="font-semibold text-green-600">
-                {formatNumberToDisplay(Number(dados.lucro_valor || 0))}
+                {formatNumberToDisplay(dados.lucro_valor || 0)}
               </span>
             </div>
           </div>
@@ -167,7 +167,7 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
                 </label>
                 <p className="text-gray-900 flex items-center gap-1">
                   <Timer className="h-4 w-4" />
-                  {String(dados.tempo_estimado || 0)} horas
+                  {dados.tempo_estimado || 0} horas
                 </p>
               </div>
               <div>
@@ -175,7 +175,7 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
                   Valor por Hora
                 </label>
                 <p className="text-gray-900 font-semibold">
-                  {formatNumberToDisplay(Number(dados.valor_hora || 0))}
+                  {formatNumberToDisplay(dados.valor_hora || 0)}
                 </p>
               </div>
             </div>
@@ -183,37 +183,37 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
               <div className="flex justify-between items-center mb-2">
                 <span>Custo Mão de Obra:</span>
                 <span className="font-semibold">
-                  {formatNumberToDisplay(Number(dados.custo_mao_obra || 0))}
+                  {formatNumberToDisplay(dados.custo_mao_obra || 0)}
                 </span>
               </div>
               <div className="flex justify-between items-center mb-2">
                 <span>Custo Materiais:</span>
                 <span className="font-semibold">
-                  {formatNumberToDisplay(Number(dados.custo_materiais_total || 0))}
+                  {formatNumberToDisplay(dados.custo_materiais_total || 0)}
                 </span>
               </div>
               <div className="flex justify-between items-center border-t pt-2">
                 <span>Lucro Estimado:</span>
                 <span className="font-semibold text-green-600">
-                  {formatNumberToDisplay(Number(dados.lucro_valor || 0))}
+                  {formatNumberToDisplay(dados.lucro_valor || 0)}
                 </span>
               </div>
             </div>
-            {dados.custos_materiais && Array.isArray(dados.custos_materiais) && dados.custos_materiais.length > 0 && (
+            {dados.custos_materiais && dados.custos_materiais.length > 0 && (
               <div>
                 <h4 className="font-medium text-gray-700 mb-2">
                   Materiais Utilizados:
                 </h4>
                 <div className="space-y-2">
                   {dados.custos_materiais.map(
-                    (material: any, index: number) => (
+                    (material, index: number) => (
                       <div
                         key={index}
                         className="flex justify-between items-center bg-white rounded p-2"
                       >
-                        <span className="text-sm">{String(material.descricao || "")}</span>
+                        <span className="text-sm">{material.descricao as string}</span>
                         <span className="font-semibold">
-                          {formatNumberToDisplay(Number(material.valor || 0))}
+                          {formatNumberToDisplay(material.valor as number)}
                         </span>
                       </div>
                     ),
@@ -240,7 +240,7 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
                   Pró-labore
                 </label>
                 <p className="text-gray-900 font-semibold">
-                  {formatNumberToDisplay(Number(dados.pro_labore || 0))}
+                  {formatNumberToDisplay(dados.pro_labore || 0)}
                 </p>
               </div>
               <div>
@@ -248,7 +248,7 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
                   Dias Trabalhados/Mês
                 </label>
                 <p className="text-gray-900">
-                  {String(dados.dias_trabalhados || 0)} dias
+                  {dados.dias_trabalhados || 0} dias
                 </p>
               </div>
               <div>
@@ -256,7 +256,7 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
                   Horas por Dia
                 </label>
                 <p className="text-gray-900">
-                  {String(dados.horas_por_dia || 0)} horas
+                  {dados.horas_por_dia || 0} horas
                 </p>
               </div>
               <div>
@@ -264,7 +264,7 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
                   Horas Totais/Mês
                 </label>
                 <p className="text-gray-900 font-semibold">
-                  {String(dados.horas_trabalhadas_mes || 0)} horas
+                  {dados.horas_trabalhadas_mes || 0} horas
                 </p>
               </div>
             </div>
@@ -272,42 +272,42 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
               <div className="flex justify-between items-center mb-2">
                 <span>Custos Fixos:</span>
                 <span className="font-semibold">
-                  {formatNumberToDisplay(Number(dados.total_custos_fixos || 0))}
+                  {formatNumberToDisplay(dados.total_custos_fixos || 0)}
                 </span>
               </div>
               <div className="flex justify-between items-center mb-2">
                 <span>Custo Total Mensal:</span>
                 <span className="font-semibold">
-                  {formatNumberToDisplay(Number(dados.custo_total_mensal || 0))}
+                  {formatNumberToDisplay(dados.custo_total_mensal || 0)}
                 </span>
               </div>
               <div className="flex justify-between items-center border-t pt-2">
                 <span>Valor da Hora:</span>
                 <span className="font-semibold text-green-600">
-                  {formatNumberToDisplay(Number(dados.valor_hora_trabalhada || 0))}
+                  {formatNumberToDisplay(dados.valor_hora_trabalhada || 0)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Valor do Dia:</span>
                 <span className="font-semibold text-blue-600">
-                  {formatNumberToDisplay(Number(dados.valor_dia_trabalhado || 0))}
+                  {formatNumberToDisplay(dados.valor_dia_trabalhado || 0)}
                 </span>
               </div>
             </div>
-            {dados.despesas_fixas && Array.isArray(dados.despesas_fixas) && dados.despesas_fixas.length > 0 && (
+            {dados.despesas_fixas && dados.despesas_fixas.length > 0 && (
               <div>
                 <h4 className="font-medium text-gray-700 mb-2">
                   Despesas Fixas:
                 </h4>
                 <div className="space-y-2">
-                  {dados.despesas_fixas.map((despesa: any, index: number) => (
+                  {(dados.despesas_fixas as Array<Record<string, unknown>>).map((despesa, index: number) => (
                     <div
                       key={index}
                       className="flex justify-between items-center bg-white rounded p-2"
                     >
-                      <span className="text-sm">{String(despesa.descricao || "")}</span>
+                      <span className="text-sm">{despesa.descricao as string}</span>
                       <span className="font-semibold">
-                        {formatNumberToDisplay(Number(despesa.valor || 0))}
+                        {formatNumberToDisplay(despesa.valor as number)}
                       </span>
                     </div>
                   ))}

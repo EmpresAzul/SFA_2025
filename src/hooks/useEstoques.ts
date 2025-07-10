@@ -1,21 +1,32 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useCallback, useState } from "react";
-import type { Database } from "@/integrations/supabase/types";
-
-// Use the actual database schema type
-type EstoqueRow = Database['public']['Tables']['estoques']['Row'];
-type EstoqueInsert = Database['public']['Tables']['estoques']['Insert'];
 
 export const useEstoques = () => {
   const { session } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
-  const [estoques, setEstoques] = useState<EstoqueRow[]>([]);
+  const [estoques, setEstoques] = useState<EstoqueItem[]>([]);
+
+  interface EstoqueItem {
+    id: string;
+    nome: string;
+    descricao?: string;
+    categoria: string;
+    quantidade: number;
+    preco_unitario: number;
+    preco_venda: number;
+    fornecedor?: string;
+    codigo_barras?: string;
+    localizacao?: string;
+    estoque_minimo: number;
+    status: 'ativo' | 'inativo';
+    created_at: string;
+    updated_at: string;
+  }
 
   // Query para estoques
   const useEstoquesQuery = () => {
@@ -31,7 +42,7 @@ export const useEstoques = () => {
           .order("created_at", { ascending: false });
 
         if (error) throw error;
-        return data as EstoqueRow[];
+        return data as EstoqueItem[];
       },
       enabled: !!session?.user?.id,
     });
@@ -40,17 +51,12 @@ export const useEstoques = () => {
   // Mutation para criar estoque
   const useEstoquesCreate = () => {
     return useMutation({
-      mutationFn: async (data: Omit<EstoqueInsert, 'user_id'>) => {
+      mutationFn: async (data: Omit<EstoqueItem, 'id' | 'created_at' | 'updated_at'>) => {
         if (!session?.user?.id) throw new Error("User not authenticated");
-
-        const insertData: EstoqueInsert = {
-          ...data,
-          user_id: session.user.id
-        };
 
         const { data: result, error } = await supabase
           .from("estoques")
-          .insert([insertData])
+          .insert([{ ...data, user_id: session.user.id }])
           .select()
           .single();
 

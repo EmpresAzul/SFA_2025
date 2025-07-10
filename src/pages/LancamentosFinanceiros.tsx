@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LancamentosSummaryCards from "@/components/lancamentos/LancamentosSummaryCards";
@@ -35,16 +34,8 @@ const LancamentosFinanceiros: React.FC = () => {
 
   const { formData, setFormData, handleSubmit, handleCancel, loadFormData } =
     useLancamentosForm({
-      createLancamento: {
-        mutateAsync: async (data) => {
-          await createLancamento.mutateAsync(data);
-        }
-      },
-      updateLancamento: {
-        mutateAsync: async (data) => {
-          await updateLancamento.mutateAsync(data);
-        }
-      },
+      createLancamento,
+      updateLancamento,
       editingLancamento,
       setLoading,
       setActiveTab,

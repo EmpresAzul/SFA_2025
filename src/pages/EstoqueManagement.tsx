@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEstoqueData } from "@/hooks/useEstoqueData";
@@ -15,7 +14,7 @@ const EstoqueManagement: React.FC = () => {
   const [filteredEstoques, setFilteredEstoques] = useState<Estoque[]>([]);
   const [editingItem, setEditingItem] = useState<Estoque | null>(null);
 
-  const { estoques, loading, fetchEstoques, updateEstoque, deleteEstoque } =
+  const { estoques, loading, fetchEstoques, handleToggleStatus, handleDelete } =
     useEstoqueData();
   const {
     formData,
@@ -47,23 +46,6 @@ const EstoqueManagement: React.FC = () => {
     }
 
     setFilteredEstoques(filtered);
-  };
-
-  const handleToggleStatus = async (estoque: Estoque) => {
-    try {
-      const newStatus = estoque.status === 'ativo' ? 'inativo' : 'ativo';
-      await updateEstoque(estoque.id, { status: newStatus });
-    } catch (error) {
-      console.error("Erro ao alterar status:", error);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteEstoque(id);
-    } catch (error) {
-      console.error("Erro ao excluir estoque:", error);
-    }
   };
 
   return (

@@ -45,15 +45,13 @@ export interface DataDeletionRequest {
 export interface SecurityEvent {
   type: string;
   table?: string;
-  oldData?: Record<string, unknown>;
-  newData?: Record<string, unknown>;
+          oldData?: Record<string, unknown>;
+        newData?: Record<string, unknown>;
 }
 
 export interface SuspiciousActivity {
   type: string;
   threshold: number;
-  severity?: string;
-  details?: Record<string, unknown>;
 }
 
 export const useSecurity = () => {
@@ -67,7 +65,7 @@ export const useSecurity = () => {
       await supabase.from("security_logs").insert({
         user_id: user?.id,
         event_type: eventType,
-        details: details as any, // Cast to Json type
+        details,
         created_at: new Date().toISOString(),
       });
     } catch (error) {
@@ -102,7 +100,7 @@ export const useSecurity = () => {
             severity: activity.severity,
             details: activity.details,
             timestamp: new Date().toISOString(),
-          } as any,
+          },
           created_at: new Date().toISOString(),
         });
 

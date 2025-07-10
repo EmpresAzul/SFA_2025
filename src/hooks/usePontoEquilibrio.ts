@@ -143,7 +143,7 @@ export const usePontoEquilibrio = () => {
         .from("projecoes_ponto_equilibrio")
         .insert({
           nome_projecao: nomeProjecao,
-          dados_projecao: dadosProjecao as unknown as any, // Cast to Json type
+          dados_projecao: dadosProjecao as Record<string, unknown>, // Conversão para Json
           user_id: (await supabase.auth.getUser()).data.user?.id,
         })
         .select()
@@ -190,7 +190,7 @@ export const usePontoEquilibrio = () => {
         },
       };
 
-      const updateData: any = { dados_projecao: dadosProjecao as unknown as any };
+      const updateData: Record<string, unknown> = { dados_projecao: dadosProjecao as Record<string, unknown> };
       if (nomeProjecao) updateData.nome_projecao = nomeProjecao;
 
       const { data, error } = await supabase

@@ -14,12 +14,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { EnhancedCurrencyInput } from "@/components/ui/enhanced-currency-input";
 import { parseStringToNumber } from "@/utils/currency";
 import LancamentosFormCategories from "./LancamentosFormCategories";
-import type { LancamentoFormData } from "@/types/lancamentosForm";
+import type { FormData } from "@/types/lancamentosForm";
 import type { Cadastro } from "@/hooks/useCadastros";
 
 interface LancamentosFormFieldsProps {
-  formData: LancamentoFormData;
-  setFormData: React.Dispatch<React.SetStateAction<LancamentoFormData>>;
+  formData: FormData;
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   clientes: Cadastro[];
   fornecedores: Cadastro[];
 }
@@ -31,7 +31,7 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
   fornecedores,
 }) => {
   const handleInputChange = (
-    field: keyof LancamentoFormData,
+    field: keyof FormData,
     value: string | boolean | number | null,
   ) => {
     console.log("FormFields: Atualizando campo", field, "com valor:", value);
