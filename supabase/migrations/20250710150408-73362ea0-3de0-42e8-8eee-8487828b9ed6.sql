@@ -94,4 +94,4 @@ CREATE INDEX idx_crm_interactions_lead_id ON public.crm_interactions(lead_id);
 CREATE TRIGGER update_crm_leads_updated_at
 BEFORE UPDATE ON public.crm_leads
 FOR EACH ROW
-EXECUTE FUNCTION public.update_updated_at_column(); 
+EXECUTE FUNCTION public.update_updated_at_column();

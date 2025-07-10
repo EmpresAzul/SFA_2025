@@ -146,6 +146,98 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_interactions: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          interaction_date: string
+          lead_id: string
+          outcome: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          interaction_date?: string
+          lead_id: string
+          outcome?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          interaction_date?: string
+          lead_id?: string
+          outcome?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_interactions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "crm_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_leads: {
+        Row: {
+          company: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          next_follow_up: string | null
+          notes: string | null
+          phone: string | null
+          probability: number | null
+          source: string
+          status: string
+          updated_at: string
+          user_id: string
+          value: number | null
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          next_follow_up?: string | null
+          notes?: string | null
+          phone?: string | null
+          probability?: number | null
+          source?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          value?: number | null
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          next_follow_up?: string | null
+          notes?: string | null
+          phone?: string | null
+          probability?: number | null
+          source?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          value?: number | null
+        }
+        Relationships: []
+      }
       data_deletion_requests: {
         Row: {
           id: string

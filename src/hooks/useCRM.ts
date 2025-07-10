@@ -1,65 +1,209 @@
 
-// Mock CRM hooks until tables are created
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import type { CRMLead, CRMInteraction, CreateLeadData, UpdateLeadData, CreateInteractionData } from "@/types/crm";
+
+// Hook para buscar leads
 export const useCRMLeads = () => {
-  return {
-    data: [],
-    isLoading: false,
-    error: null,
-  };
-};
+  return useQuery({
+    queryKey: ["crm-leads"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("crm_leads")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-export const useCRMInteractions = (leadId?: string) => {
-  return {
-    data: [],
-    isLoading: false,
-    error: null,
-  };
-};
-
-export const useCreateLead = () => {
-  return {
-    mutateAsync: async (leadData: any) => {
-      console.log('Mock create lead:', leadData);
-      return { id: 'mock-id', ...leadData };
+      if (error) throw error;
+      return data as CRMLead[];
     },
-    isPending: false,
-  };
+  });
 };
 
-export const useUpdateLead = () => {
-  return {
-    mutateAsync: async (data: any) => {
-      console.log('Mock update lead:', data);
+// Hook para buscar interações de um lead
+export const useCRMInteractions = (leadId?: string) => {
+  return useQuery({
+    queryKey: ["crm-interactions", leadId],
+    queryFn: async () => {
+      if (!leadId) return [];
+      
+      const { data, error } = await supabase
+        .from("crm_interactions")
+        .select("*")
+        .eq("lead_id", leadId)
+        .order("interaction_date", { ascending: false });
+
+      if (error) throw error;
+      return data as CRMInteraction[];
+    },
+    enabled: !!leadId,
+  });
+};
+
+// Hook para criar lead
+export const useCreateLead = () => {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (leadData: CreateLeadData) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Usuário não autenticado");
+
+      const { data, error } = await supabase
+        .from("crm_leads")
+        .insert([{ ...leadData, user_id: user.id }])
+        .select()
+        .single();
+
+      if (error) throw error;
       return data;
     },
-    isPending: false,
-  };
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crm-leads"] });
+      toast({
+        title: "Lead criado",
+        description: "Lead criado com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro",
+        description: "Erro ao criar lead: " + error.message,
+        variant: "destructive",
+      });
+    },
+  });
 };
 
+// Hook para atualizar lead
+export const useUpdateLead = () => {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({ id, ...updates }: { id: string } & UpdateLeadData) => {
+      const { data, error } = await supabase
+        .from("crm_leads")
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crm-leads"] });
+      toast({
+        title: "Lead atualizado",
+        description: "Lead atualizado com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro",
+        description: "Erro ao atualizar lead: " + error.message,
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+// Hook para deletar lead
 export const useDeleteLead = () => {
-  return {
-    mutateAsync: async (leadId: string) => {
-      console.log('Mock delete lead:', leadId);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (leadId: string) => {
+      const { error } = await supabase
+        .from("crm_leads")
+        .delete()
+        .eq("id", leadId);
+
+      if (error) throw error;
     },
-    isPending: false,
-  };
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crm-leads"] });
+      toast({
+        title: "Lead excluído",
+        description: "Lead excluído com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro",
+        description: "Erro ao excluir lead: " + error.message,
+        variant: "destructive",
+      });
+    },
+  });
 };
 
+// Hook para criar interação
 export const useCreateInteraction = () => {
-  return {
-    mutateAsync: async (interactionData: any) => {
-      console.log('Mock create interaction:', interactionData);
-      return { id: 'mock-interaction-id', ...interactionData };
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (interactionData: CreateInteractionData) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Usuário não autenticado");
+
+      const { data, error } = await supabase
+        .from("crm_interactions")
+        .insert([{ ...interactionData, user_id: user.id }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
     },
-    isPending: false,
-  };
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["crm-interactions", variables.lead_id] });
+      toast({
+        title: "Interação criada",
+        description: "Interação registrada com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro",
+        description: "Erro ao criar interação: " + error.message,
+        variant: "destructive",
+      });
+    },
+  });
 };
 
+// Hook para deletar interação
 export const useDeleteInteraction = () => {
-  return {
-    mutateAsync: async (interactionId: string) => {
-      console.log('Mock delete interaction:', interactionId);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (interactionId: string) => {
+      const { error } = await supabase
+        .from("crm_interactions")
+        .delete()
+        .eq("id", interactionId);
+
+      if (error) throw error;
     },
-    isPending: false,
-  };
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["crm-interactions"] });
+      toast({
+        title: "Interação excluída",
+        description: "Interação excluída com sucesso!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro",
+        description: "Erro ao excluir interação: " + error.message,
+        variant: "destructive",
+      });
+    },
+  });
 };
