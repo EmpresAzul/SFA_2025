@@ -205,7 +205,7 @@ export const useCadastroForm = (
     // Mapeamento base comum para todos os tipos
     const editData: FormData = {
       nome: cadastro.nome,
-      pessoa: cadastro.pessoa,
+      pessoa: cadastro.pessoa as "Física" | "Jurídica",
       cpf_cnpj: cadastro.cpf_cnpj || "",
       telefone: cadastro.telefone || "",
       email: cadastro.email || "",

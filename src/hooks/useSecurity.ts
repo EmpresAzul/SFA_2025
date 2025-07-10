@@ -65,7 +65,7 @@ export const useSecurity = () => {
       await supabase.from("security_logs").insert({
         user_id: user?.id,
         event_type: eventType,
-        details,
+        details: details as any,
         created_at: new Date().toISOString(),
       });
     } catch (error) {

@@ -1,5 +1,6 @@
 export interface Estoque {
   id: string;
+  user_id: string;
   data: string;
   nome_produto: string;
   unidade_medida: string;
@@ -10,6 +11,7 @@ export interface Estoque {
   quantidade_liquida: number;
   status: string;
   created_at: string;
+  updated_at: string;
 }
 
 export const unidadesMedida = [

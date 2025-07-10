@@ -4,33 +4,30 @@ import { useToast } from '@/hooks/use-toast';
 
 interface EstoqueItem {
   id: string;
-  nome: string;
-  descricao?: string;
-  categoria: string;
+  user_id: string;
+  data: string;
+  nome_produto: string;
+  unidade_medida: string;
   quantidade: number;
-  preco_unitario: number;
-  preco_venda: number;
-  fornecedor?: string;
-  codigo_barras?: string;
-  localizacao?: string;
-  estoque_minimo: number;
-  status: 'ativo' | 'inativo';
+  valor_unitario: number;
+  valor_total: number;
+  quantidade_bruta: number;
+  quantidade_liquida: number;
+  status: string;
   created_at: string;
   updated_at: string;
 }
 
 interface EstoqueFormData {
-  nome: string;
-  descricao?: string;
-  categoria: string;
+  data: string;
+  nome_produto: string;
+  unidade_medida: string;
   quantidade: number;
-  preco_unitario: number;
-  preco_venda: number;
-  fornecedor?: string;
-  codigo_barras?: string;
-  localizacao?: string;
-  estoque_minimo: number;
-  status: 'ativo' | 'inativo';
+  valor_unitario: number;
+  valor_total: number;
+  quantidade_bruta: number;
+  quantidade_liquida: number;
+  status: string;
 }
 
 interface UseEstoqueDataReturn {
@@ -42,6 +39,8 @@ interface UseEstoqueDataReturn {
   updateEstoque: (id: string, data: Partial<EstoqueFormData>) => Promise<void>;
   deleteEstoque: (id: string) => Promise<void>;
   adjustQuantity: (id: string, quantidade: number) => Promise<void>;
+  handleToggleStatus: (id: string) => Promise<void>;
+  handleDelete: (id: string) => Promise<void>;
 }
 
 export const useEstoqueData = (): UseEstoqueDataReturn => {
@@ -58,7 +57,7 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
       const { data, error: fetchError } = await supabase
         .from('estoques')
         .select('*')
-        .order('nome', { ascending: true });
+        .order('nome_produto', { ascending: true });
 
       if (fetchError) {
         throw fetchError;
@@ -84,7 +83,7 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
 
       const { error: insertError } = await supabase
         .from('estoques')
-        .insert([data]);
+        .insert([{ ...data, user_id: (await supabase.auth.getUser()).data.user?.id }]);
 
       if (insertError) {
         throw insertError;
@@ -176,7 +175,7 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
 
       const { error: updateError } = await supabase
         .from('estoques')
-        .update({ quantidade })
+        .update({ quantidade, valor_total: quantidade * 0 }) // Placeholder para valor_total
         .eq('id', id);
 
       if (updateError) {
@@ -205,6 +204,18 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
     fetchEstoques();
   }, [fetchEstoques]);
 
+  const handleToggleStatus = useCallback(async (id: string) => {
+    const estoque = estoques.find(e => e.id === id);
+    if (estoque) {
+      const newStatus = estoque.status === 'ativo' ? 'inativo' : 'ativo';
+      await updateEstoque(id, { status: newStatus });
+    }
+  }, [estoques, updateEstoque]);
+
+  const handleDelete = useCallback(async (id: string) => {
+    await deleteEstoque(id);
+  }, [deleteEstoque]);
+
   return {
     estoques,
     loading,
@@ -214,5 +225,7 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
     updateEstoque,
     deleteEstoque,
     adjustQuantity,
+    handleToggleStatus,
+    handleDelete,
   };
 };

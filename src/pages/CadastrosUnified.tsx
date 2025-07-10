@@ -85,9 +85,9 @@ const CadastrosUnified: React.FC = () => {
 
           <CadastrosTable
             filteredItems={filteredItems}
-            onEdit={handleEdit}
-            onToggleStatus={handleToggleStatus}
-            onDelete={handleDelete}
+        onEdit={(item: any) => handleEdit(item)}
+        onToggleStatus={handleToggleStatus}
+        onDelete={(id: string) => handleDelete(id, "item")}
           />
         </TabsContent>
 
@@ -103,8 +103,8 @@ const CadastrosUnified: React.FC = () => {
           setEditingItem(null);
         }}
         editingItem={editingItem}
-        onSave={handleSaveEdit}
-        loading={updateCadastro.isPending}
+        onSave={(data: any) => handleSaveEdit(data)}
+        loading={false}
       />
     </div>
   );

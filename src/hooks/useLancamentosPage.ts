@@ -46,8 +46,10 @@ export const useLancamentosPage = () => {
   const deleteLancamento = useDelete();
 
   const { useQuery: useCadastrosQuery } = useCadastros();
-  const { data: clientes } = useCadastrosQuery("Cliente");
-  const { data: fornecedores } = useCadastrosQuery("Fornecedor");
+  const cadastrosQuery = useCadastrosQuery();
+  const allCadastros = cadastrosQuery.data || [];
+  const clientes = allCadastros.filter((item: any) => item.tipo === "Cliente");
+  const fornecedores = allCadastros.filter((item: any) => item.tipo === "Fornecedor");
 
   useEffect(() => {
     console.log(

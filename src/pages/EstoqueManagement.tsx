@@ -92,8 +92,8 @@ const EstoqueManagement: React.FC = () => {
             selectedEstoque={selectedEstoque}
             setSelectedEstoque={setSelectedEstoque}
             handleEdit={handleEdit}
-            handleToggleStatus={handleToggleStatus}
-            handleDelete={handleDelete}
+            handleToggleStatus={(estoque: any) => handleToggleStatus(estoque.id)}
+            handleDelete={(estoque: any) => handleDelete(estoque.id)}
           />
         </TabsContent>
 

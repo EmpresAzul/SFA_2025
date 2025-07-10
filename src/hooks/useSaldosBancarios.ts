@@ -21,7 +21,7 @@ export const useSaldosBancarios = () => {
   const [loading, setLoading] = useState(false);
   const [saldos, setSaldos] = useState<SaldoBancarioData[]>([]);
 
-  const useQuery = () => {
+  const useQueryHook = () => {
     return useQuery({
       queryKey: ['saldos_bancarios', user?.id],
       queryFn: async () => {
@@ -140,6 +140,6 @@ export const useSaldosBancarios = () => {
     createSaldo,
     updateSaldo,
     deleteSaldo,
-    useQuery,
+    useQuery: useQueryHook,
   };
 };

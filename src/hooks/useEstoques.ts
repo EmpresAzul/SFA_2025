@@ -13,17 +13,16 @@ export const useEstoques = () => {
 
   interface EstoqueItem {
     id: string;
-    nome: string;
-    descricao?: string;
-    categoria: string;
+    user_id: string;
+    data: string;
+    nome_produto: string;
+    unidade_medida: string;
     quantidade: number;
-    preco_unitario: number;
-    preco_venda: number;
-    fornecedor?: string;
-    codigo_barras?: string;
-    localizacao?: string;
-    estoque_minimo: number;
-    status: 'ativo' | 'inativo';
+    valor_unitario: number;
+    valor_total: number;
+    quantidade_bruta: number;
+    quantidade_liquida: number;
+    status: string;
     created_at: string;
     updated_at: string;
   }
@@ -42,7 +41,7 @@ export const useEstoques = () => {
           .order("created_at", { ascending: false });
 
         if (error) throw error;
-        return data as EstoqueItem[];
+        return data;
       },
       enabled: !!session?.user?.id,
     });
@@ -51,12 +50,22 @@ export const useEstoques = () => {
   // Mutation para criar estoque
   const useEstoquesCreate = () => {
     return useMutation({
-      mutationFn: async (data: Omit<EstoqueItem, 'id' | 'created_at' | 'updated_at'>) => {
+      mutationFn: async (data: {
+        data: string;
+        nome_produto: string;
+        unidade_medida: string;
+        quantidade: number;
+        valor_unitario: number;
+        valor_total: number;
+        quantidade_bruta: number;
+        quantidade_liquida: number;
+        status?: string;
+      }) => {
         if (!session?.user?.id) throw new Error("User not authenticated");
 
         const { data: result, error } = await supabase
           .from("estoques")
-          .insert([{ ...data, user_id: session.user.id }])
+          .insert([{ ...data, user_id: session.user.id, status: data.status || 'ativo' }])
           .select()
           .single();
 

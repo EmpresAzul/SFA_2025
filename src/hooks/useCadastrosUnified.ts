@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useCadastros } from "@/hooks/useCadastros";
+import { useCadastros, type Cadastro } from "@/hooks/useCadastros";
 
 export const useCadastrosUnified = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,21 +14,20 @@ export const useCadastrosUnified = () => {
   const { useQuery, useUpdate, useDelete } = useCadastros();
 
   // Fazer consultas separadas para cada tipo
-  const {
-    data: clientes = [],
-    isLoading: loadingClientes,
-    refetch: refetchClientes,
-  } = useQuery("Cliente");
-  const {
-    data: fornecedores = [],
-    isLoading: loadingFornecedores,
-    refetch: refetchFornecedores,
-  } = useQuery("Fornecedor");
-  const {
-    data: funcionarios = [],
-    isLoading: loadingFuncionarios,
-    refetch: refetchFuncionarios,
-  } = useQuery("Funcionário");
+  const queryResult = useQuery();
+  const allData = queryResult.data || [];
+  
+  const clientes = allData.filter((item: Cadastro) => item.tipo === "Cliente");
+  const fornecedores = allData.filter((item: Cadastro) => item.tipo === "Fornecedor");
+  const funcionarios = allData.filter((item: Cadastro) => item.tipo === "Funcionário");
+  
+  const loadingClientes = queryResult.isLoading;
+  const loadingFornecedores = queryResult.isLoading;
+  const loadingFuncionarios = queryResult.isLoading;
+  
+  const refetchClientes = () => {};
+  const refetchFornecedores = () => {};
+  const refetchFuncionarios = () => {};
 
   const updateCadastro = useUpdate();
   const deleteCadastro = useDelete();
