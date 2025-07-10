@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useInputValidation } from "@/hooks/useInputValidation";
+import { useInputValidation, validateEmail } from "@/hooks/useInputValidation";
 import Logo from "./Logo";
 
 const LoginForm: React.FC = () => {
@@ -15,16 +15,17 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login, user } = useAuth();
+  const { signIn, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const {
-    validateEmail,
-    sanitizeText,
     errors,
-    setFieldError,
     clearFieldError,
-  } = useInputValidation();
+    validateForm
+  } = useInputValidation({
+    email: { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email é obrigatório' },
+    password: { required: true, minLength: 6, message: 'Senha é obrigatória' }
+  });
 
   // Redirecionar se já estiver logado
   useEffect(() => {
@@ -34,23 +35,13 @@ const LoginForm: React.FC = () => {
   }, [user, navigate]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitizedEmail = sanitizeText(e.target.value);
+    const sanitizedEmail = e.target.value.trim();
     setEmail(sanitizedEmail);
-
-    if (sanitizedEmail) {
-      const validation = validateEmail(sanitizedEmail);
-      if (!validation.isValid) {
-        setFieldError("email", validation.message || "Email inválido");
-      } else {
-        clearFieldError("email");
-      }
-    } else {
-      clearFieldError("email");
-    }
+    clearFieldError("email");
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitizedPassword = sanitizeText(e.target.value);
+    const sanitizedPassword = e.target.value;
     setPassword(sanitizedPassword);
     clearFieldError("password");
   };
@@ -58,21 +49,21 @@ const LoginForm: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validações antes de enviar
-    if (!email || !password) {
+    // Validate form data
+    const isValid = validateForm({ email, password });
+    if (!isValid) {
       toast({
         title: "Campos obrigatórios",
-        description: "Por favor, preencha email e senha.",
+        description: "Por favor, corrija os erros no formulário.",
         variant: "destructive",
       });
       return;
     }
 
-    const emailValidation = validateEmail(email);
-    if (!emailValidation.isValid) {
+    if (!validateEmail(email)) {
       toast({
         title: "Email inválido",
-        description: emailValidation.message,
+        description: "Por favor, insira um email válido.",
         variant: "destructive",
       });
       return;
@@ -81,27 +72,16 @@ const LoginForm: React.FC = () => {
     setLoading(true);
 
     try {
-      const success = await login(email, password);
-
-      if (success) {
-        toast({
-          title: "Login realizado com êxito!",
-          description:
-            "Bem-vindo ao FluxoAzul! Você foi autenticado com sucesso.",
-        });
-        navigate("/dashboard");
-      } else {
-        toast({
-          title: "Erro no login",
-          description:
-            "E-mail ou senha incorretos. Verifique suas credenciais.",
-          variant: "destructive",
-        });
-      }
+      await signIn(email, password);
+      toast({
+        title: "Login realizado com êxito!",
+        description: "Bem-vindo ao FluxoAzul! Você foi autenticado com sucesso.",
+      });
+      navigate("/dashboard");
     } catch (error) {
       toast({
         title: "Erro no login",
-        description: "Ocorreu um erro inesperado. Tente novamente.",
+        description: "E-mail ou senha incorretos. Verifique suas credenciais.",
         variant: "destructive",
       });
     } finally {

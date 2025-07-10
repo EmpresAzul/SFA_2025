@@ -18,18 +18,43 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
+    target: "esnext",
+    minify: "esbuild",
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ["react", "react-dom"],
-          router: ["react-router-dom"],
-          ui: ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu"],
+        manualChunks: (id) => {
+          if (id.includes("node_modules")) {
+            if (id.includes("react")) return "vendor-react";
+            if (id.includes("@radix-ui")) return "vendor-radix";
+            return "vendor-other";
+          }
         },
       },
+      onwarn: (warning, warn) => {
+        if (warning.code === "CIRCULAR_DEPENDENCY") return;
+        warn(warning);
+      },
     },
+  },
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "@tanstack/react-query",
+      "@supabase/supabase-js",
+    ],
+    exclude: ["lovable-tagger"],
+  },
+  esbuild: {
+    target: "esnext",
+    logOverride: { "this-is-undefined-in-esm": "silent" },
   },
   // PWA Configuration
   define: {
     __PWA_VERSION__: JSON.stringify(process.env.npm_package_version || "1.0.0"),
+    global: "globalThis",
   },
 }));
