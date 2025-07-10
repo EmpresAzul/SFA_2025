@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, TrendingUp, DollarSign, Users } from "lucide-react";
 import { Negocio } from "@/types/pipeline";
-import { formatCurrency } from "@/utils/currency";
+import { formatNumberToDisplay } from "@/utils/currency";
 
 interface PipelineStatsProps {
   negocios: Negocio[];
@@ -56,7 +56,7 @@ export const PipelineStats: React.FC<PipelineStatsProps> = ({ negocios }) => {
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{formatCurrency(stats.valorTotal)}</div>
+          <div className="text-2xl font-bold">{formatNumberToDisplay(stats.valorTotal)}</div>
         </CardContent>
       </Card>
 
