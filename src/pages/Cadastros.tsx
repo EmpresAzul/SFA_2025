@@ -39,7 +39,7 @@ const Cadastros: React.FC = () => {
     handleSubmit,
     handleEdit,
     resetForm,
-  } = useCadastroForm(tipoCapitalized);
+  } = useCadastroForm();
 
   useEffect(() => {
     if (cadastrosData) {
@@ -77,7 +77,9 @@ const Cadastros: React.FC = () => {
     if (success) {
       console.log("Form submitted successfully, switching to lista tab");
       setActiveTab("lista");
+      return true;
     }
+    return false;
   };
 
   const handleDelete = async (id: string) => {
