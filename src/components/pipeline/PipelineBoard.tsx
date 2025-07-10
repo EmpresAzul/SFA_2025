@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Phone, Mail, DollarSign } from "lucide-react";
 import { Negocio } from "@/types/pipeline";
-import { formatCurrency } from "@/utils/currency";
+import { formatNumberToDisplay } from "@/utils/currency";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,7 +75,7 @@ export const PipelineBoard: React.FC<PipelineBoardProps> = ({
             <div className="flex items-center text-sm">
               <DollarSign className="h-3 w-3 mr-1 text-green-600" />
               <span className="font-medium text-green-600">
-                {formatCurrency(negocio.valor_negocio)}
+                {formatNumberToDisplay(negocio.valor_negocio)}
               </span>
             </div>
           )}
