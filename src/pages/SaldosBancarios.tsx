@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSaldosBancarios } from "@/hooks/useSaldosBancarios";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { formatCurrency } from "@/utils/formatters";
+import { formatCurrency } from "@/utils/currency";
 import SaldoBancarioSummaryCard from "@/components/saldos-bancarios/SaldoBancarioSummaryCard";
 
 interface SaldoForm {

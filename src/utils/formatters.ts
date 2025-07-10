@@ -1,14 +1,4 @@
-export const formatCurrency = (value: number | string): string => {
-  const numValue = typeof value === "string" ? parseFloat(value) : value;
-  if (isNaN(numValue)) return "R$ 0,00";
-
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(numValue);
-};
+// formatCurrency moved to @/utils/currency.ts for consistency
 
 export const formatCNPJ = (value: string): string => {
   const cleanValue = value.replace(/\D/g, "");

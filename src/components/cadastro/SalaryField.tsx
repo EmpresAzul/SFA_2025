@@ -1,7 +1,7 @@
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { formatCurrency } from "@/utils/formatters";
+import { formatCurrency } from "@/utils/currency";
 
 interface SalaryFieldProps {
   salario: number;

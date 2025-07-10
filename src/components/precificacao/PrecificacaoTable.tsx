@@ -31,7 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { formatCurrency } from "@/utils/formatters";
+import { formatCurrency } from "@/utils/currency";
 import { usePrecificacao } from "@/hooks/usePrecificacao";
 import type { Database } from "@/integrations/supabase/types";
 
