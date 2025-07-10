@@ -1,6 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import DashboardLayout from "./components/DashboardLayout";
@@ -27,7 +26,6 @@ import AdminSettings from "./pages/AdminSettings";
 
 const App = () => (
   <ErrorBoundary>
-    <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -159,8 +157,7 @@ const App = () => (
           </Routes>
             <PWAInstallBanner />
           </AuthProvider>
-        </BrowserRouter>
-    </TooltipProvider>
+         </BrowserRouter>
   </ErrorBoundary>
 );
 
