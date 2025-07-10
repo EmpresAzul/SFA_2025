@@ -1,13 +1,14 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LancamentosFormFields from "./form/LancamentosFormFields";
 import LancamentosFormActions from "./form/LancamentosFormActions";
-import type { FormData, LancamentoComRelacoes } from "@/types/lancamentosForm";
+import type { LancamentoFormData, LancamentoComRelacoes } from "@/types/lancamentosForm";
 import type { Cadastro } from "@/hooks/useCadastros";
 
 interface LancamentosFormProps {
-  formData: FormData;
-  setFormData: (data: FormData) => void;
+  formData: LancamentoFormData;
+  setFormData: (data: LancamentoFormData) => void;
   editingLancamento: LancamentoComRelacoes | null;
   loading: boolean;
   clientes: Cadastro[];

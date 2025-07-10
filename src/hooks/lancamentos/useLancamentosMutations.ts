@@ -46,17 +46,17 @@ export const useLancamentosMutations = () => {
           );
         }
 
-        // Lançamento simples - preparar dados corretamente
+        // Lançamento simples - preparar dados corretamente para inserção
         const insertData = {
           data: lancamentoData.data,
           tipo: lancamentoData.tipo,
           categoria: lancamentoData.categoria,
           valor: lancamentoData.valor,
-          cliente_id: lancamentoData.cliente_id,
-          fornecedor_id: lancamentoData.fornecedor_id,
-          observacoes: lancamentoData.observacoes,
+          cliente_id: lancamentoData.cliente_id || null,
+          fornecedor_id: lancamentoData.fornecedor_id || null,
+          observacoes: lancamentoData.observacoes || null,
           user_id: lancamentoData.user_id,
-          status: lancamentoData.status,
+          status: lancamentoData.status || 'ativo',
           recorrente: false,
           meses_recorrencia: null,
           lancamento_pai_id: null,
@@ -64,7 +64,7 @@ export const useLancamentosMutations = () => {
 
         const { data, error } = await supabase
           .from("lancamentos")
-          .insert([insertData])
+          .insert(insertData)
           .select()
           .single();
 
@@ -228,8 +228,17 @@ export const useLancamentosMutations = () => {
   };
 
   return {
-    useCreate,
-    useUpdate,
-    useDelete,
+    useCreate: () => ({
+      mutateAsync: useCreate().mutateAsync,
+      isPending: useCreate().isPending,
+    }),
+    useUpdate: () => ({
+      mutateAsync: useUpdate().mutateAsync,
+      isPending: useUpdate().isPending,
+    }),
+    useDelete: () => ({
+      mutateAsync: useDelete().mutateAsync,
+      isPending: useDelete().isPending,
+    }),
   };
 };

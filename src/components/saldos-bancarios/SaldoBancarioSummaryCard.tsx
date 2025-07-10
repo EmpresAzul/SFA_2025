@@ -1,69 +1,100 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wallet, TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { TrendingUp, TrendingDown, DollarSign, Calendar } from "lucide-react";
 import { useSaldosBancarios } from "@/hooks/useSaldosBancarios";
+import { formatNumberToDisplay } from "@/utils/currency";
 
 const SaldoBancarioSummaryCard: React.FC = () => {
-  const { useQuery: useSaldosQuery } = useSaldosBancarios();
-  const { data: saldos, isLoading } = useSaldosQuery();
+  const { loading, saldos } = useSaldosBancarios();
 
-  const saldoTotal =
-    saldos?.reduce((total, saldo) => total + (saldo.saldo || 0), 0) || 0;
-  const quantidadeBancos = saldos?.length || 0;
-
-  if (isLoading) {
+  if (loading) {
     return (
-      <Card className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-0 shadow-lg animate-pulse">
-        <CardContent className="p-6">
-          <div className="h-24 bg-gray-200 rounded"></div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Card key={index} className="animate-pulse">
+            <CardHeader className="pb-3">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     );
   }
 
+  // Calcular métricas
+  const saldoTotal = saldos.reduce((total, saldo) => total + saldo.saldo, 0);
+  const totalBancos = saldos.length;
+  
+  // Encontrar maior e menor saldo
+  const maiorSaldo = saldos.length > 0 ? Math.max(...saldos.map(s => s.saldo)) : 0;
+  const menorSaldo = saldos.length > 0 ? Math.min(...saldos.map(s => s.saldo)) : 0;
+
   return (
-    <Card className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-lg bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-          <Wallet className="w-5 h-5 text-blue-600" />
-          💰 Resumo dos Saldos Bancários
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="text-center md:text-left">
-            <p className="text-sm text-gray-600 mb-1">
-              Saldo Total Consolidado
-            </p>
-            <p className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-              R${" "}
-              {saldoTotal.toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </p>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Saldo Total</CardTitle>
+          <DollarSign className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold text-green-600">
+            {formatNumberToDisplay(saldoTotal)}
           </div>
+          <p className="text-xs text-muted-foreground">
+            Em {totalBancos} banco{totalBancos !== 1 ? 's' : ''}
+          </p>
+        </CardContent>
+      </Card>
 
-          <div className="text-center md:text-right">
-            <div className="flex items-center justify-center md:justify-end gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-green-600" />
-              <p className="text-sm text-gray-600">Distribuído em</p>
-            </div>
-            <p className="text-xl font-semibold text-blue-600">
-              {quantidadeBancos} {quantidadeBancos === 1 ? "banco" : "bancos"}
-            </p>
-          </div>
-        </div>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total de Bancos</CardTitle>
+          <Calendar className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{totalBancos}</div>
+          <p className="text-xs text-muted-foreground">
+            Contas cadastradas
+          </p>
+        </CardContent>
+      </Card>
 
-        {saldoTotal > 0 && (
-          <div className="mt-4 p-3 bg-white/60 rounded-lg">
-            <p className="text-xs text-gray-500 text-center">
-              💡 Saldo atualizado com base nos registros mais recentes
-            </p>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Maior Saldo</CardTitle>
+          <TrendingUp className="h-4 w-4 text-green-600" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold text-green-600">
+            {formatNumberToDisplay(maiorSaldo)}
           </div>
-        )}
-      </CardContent>
-    </Card>
+          <p className="text-xs text-muted-foreground">
+            Melhor posição
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Menor Saldo</CardTitle>
+          <TrendingDown className="h-4 w-4 text-red-600" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold text-red-600">
+            {formatNumberToDisplay(menorSaldo)}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Posição crítica
+          </p>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

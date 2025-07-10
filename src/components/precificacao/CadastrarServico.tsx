@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,17 +63,17 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
       setServicoData({
         nome: editingItem.nome,
         categoria: editingItem.categoria,
-        tempoEstimado: dados?.tempo_estimado?.toString() || "",
-        valorHora: dados?.valor_hora || 0,
+        tempoEstimado: String(dados?.tempo_estimado || ""),
+        valorHora: Number(dados?.valor_hora || 0),
         margemLucro: editingItem.margem_lucro || 20,
       });
 
       // Carregar custos de materiais do JSON
-      if (dados?.custos_materiais) {
-        const custosCarregados = (dados.custos_materiais as Array<Record<string, unknown>>).map((custo) => ({
-          id: (custo.id as string) || Date.now().toString(),
-          descricao: custo.descricao as string,
-          valor: custo.valor as number,
+      if (dados?.custos_materiais && Array.isArray(dados.custos_materiais)) {
+        const custosCarregados = dados.custos_materiais.map((custo: any) => ({
+          id: String(custo.id || Date.now()),
+          descricao: String(custo.descricao || ""),
+          valor: Number(custo.valor || 0),
         }));
         setCustos(
           custosCarregados.length > 0
@@ -82,11 +83,11 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
       }
 
       // Carregar taxas adicionais do JSON
-      if (dados?.taxas_adicionais) {
-        const taxasCarregadas = (dados.taxas_adicionais as Array<Record<string, unknown>>).map((taxa) => ({
-          id: (taxa.id as string) || Date.now().toString(),
-          descricao: taxa.descricao as string,
-          percentual: taxa.percentual as number,
+      if (dados?.taxas_adicionais && Array.isArray(dados.taxas_adicionais)) {
+        const taxasCarregadas = dados.taxas_adicionais.map((taxa: any) => ({
+          id: String(taxa.id || Date.now()),
+          descricao: String(taxa.descricao || ""),
+          percentual: Number(taxa.percentual || 0),
         }));
         setTaxasAdicionais(
           taxasCarregadas.length > 0
