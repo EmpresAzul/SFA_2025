@@ -17,6 +17,8 @@ interface UseEstoqueDataReturn {
   updateEstoque: (id: string, data: Partial<EstoqueInsert>) => Promise<void>;
   deleteEstoque: (id: string) => Promise<void>;
   adjustQuantity: (id: string, quantidade: number) => Promise<void>;
+  handleToggleStatus: (id: string) => Promise<void>;
+  handleDelete: (id: string) => Promise<void>;
 }
 
 export const useEstoqueData = (): UseEstoqueDataReturn => {
@@ -176,6 +178,26 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
     }
   }, [fetchEstoques, toast]);
 
+  const handleToggleStatus = useCallback(async (id: string) => {
+    try {
+      const estoque = estoques.find(e => e.id === id);
+      if (!estoque) return;
+
+      const newStatus = estoque.status === 'ativo' ? 'inativo' : 'ativo';
+      await updateEstoque(id, { status: newStatus });
+    } catch (err) {
+      console.error('Erro ao alterar status:', err);
+    }
+  }, [estoques, updateEstoque]);
+
+  const handleDelete = useCallback(async (id: string) => {
+    try {
+      await deleteEstoque(id);
+    } catch (err) {
+      console.error('Erro ao excluir item:', err);
+    }
+  }, [deleteEstoque]);
+
   useEffect(() => {
     fetchEstoques();
   }, [fetchEstoques]);
@@ -189,5 +211,7 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
     updateEstoque,
     deleteEstoque,
     adjustQuantity,
+    handleToggleStatus,
+    handleDelete,
   };
 };

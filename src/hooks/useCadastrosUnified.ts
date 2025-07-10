@@ -4,8 +4,11 @@ import { useCadastros, type Cadastro } from '@/hooks/useCadastros';
 
 export const useCadastrosUnified = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterTipo, setFilterTipo] = useState('');
-  const [editingCadastro, setEditingCadastro] = useState<Cadastro | null>(null);
+  const [tipoFilter, setTipoFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [activeTab, setActiveTab] = useState('lista');
+  const [editingItem, setEditingItem] = useState<Cadastro | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
   const { useQuery, useUpdate, useDelete } = useCadastros();
   const query = useQuery();
@@ -20,11 +23,24 @@ export const useCadastrosUnified = () => {
                            cadastro.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            cadastro.telefone?.includes(searchTerm);
       
-      const matchesTipo = !filterTipo || cadastro.tipo === filterTipo;
+      const matchesTipo = !tipoFilter || cadastro.tipo === tipoFilter;
+      const matchesStatus = !statusFilter || cadastro.status === statusFilter;
       
-      return matchesSearch && matchesTipo;
+      return matchesSearch && matchesTipo && matchesStatus;
     });
-  }, [query.data, searchTerm, filterTipo]);
+  }, [query.data, searchTerm, tipoFilter, statusFilter]);
+
+  const filteredItems = filteredCadastros;
+
+  const stats = useMemo(() => {
+    const total = query.data?.length || 0;
+    const ativos = query.data?.filter(c => c.status === 'ativo').length || 0;
+    const clientes = query.data?.filter(c => c.tipo === 'cliente').length || 0;
+    const fornecedores = query.data?.filter(c => c.tipo === 'fornecedor').length || 0;
+    const funcionarios = query.data?.filter(c => c.tipo === 'funcionario').length || 0;
+    
+    return { total, ativos, clientes, fornecedores, funcionarios };
+  }, [query.data]);
 
   const clientes = useMemo(() => {
     if (!query.data) return [];
@@ -42,7 +58,8 @@ export const useCadastrosUnified = () => {
   }, [query.data]);
 
   const handleEdit = (cadastro: Cadastro) => {
-    setEditingCadastro(cadastro);
+    setEditingItem(cadastro);
+    setIsEditModalOpen(true);
   };
 
   const handleDelete = async (id: string) => {
@@ -56,9 +73,24 @@ export const useCadastrosUnified = () => {
   const handleUpdate = async (id: string, data: Partial<Cadastro>) => {
     try {
       await updateCadastro.mutateAsync({ id, data });
-      setEditingCadastro(null);
+      setEditingItem(null);
+      setIsEditModalOpen(false);
     } catch (error) {
       console.error('Erro ao atualizar cadastro:', error);
+    }
+  };
+
+  const handleSaveEdit = async (data: Partial<Cadastro>) => {
+    if (editingItem?.id) {
+      await handleUpdate(editingItem.id, data);
+    }
+  };
+
+  const handleToggleStatus = async (id: string) => {
+    const cadastro = query.data?.find(c => c.id === id);
+    if (cadastro) {
+      const newStatus = cadastro.status === 'ativo' ? 'inativo' : 'ativo';
+      await handleUpdate(id, { status: newStatus });
     }
   };
 
@@ -72,12 +104,23 @@ export const useCadastrosUnified = () => {
     funcionarios,
     searchTerm,
     setSearchTerm,
-    filterTipo,
-    setFilterTipo,
-    editingCadastro,
-    setEditingCadastro,
+    tipoFilter,
+    setTipoFilter,
+    statusFilter,
+    setStatusFilter,
+    activeTab,
+    setActiveTab,
+    editingItem,
+    setEditingItem,
+    isEditModalOpen,
+    setIsEditModalOpen,
+    filteredItems,
+    stats,
+    updateCadastro,
     handleEdit,
     handleDelete,
     handleUpdate,
+    handleSaveEdit,
+    handleToggleStatus,
   };
 };

@@ -8,8 +8,8 @@ export const useLancamentosPage = () => {
   const [loading, setLoading] = useState(false);
   const [editingLancamento, setEditingLancamento] = useState<LancamentoComRelacoes | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterTipo, setFilterTipo] = useState("");
-  const [filterCategoria, setFilterCategoria] = useState("");
+  const [tipoFilter, setTipoFilter] = useState("");
+  const [categoriaFilter, setCategoriaFilter] = useState("");
   const [filterStatus, setFilterStatus] = useState("ativo");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -32,9 +32,9 @@ export const useLancamentosPage = () => {
         lancamento.categoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
         lancamento.observacoes?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesTipo = !filterTipo || lancamento.tipo === filterTipo;
+      const matchesTipo = !tipoFilter || lancamento.tipo === tipoFilter;
       const matchesCategoria =
-        !filterCategoria || lancamento.categoria === filterCategoria;
+        !categoriaFilter || lancamento.categoria === categoriaFilter;
       const matchesStatus = !filterStatus || lancamento.status === filterStatus;
 
       return (
@@ -44,8 +44,8 @@ export const useLancamentosPage = () => {
   }, [
     lancamentosQuery.data,
     searchTerm,
-    filterTipo,
-    filterCategoria,
+    tipoFilter,
+    categoriaFilter,
     filterStatus,
   ]);
 
@@ -63,8 +63,8 @@ export const useLancamentosPage = () => {
     setCurrentPage(1);
   }, [
     searchTerm,
-    filterTipo,
-    filterCategoria,
+    tipoFilter,
+    categoriaFilter,
     filterStatus,
     lancamentosQuery.data,
   ]);
@@ -90,6 +90,11 @@ export const useLancamentosPage = () => {
     }
   };
 
+  const handleNewLancamento = () => {
+    setEditingLancamento(null);
+    setActiveTab("formulario");
+  };
+
   return {
     // State
     activeTab,
@@ -100,10 +105,10 @@ export const useLancamentosPage = () => {
     setEditingLancamento,
     searchTerm,
     setSearchTerm,
-    filterTipo,
-    setFilterTipo,
-    filterCategoria,
-    setFilterCategoria,
+    tipoFilter,
+    setTipoFilter,
+    categoriaFilter,
+    setCategoriaFilter,
     filterStatus,
     setFilterStatus,
     currentPage,
@@ -111,6 +116,7 @@ export const useLancamentosPage = () => {
     
     // Data
     lancamentos: lancamentosQuery.data || [],
+    filteredLancamentos,
     clientes,
     fornecedores,
     isLoading: lancamentosQuery.isLoading || cadastrosQuery.isLoading,
@@ -123,5 +129,6 @@ export const useLancamentosPage = () => {
     // Handlers
     handleEdit,
     handleDelete,
+    handleNewLancamento,
   };
 };
