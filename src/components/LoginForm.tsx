@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useInputValidation, validateEmail } from "@/hooks/useInputValidation";
@@ -16,7 +16,6 @@ const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signIn, user } = useAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
   const {
     errors,
@@ -62,7 +61,7 @@ const LoginForm: React.FC = () => {
 
     if (!validateEmail(email)) {
       toast({
-        title: "Email inválido",
+        title: "Email inválido", 
         description: "Por favor, insira um email válido.",
         variant: "destructive",
       });

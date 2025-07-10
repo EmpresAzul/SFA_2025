@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
 import PWAInstallBanner from "./components/PWAInstallBanner";
@@ -148,6 +149,7 @@ const App = () => (
       <Route path="*" element={<NotFound />} />
     </Routes>
     <PWAInstallBanner />
+    <Toaster />
   </>
 );
 
