@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { MoreHorizontal, Eye, Edit, Trash2, Plus, MessageSquare, X, Check, Calendar, Phone, Mail, Building, DollarSign, Target, FileText, Clock } from 'lucide-react';
 import { useCRMLeads, useCreateLead, useUpdateLead, useDeleteLead, useCreateInteraction, useCRMInteractions } from '@/hooks/useCRM';
 import type { CRMLead, CreateLeadData, CreateInteractionData } from '@/types/crm';
+import { useToast } from '@/hooks/use-toast';
 
 const statusConfig = {
   prospeccao: { label: 'Prospecção', color: 'bg-blue-100 text-blue-800', order: 1 },
@@ -55,6 +56,7 @@ export function CRMBoard() {
   const updateLead = useUpdateLead();
   const deleteLead = useDeleteLead();
   const createInteraction = useCreateInteraction();
+  const { toast } = useToast();
 
   const [selectedLead, setSelectedLead] = useState<CRMLead | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -141,12 +143,12 @@ export function CRMBoard() {
     e.preventDefault();
     try {
       if (editingLead) {
-        // Editar lead existente
         await updateLead.mutateAsync({ id: editingLead.id, ...formData });
         setEditingLead(null);
+        toast({ title: 'Lead atualizado com sucesso!', variant: 'success' });
       } else {
-        // Criar novo lead
-        await createLead.mutateAsync(formData);
+        await createLead.mutateAsync({ ...formData, status: 'prospeccao' });
+        toast({ title: 'Lead criado com sucesso!', variant: 'success' });
       }
       setIsFormOpen(false);
       setFormData({
@@ -161,6 +163,7 @@ export function CRMBoard() {
         notes: ''
       });
     } catch (error) {
+      toast({ title: 'Erro ao salvar lead', description: (error as any)?.message || 'Tente novamente.', variant: 'destructive' });
       console.error('Erro ao salvar lead:', error);
     }
   };
@@ -219,7 +222,7 @@ export function CRMBoard() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Pipeline de Vendas</h2>
-        <Button onClick={() => setIsFormOpen(true)}>
+        <Button onClick={() => setIsFormOpen(true)} variant="fluxo">
           <Plus className="w-4 h-4 mr-2" />
           Novo Lead
         </Button>
@@ -333,7 +336,7 @@ export function CRMBoard() {
                 <Button type="button" variant="outline" onClick={handleFormClose}>
                   Cancelar
                 </Button>
-                <Button type="submit" disabled={createLead.isPending || updateLead.isPending}>
+                <Button type="submit" variant="fluxo" disabled={createLead.isPending || updateLead.isPending}>
                   <Check className="w-4 h-4 mr-2" />
                   {editingLead ? 'Atualizar' : 'Criar'} Lead
                 </Button>

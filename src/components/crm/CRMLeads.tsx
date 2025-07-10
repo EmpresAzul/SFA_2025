@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { MoreHorizontal, Edit, Trash2, Search, Check, X, Plus, Eye, Building, DollarSign, Target, Calendar, Phone, Mail, TrendingUp, Users, Activity } from 'lucide-react';
 import { useCRMLeads, useCreateLead, useUpdateLead, useDeleteLead } from '@/hooks/useCRM';
 import type { CRMLead, CreateLeadData } from '@/types/crm';
+import { useToast } from '@/hooks/use-toast';
 
 const statusLabels = {
   prospeccao: 'Prospecção',
@@ -46,6 +47,7 @@ export function CRMLeads() {
   const createLead = useCreateLead();
   const updateLead = useUpdateLead();
   const deleteLead = useDeleteLead();
+  const { toast } = useToast();
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<CRMLead>>({});
@@ -75,7 +77,7 @@ export function CRMLeads() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createLead.mutateAsync(formData);
+      await createLead.mutateAsync({ ...formData, status: 'prospeccao' });
       setFormData({
         name: '',
         company: '',
@@ -88,7 +90,9 @@ export function CRMLeads() {
         notes: ''
       });
       setIsFormExpanded(false);
+      toast({ title: 'Lead criado com sucesso!', variant: 'success' });
     } catch (error) {
+      toast({ title: 'Erro ao cadastrar lead', description: (error as any)?.message || 'Tente novamente.', variant: 'destructive' });
       console.error('Erro ao cadastrar lead:', error);
     }
   };
@@ -103,7 +107,9 @@ export function CRMLeads() {
       await updateLead.mutateAsync({ id: lead.id, ...editData });
       setEditingId(null);
       setEditData({});
+      toast({ title: 'Lead atualizado com sucesso!', variant: 'success' });
     } catch (error) {
+      toast({ title: 'Erro ao editar lead', description: (error as any)?.message || 'Tente novamente.', variant: 'destructive' });
       console.error('Erro ao editar lead:', error);
     }
   };
@@ -117,7 +123,9 @@ export function CRMLeads() {
     if (confirm(`Tem certeza que deseja excluir o lead "${lead.name}"?`)) {
       try {
         await deleteLead.mutateAsync(lead.id);
+        toast({ title: 'Lead excluído com sucesso!', variant: 'success' });
       } catch (error) {
+        toast({ title: 'Erro ao deletar lead', description: (error as any)?.message || 'Tente novamente.', variant: 'destructive' });
         console.error('Erro ao deletar lead:', error);
       }
     }
@@ -210,10 +218,10 @@ export function CRMLeads() {
               Novo Lead
             </CardTitle>
             <Button 
-              variant="ghost" 
+              variant="fluxo" 
               size="sm" 
               onClick={() => setIsFormExpanded(!isFormExpanded)}
-              className="text-blue-600 hover:text-blue-700"
+              className="text-white"
             >
               {isFormExpanded ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             </Button>
@@ -320,7 +328,7 @@ export function CRMLeads() {
                 <Button type="button" variant="outline" onClick={() => setIsFormExpanded(false)}>
                   Cancelar
                 </Button>
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                <Button type="submit" variant="fluxo" className="bg-gradient-fluxo" disabled={createLead.isPending}>
                   <Check className="w-4 h-4 mr-2" />
                   Cadastrar Lead
                 </Button>
@@ -613,7 +621,7 @@ export function CRMLeads() {
                 <Button variant="outline" onClick={handleEditCancel}>
                   Cancelar
                 </Button>
-                <Button onClick={() => handleEditSave(leads.find(l => l.id === editingId)!)}>
+                <Button onClick={() => handleEditSave(leads.find(l => l.id === editingId)!)} variant="fluxo" className="bg-gradient-fluxo" disabled={updateLead.isPending}>
                   <Check className="w-4 h-4 mr-2" />
                   Salvar Alterações
                 </Button>
