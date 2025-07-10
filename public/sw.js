@@ -62,12 +62,22 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Fetch event - advanced caching strategy
+// Fetch event - improved error handling and caching strategy
 self.addEventListener("fetch", (event) => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
+  // Skip Chrome extension requests
+  if (event.request.url.startsWith('chrome-extension://')) {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request).then((response) => {
+    caches.match(event.request).then((cachedResponse) => {
       // Return cached version if available
-      if (response) {
+      if (cachedResponse) {
         // For API calls, try to fetch fresh data in background
         if (
           event.request.url.includes("/api/") ||
@@ -75,50 +85,106 @@ self.addEventListener("fetch", (event) => {
         ) {
           fetch(event.request)
             .then((freshResponse) => {
-              if (freshResponse.ok) {
+              if (freshResponse && freshResponse.ok) {
                 const responseClone = freshResponse.clone();
                 caches.open(CACHE_NAME).then((cache) => {
                   cache.put(event.request, responseClone);
+                }).catch((error) => {
+                  console.log('FluxoAzul PWA: Cache update failed:', error);
                 });
               }
             })
-            .catch(() => {
-              // Silently fail background updates
+            .catch((error) => {
+              console.log('FluxoAzul PWA: Background fetch failed:', error);
             });
         }
-        return response;
+        return cachedResponse;
       }
 
-      // Fetch from network
+      // Fetch from network with improved error handling
       return fetch(event.request)
         .then((response) => {
-          // Don't cache if not a valid response
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== "basic"
-          ) {
+          // Check for valid response
+          if (!response) {
+            throw new Error('No response received');
+          }
+
+          // Don't cache error responses
+          if (response.status >= 400) {
             return response;
           }
 
-          // Clone the response
-          const responseToCache = response.clone();
-
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
+          // Only cache successful responses from same origin or CORS-enabled
+          if (response.type === "basic" || response.type === "cors") {
+            try {
+              const responseToCache = response.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, responseToCache);
+              }).catch((error) => {
+                console.log('FluxoAzul PWA: Cache storage failed:', error);
+              });
+            } catch (error) {
+              console.log('FluxoAzul PWA: Response clone failed:', error);
+            }
+          }
 
           return response;
         })
-        .catch(() => {
-          // Return offline page for navigation requests
+        .catch((error) => {
+          console.log('FluxoAzul PWA: Fetch failed:', error);
+          
+          // For navigation requests, return cached index page
           if (event.request.mode === "navigate") {
-            return caches.match("/");
+            return caches.match("/").then((response) => {
+              if (response) {
+                return response;
+              }
+              // Fallback offline page
+              return new Response(`
+                <!DOCTYPE html>
+                <html lang="pt-BR">
+                <head>
+                  <meta charset="utf-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1">
+                  <title>FluxoAzul - Offline</title>
+                  <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+                    .container { max-width: 400px; margin: 0 auto; }
+                    .icon { font-size: 48px; margin-bottom: 20px; }
+                    h1 { color: #1e3a8a; }
+                    button { background: #1e3a8a; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+                    button:hover { background: #1e40af; }
+                  </style>
+                </head>
+                <body>
+                  <div class="container">
+                    <div class="icon">📱</div>
+                    <h1>FluxoAzul</h1>
+                    <p>Você está offline. Verifique sua conexão e tente novamente.</p>
+                    <button onclick="window.location.reload()">Tentar Novamente</button>
+                  </div>
+                </body>
+                </html>
+              `, { 
+                headers: { 'Content-Type': 'text/html' },
+                status: 200 
+              });
+            });
           }
-          // Return empty response for other requests
-          return new Response("", { status: 404 });
+          
+          // For other requests, return a simple error response
+          return new Response(JSON.stringify({ 
+            error: 'Network error', 
+            message: 'Unable to fetch resource' 
+          }), { 
+            status: 503,
+            headers: { 'Content-Type': 'application/json' }
+          });
         });
-    }),
+    }).catch((error) => {
+      console.error('FluxoAzul PWA: Cache match failed:', error);
+      return new Response('Service unavailable', { status: 503 });
+    })
   );
 });
 
