@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+
+import * as React from "react";
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
 
 const TOAST_LIMIT = 1;
@@ -163,9 +164,9 @@ function toast({ ...props }: Toast) {
 }
 
 function useToast() {
-  const [state, setState] = useState<State>(memoryState);
+  const [state, setState] = React.useState<State>(memoryState);
 
-  useEffect(() => {
+  React.useEffect(() => {
     listeners.push(setState);
     return () => {
       const index = listeners.indexOf(setState);
