@@ -28,10 +28,13 @@ export const useCRMLeads = () => {
         throw error;
       }
 
-      return data || [];
+      return (data || []) as CRMLead[];
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 5, // 5 minutos
+    staleTime: 1000 * 30, // 30 segundos (reduzido de 5 minutos)
+    gcTime: 1000 * 60 * 10, // 10 minutos
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
   });
 };
 
@@ -59,10 +62,12 @@ export const useCRMInteractions = (leadId?: string) => {
         throw error;
       }
 
-      return data || [];
+      return (data || []) as CRMInteraction[];
     },
-    enabled: !!user,
-    staleTime: 1000 * 60 * 5, // 5 minutos
+    enabled: !!user && !!leadId,
+    staleTime: 1000 * 30, // 30 segundos
+    gcTime: 1000 * 60 * 10, // 10 minutos
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -92,9 +97,17 @@ export const useCreateLead = () => {
         throw error;
       }
 
-      return data;
+      return data as CRMLead;
     },
-    onSuccess: () => {
+    onSuccess: (newLead) => {
+      // Otimisticamente atualizar o cache
+      queryClient.setQueryData(['crm-leads', user?.id], (oldData: CRMLead[] | undefined) => {
+        if (!oldData) return [newLead];
+        return [newLead, ...oldData];
+      });
+    },
+    onError: () => {
+      // Em caso de erro, invalidar para refetch
       queryClient.invalidateQueries({ queryKey: ['crm-leads'] });
     },
   });
@@ -121,9 +134,17 @@ export const useUpdateLead = () => {
         throw error;
       }
 
-      return data;
+      return data as CRMLead;
     },
-    onSuccess: () => {
+    onSuccess: (updatedLead) => {
+      // Otimisticamente atualizar o cache
+      queryClient.setQueryData(['crm-leads', user?.id], (oldData: CRMLead[] | undefined) => {
+        if (!oldData) return [updatedLead];
+        return oldData.map(lead => lead.id === updatedLead.id ? updatedLead : lead);
+      });
+    },
+    onError: () => {
+      // Em caso de erro, invalidar para refetch
       queryClient.invalidateQueries({ queryKey: ['crm-leads'] });
     },
   });
@@ -148,9 +169,17 @@ export const useDeleteLead = () => {
         throw error;
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['crm-leads'] });
+    onSuccess: (_, deletedLeadId) => {
+      // Otimisticamente atualizar o cache
+      queryClient.setQueryData(['crm-leads', user?.id], (oldData: CRMLead[] | undefined) => {
+        if (!oldData) return [];
+        return oldData.filter(lead => lead.id !== deletedLeadId);
+      });
       queryClient.invalidateQueries({ queryKey: ['crm-interactions'] });
+    },
+    onError: () => {
+      // Em caso de erro, invalidar para refetch
+      queryClient.invalidateQueries({ queryKey: ['crm-leads'] });
     },
   });
 };
@@ -178,9 +207,17 @@ export const useCreateInteraction = () => {
         throw error;
       }
 
-      return data;
+      return data as CRMInteraction;
     },
-    onSuccess: () => {
+    onSuccess: (newInteraction) => {
+      // Otimisticamente atualizar o cache
+      queryClient.setQueryData(['crm-interactions', user?.id, newInteraction.lead_id], (oldData: CRMInteraction[] | undefined) => {
+        if (!oldData) return [newInteraction];
+        return [newInteraction, ...oldData];
+      });
+    },
+    onError: () => {
+      // Em caso de erro, invalidar para refetch
       queryClient.invalidateQueries({ queryKey: ['crm-interactions'] });
     },
   });
@@ -205,7 +242,8 @@ export const useDeleteInteraction = () => {
         throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (_, deletedInteractionId) => {
+      // Invalidar queries de interações
       queryClient.invalidateQueries({ queryKey: ['crm-interactions'] });
     },
   });

@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { MoreHorizontal, Eye, Edit, Trash2, Plus, MessageSquare, X, Check, Calendar, Phone, Mail, Building, DollarSign, Target, FileText, Clock } from 'lucide-react';
-import { useCRMLeads, useUpdateLead, useDeleteLead, useCreateInteraction, useCRMInteractions } from '@/hooks/useCRM';
+import { useCRMLeads, useCreateLead, useUpdateLead, useDeleteLead, useCreateInteraction, useCRMInteractions } from '@/hooks/useCRM';
 import type { CRMLead, CreateLeadData, CreateInteractionData } from '@/types/crm';
 
 const statusConfig = {
@@ -51,6 +51,7 @@ const interactionTypes = [
 
 export function CRMBoard() {
   const { data: leads = [], isLoading } = useCRMLeads();
+  const createLead = useCreateLead();
   const updateLead = useUpdateLead();
   const deleteLead = useDeleteLead();
   const createInteraction = useCreateInteraction();
@@ -140,10 +141,12 @@ export function CRMBoard() {
     e.preventDefault();
     try {
       if (editingLead) {
+        // Editar lead existente
         await updateLead.mutateAsync({ id: editingLead.id, ...formData });
         setEditingLead(null);
       } else {
-        await updateLead.mutateAsync({ id: selectedLead!.id, ...formData });
+        // Criar novo lead
+        await createLead.mutateAsync(formData);
       }
       setIsFormOpen(false);
       setFormData({
@@ -330,7 +333,7 @@ export function CRMBoard() {
                 <Button type="button" variant="outline" onClick={handleFormClose}>
                   Cancelar
                 </Button>
-                <Button type="submit">
+                <Button type="submit" disabled={createLead.isPending || updateLead.isPending}>
                   <Check className="w-4 h-4 mr-2" />
                   {editingLead ? 'Atualizar' : 'Criar'} Lead
                 </Button>
@@ -625,7 +628,7 @@ export function CRMBoard() {
               >
                 Cancelar
               </Button>
-              <Button type="submit" className="flex-1">
+              <Button type="submit" className="flex-1" disabled={createInteraction.isPending}>
                 <Check className="w-4 h-4 mr-2" />
                 Salvar Interação
               </Button>
