@@ -4,7 +4,6 @@ import { useCadastros, type Cadastro } from '@/hooks/useCadastros';
 
 export const useCadastrosUnified = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [tipoFilter, setTipoFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [activeTab, setActiveTab] = useState('lista');
   const [editingItem, setEditingItem] = useState<Cadastro | null>(null);
@@ -23,12 +22,11 @@ export const useCadastrosUnified = () => {
                            cadastro.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            cadastro.telefone?.includes(searchTerm);
       
-      const matchesTipo = !tipoFilter || cadastro.tipo === tipoFilter;
       const matchesStatus = !statusFilter || cadastro.status === statusFilter;
       
-      return matchesSearch && matchesTipo && matchesStatus;
+      return matchesSearch && matchesStatus;
     });
-  }, [query.data, searchTerm, tipoFilter, statusFilter]);
+  }, [query.data, searchTerm, statusFilter]);
 
   const filteredItems = filteredCadastros;
 
@@ -104,8 +102,6 @@ export const useCadastrosUnified = () => {
     funcionarios,
     searchTerm,
     setSearchTerm,
-    tipoFilter,
-    setTipoFilter,
     statusFilter,
     setStatusFilter,
     activeTab,
@@ -116,7 +112,6 @@ export const useCadastrosUnified = () => {
     setIsEditModalOpen,
     filteredItems,
     stats,
-    updateCadastro,
     handleEdit,
     handleDelete,
     handleUpdate,

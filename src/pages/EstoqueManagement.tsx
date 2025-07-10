@@ -15,7 +15,7 @@ const EstoqueManagement: React.FC = () => {
   const [filteredEstoques, setFilteredEstoques] = useState<Estoque[]>([]);
   const [editingItem, setEditingItem] = useState<Estoque | null>(null);
 
-  const { estoques, loading, fetchEstoques, toggleStatus, deleteEstoque } =
+  const { estoques, loading, fetchEstoques, updateEstoque, deleteEstoque } =
     useEstoqueData();
   const {
     formData,
@@ -49,17 +49,18 @@ const EstoqueManagement: React.FC = () => {
     setFilteredEstoques(filtered);
   };
 
-  const handleToggleStatus = async (id: string) => {
+  const handleToggleStatus = async (estoque: Estoque) => {
     try {
-      await toggleStatus(id);
+      const newStatus = estoque.status === 'ativo' ? 'inativo' : 'ativo';
+      await updateEstoque(estoque.id, { status: newStatus });
     } catch (error) {
       console.error("Erro ao alterar status:", error);
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (estoque: Estoque) => {
     try {
-      await deleteEstoque(id);
+      await deleteEstoque(estoque.id);
     } catch (error) {
       console.error("Erro ao excluir estoque:", error);
     }

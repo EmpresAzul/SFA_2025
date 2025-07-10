@@ -12,8 +12,6 @@ const CadastrosUnified: React.FC = () => {
   const {
     searchTerm,
     setSearchTerm,
-    tipoFilter,
-    setTipoFilter,
     statusFilter,
     setStatusFilter,
     activeTab,
@@ -25,7 +23,6 @@ const CadastrosUnified: React.FC = () => {
     filteredItems,
     stats,
     loading,
-    updateCadastro,
     handleEdit,
     handleSaveEdit,
     handleToggleStatus,
@@ -78,8 +75,8 @@ const CadastrosUnified: React.FC = () => {
           <CadastrosFilters
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
-            tipoFilter={tipoFilter}
-            setTipoFilter={setTipoFilter}
+            tipoFilter=""
+            setTipoFilter={() => {}}
             statusFilter={statusFilter}
             setStatusFilter={setStatusFilter}
           />
@@ -105,7 +102,7 @@ const CadastrosUnified: React.FC = () => {
         }}
         editingItem={editingItem}
         onSave={handleSaveEdit}
-        loading={updateCadastro.isPending || false}
+        loading={false}
       />
     </div>
   );

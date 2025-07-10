@@ -73,13 +73,9 @@ const Cadastros: React.FC = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     console.log("Form submit triggered");
-    const success = await handleSubmit(e);
-    if (success) {
-      console.log("Form submitted successfully, switching to lista tab");
-      setActiveTab("lista");
-      return true;
-    }
-    return false;
+    await handleSubmit(e);
+    console.log("Form submitted successfully, switching to lista tab");
+    setActiveTab("lista");
   };
 
   const handleDelete = async (id: string) => {
