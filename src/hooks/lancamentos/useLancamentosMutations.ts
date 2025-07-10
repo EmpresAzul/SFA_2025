@@ -40,10 +40,10 @@ export const useLancamentosMutations = () => {
           lancamentoData.meses_recorrencia &&
           lancamentoData.meses_recorrencia > 0
         ) {
-          return await criarLancamentosRecorrentes(
-            lancamentoData,
-            lancamentoData.meses_recorrencia,
-          );
+        return await criarLancamentosRecorrentes(
+          lancamentoData as any,
+          lancamentoData.meses_recorrencia,
+        );
         }
 
         // Lançamento simples - preparar dados corretamente

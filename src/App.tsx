@@ -17,7 +17,7 @@ import EstoqueManagement from "./pages/EstoqueManagement";
 import CadastrosUnified from "./pages/CadastrosUnified";
 import SaldosBancarios from "./pages/SaldosBancarios";
 import Lembretes from "./pages/Lembretes";
-import CRM from "./pages/CRM";
+
 import PontoEquilibrio from "./pages/PontoEquilibrio";
 import Suporte from "./pages/Suporte";
 import VideosSistema from "./pages/VideosSistema";
@@ -114,14 +114,6 @@ const App = () => (
               element={
                 <DashboardLayout>
                   <Lembretes />
-                </DashboardLayout>
-              }
-            />
-            <Route
-              path="/crm"
-              element={
-                <DashboardLayout>
-                  <CRM />
                 </DashboardLayout>
               }
             />

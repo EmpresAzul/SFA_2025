@@ -88,14 +88,6 @@ export const menuItems: MenuItem[] = [
     description: "Agenda e notificações",
   },
   {
-    id: "crm",
-    label: "CRM",
-    icon: UserPlus,
-    iconColor: "text-blue-600",
-    href: "/crm",
-    description: "Gestão de vendas e leads",
-  },
-  {
     id: "ponto-equilibrio",
     label: "Ponto de Equilíbrio",
     icon: TrendingUp,

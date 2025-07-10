@@ -63,7 +63,7 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
         nome: editingItem.nome,
         categoria: editingItem.categoria,
         tempoEstimado: dados?.tempo_estimado?.toString() || "",
-        valorHora: dados?.valor_hora || 0,
+        valorHora: Number(dados?.valor_hora) || 0,
         margemLucro: editingItem.margem_lucro || 20,
       });
 

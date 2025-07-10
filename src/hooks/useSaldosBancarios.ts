@@ -15,11 +15,30 @@ interface SaldoBancarioData {
 }
 
 export const useSaldosBancarios = () => {
-  const { session } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [saldos, setSaldos] = useState<SaldoBancarioData[]>([]);
+
+  const useQuery = () => {
+    return useQuery({
+      queryKey: ['saldos_bancarios', user?.id],
+      queryFn: async () => {
+        if (!user) throw new Error('Usuário não autenticado');
+        
+        const { data, error } = await supabase
+          .from('saldos_bancarios')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('data', { ascending: false });
+
+        if (error) throw error;
+        return data || [];
+      },
+      enabled: !!user
+    });
+  };
 
   const fetchSaldos = useCallback(async () => {
     try {
@@ -121,5 +140,6 @@ export const useSaldosBancarios = () => {
     createSaldo,
     updateSaldo,
     deleteSaldo,
+    useQuery,
   };
 };

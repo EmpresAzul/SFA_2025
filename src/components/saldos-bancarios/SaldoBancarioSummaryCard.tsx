@@ -8,8 +8,8 @@ const SaldoBancarioSummaryCard: React.FC = () => {
   const { data: saldos, isLoading } = useSaldosQuery();
 
   const saldoTotal =
-    saldos?.reduce((total, saldo) => total + (saldo.saldo || 0), 0) || 0;
-  const quantidadeBancos = saldos?.length || 0;
+    (saldos as any[])?.reduce((total, saldo) => total + (saldo.saldo || 0), 0) || 0;
+  const quantidadeBancos = (saldos as any[])?.length || 0;
 
   if (isLoading) {
     return (

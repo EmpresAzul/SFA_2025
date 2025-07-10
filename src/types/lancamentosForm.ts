@@ -20,6 +20,9 @@ export interface LancamentoFormData {
   lancamento_pai_id?: string;
 }
 
+// Alias para compatibilidade com código existente
+export type FormData = LancamentoFormData;
+
 export interface LancamentoFormErrors {
   descricao?: string;
   valor?: string;
