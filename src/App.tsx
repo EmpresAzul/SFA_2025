@@ -1,5 +1,3 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
 import PWAInstallBanner from "./components/PWAInstallBanner";
@@ -24,8 +22,6 @@ import Pipeline from "./pages/Pipeline";
 
 const App = () => (
   <>
-    <Toaster />
-    <Sonner />
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/login" element={<Login />} />
