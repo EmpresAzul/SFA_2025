@@ -16,7 +16,7 @@ export interface SecurityLog {
     | "suspicious_activity";
   ip_address?: string;
   user_agent?: string;
-  details?: any;
+  details?: Record<string, unknown>;
   created_at: string;
 }
 
@@ -45,8 +45,8 @@ export interface DataDeletionRequest {
 export interface SecurityEvent {
   type: string;
   table?: string;
-  oldData?: any;
-  newData?: any;
+          oldData?: Record<string, unknown>;
+        newData?: Record<string, unknown>;
 }
 
 export interface SuspiciousActivity {
@@ -209,10 +209,10 @@ export const useSecurity = () => {
           description: "Suas preferências de privacidade foram salvas.",
         });
       },
-      onError: (error: any) => {
+      onError: (error) => {
         toast({
           title: "Erro",
-          description: "Erro ao atualizar consentimento: " + error.message,
+          description: "Não foi possível atualizar o consentimento.",
           variant: "destructive",
         });
       },
@@ -246,10 +246,10 @@ export const useSecurity = () => {
             "Sua solicitação de exclusão de dados foi registrada e será processada em até 30 dias.",
         });
       },
-      onError: (error: any) => {
+      onError: (error) => {
         toast({
           title: "Erro",
-          description: "Erro ao solicitar exclusão: " + error.message,
+          description: "Erro ao solicitar exclusão: " + (error instanceof Error ? error.message : "Erro desconhecido"),
           variant: "destructive",
         });
       },

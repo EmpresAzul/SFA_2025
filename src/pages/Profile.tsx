@@ -122,10 +122,11 @@ const Profile: React.FC = () => {
           variant: "destructive",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Erro ao atualizar senha:", error);
       toast({
         title: "Erro ao atualizar senha",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Erro desconhecido",
         variant: "destructive",
       });
     } finally {

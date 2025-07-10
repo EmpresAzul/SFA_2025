@@ -91,7 +91,7 @@ export const useCadastros = (): UseCadastrosReturn => {
         throw updateError;
       }
 
-      toast({
+        toast({
         title: 'Sucesso',
         description: 'Cadastro atualizado com sucesso!',
       });
@@ -100,7 +100,7 @@ export const useCadastros = (): UseCadastrosReturn => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao atualizar cadastro';
       setError(errorMessage);
-      toast({
+        toast({
         title: 'Erro',
         description: errorMessage,
         variant: 'destructive',
@@ -122,7 +122,7 @@ export const useCadastros = (): UseCadastrosReturn => {
         throw deleteError;
       }
 
-      toast({
+        toast({
         title: 'Sucesso',
         description: 'Cadastro excluído com sucesso!',
       });
@@ -131,7 +131,7 @@ export const useCadastros = (): UseCadastrosReturn => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao excluir cadastro';
       setError(errorMessage);
-      toast({
+        toast({
         title: 'Erro',
         description: errorMessage,
         variant: 'destructive',
@@ -160,7 +160,7 @@ export const useCadastros = (): UseCadastrosReturn => {
         throw updateError;
       }
 
-      toast({
+        toast({
         title: 'Sucesso',
         description: `Status alterado para ${newStatus}!`,
       });
@@ -169,7 +169,7 @@ export const useCadastros = (): UseCadastrosReturn => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao alterar status';
       setError(errorMessage);
-      toast({
+        toast({
         title: 'Erro',
         description: errorMessage,
         variant: 'destructive',

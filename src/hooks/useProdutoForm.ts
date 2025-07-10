@@ -209,11 +209,11 @@ export const useProdutoForm = (
 
       // Chamar callback de sucesso
       onSaveSuccess?.();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Erro ao salvar produto:", error);
       toast({
         title: "Erro ao salvar",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Erro desconhecido",
         variant: "destructive",
       });
     } finally {

@@ -155,7 +155,7 @@ const SaldosBancarios: React.FC = () => {
       banco: formData.banco.trim(),
       saldo: saldoNumerico,
       data: new Date().toISOString().split("T")[0],
-      user_id: user?.id!,
+      user_id: user?.id || "",
     };
 
     console.log("SaldosBancarios: Dados para salvar:", saldoData);
@@ -179,11 +179,11 @@ const SaldosBancarios: React.FC = () => {
 
       resetForm();
       setActiveTab("lista");
-    } catch (error: any) {
+    } catch (error) {
       console.error("SaldosBancarios: Erro ao salvar:", error);
       toast({
         title: "Erro ao salvar",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Erro desconhecido",
         variant: "destructive",
       });
     } finally {

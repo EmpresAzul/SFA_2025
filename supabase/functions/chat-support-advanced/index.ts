@@ -59,7 +59,7 @@ serve(async (req) => {
     const makeOpenAIRequest = async (
       url: string,
       method: string,
-      body?: any,
+      body?: Record<string, unknown>,
     ) => {
       const response = await fetch(url, {
         method,

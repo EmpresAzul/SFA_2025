@@ -35,15 +35,17 @@ const Lembretes: React.FC = () => {
         const dataLembrete = new Date(lembrete.data_lembrete + "T00:00:00");
 
         switch (dateFilter) {
-          case "hoje":
+          case "hoje": {
             matchesDate = dataLembrete.toDateString() === hoje.toDateString();
             break;
-          case "amanha":
+          }
+          case "amanha": {
             const amanha = new Date(hoje);
             amanha.setDate(hoje.getDate() + 1);
             matchesDate = dataLembrete.toDateString() === amanha.toDateString();
             break;
-          case "esta-semana":
+          }
+          case "esta-semana": {
             const inicioSemana = new Date(hoje);
             inicioSemana.setDate(hoje.getDate() - hoje.getDay());
             const fimSemana = new Date(inicioSemana);
@@ -51,9 +53,11 @@ const Lembretes: React.FC = () => {
             matchesDate =
               dataLembrete >= inicioSemana && dataLembrete <= fimSemana;
             break;
-          case "vencidos":
+          }
+          case "vencidos": {
             matchesDate = dataLembrete < hoje && lembrete.status === "ativo";
             break;
+          }
         }
       }
 

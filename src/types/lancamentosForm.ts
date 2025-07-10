@@ -34,8 +34,8 @@ export interface LancamentoFormErrors {
 }
 
 export interface LancamentoFormParams {
-  createLancamento: any;
-  updateLancamento: any;
+  createLancamento: (data: Omit<Lancamento, "id" | "created_at" | "updated_at">) => Promise<void>;
+  updateLancamento: (id: string, data: Partial<Lancamento>) => Promise<void>;
   editingLancamento: LancamentoComRelacoes | null;
   setLoading: (loading: boolean) => void;
   setActiveTab: (tab: string) => void;
