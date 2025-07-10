@@ -1,174 +1,127 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import {
-  useLancamentos,
-  type LancamentoComRelacoes,
-} from "@/hooks/useLancamentos";
+import { useState, useEffect, useMemo } from "react";
+import { useLancamentos } from "@/hooks/useLancamentos";
 import { useCadastros } from "@/hooks/useCadastros";
+import type { LancamentoComRelacoes } from "@/types/lancamentos";
 
 export const useLancamentosPage = () => {
-  const [filteredLancamentos, setFilteredLancamentos] = useState<
-    LancamentoComRelacoes[]
-  >([]);
-  const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [tipoFilter, setTipoFilter] = useState("todos");
-  const [categoriaFilter, setCategoriaFilter] = useState("todas");
   const [activeTab, setActiveTab] = useState("lista");
-  const [editingLancamento, setEditingLancamento] =
-    useState<LancamentoComRelacoes | null>(null);
-  const { user, session } = useAuth();
-  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [editingLancamento, setEditingLancamento] = useState<LancamentoComRelacoes | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterTipo, setFilterTipo] = useState("");
+  const [filterCategoria, setFilterCategoria] = useState("");
+  const [filterStatus, setFilterStatus] = useState("ativo");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  console.log("useLancamentosPage: Usuário autenticado:", !!user);
-  console.log("useLancamentosPage: Sessão ativa:", !!session);
-  console.log("useLancamentosPage: User ID:", user?.id);
-
-  const {
-    useQuery: useLancamentosQuery,
-    useCreate,
-    useUpdate,
-    useDelete,
-  } = useLancamentos();
-  const { data: lancamentos, isLoading, error } = useLancamentosQuery();
-
-  console.log("useLancamentosPage: Dados de lançamentos:", lancamentos);
-  console.log(
-    "useLancamentosPage: Quantidade de lançamentos:",
-    lancamentos?.length || 0,
-  );
-  console.log("useLancamentosPage: Carregando:", isLoading);
-  console.log("useLancamentosPage: Erro:", error);
-
+  // Hooks
+  const lancamentosQuery = useLancamentos().useQuery();
+  const { useCreate, useUpdate, useDelete } = useLancamentos();
   const createLancamento = useCreate();
   const updateLancamento = useUpdate();
   const deleteLancamento = useDelete();
 
-  const { useQuery: useCadastrosQuery } = useCadastros();
-  const { data: clientes } = useCadastrosQuery("Cliente");
-  const { data: fornecedores } = useCadastrosQuery("Fornecedor");
+  const cadastrosHook = useCadastros();
+  const cadastrosQuery = cadastrosHook.useQuery();
+
+  const filteredLancamentos = useMemo(() => {
+    if (!lancamentosQuery.data) return [];
+
+    return lancamentosQuery.data.filter((lancamento) => {
+      const matchesSearch =
+        lancamento.categoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lancamento.observacoes?.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesTipo = !filterTipo || lancamento.tipo === filterTipo;
+      const matchesCategoria =
+        !filterCategoria || lancamento.categoria === filterCategoria;
+      const matchesStatus = !filterStatus || lancamento.status === filterStatus;
+
+      return (
+        matchesSearch && matchesTipo && matchesCategoria && matchesStatus
+      );
+    });
+  }, [
+    lancamentosQuery.data,
+    searchTerm,
+    filterTipo,
+    filterCategoria,
+    filterStatus,
+  ]);
+
+  const paginatedLancamentos = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredLancamentos.slice(startIndex, endIndex);
+  }, [currentPage, filteredLancamentos, itemsPerPage]);
+
+  const totalPages = useMemo(() => {
+    return Math.ceil(filteredLancamentos.length / itemsPerPage);
+  }, [filteredLancamentos.length, itemsPerPage]);
 
   useEffect(() => {
-    console.log(
-      "useLancamentosPage: useEffect chamado - lancamentos:",
-      lancamentos?.length || 0,
-    );
-    if (lancamentos) {
-      console.log("useLancamentosPage: Aplicando filtros aos lançamentos");
-      filterLancamentos();
-    }
-  }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
+    setCurrentPage(1);
+  }, [
+    searchTerm,
+    filterTipo,
+    filterCategoria,
+    filterStatus,
+    lancamentosQuery.data,
+  ]);
 
-  const filterLancamentos = () => {
-    if (!lancamentos) {
-      console.log("useLancamentosPage: Sem lançamentos para filtrar");
-      setFilteredLancamentos([]);
-      return;
-    }
+  const clientes = useMemo(() => {
+    return cadastrosQuery.data?.filter(c => c.tipo === 'cliente') || [];
+  }, [cadastrosQuery.data]);
 
-    console.log(
-      "useLancamentosPage: Filtrando",
-      lancamentos.length,
-      "lançamentos",
-    );
-    let filtered: LancamentoComRelacoes[] = [...lancamentos];
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (lancamento) =>
-          lancamento.categoria
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          (lancamento.observacoes &&
-            lancamento.observacoes
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())),
-      );
-    }
-
-    if (tipoFilter !== "todos") {
-      filtered = filtered.filter(
-        (lancamento) => lancamento.tipo === tipoFilter,
-      );
-    }
-
-    if (categoriaFilter !== "todas") {
-      filtered = filtered.filter(
-        (lancamento) => lancamento.categoria === categoriaFilter,
-      );
-    }
-
-    console.log("useLancamentosPage: Lançamentos filtrados:", filtered.length);
-    console.log(
-      "useLancamentosPage: Primeiros 3 lançamentos filtrados:",
-      filtered.slice(0, 3),
-    );
-    setFilteredLancamentos(filtered);
-  };
+  const fornecedores = useMemo(() => {
+    return cadastrosQuery.data?.filter(c => c.tipo === 'fornecedor') || [];
+  }, [cadastrosQuery.data]);
 
   const handleEdit = (lancamento: LancamentoComRelacoes) => {
-    console.log("Editando lançamento:", lancamento);
     setEditingLancamento(lancamento);
     setActiveTab("formulario");
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Tem certeza que deseja excluir este lançamento?")) {
-      try {
-        await deleteLancamento.mutateAsync(id);
-        toast({
-          title: "Sucesso!",
-          description: "Lançamento excluído com sucesso.",
-        });
-      } catch (error) {
-        console.error("Erro ao excluir lançamento:", error);
-        toast({
-          title: "Erro ao excluir",
-          description: "Ocorreu um erro ao excluir o lançamento.",
-          variant: "destructive",
-        });
-      }
+    try {
+      await deleteLancamento.mutateAsync(id);
+    } catch (error) {
+      console.error("Erro ao excluir lançamento:", error);
     }
-  };
-
-  const handleNewLancamento = () => {
-    console.log("Clicando em Novo Lançamento");
-    setEditingLancamento(null);
-    setActiveTab("formulario");
   };
 
   return {
     // State
-    filteredLancamentos,
-    loading,
-    setLoading,
-    searchTerm,
-    setSearchTerm,
-    tipoFilter,
-    setTipoFilter,
-    categoriaFilter,
-    setCategoriaFilter,
     activeTab,
     setActiveTab,
+    loading,
+    setLoading,
     editingLancamento,
     setEditingLancamento,
-
+    searchTerm,
+    setSearchTerm,
+    filterTipo,
+    setFilterTipo,
+    filterCategoria,
+    setFilterCategoria,
+    filterStatus,
+    setFilterStatus,
+    currentPage,
+    setCurrentPage,
+    
     // Data
-    isLoading,
+    lancamentos: lancamentosQuery.data || [],
     clientes,
     fornecedores,
-    user,
-    toast,
-
+    isLoading: lancamentosQuery.isLoading || cadastrosQuery.isLoading,
+    
     // Mutations
     createLancamento,
     updateLancamento,
     deleteLancamento,
-
+    
     // Handlers
     handleEdit,
     handleDelete,
-    handleNewLancamento,
   };
 };

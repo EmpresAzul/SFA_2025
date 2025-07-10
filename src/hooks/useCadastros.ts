@@ -56,6 +56,9 @@ interface UseCadastrosReturn {
   toggleStatus: (id: string) => Promise<void>;
   refreshCadastros: () => Promise<void>;
   useCreate: () => ({ mutateAsync: (data: CadastroFormData) => Promise<void> });
+  useQuery: () => ({ data: Cadastro[]; isLoading: boolean; error: string | null });
+  useUpdate: () => ({ mutateAsync: (params: { id: string; data: Partial<CadastroFormData> }) => Promise<void> });
+  useDelete: () => ({ mutateAsync: (id: string) => Promise<void> });
 }
 
 export const useCadastros = (): UseCadastrosReturn => {
@@ -230,6 +233,22 @@ export const useCadastros = (): UseCadastrosReturn => {
     mutateAsync: createCadastro
   }), [createCadastro]);
 
+  const useQuery = useCallback(() => ({
+    data: cadastros,
+    isLoading: loading,
+    error
+  }), [cadastros, loading, error]);
+
+  const useUpdate = useCallback(() => ({
+    mutateAsync: async ({ id, data }: { id: string; data: Partial<CadastroFormData> }) => {
+      await updateCadastro(id, data);
+    }
+  }), [updateCadastro]);
+
+  const useDelete = useCallback(() => ({
+    mutateAsync: deleteCadastro
+  }), [deleteCadastro]);
+
   useEffect(() => {
     fetchCadastros();
   }, [fetchCadastros]);
@@ -244,5 +263,8 @@ export const useCadastros = (): UseCadastrosReturn => {
     toggleStatus,
     refreshCadastros,
     useCreate,
+    useQuery,
+    useUpdate,
+    useDelete,
   };
 };

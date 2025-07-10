@@ -1,3 +1,4 @@
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -6,6 +7,9 @@ import type {
   LancamentoCreateData,
   LancamentoUpdateData,
 } from "@/types/lancamentos";
+import type { Database } from "@/integrations/supabase/types";
+
+type LancamentoInsert = Database['public']['Tables']['lancamentos']['Insert'];
 
 export const useLancamentosMutations = () => {
   const { toast } = useToast();
@@ -45,23 +49,25 @@ export const useLancamentosMutations = () => {
           );
         }
 
-        // Lançamento simples - usar apenas campos aceitos pela tabela
+        // Preparar dados para inserção conforme schema do Supabase
+        const insertData: LancamentoInsert = {
+          data: lancamentoData.data,
+          tipo: lancamentoData.tipo,
+          categoria: lancamentoData.categoria,
+          valor: lancamentoData.valor,
+          cliente_id: lancamentoData.cliente_id || null,
+          fornecedor_id: lancamentoData.fornecedor_id || null,
+          observacoes: lancamentoData.observacoes || null,
+          user_id: lancamentoData.user_id,
+          status: lancamentoData.status || 'ativo',
+          recorrente: false,
+          meses_recorrencia: null,
+          lancamento_pai_id: null,
+        };
+
         const { data, error } = await supabase
           .from("lancamentos")
-          .insert({
-            data: lancamentoData.data,
-            tipo: lancamentoData.tipo,
-            categoria: lancamentoData.categoria,
-            valor: lancamentoData.valor,
-            cliente_id: lancamentoData.cliente_id || null,
-            fornecedor_id: lancamentoData.fornecedor_id || null,
-            observacoes: lancamentoData.observacoes || null,
-            user_id: lancamentoData.user_id,
-            status: lancamentoData.status || 'ativo',
-            recorrente: false,
-            meses_recorrencia: null,
-            lancamento_pai_id: null,
-          })
+          .insert(insertData)
           .select()
           .single();
 
