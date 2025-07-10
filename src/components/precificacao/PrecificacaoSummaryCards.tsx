@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, Wrench, Clock, TrendingUp } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Package, Wrench, Clock, TrendingUp } from "lucide-react";
 
 interface PrecificacaoSummaryCardsProps {
   totalItens: number;
@@ -26,9 +25,7 @@ const PrecificacaoSummaryCards: React.FC<PrecificacaoSummaryCardsProps> = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalItens}</div>
-          <p className="text-xs text-emerald-100">
-            Todos os itens cadastrados
-          </p>
+          <p className="text-xs text-emerald-100">Todos os itens cadastrados</p>
         </CardContent>
       </Card>
 
@@ -40,9 +37,7 @@ const PrecificacaoSummaryCards: React.FC<PrecificacaoSummaryCardsProps> = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalProdutos}</div>
-          <p className="text-xs text-blue-100">
-            Produtos cadastrados
-          </p>
+          <p className="text-xs text-blue-100">Produtos cadastrados</p>
         </CardContent>
       </Card>
 
@@ -54,9 +49,7 @@ const PrecificacaoSummaryCards: React.FC<PrecificacaoSummaryCardsProps> = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalServicos}</div>
-          <p className="text-xs text-purple-100">
-            Serviços cadastrados
-          </p>
+          <p className="text-xs text-purple-100">Serviços cadastrados</p>
         </CardContent>
       </Card>
 
@@ -68,9 +61,7 @@ const PrecificacaoSummaryCards: React.FC<PrecificacaoSummaryCardsProps> = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalHoras}</div>
-          <p className="text-xs text-orange-100">
-            Horas cadastradas
-          </p>
+          <p className="text-xs text-orange-100">Horas cadastradas</p>
         </CardContent>
       </Card>
     </div>

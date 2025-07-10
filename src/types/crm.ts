@@ -6,7 +6,13 @@ export interface CRMLead {
   email: string;
   phone?: string;
   source: string;
-  status: 'prospeccao' | 'qualificacao' | 'proposta' | 'negociacao' | 'fechamento' | 'perdido';
+  status:
+    | "prospeccao"
+    | "qualificacao"
+    | "proposta"
+    | "negociacao"
+    | "fechamento"
+    | "perdido";
   value: number;
   probability: number;
   next_follow_up?: string;
@@ -19,7 +25,7 @@ export interface CRMInteraction {
   id: string;
   user_id: string;
   lead_id: string;
-  type: 'call' | 'email' | 'meeting' | 'proposal' | 'follow-up';
+  type: "call" | "email" | "meeting" | "proposal" | "follow-up";
   description: string;
   outcome?: string;
   interaction_date: string;
@@ -43,13 +49,13 @@ export interface CreateLeadData {
 }
 
 export interface UpdateLeadData extends Partial<CreateLeadData> {
-  status?: CRMLead['status'];
+  status?: CRMLead["status"];
 }
 
 export interface CreateInteractionData {
   lead_id: string;
-  type: CRMInteraction['type'];
+  type: CRMInteraction["type"];
   description: string;
   outcome?: string;
   interaction_date?: string;
-} 
+}

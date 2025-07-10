@@ -1,8 +1,16 @@
-
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { TrendingUp, Users, Building, Package, Wrench, DollarSign, CreditCard, Wallet } from 'lucide-react';
-import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  TrendingUp,
+  Users,
+  Building,
+  Package,
+  Wrench,
+  DollarSign,
+  CreditCard,
+  Wallet,
+} from "lucide-react";
+import { useDashboardMetrics } from "@/hooks/useDashboardMetrics";
 
 const MetricsCards: React.FC = () => {
   const { data: metrics, isLoading } = useDashboardMetrics();
@@ -23,59 +31,62 @@ const MetricsCards: React.FC = () => {
 
   const kpiCards = [
     {
-      title: 'Ponto de Equilíbrio',
-      value: `R$ ${metrics.pontoEquilibrio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+      title: "Ponto de Equilíbrio",
+      value: `R$ ${metrics.pontoEquilibrio.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
       icon: TrendingUp,
-      gradient: 'from-emerald-500 to-emerald-600'
+      gradient: "from-emerald-500 to-emerald-600",
     },
     {
-      title: 'Qtde. Clientes',
+      title: "Qtde. Clientes",
       value: metrics.qtdeClientes.toString(),
       icon: Users,
-      gradient: 'from-blue-500 to-blue-600'
+      gradient: "from-blue-500 to-blue-600",
     },
     {
-      title: 'Qtde. Fornecedores',
+      title: "Qtde. Fornecedores",
       value: metrics.qtdeFornecedores.toString(),
       icon: Building,
-      gradient: 'from-purple-500 to-purple-600'
+      gradient: "from-purple-500 to-purple-600",
     },
     {
-      title: 'Qtde. Produtos',
+      title: "Qtde. Produtos",
       value: metrics.qtdeProdutos.toString(),
       icon: Package,
-      gradient: 'from-orange-500 to-orange-600'
+      gradient: "from-orange-500 to-orange-600",
     },
     {
-      title: 'Qtde. Serviços',
+      title: "Qtde. Serviços",
       value: metrics.qtdeServicos.toString(),
       icon: Wrench,
-      gradient: 'from-pink-500 to-pink-600'
+      gradient: "from-pink-500 to-pink-600",
     },
     {
-      title: 'Total Receitas do Mês',
-      value: `R$ ${metrics.totalReceitasMes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+      title: "Total Receitas do Mês",
+      value: `R$ ${metrics.totalReceitasMes.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
       icon: DollarSign,
-      gradient: 'from-green-500 to-green-600'
+      gradient: "from-green-500 to-green-600",
     },
     {
-      title: 'Total Despesas do Mês',
-      value: `R$ ${metrics.totalDespesasMes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+      title: "Total Despesas do Mês",
+      value: `R$ ${metrics.totalDespesasMes.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
       icon: CreditCard,
-      gradient: 'from-red-500 to-red-600'
+      gradient: "from-red-500 to-red-600",
     },
     {
-      title: 'Saldo Bancário',
-      value: `R$ ${metrics.saldoBancario.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+      title: "Saldo Bancário",
+      value: `R$ ${metrics.saldoBancario.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
       icon: Wallet,
-      gradient: 'from-indigo-500 to-indigo-600'
-    }
+      gradient: "from-indigo-500 to-indigo-600",
+    },
   ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       {kpiCards.map((kpi, index) => (
-        <Card key={index} className="hover:shadow-colorful transition-all duration-300 border-0 shadow-lg bg-white/90 backdrop-blur-sm">
+        <Card
+          key={index}
+          className="hover:shadow-colorful transition-all duration-300 border-0 shadow-lg bg-white/90 backdrop-blur-sm"
+        >
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -86,7 +97,9 @@ const MetricsCards: React.FC = () => {
                   {kpi.value}
                 </p>
               </div>
-              <div className={`p-2 sm:p-3 rounded-full bg-gradient-to-r ${kpi.gradient}`}>
+              <div
+                className={`p-2 sm:p-3 rounded-full bg-gradient-to-r ${kpi.gradient}`}
+              >
                 <kpi.icon className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
             </div>

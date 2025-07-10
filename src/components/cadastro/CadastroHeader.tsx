@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 interface CadastroHeaderProps {
   icon: React.ComponentType<{ className?: string }>;
@@ -30,7 +29,7 @@ export const CadastroHeader: React.FC<CadastroHeaderProps> = ({
         className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600 text-white"
       >
         <Plus className="w-4 h-4 mr-2" />
-        {title.replace('s', '')}
+        {title.replace("s", "")}
       </Button>
     </div>
   );

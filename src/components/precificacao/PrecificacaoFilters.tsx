@@ -1,9 +1,14 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Filter } from "lucide-react";
 
 interface PrecificacaoFiltersProps {
   searchTerm: string;
@@ -68,9 +73,7 @@ const PrecificacaoFilters: React.FC<PrecificacaoFiltersProps> = ({
 
           {/* Filtro por Status */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              Status
-            </label>
+            <label className="text-sm font-medium text-gray-700">Status</label>
             <Select value={selectedStatus} onValueChange={onStatusChange}>
               <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
                 <SelectValue placeholder="Selecione o status" />

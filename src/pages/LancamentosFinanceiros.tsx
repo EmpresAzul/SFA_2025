@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import LancamentosSummaryCards from '@/components/lancamentos/LancamentosSummaryCards';
-import LancamentosFilters from '@/components/lancamentos/LancamentosFilters';
-import LancamentosTable from '@/components/lancamentos/LancamentosTable';
-import LancamentosForm from '@/components/lancamentos/LancamentosForm';
-import { useLancamentosPage } from '@/hooks/useLancamentosPage';
-import { useLancamentosForm } from '@/hooks/useLancamentosForm';
+import React, { useEffect } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LancamentosSummaryCards from "@/components/lancamentos/LancamentosSummaryCards";
+import LancamentosFilters from "@/components/lancamentos/LancamentosFilters";
+import LancamentosTable from "@/components/lancamentos/LancamentosTable";
+import LancamentosForm from "@/components/lancamentos/LancamentosForm";
+import { useLancamentosPage } from "@/hooks/useLancamentosPage";
+import { useLancamentosForm } from "@/hooks/useLancamentosForm";
 
 const LancamentosFinanceiros: React.FC = () => {
   const {
@@ -32,41 +32,44 @@ const LancamentosFinanceiros: React.FC = () => {
     handleNewLancamento,
   } = useLancamentosPage();
 
-  const {
-    formData,
-    setFormData,
-    handleSubmit,
-    handleCancel,
-    loadFormData,
-  } = useLancamentosForm({
-    createLancamento,
-    updateLancamento,
-    editingLancamento,
-    setLoading,
-    setActiveTab,
-    setEditingLancamento
-  });
+  const { formData, setFormData, handleSubmit, handleCancel, loadFormData } =
+    useLancamentosForm({
+      createLancamento,
+      updateLancamento,
+      editingLancamento,
+      setLoading,
+      setActiveTab,
+      setEditingLancamento,
+    });
 
   // Load form data when editing
   useEffect(() => {
     if (editingLancamento) {
-      console.log('Componente: Carregando dados para edição:', editingLancamento);
+      console.log(
+        "Componente: Carregando dados para edição:",
+        editingLancamento,
+      );
       loadFormData(editingLancamento);
     }
   }, [editingLancamento, loadFormData]);
 
   // Handle tab change - só chama handleNewLancamento se não estiver editando
   const handleTabChange = (value: string) => {
-    console.log('Mudança de aba para:', value, 'editingLancamento:', !!editingLancamento);
-    
-    if (value === 'formulario' && !editingLancamento) {
-      console.log('Indo para formulário - modo novo lançamento');
+    console.log(
+      "Mudança de aba para:",
+      value,
+      "editingLancamento:",
+      !!editingLancamento,
+    );
+
+    if (value === "formulario" && !editingLancamento) {
+      console.log("Indo para formulário - modo novo lançamento");
       handleNewLancamento();
-    } else if (value === 'lista' && editingLancamento) {
-      console.log('Saindo do modo de edição');
+    } else if (value === "lista" && editingLancamento) {
+      console.log("Saindo do modo de edição");
       setEditingLancamento(null);
     }
-    
+
     setActiveTab(value);
   };
 
@@ -77,25 +80,31 @@ const LancamentosFinanceiros: React.FC = () => {
           <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             💰 Lançamentos Financeiros
           </h1>
-          <p className="text-gray-600 mt-2 text-sm">Controle completo de receitas e despesas</p>
+          <p className="text-gray-600 mt-2 text-sm">
+            Controle completo de receitas e despesas
+          </p>
         </div>
       </div>
 
       <LancamentosSummaryCards lancamentos={filteredLancamentos} />
 
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+      <Tabs
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className="w-full"
+      >
         <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-12 sm:h-14">
-          <TabsTrigger 
+          <TabsTrigger
             value="lista"
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
             📋 Lista de Lançamentos
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="formulario"
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
-            ➕ {editingLancamento ? 'Editar Lançamento' : 'Novo Lançamento'}
+            ➕ {editingLancamento ? "Editar Lançamento" : "Novo Lançamento"}
           </TabsTrigger>
         </TabsList>
 

@@ -1,12 +1,27 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Save, FolderOpen, Edit2, Trash2, Plus } from 'lucide-react';
-import type { Projecao } from '@/hooks/usePontoEquilibrio';
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Save, FolderOpen, Edit2, Trash2, Plus } from "lucide-react";
+import type { Projecao } from "@/hooks/usePontoEquilibrio";
 
 interface ProjecoesSalvasProps {
   projecoes: Projecao[];
@@ -27,26 +42,26 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
   onDeletarProjecao,
   onNovaProjecao,
   isSaving,
-  isDeleting
+  isDeleting,
 }) => {
-  const [nomeProjecao, setNomeProjecao] = useState('');
+  const [nomeProjecao, setNomeProjecao] = useState("");
   const [dialogAberto, setDialogAberto] = useState(false);
 
   const handleSalvar = () => {
     if (nomeProjecao.trim()) {
       onSalvarProjecao(nomeProjecao.trim());
-      setNomeProjecao('');
+      setNomeProjecao("");
       setDialogAberto(false);
     }
   };
 
   const formatarData = (data: string) => {
-    return new Date(data).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(data).toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -59,9 +74,9 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
             Projeções Salvas
           </div>
           <div className="flex gap-2">
-            <Button 
+            <Button
               onClick={onNovaProjecao}
-              variant="outline" 
+              variant="outline"
               size="sm"
               className="text-xs"
             >
@@ -81,7 +96,10 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="nome-projecao" className="text-sm font-medium">
+                    <label
+                      htmlFor="nome-projecao"
+                      className="text-sm font-medium"
+                    >
                       Nome da Projeção
                     </label>
                     <Input
@@ -93,17 +111,17 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
                     />
                   </div>
                   <div className="flex justify-end gap-2">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={() => setDialogAberto(false)}
                     >
                       Cancelar
                     </Button>
-                    <Button 
+                    <Button
                       onClick={handleSalvar}
                       disabled={!nomeProjecao.trim() || isSaving}
                     >
-                      {isSaving ? 'Salvando...' : 'Salvar'}
+                      {isSaving ? "Salvando..." : "Salvar"}
                     </Button>
                   </div>
                 </div>
@@ -117,17 +135,19 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
           <div className="text-center py-6 text-gray-500">
             <FolderOpen className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">Nenhuma projeção salva ainda</p>
-            <p className="text-xs">Clique em "Salvar" para criar sua primeira projeção</p>
+            <p className="text-xs">
+              Clique em "Salvar" para criar sua primeira projeção
+            </p>
           </div>
         ) : (
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {projecoes.map((projecao) => (
-              <div 
+              <div
                 key={projecao.id}
                 className={`p-3 border rounded-lg transition-all duration-200 ${
-                  projecaoAtual === projecao.id 
-                    ? 'border-blue-300 bg-blue-50' 
-                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                  projecaoAtual === projecao.id
+                    ? "border-blue-300 bg-blue-50"
+                    : "border-gray-200 hover:border-gray-300 bg-white"
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -139,7 +159,10 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
                       {formatarData(projecao.created_at)}
                     </p>
                     <div className="text-xs text-gray-600 mt-1">
-                      PE: R$ {projecao.dados_projecao.resultados.pontoEquilibrio.toLocaleString('pt-BR')}
+                      PE: R${" "}
+                      {projecao.dados_projecao.resultados.pontoEquilibrio.toLocaleString(
+                        "pt-BR",
+                      )}
                     </div>
                   </div>
                   <div className="flex gap-1">
@@ -167,8 +190,9 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
                         <AlertDialogHeader>
                           <AlertDialogTitle>Excluir Projeção</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Tem certeza que deseja excluir a projeção "{projecao.nome_projecao}"? 
-                            Esta ação não pode ser desfeita.
+                            Tem certeza que deseja excluir a projeção "
+                            {projecao.nome_projecao}"? Esta ação não pode ser
+                            desfeita.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -177,7 +201,7 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
                             onClick={() => onDeletarProjecao(projecao.id)}
                             className="bg-red-600 hover:bg-red-700"
                           >
-                            {isDeleting ? 'Excluindo...' : 'Excluir'}
+                            {isDeleting ? "Excluindo..." : "Excluir"}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>

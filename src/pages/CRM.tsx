@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CRMDashboard } from '@/components/crm/CRMDashboard';
-import { CRMBoard } from '@/components/crm/CRMBoard';
-import { CRMLeads } from '@/components/crm/CRMLeads';
+import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CRMDashboard } from "@/components/crm/CRMDashboard";
+import { CRMBoard } from "@/components/crm/CRMBoard";
+import { CRMLeads } from "@/components/crm/CRMLeads";
 
 export default function CRM() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -13,7 +13,11 @@ export default function CRM() {
         <h1 className="text-3xl font-bold">CRM</h1>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
@@ -34,4 +38,4 @@ export default function CRM() {
       </Tabs>
     </div>
   );
-} 
+}

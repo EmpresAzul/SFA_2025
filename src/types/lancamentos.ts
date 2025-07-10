@@ -1,9 +1,8 @@
-
 export interface Lancamento {
   id: string;
   user_id: string;
   data: string;
-  tipo: 'receita' | 'despesa';
+  tipo: "receita" | "despesa";
   categoria: string;
   valor: number;
   cliente_id?: string;
@@ -22,5 +21,8 @@ export type LancamentoComRelacoes = Lancamento & {
   fornecedor?: { nome: string } | null;
 };
 
-export type LancamentoCreateData = Omit<Lancamento, 'id' | 'created_at' | 'updated_at'>;
+export type LancamentoCreateData = Omit<
+  Lancamento,
+  "id" | "created_at" | "updated_at"
+>;
 export type LancamentoUpdateData = Partial<Lancamento> & { id: string };

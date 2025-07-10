@@ -1,22 +1,31 @@
-
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { Settings, Key, MessageSquare, Bot, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Settings,
+  Key,
+  MessageSquare,
+  Bot,
+  CheckCircle,
+  XCircle,
+  Loader2,
+} from "lucide-react";
 
 const AdminSettings: React.FC = () => {
-  const [openaiApiKey, setOpenaiApiKey] = useState('');
-  const [threadId, setThreadId] = useState('');
-  const [assistantId, setAssistantId] = useState('');
+  const [openaiApiKey, setOpenaiApiKey] = useState("");
+  const [threadId, setThreadId] = useState("");
+  const [assistantId, setAssistantId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingSettings, setIsLoadingSettings] = useState(true);
   const [testingConnection, setTestingConnection] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [connectionStatus, setConnectionStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -26,34 +35,38 @@ const AdminSettings: React.FC = () => {
   const loadSettings = async () => {
     setIsLoadingSettings(true);
     try {
-      console.log('Carregando configurações...');
+      console.log("Carregando configurações...");
       const { data, error } = await supabase
-        .from('system_settings')
-        .select('key, value')
-        .in('key', ['openai_api_key', 'openai_thread_id', 'openai_assistant_id']);
+        .from("system_settings")
+        .select("key, value")
+        .in("key", [
+          "openai_api_key",
+          "openai_thread_id",
+          "openai_assistant_id",
+        ]);
 
       if (error) {
-        console.error('Erro ao carregar configurações:', error);
+        console.error("Erro ao carregar configurações:", error);
         throw error;
       }
 
-      console.log('Configurações carregadas:', data);
+      console.log("Configurações carregadas:", data);
 
-      data?.forEach(setting => {
+      data?.forEach((setting) => {
         switch (setting.key) {
-          case 'openai_api_key':
-            setOpenaiApiKey(setting.value || '');
+          case "openai_api_key":
+            setOpenaiApiKey(setting.value || "");
             break;
-          case 'openai_thread_id':
-            setThreadId(setting.value || '');
+          case "openai_thread_id":
+            setThreadId(setting.value || "");
             break;
-          case 'openai_assistant_id':
-            setAssistantId(setting.value || '');
+          case "openai_assistant_id":
+            setAssistantId(setting.value || "");
             break;
         }
       });
     } catch (error) {
-      console.error('Erro ao carregar configurações:', error);
+      console.error("Erro ao carregar configurações:", error);
       toast({
         title: "Erro",
         description: "Não foi possível carregar as configurações.",
@@ -66,17 +79,22 @@ const AdminSettings: React.FC = () => {
 
   const saveSetting = async (key: string, value: string) => {
     try {
-      console.log(`Salvando configuração: ${key} = ${value ? '[SET]' : '[EMPTY]'}`);
-      
+      console.log(
+        `Salvando configuração: ${key} = ${value ? "[SET]" : "[EMPTY]"}`,
+      );
+
       const { data, error } = await supabase
-        .from('system_settings')
-        .upsert({
-          key,
-          value: value || null,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'key'
-        })
+        .from("system_settings")
+        .upsert(
+          {
+            key,
+            value: value || null,
+            updated_at: new Date().toISOString(),
+          },
+          {
+            onConflict: "key",
+          },
+        )
         .select();
 
       if (error) {
@@ -94,32 +112,37 @@ const AdminSettings: React.FC = () => {
 
   const handleSaveAll = async () => {
     setIsLoading(true);
-    
+
     try {
-      console.log('Iniciando salvamento de todas as configurações...');
-      
+      console.log("Iniciando salvamento de todas as configurações...");
+
       const results = await Promise.all([
-        saveSetting('openai_api_key', openaiApiKey),
-        saveSetting('openai_thread_id', threadId),
-        saveSetting('openai_assistant_id', assistantId)
+        saveSetting("openai_api_key", openaiApiKey),
+        saveSetting("openai_thread_id", threadId),
+        saveSetting("openai_assistant_id", assistantId),
       ]);
 
-      const allSucceeded = results.every(r => r);
-      console.log('Resultados do salvamento:', results, 'Todos bem-sucedidos:', allSucceeded);
+      const allSucceeded = results.every((r) => r);
+      console.log(
+        "Resultados do salvamento:",
+        results,
+        "Todos bem-sucedidos:",
+        allSucceeded,
+      );
 
       if (allSucceeded) {
         toast({
           title: "Sucesso",
           description: "Configurações salvas com sucesso!",
         });
-        
+
         // Recarregar as configurações para confirmar que foram salvas
         await loadSettings();
       } else {
-        throw new Error('Erro ao salvar algumas configurações');
+        throw new Error("Erro ao salvar algumas configurações");
       }
     } catch (error) {
-      console.error('Erro no salvamento:', error);
+      console.error("Erro no salvamento:", error);
       toast({
         title: "Erro",
         description: "Erro ao salvar configurações. Tente novamente.",
@@ -141,46 +164,50 @@ const AdminSettings: React.FC = () => {
     }
 
     setTestingConnection(true);
-    setConnectionStatus('idle');
+    setConnectionStatus("idle");
 
     try {
-      console.log('Testando conexão com OpenAI...');
-      const { data, error } = await supabase.functions.invoke('test-openai-connection', {
-        body: { 
-          apiKey: openaiApiKey,
-          assistantId: assistantId,
-          threadId: threadId || undefined
-        }
-      });
+      console.log("Testando conexão com OpenAI...");
+      const { data, error } = await supabase.functions.invoke(
+        "test-openai-connection",
+        {
+          body: {
+            apiKey: openaiApiKey,
+            assistantId: assistantId,
+            threadId: threadId || undefined,
+          },
+        },
+      );
 
       if (error) {
-        console.error('Erro na função de teste:', error);
+        console.error("Erro na função de teste:", error);
         throw error;
       }
 
-      console.log('Resultado do teste de conexão:', data);
+      console.log("Resultado do teste de conexão:", data);
 
       if (data.success) {
-        setConnectionStatus('success');
+        setConnectionStatus("success");
         if (data.threadId && !threadId) {
           setThreadId(data.threadId);
-          await saveSetting('openai_thread_id', data.threadId);
+          await saveSetting("openai_thread_id", data.threadId);
         }
         toast({
           title: "Conexão bem-sucedida",
           description: "OpenAI Assistant está funcionando corretamente!",
         });
       } else {
-        setConnectionStatus('error');
+        setConnectionStatus("error");
         toast({
           title: "Erro na conexão",
-          description: data.error || "Não foi possível conectar ao OpenAI Assistant.",
+          description:
+            data.error || "Não foi possível conectar ao OpenAI Assistant.",
           variant: "destructive",
         });
       }
     } catch (error) {
-      console.error('Erro no teste de conexão:', error);
-      setConnectionStatus('error');
+      console.error("Erro no teste de conexão:", error);
+      setConnectionStatus("error");
       toast({
         title: "Erro no teste",
         description: "Erro ao testar conexão. Verifique suas configurações.",
@@ -219,7 +246,7 @@ const AdminSettings: React.FC = () => {
               <TabsTrigger value="credentials">Credenciais</TabsTrigger>
               <TabsTrigger value="test">Teste de Conexão</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="credentials" className="space-y-6">
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -240,7 +267,10 @@ const AdminSettings: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="assistantid" className="flex items-center gap-2">
+                  <Label
+                    htmlFor="assistantid"
+                    className="flex items-center gap-2"
+                  >
                     <Bot className="w-4 h-4" />
                     Assistant ID *
                   </Label>
@@ -267,11 +297,12 @@ const AdminSettings: React.FC = () => {
                     onChange={(e) => setThreadId(e.target.value)}
                   />
                   <p className="text-sm text-gray-600">
-                    ID da Thread para manter contexto. Será criado automaticamente se vazio.
+                    ID da Thread para manter contexto. Será criado
+                    automaticamente se vazio.
                   </p>
                 </div>
 
-                <Button 
+                <Button
                   onClick={handleSaveAll}
                   disabled={isLoading}
                   className="w-full"
@@ -282,7 +313,7 @@ const AdminSettings: React.FC = () => {
                       Salvando...
                     </>
                   ) : (
-                    'Salvar Configurações'
+                    "Salvar Configurações"
                   )}
                 </Button>
               </div>
@@ -290,7 +321,7 @@ const AdminSettings: React.FC = () => {
 
             <TabsContent value="test" className="space-y-6">
               <div className="text-center">
-                <Button 
+                <Button
                   onClick={testConnection}
                   disabled={testingConnection || !openaiApiKey || !assistantId}
                   className="mb-4"
@@ -301,25 +332,27 @@ const AdminSettings: React.FC = () => {
                       Testando...
                     </>
                   ) : (
-                    'Testar Conexão'
+                    "Testar Conexão"
                   )}
                 </Button>
 
-                {connectionStatus !== 'idle' && (
-                  <div className={`flex items-center justify-center gap-2 p-4 rounded-lg ${
-                    connectionStatus === 'success' 
-                      ? 'bg-green-50 text-green-700 border border-green-200' 
-                      : 'bg-red-50 text-red-700 border border-red-200'
-                  }`}>
-                    {connectionStatus === 'success' ? (
+                {connectionStatus !== "idle" && (
+                  <div
+                    className={`flex items-center justify-center gap-2 p-4 rounded-lg ${
+                      connectionStatus === "success"
+                        ? "bg-green-50 text-green-700 border border-green-200"
+                        : "bg-red-50 text-red-700 border border-red-200"
+                    }`}
+                  >
+                    {connectionStatus === "success" ? (
                       <CheckCircle className="w-5 h-5" />
                     ) : (
                       <XCircle className="w-5 h-5" />
                     )}
                     <span>
-                      {connectionStatus === 'success' 
-                        ? 'Conexão estabelecida com sucesso!' 
-                        : 'Falha na conexão. Verifique suas configurações.'}
+                      {connectionStatus === "success"
+                        ? "Conexão estabelecida com sucesso!"
+                        : "Falha na conexão. Verifique suas configurações."}
                     </span>
                   </div>
                 )}

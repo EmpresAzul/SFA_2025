@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface SystemVideo {
   id: string;
@@ -14,16 +14,16 @@ export interface SystemVideo {
 
 export const useSystemVideos = () => {
   return useQuery({
-    queryKey: ['system-videos'],
+    queryKey: ["system-videos"],
     queryFn: async (): Promise<SystemVideo[]> => {
       const { data, error } = await supabase
-        .from('system_videos')
-        .select('*')
-        .eq('status', 'active')
-        .order('order_position', { ascending: true });
+        .from("system_videos")
+        .select("*")
+        .eq("status", "active")
+        .order("order_position", { ascending: true });
 
       if (error) {
-        console.error('Erro ao buscar vídeos do sistema:', error);
+        console.error("Erro ao buscar vídeos do sistema:", error);
         throw error;
       }
 

@@ -1,7 +1,12 @@
-
-import React from 'react';
-import { FileText, Calendar } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import React from "react";
+import { FileText, Calendar } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface DREHeaderProps {
   periodo: string;
@@ -25,7 +30,7 @@ const DREHeader: React.FC<DREHeaderProps> = ({
           Análise baseada em {lancamentosCount} lançamentos do período
         </p>
       </div>
-      
+
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4 text-fluxo-blue-600" />

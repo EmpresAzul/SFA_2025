@@ -1,10 +1,15 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search } from "lucide-react";
 
 interface EstoqueFiltersProps {
   searchTerm: string;
@@ -17,7 +22,7 @@ export const EstoqueFilters: React.FC<EstoqueFiltersProps> = ({
   searchTerm,
   setSearchTerm,
   statusFilter,
-  setStatusFilter
+  setStatusFilter,
 }) => {
   return (
     <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">

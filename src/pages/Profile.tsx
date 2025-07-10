@@ -1,31 +1,30 @@
-
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { useToast } from '@/hooks/use-toast';
-import { Save, User, Lock, Calendar, Shield } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { Save, User, Lock, Calendar, Shield } from "lucide-react";
 
 const Profile: React.FC = () => {
   const { user, session, updateUser, updatePassword } = useAuth();
   const { toast } = useToast();
-  
+
   const [formData, setFormData] = useState({
-    name: '',
-    address: '',
-    number: '',
-    neighborhood: '',
-    city: '',
-    state: ''
+    name: "",
+    address: "",
+    number: "",
+    neighborhood: "",
+    city: "",
+    state: "",
   });
 
   const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -35,19 +34,19 @@ const Profile: React.FC = () => {
     if (user) {
       const metadata = user.user_metadata || {};
       setFormData({
-        name: metadata.name || '',
-        address: metadata.address || '',
-        number: metadata.number || '',
-        neighborhood: metadata.neighborhood || '',
-        city: metadata.city || '',
-        state: metadata.state || ''
+        name: metadata.name || "",
+        address: metadata.address || "",
+        number: metadata.number || "",
+        neighborhood: metadata.neighborhood || "",
+        city: metadata.city || "",
+        state: metadata.state || "",
       });
     }
   }, [user]);
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!session?.user?.id) {
       toast({
         title: "Erro de autenticação",
@@ -61,15 +60,16 @@ const Profile: React.FC = () => {
 
     try {
       await updateUser(formData);
-      
+
       toast({
         title: "Perfil atualizado!",
         description: "Suas informações foram salvas com sucesso.",
       });
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Erro ao atualizar perfil:", error);
       toast({
-        title: "Erro ao atualizar perfil",
-        description: error.message,
+        title: "Erro ao atualizar",
+        description: error instanceof Error ? error.message : "Erro desconhecido",
         variant: "destructive",
       });
     } finally {
@@ -79,7 +79,7 @@ const Profile: React.FC = () => {
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast({
         title: "Erro na confirmação",
@@ -101,13 +101,20 @@ const Profile: React.FC = () => {
     setLoading(true);
 
     try {
-      const success = await updatePassword(passwordData.currentPassword, passwordData.newPassword);
+      const success = await updatePassword(
+        passwordData.currentPassword,
+        passwordData.newPassword,
+      );
       if (success) {
         toast({
           title: "Senha atualizada!",
           description: "Sua senha foi alterada com sucesso.",
         });
-        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
       } else {
         toast({
           title: "Erro na autenticação",
@@ -126,9 +133,12 @@ const Profile: React.FC = () => {
     }
   };
 
-  const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuário';
-  const registrationDate = user?.created_at ? new Date(user.created_at) : new Date();
-  
+  const userName =
+    user?.user_metadata?.name || user?.email?.split("@")[0] || "Usuário";
+  const registrationDate = user?.created_at
+    ? new Date(user.created_at)
+    : new Date();
+
   // Calcular a vigência da licença (365 dias após o cadastro)
   const licenseExpiryDate = new Date(registrationDate);
   licenseExpiryDate.setDate(licenseExpiryDate.getDate() + 365);
@@ -157,13 +167,16 @@ const Profile: React.FC = () => {
             <form onSubmit={handleProfileUpdate} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <Label htmlFor="email" className="text-fluxo-blue-900 font-medium">
+                  <Label
+                    htmlFor="email"
+                    className="text-fluxo-blue-900 font-medium"
+                  >
                     E-mail
                   </Label>
                   <Input
                     id="email"
                     type="email"
-                    value={user?.email || ''}
+                    value={user?.email || ""}
                     disabled
                     className="bg-gray-50 cursor-not-allowed"
                   />
@@ -173,74 +186,107 @@ const Profile: React.FC = () => {
                 </div>
 
                 <div className="col-span-2">
-                  <Label htmlFor="name" className="text-fluxo-blue-900 font-medium">
+                  <Label
+                    htmlFor="name"
+                    className="text-fluxo-blue-900 font-medium"
+                  >
                     Nome Completo
                   </Label>
                   <Input
                     id="name"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     placeholder="Digite seu nome completo"
                     required
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="address" className="text-fluxo-blue-900 font-medium">
+                  <Label
+                    htmlFor="address"
+                    className="text-fluxo-blue-900 font-medium"
+                  >
                     Endereço
                   </Label>
                   <Input
                     id="address"
                     value={formData.address}
-                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, address: e.target.value })
+                    }
                     placeholder="Rua, Avenida..."
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="number" className="text-fluxo-blue-900 font-medium">
+                  <Label
+                    htmlFor="number"
+                    className="text-fluxo-blue-900 font-medium"
+                  >
                     Número
                   </Label>
                   <Input
                     id="number"
                     value={formData.number}
-                    onChange={(e) => setFormData({ ...formData, number: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, number: e.target.value })
+                    }
                     placeholder="Número"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="neighborhood" className="text-fluxo-blue-900 font-medium">
+                  <Label
+                    htmlFor="neighborhood"
+                    className="text-fluxo-blue-900 font-medium"
+                  >
                     Bairro
                   </Label>
                   <Input
                     id="neighborhood"
                     value={formData.neighborhood}
-                    onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, neighborhood: e.target.value })
+                    }
                     placeholder="Bairro"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="city" className="text-fluxo-blue-900 font-medium">
+                  <Label
+                    htmlFor="city"
+                    className="text-fluxo-blue-900 font-medium"
+                  >
                     Cidade
                   </Label>
                   <Input
                     id="city"
                     value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, city: e.target.value })
+                    }
                     placeholder="Cidade"
                   />
                 </div>
 
                 <div className="col-span-2">
-                  <Label htmlFor="state" className="text-fluxo-blue-900 font-medium">
+                  <Label
+                    htmlFor="state"
+                    className="text-fluxo-blue-900 font-medium"
+                  >
                     UF
                   </Label>
                   <Input
                     id="state"
                     value={formData.state}
-                    onChange={(e) => setFormData({ ...formData, state: e.target.value.toUpperCase() })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        state: e.target.value.toUpperCase(),
+                      })
+                    }
                     placeholder="SP"
                     maxLength={2}
                   />
@@ -258,8 +304,12 @@ const Profile: React.FC = () => {
                       <Calendar className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-white/80">Data de Cadastro</p>
-                      <p className="text-lg font-bold">{registrationDate.toLocaleDateString('pt-BR')}</p>
+                      <p className="text-sm font-medium text-white/80">
+                        Data de Cadastro
+                      </p>
+                      <p className="text-lg font-bold">
+                        {registrationDate.toLocaleDateString("pt-BR")}
+                      </p>
                     </div>
                   </div>
                   <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-white/10"></div>
@@ -272,8 +322,12 @@ const Profile: React.FC = () => {
                       <Shield className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-white/80">Vigência da Licença</p>
-                      <p className="text-lg font-bold">{licenseExpiryDate.toLocaleDateString('pt-BR')}</p>
+                      <p className="text-sm font-medium text-white/80">
+                        Vigência da Licença
+                      </p>
+                      <p className="text-lg font-bold">
+                        {licenseExpiryDate.toLocaleDateString("pt-BR")}
+                      </p>
                     </div>
                   </div>
                   <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-white/10"></div>
@@ -286,7 +340,7 @@ const Profile: React.FC = () => {
                 className="w-full gradient-fluxo hover:gradient-fluxo-light text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 mt-6"
               >
                 <Save className="mr-2 h-4 w-4" />
-                {loading ? 'Salvando...' : 'Salvar Alterações'}
+                {loading ? "Salvando..." : "Salvar Alterações"}
               </Button>
             </form>
           </CardContent>
@@ -303,42 +357,66 @@ const Profile: React.FC = () => {
           <CardContent>
             <form onSubmit={handlePasswordUpdate} className="space-y-4">
               <div>
-                <Label htmlFor="currentPassword" className="text-fluxo-blue-900 font-medium">
+                <Label
+                  htmlFor="currentPassword"
+                  className="text-fluxo-blue-900 font-medium"
+                >
                   Senha Atual
                 </Label>
                 <Input
                   id="currentPassword"
                   type="password"
                   value={passwordData.currentPassword}
-                  onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      currentPassword: e.target.value,
+                    })
+                  }
                   placeholder="Digite sua senha atual"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="newPassword" className="text-fluxo-blue-900 font-medium">
+                <Label
+                  htmlFor="newPassword"
+                  className="text-fluxo-blue-900 font-medium"
+                >
                   Nova Senha
                 </Label>
                 <Input
                   id="newPassword"
                   type="password"
                   value={passwordData.newPassword}
-                  onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      newPassword: e.target.value,
+                    })
+                  }
                   placeholder="Digite a nova senha"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="confirmPassword" className="text-fluxo-blue-900 font-medium">
+                <Label
+                  htmlFor="confirmPassword"
+                  className="text-fluxo-blue-900 font-medium"
+                >
                   Confirmar Nova Senha
                 </Label>
                 <Input
                   id="confirmPassword"
                   type="password"
                   value={passwordData.confirmPassword}
-                  onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                   placeholder="Confirme a nova senha"
                   required
                 />
@@ -350,7 +428,7 @@ const Profile: React.FC = () => {
                 className="w-full gradient-fluxo hover:gradient-fluxo-light text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <Lock className="mr-2 h-4 w-4" />
-                {loading ? 'Atualizando...' : 'Alterar Senha'}
+                {loading ? "Atualizando..." : "Alterar Senha"}
               </Button>
             </form>
           </CardContent>

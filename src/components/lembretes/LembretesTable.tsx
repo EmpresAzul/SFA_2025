@@ -1,66 +1,68 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, Power, PowerOff, Clock, Calendar } from 'lucide-react';
-import { useLembretes, type Lembrete } from '@/hooks/useLembretes';
-import LembretesViewModal from './LembretesViewModal';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Edit, Trash2, Power, PowerOff, Clock, Calendar } from "lucide-react";
+import { useLembretes, type Lembrete } from "@/hooks/useLembretes";
+import LembretesViewModal from "./LembretesViewModal";
 
 interface LembretesTableProps {
   lembretes: Lembrete[];
   onEdit: (lembrete: Lembrete) => void;
 }
 
-const LembretesTable: React.FC<LembretesTableProps> = ({ lembretes, onEdit }) => {
+const LembretesTable: React.FC<LembretesTableProps> = ({
+  lembretes,
+  onEdit,
+}) => {
   const { updateLembrete, deleteLembrete } = useLembretes();
 
   const handleToggleStatus = async (lembrete: Lembrete) => {
-    const novoStatus = lembrete.status === 'ativo' ? 'inativo' : 'ativo';
-    console.log('Atualizando status de:', lembrete.id, 'para:', novoStatus);
-    
+    const novoStatus = lembrete.status === "ativo" ? "inativo" : "ativo";
+    console.log("Atualizando status de:", lembrete.id, "para:", novoStatus);
+
     try {
       await updateLembrete.mutateAsync({
         id: lembrete.id,
-        status: novoStatus
+        status: novoStatus,
       });
     } catch (error) {
-      console.error('Erro ao atualizar status:', error);
+      console.error("Erro ao atualizar status:", error);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Tem certeza que deseja excluir este lembrete?')) {
+    if (window.confirm("Tem certeza que deseja excluir este lembrete?")) {
       try {
         await deleteLembrete.mutateAsync(id);
       } catch (error) {
-        console.error('Erro ao deletar lembrete:', error);
+        console.error("Erro ao deletar lembrete:", error);
       }
     }
   };
 
   const formatDate = (date: string) => {
-    return new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
+    return new Date(date + "T00:00:00").toLocaleDateString("pt-BR");
   };
 
   const formatTime = (time: string | null) => {
-    if (!time) return '-';
+    if (!time) return "-";
     return time.slice(0, 5);
   };
 
   const getStatusColor = (status: string) => {
-    return status === 'ativo' 
-      ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-      : 'bg-gray-100 text-gray-800 border-gray-200';
+    return status === "ativo"
+      ? "bg-emerald-100 text-emerald-800 border-emerald-200"
+      : "bg-gray-100 text-gray-800 border-gray-200";
   };
 
   const isVencido = (dataLembrete: string) => {
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = new Date().toISOString().split("T")[0];
     return dataLembrete < hoje;
   };
 
   const isHoje = (dataLembrete: string) => {
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = new Date().toISOString().split("T")[0];
     return dataLembrete === hoje;
   };
 
@@ -97,23 +99,31 @@ const LembretesTable: React.FC<LembretesTableProps> = ({ lembretes, onEdit }) =>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {lembretes.map((lembrete) => (
-                  <tr key={lembrete.id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={lembrete.id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="px-6 py-4">
                       <div>
                         <div className="flex items-center">
                           <h3 className="text-sm font-semibold text-gray-900">
                             {lembrete.titulo}
                           </h3>
-                          {isVencido(lembrete.data_lembrete) && lembrete.status === 'ativo' && (
-                            <Badge variant="destructive" className="ml-2 text-xs">
-                              Vencido
-                            </Badge>
-                          )}
-                          {isHoje(lembrete.data_lembrete) && lembrete.status === 'ativo' && (
-                            <Badge className="ml-2 text-xs bg-orange-100 text-orange-800">
-                              Hoje
-                            </Badge>
-                          )}
+                          {isVencido(lembrete.data_lembrete) &&
+                            lembrete.status === "ativo" && (
+                              <Badge
+                                variant="destructive"
+                                className="ml-2 text-xs"
+                              >
+                                Vencido
+                              </Badge>
+                            )}
+                          {isHoje(lembrete.data_lembrete) &&
+                            lembrete.status === "ativo" && (
+                              <Badge className="ml-2 text-xs bg-orange-100 text-orange-800">
+                                Hoje
+                              </Badge>
+                            )}
                         </div>
                         {lembrete.descricao && (
                           <p className="text-sm text-gray-600 mt-1 line-clamp-2">
@@ -134,7 +144,7 @@ const LembretesTable: React.FC<LembretesTableProps> = ({ lembretes, onEdit }) =>
                     </td>
                     <td className="px-6 py-4">
                       <Badge className={getStatusColor(lembrete.status)}>
-                        {lembrete.status === 'ativo' ? 'Ativo' : 'Inativo'}
+                        {lembrete.status === "ativo" ? "Ativo" : "Inativo"}
                       </Badge>
                     </td>
                     <td className="px-6 py-4">
@@ -152,9 +162,9 @@ const LembretesTable: React.FC<LembretesTableProps> = ({ lembretes, onEdit }) =>
                           variant="outline"
                           size="sm"
                           onClick={() => handleToggleStatus(lembrete)}
-                          className={`hover:bg-${lembrete.status === 'ativo' ? 'orange' : 'emerald'}-50`}
+                          className={`hover:bg-${lembrete.status === "ativo" ? "orange" : "emerald"}-50`}
                         >
-                          {lembrete.status === 'ativo' ? (
+                          {lembrete.status === "ativo" ? (
                             <PowerOff className="h-4 w-4" />
                           ) : (
                             <Power className="h-4 w-4" />

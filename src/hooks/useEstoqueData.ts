@@ -1,103 +1,218 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Estoque } from '@/types/estoque';
 
-export const useEstoqueData = () => {
-  const [estoques, setEstoques] = useState<Estoque[]>([]);
-  const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
+interface EstoqueItem {
+  id: string;
+  nome: string;
+  descricao?: string;
+  categoria: string;
+  quantidade: number;
+  preco_unitario: number;
+  preco_venda: number;
+  fornecedor?: string;
+  codigo_barras?: string;
+  localizacao?: string;
+  estoque_minimo: number;
+  status: 'ativo' | 'inativo';
+  created_at: string;
+  updated_at: string;
+}
+
+interface EstoqueFormData {
+  nome: string;
+  descricao?: string;
+  categoria: string;
+  quantidade: number;
+  preco_unitario: number;
+  preco_venda: number;
+  fornecedor?: string;
+  codigo_barras?: string;
+  localizacao?: string;
+  estoque_minimo: number;
+  status: 'ativo' | 'inativo';
+}
+
+interface UseEstoqueDataReturn {
+  estoques: EstoqueItem[];
+  loading: boolean;
+  error: string | null;
+  fetchEstoques: () => Promise<void>;
+  createEstoque: (data: EstoqueFormData) => Promise<void>;
+  updateEstoque: (id: string, data: Partial<EstoqueFormData>) => Promise<void>;
+  deleteEstoque: (id: string) => Promise<void>;
+  adjustQuantity: (id: string, quantidade: number) => Promise<void>;
+}
+
+export const useEstoqueData = (): UseEstoqueDataReturn => {
+  const [estoques, setEstoques] = useState<EstoqueItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (user) {
-      fetchEstoques();
-    }
-  }, [user]);
-
-  const fetchEstoques = async () => {
-    setLoading(true);
+  const fetchEstoques = useCallback(async () => {
     try {
-      const { data, error } = await supabase
+      setLoading(true);
+      setError(null);
+
+      const { data, error: fetchError } = await supabase
         .from('estoques')
         .select('*')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
+        .order('nome', { ascending: true });
 
-      if (error) throw error;
+      if (fetchError) {
+        throw fetchError;
+      }
+
       setEstoques(data || []);
-    } catch (error: any) {
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar estoque';
+      setError(errorMessage);
       toast({
-        title: "Erro ao carregar estoques",
-        description: error.message,
-        variant: "destructive",
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
-  const handleToggleStatus = async (estoque: Estoque) => {
+  const createEstoque = useCallback(async (data: EstoqueFormData) => {
     try {
-      const newStatus = estoque.status === 'ativo' ? 'inativo' : 'ativo';
-      const { error } = await supabase
+      setError(null);
+
+      const { error: insertError } = await supabase
         .from('estoques')
-        .update({ 
-          status: newStatus,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', estoque.id)
-        .eq('user_id', user?.id);
+        .insert([data]);
 
-      if (error) throw error;
+      if (insertError) {
+        throw insertError;
+      }
 
       toast({
-        title: "Status atualizado!",
-        description: `Item ${newStatus === 'ativo' ? 'ativado' : 'desativado'} com sucesso.`,
+        title: 'Sucesso',
+        description: 'Item adicionado ao estoque com sucesso!',
       });
 
-      fetchEstoques();
-    } catch (error: any) {
+      await fetchEstoques();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao adicionar item ao estoque';
+      setError(errorMessage);
       toast({
-        title: "Erro ao alterar status",
-        description: error.message,
-        variant: "destructive",
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
       });
+      throw err;
     }
-  };
+  }, [fetchEstoques, toast]);
 
-  const handleDelete = async (id: string) => {
+  const updateEstoque = useCallback(async (id: string, data: Partial<EstoqueFormData>) => {
     try {
-      const { error } = await supabase
+      setError(null);
+
+      const { error: updateError } = await supabase
+        .from('estoques')
+        .update(data)
+        .eq('id', id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      toast({
+        title: 'Sucesso',
+        description: 'Item atualizado com sucesso!',
+      });
+
+      await fetchEstoques();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao atualizar item';
+      setError(errorMessage);
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw err;
+    }
+  }, [fetchEstoques, toast]);
+
+  const deleteEstoque = useCallback(async (id: string) => {
+    try {
+      setError(null);
+
+      const { error: deleteError } = await supabase
         .from('estoques')
         .delete()
-        .eq('id', id)
-        .eq('user_id', user?.id);
+        .eq('id', id);
 
-      if (error) throw error;
+      if (deleteError) {
+        throw deleteError;
+      }
 
       toast({
-        title: "Item excluído!",
-        description: "O item foi removido do estoque.",
+        title: 'Sucesso',
+        description: 'Item removido do estoque com sucesso!',
       });
 
-      fetchEstoques();
-    } catch (error: any) {
+      await fetchEstoques();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao remover item do estoque';
+      setError(errorMessage);
       toast({
-        title: "Erro ao excluir item",
-        description: error.message,
-        variant: "destructive",
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
       });
+      throw err;
     }
-  };
+  }, [fetchEstoques, toast]);
+
+  const adjustQuantity = useCallback(async (id: string, quantidade: number) => {
+    try {
+      setError(null);
+
+      const { error: updateError } = await supabase
+        .from('estoques')
+        .update({ quantidade })
+        .eq('id', id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      toast({
+        title: 'Sucesso',
+        description: 'Quantidade ajustada com sucesso!',
+      });
+
+      await fetchEstoques();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao ajustar quantidade';
+      setError(errorMessage);
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw err;
+    }
+  }, [fetchEstoques, toast]);
+
+  useEffect(() => {
+    fetchEstoques();
+  }, [fetchEstoques]);
 
   return {
     estoques,
     loading,
+    error,
     fetchEstoques,
-    handleToggleStatus,
-    handleDelete
+    createEstoque,
+    updateEstoque,
+    deleteEstoque,
+    adjustQuantity,
   };
 };

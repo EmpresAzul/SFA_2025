@@ -1,9 +1,8 @@
-
-import React, { useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useInactivityTimer } from '@/hooks/useInactivityTimer';
-import { useAutoSave } from '@/hooks/useAutoSave';
-import { useToast } from '@/hooks/use-toast';
+import React, { useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useInactivityTimer } from "@/hooks/useInactivityTimer";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import { useToast } from "@/hooks/use-toast";
 
 const InactivityManager: React.FC = () => {
   const { user, logout } = useAuth();
@@ -14,10 +13,11 @@ const InactivityManager: React.FC = () => {
   const handleInactivityLogout = async () => {
     toast({
       title: "Sessão expirada",
-      description: "Você foi desconectado devido à inatividade. Seus dados foram salvos automaticamente.",
+      description:
+        "Você foi desconectado devido à inatividade. Seus dados foram salvos automaticamente.",
       variant: "destructive",
     });
-    
+
     await logout();
   };
 

@@ -1,55 +1,58 @@
-
-import React, { useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus, Bell } from 'lucide-react';
-import { useLembretes, type Lembrete } from '@/hooks/useLembretes';
-import LembretesSummaryCards from '@/components/lembretes/LembretesSummaryCards';
-import LembretesForm from '@/components/lembretes/LembretesForm';
-import LembretesTable from '@/components/lembretes/LembretesTable';
-import LembretesFilters from '@/components/lembretes/LembretesFilters';
+import React, { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus, Bell } from "lucide-react";
+import { useLembretes, type Lembrete } from "@/hooks/useLembretes";
+import LembretesSummaryCards from "@/components/lembretes/LembretesSummaryCards";
+import LembretesForm from "@/components/lembretes/LembretesForm";
+import LembretesTable from "@/components/lembretes/LembretesTable";
+import LembretesFilters from "@/components/lembretes/LembretesFilters";
 
 const Lembretes: React.FC = () => {
   const { lembretes, isLoading } = useLembretes();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingLembrete, setEditingLembrete] = useState<Lembrete | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [dateFilter, setDateFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("all");
 
   const filteredLembretes = useMemo(() => {
-    return lembretes.filter(lembrete => {
+    return lembretes.filter((lembrete) => {
       // Filtro de busca
-      const matchesSearch = !searchTerm || 
+      const matchesSearch =
+        !searchTerm ||
         lembrete.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (lembrete.descricao && lembrete.descricao.toLowerCase().includes(searchTerm.toLowerCase()));
+        (lembrete.descricao &&
+          lembrete.descricao.toLowerCase().includes(searchTerm.toLowerCase()));
 
       // Filtro de status
-      const matchesStatus = statusFilter === 'all' || lembrete.status === statusFilter;
+      const matchesStatus =
+        statusFilter === "all" || lembrete.status === statusFilter;
 
       // Filtro de data
       let matchesDate = true;
-      if (dateFilter !== 'all') {
+      if (dateFilter !== "all") {
         const hoje = new Date();
-        const dataLembrete = new Date(lembrete.data_lembrete + 'T00:00:00');
-        
+        const dataLembrete = new Date(lembrete.data_lembrete + "T00:00:00");
+
         switch (dateFilter) {
-          case 'hoje':
+          case "hoje":
             matchesDate = dataLembrete.toDateString() === hoje.toDateString();
             break;
-          case 'amanha':
+          case "amanha":
             const amanha = new Date(hoje);
             amanha.setDate(hoje.getDate() + 1);
             matchesDate = dataLembrete.toDateString() === amanha.toDateString();
             break;
-          case 'esta-semana':
+          case "esta-semana":
             const inicioSemana = new Date(hoje);
             inicioSemana.setDate(hoje.getDate() - hoje.getDay());
             const fimSemana = new Date(inicioSemana);
             fimSemana.setDate(inicioSemana.getDate() + 6);
-            matchesDate = dataLembrete >= inicioSemana && dataLembrete <= fimSemana;
+            matchesDate =
+              dataLembrete >= inicioSemana && dataLembrete <= fimSemana;
             break;
-          case 'vencidos':
-            matchesDate = dataLembrete < hoje && lembrete.status === 'ativo';
+          case "vencidos":
+            matchesDate = dataLembrete < hoje && lembrete.status === "ativo";
             break;
         }
       }
@@ -89,7 +92,7 @@ const Lembretes: React.FC = () => {
             Gerencie seus lembretes importantes
           </p>
         </div>
-        
+
         <Button
           onClick={() => setIsFormOpen(true)}
           className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
@@ -113,10 +116,7 @@ const Lembretes: React.FC = () => {
       />
 
       {/* Table */}
-      <LembretesTable 
-        lembretes={filteredLembretes}
-        onEdit={handleEdit}
-      />
+      <LembretesTable lembretes={filteredLembretes} onEdit={handleEdit} />
 
       {/* Form Modal */}
       <LembretesForm

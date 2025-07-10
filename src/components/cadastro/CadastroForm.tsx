@@ -1,19 +1,19 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { ClienteForm } from './forms/ClienteForm';
-import { FornecedorForm } from './forms/FornecedorForm';
-import { FuncionarioForm } from './forms/FuncionarioForm';
-import { EnderecoForm } from './forms/EnderecoForm';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { ClienteForm } from "./forms/ClienteForm";
+import { FornecedorForm } from "./forms/FornecedorForm";
+import { FuncionarioForm } from "./forms/FuncionarioForm";
+import { EnderecoForm } from "./forms/EnderecoForm";
+import { CadastroData } from "./CadastroEditModal";
 
 interface CadastroFormProps {
-  tipo: 'Cliente' | 'Fornecedor' | 'Funcionário';
-  formData: any;
-  setFormData: (data: any) => void;
-  editingCadastro: any;
+  tipo: "Cliente" | "Fornecedor" | "Funcionário";
+  formData: CadastroData;
+  setFormData: (data: CadastroData) => void;
+  editingCadastro: CadastroData | null;
   loading: boolean;
   onSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
@@ -30,12 +30,14 @@ export const CadastroForm: React.FC<CadastroFormProps> = ({
 }) => {
   const renderFormFields = () => {
     switch (tipo) {
-      case 'Cliente':
+      case "Cliente":
         return <ClienteForm formData={formData} setFormData={setFormData} />;
-      case 'Fornecedor':
+      case "Fornecedor":
         return <FornecedorForm formData={formData} setFormData={setFormData} />;
-      case 'Funcionário':
-        return <FuncionarioForm formData={formData} setFormData={setFormData} />;
+      case "Funcionário":
+        return (
+          <FuncionarioForm formData={formData} setFormData={setFormData} />
+        );
       default:
         return null;
     }
@@ -61,7 +63,9 @@ export const CadastroForm: React.FC<CadastroFormProps> = ({
             <Textarea
               id="observacoes"
               value={formData.observacoes}
-              onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, observacoes: e.target.value })
+              }
               placeholder="Observações adicionais..."
               rows={3}
             />
@@ -73,14 +77,14 @@ export const CadastroForm: React.FC<CadastroFormProps> = ({
               disabled={loading}
               className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
             >
-              {loading ? "Salvando..." : editingCadastro ? "Atualizar" : "Salvar"}
+              {loading
+                ? "Salvando..."
+                : editingCadastro
+                  ? "Atualizar"
+                  : "Salvar"}
             </Button>
             {editingCadastro && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-              >
+              <Button type="button" variant="outline" onClick={onCancel}>
                 Cancelar
               </Button>
             )}

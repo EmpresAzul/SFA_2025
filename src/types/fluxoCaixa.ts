@@ -1,9 +1,8 @@
-
 // Usando o mesmo tipo Lancamento do sistema principal
 export interface Lancamento {
   id: string;
   data: string;
-  tipo: 'receita' | 'despesa';
+  tipo: "receita" | "despesa";
   categoria: string;
   valor: number;
   cliente_id?: string;

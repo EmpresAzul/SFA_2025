@@ -1,13 +1,24 @@
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search } from "lucide-react";
 
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search } from 'lucide-react';
-
-const categoriasReceita = ['Receita', 'Receita Não Operacional'];
-const categoriasDespesa = ['Despesa fixa', 'Custo variável', 'Despesa não operacional', 'Salários', 'Investimentos'];
+const categoriasReceita = ["Receita", "Receita Não Operacional"];
+const categoriasDespesa = [
+  "Despesa fixa",
+  "Custo variável",
+  "Despesa não operacional",
+  "Salários",
+  "Investimentos",
+];
 
 interface LancamentosFiltersProps {
   searchTerm: string;
@@ -66,9 +77,13 @@ const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todas">Todas</SelectItem>
-                {[...categoriasReceita, ...categoriasDespesa].map((categoria) => (
-                  <SelectItem key={categoria} value={categoria}>{categoria}</SelectItem>
-                ))}
+                {[...categoriasReceita, ...categoriasDespesa].map(
+                  (categoria) => (
+                    <SelectItem key={categoria} value={categoria}>
+                      {categoria}
+                    </SelectItem>
+                  ),
+                )}
               </SelectContent>
             </Select>
           </div>

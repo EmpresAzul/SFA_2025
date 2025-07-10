@@ -1,36 +1,48 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
-import LembretesActiveCard from '@/components/dashboard/LembretesActiveCard';
-import MetricsCards from '@/components/dashboard/MetricsCards';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+  ResponsiveContainer,
+} from "recharts";
+import LembretesActiveCard from "@/components/dashboard/LembretesActiveCard";
+import MetricsCards from "@/components/dashboard/MetricsCards";
 
 const Dashboard: React.FC = () => {
   // Mock data for charts
   const monthlyRevenue = [
-    { month: 'Jan', revenue: 45000, expenses: 32000 },
-    { month: 'Fev', revenue: 52000, expenses: 35000 },
-    { month: 'Mar', revenue: 48000, expenses: 33000 },
-    { month: 'Abr', revenue: 61000, expenses: 38000 },
-    { month: 'Mai', revenue: 55000, expenses: 36000 },
-    { month: 'Jun', revenue: 67000, expenses: 42000 },
+    { month: "Jan", revenue: 45000, expenses: 32000 },
+    { month: "Fev", revenue: 52000, expenses: 35000 },
+    { month: "Mar", revenue: 48000, expenses: 33000 },
+    { month: "Abr", revenue: 61000, expenses: 38000 },
+    { month: "Mai", revenue: 55000, expenses: 36000 },
+    { month: "Jun", revenue: 67000, expenses: 42000 },
   ];
 
   const expenseDistribution = [
-    { name: 'Pessoal', value: 45, color: '#1e3a8a' },
-    { name: 'Fornecedores', value: 30, color: '#3b82f6' },
-    { name: 'Marketing', value: 15, color: '#60a5fa' },
-    { name: 'Outros', value: 10, color: '#93c5fd' },
+    { name: "Pessoal", value: 45, color: "#1e3a8a" },
+    { name: "Fornecedores", value: 30, color: "#3b82f6" },
+    { name: "Marketing", value: 15, color: "#60a5fa" },
+    { name: "Outros", value: 10, color: "#93c5fd" },
   ];
 
   const cashFlow = [
-    { day: '1', entrada: 2500, saida: 1800 },
-    { day: '5', entrada: 3200, saida: 2100 },
-    { day: '10', entrada: 2800, saida: 1900 },
-    { day: '15', entrada: 4100, saida: 2400 },
-    { day: '20', entrada: 3600, saida: 2200 },
-    { day: '25', entrada: 3900, saida: 2600 },
-    { day: '30', entrada: 4200, saida: 2800 },
+    { day: "1", entrada: 2500, saida: 1800 },
+    { day: "5", entrada: 3200, saida: 2100 },
+    { day: "10", entrada: 2800, saida: 1900 },
+    { day: "15", entrada: 4100, saida: 2400 },
+    { day: "20", entrada: 3600, saida: 2200 },
+    { day: "25", entrada: 3900, saida: 2600 },
+    { day: "30", entrada: 4200, saida: 2800 },
   ];
 
   return (
@@ -68,27 +80,47 @@ const Dashboard: React.FC = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="month" stroke="#666" fontSize={12} />
                 <YAxis stroke="#666" fontSize={12} />
-                <Tooltip 
-                  formatter={(value) => [`R$ ${value.toLocaleString()}`, '']}
-                  labelStyle={{ color: '#333' }}
-                  contentStyle={{ 
-                    backgroundColor: 'white', 
-                    border: '1px solid #ddd',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                    fontSize: '12px'
+                <Tooltip
+                  formatter={(value) => [`R$ ${value.toLocaleString()}`, ""]}
+                  labelStyle={{ color: "#333" }}
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid #ddd",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    fontSize: "12px",
                   }}
                 />
-                <Bar dataKey="revenue" fill="url(#revenueGradient)" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="expenses" fill="url(#expenseGradient)" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="revenue"
+                  fill="url(#revenueGradient)"
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar
+                  dataKey="expenses"
+                  fill="url(#expenseGradient)"
+                  radius={[4, 4, 0, 0]}
+                />
                 <defs>
-                  <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#1e3a8a" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.6}/>
+                  <linearGradient
+                    id="revenueGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="5%" stopColor="#1e3a8a" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.6} />
                   </linearGradient>
-                  <linearGradient id="expenseGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#f87171" stopOpacity={0.6}/>
+                  <linearGradient
+                    id="expenseGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#f87171" stopOpacity={0.6} />
                   </linearGradient>
                 </defs>
               </BarChart>
@@ -113,14 +145,16 @@ const Dashboard: React.FC = () => {
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                  }
                   fontSize={10}
                 >
                   {expenseDistribution.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => [`${value}%`, '']} />
+                <Tooltip formatter={(value) => [`${value}%`, ""]} />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
@@ -140,32 +174,32 @@ const Dashboard: React.FC = () => {
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="day" stroke="#666" fontSize={12} />
               <YAxis stroke="#666" fontSize={12} />
-              <Tooltip 
-                formatter={(value) => [`R$ ${value.toLocaleString()}`, '']}
-                labelStyle={{ color: '#333' }}
-                contentStyle={{ 
-                  backgroundColor: 'white', 
-                  border: '1px solid #ddd',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                  fontSize: '12px'
+              <Tooltip
+                formatter={(value) => [`R$ ${value.toLocaleString()}`, ""]}
+                labelStyle={{ color: "#333" }}
+                contentStyle={{
+                  backgroundColor: "white",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                  fontSize: "12px",
                 }}
               />
-              <Line 
-                type="monotone" 
-                dataKey="entrada" 
-                stroke="#1e3a8a" 
+              <Line
+                type="monotone"
+                dataKey="entrada"
+                stroke="#1e3a8a"
                 strokeWidth={3}
-                dot={{ fill: '#1e3a8a', strokeWidth: 2, r: 3 }}
-                activeDot={{ r: 5, fill: '#3b82f6' }}
+                dot={{ fill: "#1e3a8a", strokeWidth: 2, r: 3 }}
+                activeDot={{ r: 5, fill: "#3b82f6" }}
               />
-              <Line 
-                type="monotone" 
-                dataKey="saida" 
-                stroke="#ef4444" 
+              <Line
+                type="monotone"
+                dataKey="saida"
+                stroke="#ef4444"
                 strokeWidth={3}
-                dot={{ fill: '#ef4444', strokeWidth: 2, r: 3 }}
-                activeDot={{ r: 5, fill: '#f87171' }}
+                dot={{ fill: "#ef4444", strokeWidth: 2, r: 3 }}
+                activeDot={{ r: 5, fill: "#f87171" }}
               />
             </LineChart>
           </ResponsiveContainer>

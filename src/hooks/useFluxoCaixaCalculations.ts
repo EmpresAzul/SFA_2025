@@ -1,18 +1,17 @@
-
-import { useMemo } from 'react';
-import { format, parseISO } from 'date-fns';
-import { Lancamento, FluxoDiario, CategoriaData } from '@/types/fluxoCaixa';
+import { useMemo } from "react";
+import { format, parseISO } from "date-fns";
+import { Lancamento, FluxoDiario, CategoriaData } from "@/types/fluxoCaixa";
 
 export const useFluxoCaixaCalculations = (lancamentos: Lancamento[]) => {
   const totalReceitas = useMemo(() => {
     return lancamentos
-      .filter(l => l.tipo === 'receita')
+      .filter((l) => l.tipo === "receita")
       .reduce((sum, l) => sum + l.valor, 0);
   }, [lancamentos]);
 
   const totalDespesas = useMemo(() => {
     return lancamentos
-      .filter(l => l.tipo === 'despesa')
+      .filter((l) => l.tipo === "despesa")
       .reduce((sum, l) => sum + l.valor, 0);
   }, [lancamentos]);
 
@@ -21,22 +20,29 @@ export const useFluxoCaixaCalculations = (lancamentos: Lancamento[]) => {
   }, [totalReceitas, totalDespesas]);
 
   const fluxoPorDia = useMemo(() => {
-    const fluxoPorDia: { [key: string]: { receitas: number; despesas: number; data: string; dataCompleta: string } } = {};
+    const fluxoPorDia: {
+      [key: string]: {
+        receitas: number;
+        despesas: number;
+        data: string;
+        dataCompleta: string;
+      };
+    } = {};
 
-    lancamentos.forEach(lancamento => {
+    lancamentos.forEach((lancamento) => {
       const dataLancamento = lancamento.data;
-      const dataFormatada = format(parseISO(dataLancamento), 'dd/MM');
-      
+      const dataFormatada = format(parseISO(dataLancamento), "dd/MM");
+
       if (!fluxoPorDia[dataLancamento]) {
-        fluxoPorDia[dataLancamento] = { 
-          receitas: 0, 
-          despesas: 0, 
+        fluxoPorDia[dataLancamento] = {
+          receitas: 0,
+          despesas: 0,
           data: dataFormatada,
-          dataCompleta: dataLancamento
+          dataCompleta: dataLancamento,
         };
       }
 
-      if (lancamento.tipo === 'receita') {
+      if (lancamento.tipo === "receita") {
         fluxoPorDia[dataLancamento].receitas += lancamento.valor;
       } else {
         fluxoPorDia[dataLancamento].despesas += lancamento.valor;
@@ -52,8 +58,8 @@ export const useFluxoCaixaCalculations = (lancamentos: Lancamento[]) => {
     const receitasPorCategoria: { [key: string]: number } = {};
 
     lancamentos
-      .filter(l => l.tipo === 'receita')
-      .forEach(lancamento => {
+      .filter((l) => l.tipo === "receita")
+      .forEach((lancamento) => {
         if (!receitasPorCategoria[lancamento.categoria]) {
           receitasPorCategoria[lancamento.categoria] = 0;
         }
@@ -63,7 +69,7 @@ export const useFluxoCaixaCalculations = (lancamentos: Lancamento[]) => {
     return Object.entries(receitasPorCategoria).map(([categoria, valor]) => ({
       name: categoria,
       value: valor,
-      color: '#10b981'
+      color: "#10b981",
     }));
   }, [lancamentos]);
 
@@ -71,8 +77,8 @@ export const useFluxoCaixaCalculations = (lancamentos: Lancamento[]) => {
     const despesasPorCategoria: { [key: string]: number } = {};
 
     lancamentos
-      .filter(l => l.tipo === 'despesa')
-      .forEach(lancamento => {
+      .filter((l) => l.tipo === "despesa")
+      .forEach((lancamento) => {
         if (!despesasPorCategoria[lancamento.categoria]) {
           despesasPorCategoria[lancamento.categoria] = 0;
         }
@@ -82,7 +88,7 @@ export const useFluxoCaixaCalculations = (lancamentos: Lancamento[]) => {
     return Object.entries(despesasPorCategoria).map(([categoria, valor]) => ({
       name: categoria,
       value: valor,
-      color: '#ef4444'
+      color: "#ef4444",
     }));
   }, [lancamentos]);
 
@@ -92,6 +98,6 @@ export const useFluxoCaixaCalculations = (lancamentos: Lancamento[]) => {
     saldo,
     fluxoPorDia,
     receitasPorCategoria,
-    despesasPorCategoria
+    despesasPorCategoria,
   };
 };

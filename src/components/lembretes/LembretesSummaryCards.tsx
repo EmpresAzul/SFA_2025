@@ -1,31 +1,32 @@
-
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Bell, Calendar, Clock, AlertTriangle } from 'lucide-react';
-import type { Lembrete } from '@/hooks/useLembretes';
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Bell, Calendar, Clock, AlertTriangle } from "lucide-react";
+import type { Lembrete } from "@/hooks/useLembretes";
 
 interface LembretesSummaryCardsProps {
   lembretes: Lembrete[];
 }
 
-const LembretesSummaryCards: React.FC<LembretesSummaryCardsProps> = ({ lembretes }) => {
+const LembretesSummaryCards: React.FC<LembretesSummaryCardsProps> = ({
+  lembretes,
+}) => {
   const getTotalLembretes = () => lembretes.length;
 
   const getLembretesAtivos = () => {
-    return lembretes.filter(l => l.status === 'ativo').length;
+    return lembretes.filter((l) => l.status === "ativo").length;
   };
 
   const getLembretesHoje = () => {
-    const hoje = new Date().toISOString().split('T')[0];
-    return lembretes.filter(l => 
-      l.status === 'ativo' && l.data_lembrete === hoje
+    const hoje = new Date().toISOString().split("T")[0];
+    return lembretes.filter(
+      (l) => l.status === "ativo" && l.data_lembrete === hoje,
     ).length;
   };
 
   const getLembretesVencidos = () => {
-    const hoje = new Date().toISOString().split('T')[0];
-    return lembretes.filter(l => 
-      l.status === 'ativo' && l.data_lembrete < hoje
+    const hoje = new Date().toISOString().split("T")[0];
+    return lembretes.filter(
+      (l) => l.status === "ativo" && l.data_lembrete < hoje,
     ).length;
   };
 
@@ -36,8 +37,12 @@ const LembretesSummaryCards: React.FC<LembretesSummaryCardsProps> = ({ lembretes
           <div className="flex items-center">
             <Bell className="h-10 w-10 text-blue-600" />
             <div className="ml-4">
-              <p className="text-sm font-medium text-blue-600">Total Lembretes</p>
-              <p className="text-2xl font-bold text-blue-900">{getTotalLembretes()}</p>
+              <p className="text-sm font-medium text-blue-600">
+                Total Lembretes
+              </p>
+              <p className="text-2xl font-bold text-blue-900">
+                {getTotalLembretes()}
+              </p>
               <p className="text-xs text-blue-600 mt-1">Todos os lembretes</p>
             </div>
           </div>
@@ -50,7 +55,9 @@ const LembretesSummaryCards: React.FC<LembretesSummaryCardsProps> = ({ lembretes
             <Calendar className="h-10 w-10 text-emerald-600" />
             <div className="ml-4">
               <p className="text-sm font-medium text-emerald-600">Ativos</p>
-              <p className="text-2xl font-bold text-emerald-900">{getLembretesAtivos()}</p>
+              <p className="text-2xl font-bold text-emerald-900">
+                {getLembretesAtivos()}
+              </p>
               <p className="text-xs text-emerald-600 mt-1">Lembretes ativos</p>
             </div>
           </div>
@@ -63,7 +70,9 @@ const LembretesSummaryCards: React.FC<LembretesSummaryCardsProps> = ({ lembretes
             <Clock className="h-10 w-10 text-orange-600" />
             <div className="ml-4">
               <p className="text-sm font-medium text-orange-600">Para Hoje</p>
-              <p className="text-2xl font-bold text-orange-900">{getLembretesHoje()}</p>
+              <p className="text-2xl font-bold text-orange-900">
+                {getLembretesHoje()}
+              </p>
               <p className="text-xs text-orange-600 mt-1">Lembretes de hoje</p>
             </div>
           </div>
@@ -76,7 +85,9 @@ const LembretesSummaryCards: React.FC<LembretesSummaryCardsProps> = ({ lembretes
             <AlertTriangle className="h-10 w-10 text-red-600" />
             <div className="ml-4">
               <p className="text-sm font-medium text-red-600">Vencidos</p>
-              <p className="text-2xl font-bold text-red-900">{getLembretesVencidos()}</p>
+              <p className="text-2xl font-bold text-red-900">
+                {getLembretesVencidos()}
+              </p>
               <p className="text-xs text-red-600 mt-1">Precisam atenção</p>
             </div>
           </div>

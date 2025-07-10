@@ -1,8 +1,7 @@
-
-import React from 'react';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { formatCurrency } from '@/utils/formatters';
+import React from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { formatCurrency } from "@/utils/formatters";
 
 interface SalaryFieldProps {
   salario: number;
@@ -13,7 +12,7 @@ interface SalaryFieldProps {
 export const SalaryField: React.FC<SalaryFieldProps> = ({
   salario,
   onSalaryChange,
-  showSalary
+  showSalary,
 }) => {
   if (!showSalary) return null;
 

@@ -1,16 +1,21 @@
-
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
-import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
-import { parseStringToNumber } from '@/utils/currency';
-import LancamentosFormCategories from './LancamentosFormCategories';
-import type { FormData } from '@/types/lancamentosForm';
-import type { Cadastro } from '@/hooks/useCadastros';
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import { EnhancedCurrencyInput } from "@/components/ui/enhanced-currency-input";
+import { parseStringToNumber } from "@/utils/currency";
+import LancamentosFormCategories from "./LancamentosFormCategories";
+import type { FormData } from "@/types/lancamentosForm";
+import type { Cadastro } from "@/hooks/useCadastros";
 
 interface LancamentosFormFieldsProps {
   formData: FormData;
@@ -25,31 +30,45 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
   clientes,
   fornecedores,
 }) => {
-  const handleInputChange = (field: keyof FormData, value: string | boolean | number | null) => {
-    console.log('FormFields: Atualizando campo', field, 'com valor:', value);
-    setFormData(prev => {
+  const handleInputChange = (
+    field: keyof FormData,
+    value: string | boolean | number | null,
+  ) => {
+    console.log("FormFields: Atualizando campo", field, "com valor:", value);
+    setFormData((prev) => {
       const updated = { ...prev, [field]: value };
-      console.log('FormFields: Estado atualizado:', updated);
+      console.log("FormFields: Estado atualizado:", updated);
       return updated;
     });
   };
 
-  const handleCurrencyChange = (numericValue: number, formattedValue: string) => {
-    console.log('FormFields: Valor monetário atualizado:', { numericValue, formattedValue });
+  const handleCurrencyChange = (
+    numericValue: number,
+    formattedValue: string,
+  ) => {
+    console.log("FormFields: Valor monetário atualizado:", {
+      numericValue,
+      formattedValue,
+    });
     // Armazenar como string formatada para manter consistência na exibição
-    handleInputChange('valor', formattedValue);
+    handleInputChange("valor", formattedValue);
   };
 
   const handleRecorrenteChange = (checked: boolean) => {
-    handleInputChange('recorrente', checked);
+    handleInputChange("recorrente", checked);
     if (!checked) {
-      handleInputChange('meses_recorrencia', null);
+      handleInputChange("meses_recorrencia", null);
     }
   };
 
   // Converter valor para número para o componente de currency
   const valorNumerico = parseStringToNumber(formData.valor);
-  console.log('FormFields: Valor atual do formulário:', formData.valor, 'convertido para:', valorNumerico);
+  console.log(
+    "FormFields: Valor atual do formulário:",
+    formData.valor,
+    "convertido para:",
+    valorNumerico,
+  );
 
   return (
     <div className="space-y-6">
@@ -60,16 +79,22 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
         </Label>
         <RadioGroup
           value={formData.tipo}
-          onValueChange={(value) => handleInputChange('tipo', value as 'receita' | 'despesa')}
+          onValueChange={(value) =>
+            handleInputChange("tipo", value as "receita" | "despesa")
+          }
           className="flex gap-6"
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="receita" id="receita" />
-            <Label htmlFor="receita" className="cursor-pointer">Receita</Label>
+            <Label htmlFor="receita" className="cursor-pointer">
+              Receita
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="despesa" id="despesa" />
-            <Label htmlFor="despesa" className="cursor-pointer">Despesa</Label>
+            <Label htmlFor="despesa" className="cursor-pointer">
+              Despesa
+            </Label>
           </div>
         </RadioGroup>
       </div>
@@ -84,7 +109,7 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
             id="data"
             type="date"
             value={formData.data}
-            onChange={(e) => handleInputChange('data', e.target.value)}
+            onChange={(e) => handleInputChange("data", e.target.value)}
             className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
@@ -111,14 +136,20 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
             checked={formData.recorrente}
             onCheckedChange={handleRecorrenteChange}
           />
-          <Label htmlFor="recorrente" className="text-sm font-medium text-gray-700">
+          <Label
+            htmlFor="recorrente"
+            className="text-sm font-medium text-gray-700"
+          >
             Lançamento Recorrente
           </Label>
         </div>
-        
+
         {formData.recorrente && (
           <div className="space-y-2">
-            <Label htmlFor="meses_recorrencia" className="text-sm font-medium text-gray-700">
+            <Label
+              htmlFor="meses_recorrencia"
+              className="text-sm font-medium text-gray-700"
+            >
               Quantidade de Meses *
             </Label>
             <Input
@@ -126,27 +157,33 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
               type="number"
               min="1"
               max="60"
-              value={formData.meses_recorrencia || ''}
-              onChange={(e) => handleInputChange('meses_recorrencia', parseInt(e.target.value) || null)}
+              value={formData.meses_recorrencia || ""}
+              onChange={(e) =>
+                handleInputChange(
+                  "meses_recorrencia",
+                  parseInt(e.target.value) || null,
+                )
+              }
               placeholder="Ex: 12 (para 12 meses)"
               className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
             />
             <p className="text-xs text-gray-600">
-              Este lançamento será repetido automaticamente pelos próximos {formData.meses_recorrencia || 0} meses
+              Este lançamento será repetido automaticamente pelos próximos{" "}
+              {formData.meses_recorrencia || 0} meses
             </p>
           </div>
         )}
       </div>
 
       {/* Cliente/Fornecedor baseado no tipo */}
-      {formData.tipo === 'receita' ? (
+      {formData.tipo === "receita" ? (
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-gray-700">
-            Cliente
-          </Label>
+          <Label className="text-sm font-medium text-gray-700">Cliente</Label>
           <Select
             value={formData.cliente_id}
-            onValueChange={(value) => handleInputChange('cliente_id', value === 'none' ? '' : value)}
+            onValueChange={(value) =>
+              handleInputChange("cliente_id", value === "none" ? "" : value)
+            }
           >
             <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
               <SelectValue placeholder="Selecione um cliente (opcional)" />
@@ -168,7 +205,9 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
           </Label>
           <Select
             value={formData.fornecedor_id}
-            onValueChange={(value) => handleInputChange('fornecedor_id', value === 'none' ? '' : value)}
+            onValueChange={(value) =>
+              handleInputChange("fornecedor_id", value === "none" ? "" : value)
+            }
           >
             <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
               <SelectValue placeholder="Selecione um fornecedor (opcional)" />
@@ -187,12 +226,15 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
 
       {/* Categoria Estruturada */}
       <div className="space-y-2">
-        <Label htmlFor="categoria" className="text-sm font-medium text-gray-700">
+        <Label
+          htmlFor="categoria"
+          className="text-sm font-medium text-gray-700"
+        >
           Categoria *
         </Label>
         <Select
           value={formData.categoria}
-          onValueChange={(value) => handleInputChange('categoria', value)}
+          onValueChange={(value) => handleInputChange("categoria", value)}
         >
           <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
             <SelectValue placeholder="Selecione uma categoria" />
@@ -202,19 +244,23 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
           </SelectContent>
         </Select>
         <p className="text-xs text-gray-600">
-          As categorias são organizadas conforme a estrutura do DRE (Demonstração do Resultado do Exercício)
+          As categorias são organizadas conforme a estrutura do DRE
+          (Demonstração do Resultado do Exercício)
         </p>
       </div>
 
       {/* Observações */}
       <div className="space-y-2">
-        <Label htmlFor="observacoes" className="text-sm font-medium text-gray-700">
+        <Label
+          htmlFor="observacoes"
+          className="text-sm font-medium text-gray-700"
+        >
           Observações
         </Label>
         <Textarea
           id="observacoes"
           value={formData.observacoes}
-          onChange={(e) => handleInputChange('observacoes', e.target.value)}
+          onChange={(e) => handleInputChange("observacoes", e.target.value)}
           placeholder="Informações adicionais sobre o lançamento..."
           className="min-h-[80px] border-gray-200 focus:border-blue-500 focus:ring-blue-500"
         />

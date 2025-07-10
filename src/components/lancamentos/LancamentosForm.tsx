@@ -1,10 +1,9 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import LancamentosFormFields from './form/LancamentosFormFields';
-import LancamentosFormActions from './form/LancamentosFormActions';
-import type { FormData, LancamentoComRelacoes } from '@/types/lancamentosForm';
-import type { Cadastro } from '@/hooks/useCadastros';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import LancamentosFormFields from "./form/LancamentosFormFields";
+import LancamentosFormActions from "./form/LancamentosFormActions";
+import type { FormData, LancamentoComRelacoes } from "@/types/lancamentosForm";
+import type { Cadastro } from "@/hooks/useCadastros";
 
 interface LancamentosFormProps {
   formData: FormData;
@@ -27,18 +26,19 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
-  console.log('LancamentosForm: Dados atuais do formulário:', formData);
-  console.log('LancamentosForm: Editando lançamento:', editingLancamento);
+  console.log("LancamentosForm: Dados atuais do formulário:", formData);
+  console.log("LancamentosForm: Editando lançamento:", editingLancamento);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
-          {editingLancamento ? 'Editar Lançamento' : 'Novo Lançamento'}
+          {editingLancamento ? "Editar Lançamento" : "Novo Lançamento"}
         </CardTitle>
         <p className="text-sm text-gray-600">
-          As categorias selecionadas alimentarão automaticamente a estrutura do DRE e Fluxo de Caixa
+          As categorias selecionadas alimentarão automaticamente a estrutura do
+          DRE e Fluxo de Caixa
         </p>
       </CardHeader>
       <CardContent>

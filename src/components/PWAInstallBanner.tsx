@@ -1,26 +1,25 @@
-
-import React, { useState, useEffect } from 'react';
-import { X, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { usePWAInstall } from '@/hooks/usePWAInstall';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState, useEffect } from "react";
+import { X, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
+import { useToast } from "@/hooks/use-toast";
 
 const PWAInstallBanner: React.FC = () => {
   const [dismissed, setDismissed] = useState(false);
   const { toast } = useToast();
-  const { 
-    isInstallable, 
-    isInstalled, 
-    isIOS, 
+  const {
+    isInstallable,
+    isInstalled,
+    isIOS,
     isAndroid,
-    installPWA, 
-    canShowInstallPrompt 
+    installPWA,
+    canShowInstallPrompt,
   } = usePWAInstall();
 
   useEffect(() => {
     // Check if user has dismissed the banner before
-    const hasBeenDismissed = localStorage.getItem('pwa-banner-dismissed');
+    const hasBeenDismissed = localStorage.getItem("pwa-banner-dismissed");
     if (hasBeenDismissed) {
       setDismissed(true);
     }
@@ -34,10 +33,10 @@ const PWAInstallBanner: React.FC = () => {
   const handleInstall = async () => {
     // Try direct installation first
     const success = await installPWA();
-    
+
     if (success) {
       setDismissed(true);
-      localStorage.setItem('pwa-banner-dismissed', 'true');
+      localStorage.setItem("pwa-banner-dismissed", "true");
       toast({
         title: "FluxoAzul instalado!",
         description: "O app está pronto para uso.",
@@ -46,14 +45,15 @@ const PWAInstallBanner: React.FC = () => {
       // Fallback for devices that don't support automatic installation
       toast({
         title: "Instalação manual necessária",
-        description: "Use o menu do seu navegador para adicionar à tela inicial.",
+        description:
+          "Use o menu do seu navegador para adicionar à tela inicial.",
       });
     }
   };
 
   const handleDismiss = () => {
     setDismissed(true);
-    localStorage.setItem('pwa-banner-dismissed', 'true');
+    localStorage.setItem("pwa-banner-dismissed", "true");
   };
 
   return (
@@ -68,7 +68,7 @@ const PWAInstallBanner: React.FC = () => {
               Instalar FluxoAzul
             </h3>
           </div>
-          
+
           <div className="flex gap-2">
             <Button
               onClick={handleInstall}

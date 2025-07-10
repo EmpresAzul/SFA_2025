@@ -1,13 +1,12 @@
-
-import { useToast } from '@/hooks/use-toast';
-import { parseStringToNumber } from '@/utils/currency';
-import type { FormData } from '@/types/lancamentosForm';
+import { useToast } from "@/hooks/use-toast";
+import { parseStringToNumber } from "@/utils/currency";
+import type { FormData } from "@/types/lancamentosForm";
 
 export const useLancamentosFormValidation = () => {
   const { toast } = useToast();
 
   const validateForm = (formData: FormData) => {
-    console.log('Validando formulário:', formData);
+    console.log("Validando formulário:", formData);
 
     // Validar campos obrigatórios
     if (!formData.data) {
@@ -53,7 +52,8 @@ export const useLancamentosFormValidation = () => {
       if (!formData.meses_recorrencia || formData.meses_recorrencia <= 0) {
         toast({
           title: "Erro de validação",
-          description: "Para lançamentos recorrentes, é necessário informar a quantidade de meses.",
+          description:
+            "Para lançamentos recorrentes, é necessário informar a quantidade de meses.",
           variant: "destructive",
         });
         return { isValid: false, valorNumerico: null };
@@ -62,14 +62,15 @@ export const useLancamentosFormValidation = () => {
       if (formData.meses_recorrencia > 60) {
         toast({
           title: "Erro de validação",
-          description: "O período máximo para lançamentos recorrentes é de 60 meses.",
+          description:
+            "O período máximo para lançamentos recorrentes é de 60 meses.",
           variant: "destructive",
         });
         return { isValid: false, valorNumerico: null };
       }
     }
 
-    console.log('Formulário válido. Valor numérico:', valorNumerico);
+    console.log("Formulário válido. Valor numérico:", valorNumerico);
     return { isValid: true, valorNumerico };
   };
 

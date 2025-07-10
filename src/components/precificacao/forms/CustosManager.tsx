@@ -1,10 +1,9 @@
-
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
-import { Plus, Trash2 } from 'lucide-react';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedCurrencyInput } from "@/components/ui/enhanced-currency-input";
+import { Plus, Trash2 } from "lucide-react";
 
 interface CustoProduto {
   id: string;
@@ -25,8 +24,8 @@ const CustosManager: React.FC<CustosManagerProps> = ({
     if (custos.length < 20) {
       const novoCusto: CustoProduto = {
         id: Date.now().toString(),
-        descricao: '',
-        valor: 0
+        descricao: "",
+        valor: 0,
       };
       onUpdateCustos([...custos, novoCusto]);
     }
@@ -34,14 +33,20 @@ const CustosManager: React.FC<CustosManagerProps> = ({
 
   const removerCusto = (id: string) => {
     if (custos.length > 1) {
-      onUpdateCustos(custos.filter(custo => custo.id !== id));
+      onUpdateCustos(custos.filter((custo) => custo.id !== id));
     }
   };
 
-  const atualizarCusto = (id: string, campo: 'descricao' | 'valor', valor: string | number) => {
-    onUpdateCustos(custos.map(custo => 
-      custo.id === id ? { ...custo, [campo]: valor } : custo
-    ));
+  const atualizarCusto = (
+    id: string,
+    campo: "descricao" | "valor",
+    valor: string | number,
+  ) => {
+    onUpdateCustos(
+      custos.map((custo) =>
+        custo.id === id ? { ...custo, [campo]: valor } : custo,
+      ),
+    );
   };
 
   return (
@@ -68,20 +73,24 @@ const CustosManager: React.FC<CustosManagerProps> = ({
             <div className="col-span-4">Valor</div>
             <div className="col-span-2">Ação</div>
           </div>
-          
+
           {custos.map((custo) => (
             <div key={custo.id} className="grid grid-cols-12 gap-2">
               <div className="col-span-6">
                 <Input
                   value={custo.descricao}
-                  onChange={(e) => atualizarCusto(custo.id, 'descricao', e.target.value)}
+                  onChange={(e) =>
+                    atualizarCusto(custo.id, "descricao", e.target.value)
+                  }
                   placeholder="Descrição do custo"
                 />
               </div>
               <div className="col-span-4">
                 <EnhancedCurrencyInput
                   value={custo.valor}
-                  onChange={(numericValue) => atualizarCusto(custo.id, 'valor', numericValue)}
+                  onChange={(numericValue) =>
+                    atualizarCusto(custo.id, "valor", numericValue)
+                  }
                 />
               </div>
               <div className="col-span-2">

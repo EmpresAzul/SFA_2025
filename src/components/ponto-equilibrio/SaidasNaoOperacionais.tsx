@@ -1,16 +1,18 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { AlertTriangle } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { AlertTriangle } from "lucide-react";
 
 interface SaidasNaoOperacionaisProps {
   value: number;
   onChange: (value: number) => void;
 }
 
-const SaidasNaoOperacionais: React.FC<SaidasNaoOperacionaisProps> = ({ value, onChange }) => {
+const SaidasNaoOperacionais: React.FC<SaidasNaoOperacionaisProps> = ({
+  value,
+  onChange,
+}) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseFloat(e.target.value) || 0;
     onChange(newValue);
@@ -26,11 +28,16 @@ const SaidasNaoOperacionais: React.FC<SaidasNaoOperacionaisProps> = ({ value, on
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="saidasNaoOperacionais" className="text-sm font-medium text-gray-700">
+          <Label
+            htmlFor="saidasNaoOperacionais"
+            className="text-sm font-medium text-gray-700"
+          >
             Total de Saídas Não Operacionais
           </Label>
           <div className="relative mt-1">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              R$
+            </span>
             <Input
               id="saidasNaoOperacionais"
               type="number"

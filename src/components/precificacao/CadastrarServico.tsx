@@ -1,20 +1,19 @@
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedCurrencyInput } from "@/components/ui/enhanced-currency-input";
+import { Plus, Trash2, Save, ArrowLeft } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { usePrecificacao } from "@/hooks/usePrecificacao";
+import { supabase } from "@/integrations/supabase/client";
+import TaxasAdicionaisManager from "./forms/TaxasAdicionaisManager";
+import ServicoCalculationsResults from "./forms/ServicoCalculationsResults";
+import type { Database } from "@/integrations/supabase/types";
+import type { TaxaAdicional } from "./forms/TaxasAdicionaisManager";
 
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
-import { Plus, Trash2, Save, ArrowLeft } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { usePrecificacao } from '@/hooks/usePrecificacao';
-import { supabase } from '@/integrations/supabase/client';
-import TaxasAdicionaisManager from './forms/TaxasAdicionaisManager';
-import ServicoCalculationsResults from './forms/ServicoCalculationsResults';
-import type { Database } from '@/integrations/supabase/types';
-import type { TaxaAdicional } from './forms/TaxasAdicionaisManager';
-
-type Precificacao = Database['public']['Tables']['precificacao']['Row'];
+type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
 
 interface CustoServico {
   id: string;
@@ -40,52 +39,60 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
   const [loading, setLoading] = useState(false);
 
   const [servicoData, setServicoData] = useState({
-    nome: '',
-    categoria: '',
-    tempoEstimado: '',
+    nome: "",
+    categoria: "",
+    tempoEstimado: "",
     valorHora: 0,
     margemLucro: 20,
   });
 
   const [custos, setCustos] = useState<CustoServico[]>([
-    { id: '1', descricao: '', valor: 0 }
+    { id: "1", descricao: "", valor: 0 },
   ]);
 
   const [taxasAdicionais, setTaxasAdicionais] = useState<TaxaAdicional[]>([
-    { id: '1', descricao: '', percentual: 0 }
+    { id: "1", descricao: "", percentual: 0 },
   ]);
 
   // Preencher formulário quando estiver editando
   useEffect(() => {
-    if (editingItem && editingItem.tipo === 'Serviço') {
-      const dados = editingItem.dados_json as any;
-      
+    if (editingItem && editingItem.tipo === "Serviço") {
+      const dados = editingItem.dados_json as Record<string, unknown>;
+
       setServicoData({
         nome: editingItem.nome,
         categoria: editingItem.categoria,
-        tempoEstimado: dados?.tempo_estimado?.toString() || '',
+        tempoEstimado: dados?.tempo_estimado?.toString() || "",
         valorHora: dados?.valor_hora || 0,
         margemLucro: editingItem.margem_lucro || 20,
       });
 
       // Carregar custos de materiais do JSON
       if (dados?.custos_materiais) {
-        const custosCarregados = dados.custos_materiais.map((custo: any) => ({
-          id: custo.id || Date.now().toString(),
-          descricao: custo.descricao,
-          valor: custo.valor
+        const custosCarregados = (dados.custos_materiais as Array<Record<string, unknown>>).map((custo) => ({
+          id: (custo.id as string) || Date.now().toString(),
+          descricao: custo.descricao as string,
+          valor: custo.valor as number,
         }));
-        setCustos(custosCarregados.length > 0 ? custosCarregados : [{ id: '1', descricao: '', valor: 0 }]);
+        setCustos(
+          custosCarregados.length > 0
+            ? custosCarregados
+            : [{ id: "1", descricao: "", valor: 0 }],
+        );
       }
 
       // Carregar taxas adicionais do JSON
       if (dados?.taxas_adicionais) {
-        const taxasCarregadas = dados.taxas_adicionais.map((taxa: any) => ({
-          id: taxa.id || Date.now().toString(),
-          descricao: taxa.descricao,
-          percentual: taxa.percentual
+        const taxasCarregadas = (dados.taxas_adicionais as Array<Record<string, unknown>>).map((taxa) => ({
+          id: (taxa.id as string) || Date.now().toString(),
+          descricao: taxa.descricao as string,
+          percentual: taxa.percentual as number,
         }));
-        setTaxasAdicionais(taxasCarregadas.length > 0 ? taxasCarregadas : [{ id: '1', descricao: '', percentual: 0 }]);
+        setTaxasAdicionais(
+          taxasCarregadas.length > 0
+            ? taxasCarregadas
+            : [{ id: "1", descricao: "", percentual: 0 }],
+        );
       }
     }
   }, [editingItem]);
@@ -94,8 +101,8 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
     if (custos.length < 20) {
       const novoCusto: CustoServico = {
         id: Date.now().toString(),
-        descricao: '',
-        valor: 0
+        descricao: "",
+        valor: 0,
       };
       setCustos([...custos, novoCusto]);
     }
@@ -103,22 +110,34 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
 
   const removerCusto = (id: string) => {
     if (custos.length > 1) {
-      setCustos(custos.filter(custo => custo.id !== id));
+      setCustos(custos.filter((custo) => custo.id !== id));
     }
   };
 
-  const atualizarCusto = (id: string, campo: 'descricao' | 'valor', valor: string | number) => {
-    setCustos(custos.map(custo => 
-      custo.id === id ? { ...custo, [campo]: valor } : custo
-    ));
+  const atualizarCusto = (
+    id: string,
+    campo: "descricao" | "valor",
+    valor: string | number,
+  ) => {
+    setCustos(
+      custos.map((custo) =>
+        custo.id === id ? { ...custo, [campo]: valor } : custo,
+      ),
+    );
   };
 
   // Cálculos automáticos com taxas adicionais
-  const custoMateriais = custos.reduce((total, custo) => total + custo.valor, 0);
+  const custoMateriais = custos.reduce(
+    (total, custo) => total + custo.valor,
+    0,
+  );
   const horasNumerico = parseFloat(servicoData.tempoEstimado) || 0;
   const custoMaoObra = horasNumerico * servicoData.valorHora;
   const custoTotal = custoMateriais + custoMaoObra;
-  const totalTaxasPercentual = taxasAdicionais.reduce((total, taxa) => total + taxa.percentual, 0);
+  const totalTaxasPercentual = taxasAdicionais.reduce(
+    (total, taxa) => total + taxa.percentual,
+    0,
+  );
   const percentualTotal = servicoData.margemLucro + totalTaxasPercentual;
   const margemDecimal = percentualTotal / 100;
   const precoFinal = custoTotal > 0 ? custoTotal / (1 - margemDecimal) : 0;
@@ -127,7 +146,7 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!servicoData.nome) {
       toast({
         title: "Erro",
@@ -159,47 +178,49 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
 
     try {
       const custosMateriaisSerializados = custos
-        .filter(c => c.descricao && c.valor > 0)
-        .map(custo => ({
+        .filter((c) => c.descricao && c.valor > 0)
+        .map((custo) => ({
           id: custo.id,
           descricao: custo.descricao,
-          valor: custo.valor
+          valor: custo.valor,
         }));
 
       const taxasSerializadas = taxasAdicionais
-        .filter(t => t.descricao && t.percentual > 0)
-        .map(taxa => ({
+        .filter((t) => t.descricao && t.percentual > 0)
+        .map((taxa) => ({
           id: taxa.id,
           descricao: taxa.descricao,
-          percentual: taxa.percentual
+          percentual: taxa.percentual,
         }));
 
       const dadosPrecificacao = {
         nome: servicoData.nome,
         categoria: servicoData.categoria,
-        tipo: 'Serviço' as const,
+        tipo: "Serviço" as const,
         preco_final: precoFinal,
         margem_lucro: servicoData.margemLucro,
-        dados_json: JSON.parse(JSON.stringify({
-          tempo_estimado: horasNumerico,
-          valor_hora: servicoData.valorHora,
-          custo_mao_obra: custoMaoObra,
-          custos_materiais: custosMateriaisSerializados,
-          taxas_adicionais: taxasSerializadas,
-          custo_materiais_total: custoMateriais,
-          custo_total: custoTotal,
-          total_taxas_percentual: totalTaxasPercentual,
-          percentual_total: percentualTotal,
-          lucro_valor: lucroValor,
-          valor_taxas: valorTaxas
-        }))
+        dados_json: JSON.parse(
+          JSON.stringify({
+            tempo_estimado: horasNumerico,
+            valor_hora: servicoData.valorHora,
+            custo_mao_obra: custoMaoObra,
+            custos_materiais: custosMateriaisSerializados,
+            taxas_adicionais: taxasSerializadas,
+            custo_materiais_total: custoMateriais,
+            custo_total: custoTotal,
+            total_taxas_percentual: totalTaxasPercentual,
+            percentual_total: percentualTotal,
+            lucro_valor: lucroValor,
+            valor_taxas: valorTaxas,
+          }),
+        ),
       };
 
       if (editingItem) {
         // Atualizar item existente
         await updatePrecificacao.mutateAsync({
           id: editingItem.id,
-          data: dadosPrecificacao
+          data: dadosPrecificacao,
         });
         toast({
           title: "Sucesso!",
@@ -207,9 +228,11 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
         });
       } else {
         // Criar novo item
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         if (!user) {
-          throw new Error('Usuário não autenticado');
+          throw new Error("Usuário não autenticado");
         }
 
         await createPrecificacao.mutateAsync({
@@ -224,22 +247,22 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
 
       // Reset form
       setServicoData({
-        nome: '',
-        categoria: '',
-        tempoEstimado: '',
+        nome: "",
+        categoria: "",
+        tempoEstimado: "",
         valorHora: 0,
         margemLucro: 20,
       });
-      setCustos([{ id: '1', descricao: '', valor: 0 }]);
-      setTaxasAdicionais([{ id: '1', descricao: '', percentual: 0 }]);
-      
+      setCustos([{ id: "1", descricao: "", valor: 0 }]);
+      setTaxasAdicionais([{ id: "1", descricao: "", percentual: 0 }]);
+
       // Chamar callback de sucesso
       onSaveSuccess?.();
-    } catch (error: any) {
-      console.error('Erro ao salvar serviço:', error);
+    } catch (error) {
+      console.error("Erro ao salvar serviço:", error);
       toast({
         title: "Erro ao salvar",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Erro desconhecido",
         variant: "destructive",
       });
     } finally {
@@ -250,15 +273,15 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
   const handleCancel = () => {
     // Reset form
     setServicoData({
-      nome: '',
-      categoria: '',
-      tempoEstimado: '',
+      nome: "",
+      categoria: "",
+      tempoEstimado: "",
       valorHora: 0,
       margemLucro: 20,
     });
-    setCustos([{ id: '1', descricao: '', valor: 0 }]);
-    setTaxasAdicionais([{ id: '1', descricao: '', percentual: 0 }]);
-    
+    setCustos([{ id: "1", descricao: "", valor: 0 }]);
+    setTaxasAdicionais([{ id: "1", descricao: "", percentual: 0 }]);
+
     onCancelEdit?.();
   };
 
@@ -277,8 +300,12 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
             Cancelar Edição
           </Button>
           <div>
-            <h3 className="font-semibold text-purple-800">Editando: {editingItem.nome}</h3>
-            <p className="text-sm text-purple-600">Modifique os campos e clique em "Salvar Alterações"</p>
+            <h3 className="font-semibold text-purple-800">
+              Editando: {editingItem.nome}
+            </h3>
+            <p className="text-sm text-purple-600">
+              Modifique os campos e clique em "Salvar Alterações"
+            </p>
           </div>
         </div>
       )}
@@ -289,7 +316,9 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
           <Input
             id="nome-servico"
             value={servicoData.nome}
-            onChange={(e) => setServicoData({ ...servicoData, nome: e.target.value })}
+            onChange={(e) =>
+              setServicoData({ ...servicoData, nome: e.target.value })
+            }
             placeholder="Digite o nome do serviço"
           />
         </div>
@@ -299,7 +328,9 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
           <Input
             id="categoria-servico"
             value={servicoData.categoria}
-            onChange={(e) => setServicoData({ ...servicoData, categoria: e.target.value })}
+            onChange={(e) =>
+              setServicoData({ ...servicoData, categoria: e.target.value })
+            }
             placeholder="Ex: Consultoria, Manutenção, Design"
           />
         </div>
@@ -312,7 +343,9 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
             min="0"
             step="0.5"
             value={servicoData.tempoEstimado}
-            onChange={(e) => setServicoData({ ...servicoData, tempoEstimado: e.target.value })}
+            onChange={(e) =>
+              setServicoData({ ...servicoData, tempoEstimado: e.target.value })
+            }
             placeholder="8"
           />
         </div>
@@ -322,7 +355,9 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
           <EnhancedCurrencyInput
             id="valor-hora"
             value={servicoData.valorHora}
-            onChange={(numericValue) => setServicoData({ ...servicoData, valorHora: numericValue })}
+            onChange={(numericValue) =>
+              setServicoData({ ...servicoData, valorHora: numericValue })
+            }
           />
         </div>
 
@@ -335,7 +370,12 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
             max="100"
             step="0.1"
             value={servicoData.margemLucro}
-            onChange={(e) => setServicoData({ ...servicoData, margemLucro: parseFloat(e.target.value) || 0 })}
+            onChange={(e) =>
+              setServicoData({
+                ...servicoData,
+                margemLucro: parseFloat(e.target.value) || 0,
+              })
+            }
             placeholder="20"
           />
         </div>
@@ -344,7 +384,9 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="text-lg">Custos de Materiais (Opcional)</CardTitle>
+            <CardTitle className="text-lg">
+              Custos de Materiais (Opcional)
+            </CardTitle>
             <Button
               type="button"
               onClick={adicionarCusto}
@@ -364,20 +406,24 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
               <div className="col-span-4">Valor</div>
               <div className="col-span-2">Ação</div>
             </div>
-            
+
             {custos.map((custo) => (
               <div key={custo.id} className="grid grid-cols-12 gap-2">
                 <div className="col-span-6">
                   <Input
                     value={custo.descricao}
-                    onChange={(e) => atualizarCusto(custo.id, 'descricao', e.target.value)}
+                    onChange={(e) =>
+                      atualizarCusto(custo.id, "descricao", e.target.value)
+                    }
                     placeholder="Ex: Software, Material, Equipamento"
                   />
                 </div>
                 <div className="col-span-4">
                   <EnhancedCurrencyInput
                     value={custo.valor}
-                    onChange={(numericValue) => atualizarCusto(custo.id, 'valor', numericValue)}
+                    onChange={(numericValue) =>
+                      atualizarCusto(custo.id, "valor", numericValue)
+                    }
                   />
                 </div>
                 <div className="col-span-2">
@@ -422,10 +468,18 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
           disabled={loading}
           className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600"
         >
-          {editingItem ? <Save className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-          {loading ? "Salvando..." : editingItem ? "Salvar Alterações" : "Cadastrar Serviço"}
+          {editingItem ? (
+            <Save className="w-4 h-4 mr-2" />
+          ) : (
+            <Plus className="w-4 h-4 mr-2" />
+          )}
+          {loading
+            ? "Salvando..."
+            : editingItem
+              ? "Salvar Alterações"
+              : "Cadastrar Serviço"}
         </Button>
-        
+
         {editingItem && (
           <Button
             type="button"

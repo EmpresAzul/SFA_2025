@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useSystemVideos, SystemVideo } from '@/hooks/useSystemVideos';
-import { convertToEmbedUrl } from '@/utils/youtube';
-import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Play } from 'lucide-react';
+import React, { useState } from "react";
+import { useSystemVideos, SystemVideo } from "@/hooks/useSystemVideos";
+import { convertToEmbedUrl } from "@/utils/youtube";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle, Play } from "lucide-react";
 
 const VideoGallery: React.FC = () => {
   const { data: videos, isLoading, error } = useSystemVideos();
@@ -53,7 +53,7 @@ const VideoGallery: React.FC = () => {
     );
   }
 
-  const embedUrl = selected ? convertToEmbedUrl(selected.youtube_url) : '';
+  const embedUrl = selected ? convertToEmbedUrl(selected.youtube_url) : "";
 
   return (
     <div className="flex flex-col md:flex-row gap-8 p-4 md:p-8">
@@ -72,9 +72,13 @@ const VideoGallery: React.FC = () => {
         </div>
         {selected && (
           <div className="mt-6">
-            <h2 className="gradient-fluxo-text text-2xl font-bold mb-2">{selected.title}</h2>
+            <h2 className="gradient-fluxo-text text-2xl font-bold mb-2">
+              {selected.title}
+            </h2>
             {selected.description && (
-              <p className="text-gray-700 text-base leading-relaxed">{selected.description}</p>
+              <p className="text-gray-700 text-base leading-relaxed">
+                {selected.description}
+              </p>
             )}
           </div>
         )}
@@ -85,16 +89,24 @@ const VideoGallery: React.FC = () => {
         {videos.map((video) => (
           <Card
             key={video.id}
-            className={`flex items-center gap-4 p-4 cursor-pointer border-2 transition-all duration-200 ${selected?.id === video.id ? 'border-rose-500 bg-rose-50' : 'border-transparent hover:border-rose-200'}`}
+            className={`flex items-center gap-4 p-4 cursor-pointer border-2 transition-all duration-200 ${selected?.id === video.id ? "border-rose-500 bg-rose-50" : "border-transparent hover:border-rose-200"}`}
             onClick={() => setSelected(video)}
           >
-            <div className={`rounded-full w-10 h-10 flex items-center justify-center ${selected?.id === video.id ? 'bg-rose-500 text-white' : 'bg-gray-200 text-rose-500'}`}>
+            <div
+              className={`rounded-full w-10 h-10 flex items-center justify-center ${selected?.id === video.id ? "bg-rose-500 text-white" : "bg-gray-200 text-rose-500"}`}
+            >
               <Play className="h-5 w-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className={`font-semibold text-base truncate ${selected?.id === video.id ? 'gradient-fluxo-text' : ''}`}>{video.title}</div>
+              <div
+                className={`font-semibold text-base truncate ${selected?.id === video.id ? "gradient-fluxo-text" : ""}`}
+              >
+                {video.title}
+              </div>
               {video.description && (
-                <div className="text-xs text-gray-600 truncate">{video.description}</div>
+                <div className="text-xs text-gray-600 truncate">
+                  {video.description}
+                </div>
               )}
             </div>
           </Card>
@@ -104,4 +116,4 @@ const VideoGallery: React.FC = () => {
   );
 };
 
-export default VideoGallery; 
+export default VideoGallery;

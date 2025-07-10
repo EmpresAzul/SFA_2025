@@ -1,11 +1,10 @@
-
-import React, { useRef, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageCircle, Send, Bot, User, Sparkles } from 'lucide-react';
-import { Message } from '@/types/support';
+import React, { useRef, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { MessageCircle, Send, Bot, User, Sparkles } from "lucide-react";
+import { Message } from "@/types/support";
 
 interface ChatInterfaceProps {
   messages: Message[];
@@ -20,7 +19,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   inputMessage,
   setInputMessage,
   isLoading,
-  onSendMessage
+  onSendMessage,
 }) => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -33,25 +32,25 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     "Como calcular o ponto de equilíbrio?",
     "Qual a diferença entre receitas e despesas?",
     "Como interpretar o DRE?",
-    "Como fazer precificação de produtos?"
+    "Como fazer precificação de produtos?",
   ];
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       onSendMessage();
     }
   };
 
   const formatMessage = (content: string) => {
-    return content.split('\n').map((line, index) => (
+    return content.split("\n").map((line, index) => (
       <React.Fragment key={index}>
         {line}
-        {index < content.split('\n').length - 1 && <br />}
+        {index < content.split("\n").length - 1 && <br />}
       </React.Fragment>
     ));
   };
@@ -70,7 +69,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           </span>
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="flex-1 flex flex-col p-0">
         <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
           <div className="space-y-6">
@@ -87,7 +86,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                     Selecione uma pergunta sugerida ou digite sua dúvida:
                   </p>
                 </div>
-                
+
                 <div className="grid gap-3">
                   {suggestedQuestions.map((question, index) => (
                     <Button
@@ -103,42 +102,56 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 </div>
               </div>
             )}
-            
+
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex gap-4 ${message.isBot ? '' : 'flex-row-reverse'} animate-in slide-in-from-bottom-2 duration-300`}
+                className={`flex gap-4 ${message.isBot ? "" : "flex-row-reverse"} animate-in slide-in-from-bottom-2 duration-300`}
               >
-                <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-                  message.isBot 
-                    ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white' 
-                    : 'bg-gradient-to-br from-blue-500 to-blue-600 text-white'
-                }`}>
-                  {message.isBot ? <Bot className="w-5 h-5" /> : <User className="w-5 h-5" />}
+                <div
+                  className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
+                    message.isBot
+                      ? "bg-gradient-to-br from-violet-500 to-purple-600 text-white"
+                      : "bg-gradient-to-br from-blue-500 to-blue-600 text-white"
+                  }`}
+                >
+                  {message.isBot ? (
+                    <Bot className="w-5 h-5" />
+                  ) : (
+                    <User className="w-5 h-5" />
+                  )}
                 </div>
-                
-                <div className={`max-w-[80%] group ${message.isBot ? '' : 'flex flex-col items-end'}`}>
-                  <div className={`p-4 rounded-2xl shadow-sm ${
-                    message.isBot 
-                      ? 'bg-white border border-gray-200 rounded-tl-lg' 
-                      : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-tr-lg'
-                  }`}>
-                    <div className={`${message.isBot ? 'text-gray-800' : 'text-white'}`}>
+
+                <div
+                  className={`max-w-[80%] group ${message.isBot ? "" : "flex flex-col items-end"}`}
+                >
+                  <div
+                    className={`p-4 rounded-2xl shadow-sm ${
+                      message.isBot
+                        ? "bg-white border border-gray-200 rounded-tl-lg"
+                        : "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-tr-lg"
+                    }`}
+                  >
+                    <div
+                      className={`${message.isBot ? "text-gray-800" : "text-white"}`}
+                    >
                       {formatMessage(message.content)}
                     </div>
                   </div>
-                  <span className={`text-xs mt-1 px-2 ${
-                    message.isBot ? 'text-gray-500' : 'text-gray-400'
-                  }`}>
-                    {message.timestamp.toLocaleTimeString('pt-BR', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
+                  <span
+                    className={`text-xs mt-1 px-2 ${
+                      message.isBot ? "text-gray-500" : "text-gray-400"
+                    }`}
+                  >
+                    {message.timestamp.toLocaleTimeString("pt-BR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })}
                   </span>
                 </div>
               </div>
             ))}
-            
+
             {isLoading && (
               <div className="flex gap-4 animate-in slide-in-from-bottom-2 duration-300">
                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center">
@@ -148,19 +161,27 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                   <div className="flex items-center space-x-2">
                     <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                      <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      <div
+                        className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.1s" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.2s" }}
+                      ></div>
                     </div>
-                    <span className="text-sm text-gray-500">Processando...</span>
+                    <span className="text-sm text-gray-500">
+                      Processando...
+                    </span>
                   </div>
                 </div>
               </div>
             )}
-            
+
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
-        
+
         <div className="border-t bg-white p-4">
           <div className="flex gap-3">
             <div className="flex-1 relative">
@@ -173,7 +194,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 className="pr-12 focus:ring-2 focus:ring-violet-500 border-gray-300"
               />
             </div>
-            <Button 
+            <Button
               onClick={() => onSendMessage()}
               disabled={isLoading || !inputMessage.trim()}
               className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-lg transition-all duration-200"

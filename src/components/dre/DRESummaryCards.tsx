@@ -1,8 +1,7 @@
-
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { TrendingUp, DollarSign } from 'lucide-react';
-import type { DREData } from '@/hooks/useDRECalculations';
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { TrendingUp, DollarSign } from "lucide-react";
+import type { DREData } from "@/hooks/useDRECalculations";
 
 interface DRESummaryCardsProps {
   dreData: DREData;
@@ -48,11 +47,15 @@ const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Resultado Operacional</p>
-              <p className={`text-2xl font-bold ${dreData.resultadoOperacional >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <p
+                className={`text-2xl font-bold ${dreData.resultadoOperacional >= 0 ? "text-green-600" : "text-red-600"}`}
+              >
                 {formatCurrency(dreData.resultadoOperacional)}
               </p>
             </div>
-            <TrendingUp className={`w-8 h-8 ${dreData.resultadoOperacional >= 0 ? 'text-green-500' : 'text-red-500'}`} />
+            <TrendingUp
+              className={`w-8 h-8 ${dreData.resultadoOperacional >= 0 ? "text-green-500" : "text-red-500"}`}
+            />
           </div>
         </CardContent>
       </Card>
@@ -62,11 +65,15 @@ const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Lucro Líquido</p>
-              <p className={`text-2xl font-bold ${dreData.lucroLiquido >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <p
+                className={`text-2xl font-bold ${dreData.lucroLiquido >= 0 ? "text-green-600" : "text-red-600"}`}
+              >
                 {formatCurrency(dreData.lucroLiquido)}
               </p>
             </div>
-            <DollarSign className={`w-8 h-8 ${dreData.lucroLiquido >= 0 ? 'text-green-500' : 'text-red-500'}`} />
+            <DollarSign
+              className={`w-8 h-8 ${dreData.lucroLiquido >= 0 ? "text-green-500" : "text-red-500"}`}
+            />
           </div>
         </CardContent>
       </Card>

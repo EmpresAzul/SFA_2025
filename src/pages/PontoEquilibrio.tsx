@@ -1,14 +1,13 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import FaturamentoEstimativa from '@/components/ponto-equilibrio/FaturamentoEstimativa';
-import CustosVariaveisEstimativa from '@/components/ponto-equilibrio/CustosVariaveisEstimativa';
-import GastosFixosEstimativa from '@/components/ponto-equilibrio/GastosFixosEstimativa';
-import SaidasNaoOperacionais from '@/components/ponto-equilibrio/SaidasNaoOperacionais';
-import ProLaboreCalculado from '@/components/ponto-equilibrio/ProLaboreCalculado';
-import ResultadosPontoEquilibrio from '@/components/ponto-equilibrio/ResultadosPontoEquilibrio';
-import ProjecoesSalvas from '@/components/ponto-equilibrio/ProjecoesSalvas';
-import { usePontoEquilibrio } from '@/hooks/usePontoEquilibrio';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import FaturamentoEstimativa from "@/components/ponto-equilibrio/FaturamentoEstimativa";
+import CustosVariaveisEstimativa from "@/components/ponto-equilibrio/CustosVariaveisEstimativa";
+import GastosFixosEstimativa from "@/components/ponto-equilibrio/GastosFixosEstimativa";
+import SaidasNaoOperacionais from "@/components/ponto-equilibrio/SaidasNaoOperacionais";
+import ProLaboreCalculado from "@/components/ponto-equilibrio/ProLaboreCalculado";
+import ResultadosPontoEquilibrio from "@/components/ponto-equilibrio/ResultadosPontoEquilibrio";
+import ProjecoesSalvas from "@/components/ponto-equilibrio/ProjecoesSalvas";
+import { usePontoEquilibrio } from "@/hooks/usePontoEquilibrio";
 
 const PontoEquilibrio: React.FC = () => {
   const {
@@ -33,7 +32,7 @@ const PontoEquilibrio: React.FC = () => {
     deletarProjecao,
     novaProjecao,
     isSaving,
-    isDeleting
+    isDeleting,
   } = usePontoEquilibrio();
 
   return (
@@ -44,7 +43,8 @@ const PontoEquilibrio: React.FC = () => {
           📊 Ponto de Equilíbrio
         </h1>
         <p className="text-gray-600 text-sm">
-          Calcule o ponto de equilíbrio do seu negócio e determine o faturamento mínimo necessário
+          Calcule o ponto de equilíbrio do seu negócio e determine o faturamento
+          mínimo necessário
         </p>
       </div>
 
@@ -52,34 +52,32 @@ const PontoEquilibrio: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Coluna Esquerda - Inputs */}
         <div className="lg:col-span-1 space-y-6">
-          <FaturamentoEstimativa 
+          <FaturamentoEstimativa
             value={faturamento}
             onChange={setFaturamento}
           />
-          
-          <CustosVariaveisEstimativa 
+
+          <CustosVariaveisEstimativa
             values={custosVariaveis}
             onChange={setCustosVariaveis}
           />
-          
-          <GastosFixosEstimativa 
+
+          <GastosFixosEstimativa
             values={gastosFixos}
             onChange={setGastosFixos}
           />
-          
-          <SaidasNaoOperacionais 
+
+          <SaidasNaoOperacionais
             value={saidasNaoOperacionais}
             onChange={setSaidasNaoOperacionais}
           />
-          
-          <ProLaboreCalculado 
-            value={proLaboreMaximo}
-          />
+
+          <ProLaboreCalculado value={proLaboreMaximo} />
         </div>
 
         {/* Coluna Central - Resultados */}
         <div className="lg:col-span-1">
-          <ResultadosPontoEquilibrio 
+          <ResultadosPontoEquilibrio
             faturamentoAtual={faturamento}
             pontoEquilibrio={pontoEquilibrio}
             percentualPE={percentualPE}

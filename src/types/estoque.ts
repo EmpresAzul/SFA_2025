@@ -1,4 +1,3 @@
-
 export interface Estoque {
   id: string;
   data: string;
@@ -14,5 +13,15 @@ export interface Estoque {
 }
 
 export const unidadesMedida = [
-  'KG', 'G', 'L', 'ML', 'UN', 'CX', 'PC', 'M', 'CM', 'M²', 'M³'
+  "KG",
+  "G",
+  "L",
+  "ML",
+  "UN",
+  "CX",
+  "PC",
+  "M",
+  "CM",
+  "M²",
+  "M³",
 ];

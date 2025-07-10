@@ -1,15 +1,14 @@
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Plus, Save, ArrowLeft } from "lucide-react";
+import ProdutoFormFields from "./ProdutoFormFields";
+import CustosManager from "./CustosManager";
+import TaxasAdicionaisManager from "./TaxasAdicionaisManager";
+import ProdutoCalculationsResults from "./ProdutoCalculationsResults";
+import { useProdutoForm } from "@/hooks/useProdutoForm";
+import type { Database } from "@/integrations/supabase/types";
 
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus, Save, ArrowLeft } from 'lucide-react';
-import ProdutoFormFields from './ProdutoFormFields';
-import CustosManager from './CustosManager';
-import TaxasAdicionaisManager from './TaxasAdicionaisManager';
-import ProdutoCalculationsResults from './ProdutoCalculationsResults';
-import { useProdutoForm } from '@/hooks/useProdutoForm';
-import type { Database } from '@/integrations/supabase/types';
-
-type Precificacao = Database['public']['Tables']['precificacao']['Row'];
+type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
 
 interface ProdutoFormContainerProps {
   editingItem?: Precificacao | null;
@@ -54,8 +53,12 @@ const ProdutoFormContainer: React.FC<ProdutoFormContainerProps> = ({
             Cancelar Edição
           </Button>
           <div>
-            <h3 className="font-semibold text-blue-800">Editando: {editingItem.nome}</h3>
-            <p className="text-sm text-blue-600">Modifique os campos e clique em "Salvar Alterações"</p>
+            <h3 className="font-semibold text-blue-800">
+              Editando: {editingItem.nome}
+            </h3>
+            <p className="text-sm text-blue-600">
+              Modifique os campos e clique em "Salvar Alterações"
+            </p>
           </div>
         </div>
       )}
@@ -65,10 +68,7 @@ const ProdutoFormContainer: React.FC<ProdutoFormContainerProps> = ({
         onUpdateProduto={handleUpdateProduto}
       />
 
-      <CustosManager
-        custos={custos}
-        onUpdateCustos={setCustos}
-      />
+      <CustosManager custos={custos} onUpdateCustos={setCustos} />
 
       <TaxasAdicionaisManager
         taxasAdicionais={taxasAdicionais}
@@ -90,10 +90,18 @@ const ProdutoFormContainer: React.FC<ProdutoFormContainerProps> = ({
           disabled={loading}
           className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
         >
-          {editingItem ? <Save className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-          {loading ? "Salvando..." : editingItem ? "Salvar Alterações" : "Cadastrar Produto"}
+          {editingItem ? (
+            <Save className="w-4 h-4 mr-2" />
+          ) : (
+            <Plus className="w-4 h-4 mr-2" />
+          )}
+          {loading
+            ? "Salvando..."
+            : editingItem
+              ? "Salvar Alterações"
+              : "Cadastrar Produto"}
         </Button>
-        
+
         {editingItem && (
           <Button
             type="button"

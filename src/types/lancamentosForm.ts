@@ -1,21 +1,36 @@
-
-import type { Lancamento } from '@/types/lancamentos';
+import type { Lancamento } from "@/types/lancamentos";
 
 export type LancamentoComRelacoes = Lancamento & {
   cliente?: { nome: string } | null;
   fornecedor?: { nome: string } | null;
 };
 
-export interface FormData {
-  data: string;
-  tipo: 'receita' | 'despesa';
+export interface LancamentoFormData {
+  descricao: string;
   valor: string;
-  cliente_id: string;
-  fornecedor_id: string;
+  data: string;
+  tipo: "receita" | "despesa";
   categoria: string;
-  observacoes: string;
+  cliente_id?: string;
+  fornecedor_id?: string;
+  observacoes?: string;
   recorrente: boolean;
-  meses_recorrencia: number | null;
+  meses_recorrencia?: number;
+  lancamento_pai_id?: string;
+}
+
+export interface LancamentoFormErrors {
+  descricao?: string;
+  valor?: string;
+  data?: string;
+  tipo?: string;
+  categoria?: string;
+  cliente_id?: string;
+  fornecedor_id?: string;
+  observacoes?: string;
+  recorrente?: string;
+  meses_recorrencia?: string;
+  lancamento_pai_id?: string;
 }
 
 export interface LancamentoFormParams {

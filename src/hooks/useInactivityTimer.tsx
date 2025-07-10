@@ -1,7 +1,6 @@
-
-import { useEffect, useRef, useCallback } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
+import { useEffect, useRef, useCallback } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 interface UseInactivityTimerProps {
   timeout: number; // tempo em milissegundos
@@ -10,11 +9,11 @@ interface UseInactivityTimerProps {
   onSaveData?: () => Promise<void>; // função para salvar dados antes do logout
 }
 
-export const useInactivityTimer = ({ 
-  timeout, 
-  onTimeout, 
+export const useInactivityTimer = ({
+  timeout,
+  onTimeout,
   warningTime = 60000, // 1 minuto de aviso por padrão
-  onSaveData
+  onSaveData,
 }: UseInactivityTimerProps) => {
   const timeoutRef = useRef<NodeJS.Timeout>();
   const warningRef = useRef<NodeJS.Timeout>();
@@ -37,7 +36,7 @@ export const useInactivityTimer = ({
     if (warningTime && warningTime < timeout) {
       warningRef.current = setTimeout(() => {
         const remainingTime = Math.floor(warningTime / 1000);
-        
+
         const { dismiss } = toast({
           title: "Sessão expirando",
           description: `Sua sessão expirará em ${remainingTime} segundos devido à inatividade.`,
@@ -57,7 +56,7 @@ export const useInactivityTimer = ({
             >
               Manter ativa
             </Button>
-          )
+          ),
         });
 
         // Timer para salvar dados 30 segundos antes do logout
@@ -70,7 +69,7 @@ export const useInactivityTimer = ({
                 description: "Seus dados foram salvos automaticamente.",
               });
             } catch (error) {
-              console.error('Erro ao salvar dados:', error);
+              console.error("Erro ao salvar dados:", error);
             }
           }
         }, warningTime - 30000); // 30 segundos antes do logout
@@ -84,7 +83,7 @@ export const useInactivityTimer = ({
         try {
           await onSaveData();
         } catch (error) {
-          console.error('Erro ao salvar dados antes do logout:', error);
+          console.error("Erro ao salvar dados antes do logout:", error);
         }
       }
       onTimeout();
@@ -92,8 +91,15 @@ export const useInactivityTimer = ({
   }, [timeout, onTimeout, warningTime, toast, onSaveData]);
 
   useEffect(() => {
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    
+    const events = [
+      "mousedown",
+      "mousemove",
+      "keypress",
+      "scroll",
+      "touchstart",
+      "click",
+    ];
+
     // Iniciar timer
     resetTimer();
 
@@ -102,7 +108,7 @@ export const useInactivityTimer = ({
       resetTimer();
     };
 
-    events.forEach(event => {
+    events.forEach((event) => {
       document.addEventListener(event, handleActivity, true);
     });
 
@@ -117,7 +123,7 @@ export const useInactivityTimer = ({
       if (saveRef.current) {
         clearTimeout(saveRef.current);
       }
-      events.forEach(event => {
+      events.forEach((event) => {
         document.removeEventListener(event, handleActivity, true);
       });
     };

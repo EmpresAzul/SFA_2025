@@ -1,83 +1,95 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Bell, Calendar, Clock, AlertTriangle } from 'lucide-react';
-import { useLembretes } from '@/hooks/useLembretes';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Bell, Calendar, Clock, AlertTriangle } from "lucide-react";
+import { useLembretes } from "@/hooks/useLembretes";
 
 const LembretesActiveCard: React.FC = () => {
   const { lembretes, isLoading } = useLembretes();
 
-  console.log('LembretesActiveCard - Debug Info:');
-  console.log('- Loading:', isLoading);
-  console.log('- Total lembretes:', lembretes?.length || 0);
-  console.log('- Lembretes data:', lembretes);
+  console.log("LembretesActiveCard - Debug Info:");
+  console.log("- Loading:", isLoading);
+  console.log("- Total lembretes:", lembretes?.length || 0);
+  console.log("- Lembretes data:", lembretes);
 
   const getLembretesRelevantes = () => {
     if (!lembretes || lembretes.length === 0) {
-      console.log('LembretesActiveCard - Nenhum lembrete encontrado');
+      console.log("LembretesActiveCard - Nenhum lembrete encontrado");
       return [];
     }
 
     const hoje = new Date();
-    const hojeStr = hoje.toISOString().split('T')[0];
-    
-    console.log('LembretesActiveCard - Data de hoje:', hojeStr);
-    
+    const hojeStr = hoje.toISOString().split("T")[0];
+
+    console.log("LembretesActiveCard - Data de hoje:", hojeStr);
+
     // Filtrar lembretes ativos e relevantes (hoje, futuros e vencidos)
-    const lembretesRelevantes = lembretes.filter(lembrete => {
-      console.log(`LembretesActiveCard - Analisando lembrete ${lembrete.id}:`, {
-        titulo: lembrete.titulo,
-        status: lembrete.status,
-        data: lembrete.data_lembrete,
-        isAtivo: lembrete.status === 'ativo'
+    const lembretesRelevantes = lembretes
+      .filter((lembrete) => {
+        console.log(
+          `LembretesActiveCard - Analisando lembrete ${lembrete.id}:`,
+          {
+            titulo: lembrete.titulo,
+            status: lembrete.status,
+            data: lembrete.data_lembrete,
+            isAtivo: lembrete.status === "ativo",
+          },
+        );
+
+        // Só lembretes ativos
+        if (lembrete.status !== "ativo") {
+          console.log(
+            `LembretesActiveCard - Lembrete ${lembrete.id} ignorado (status: ${lembrete.status})`,
+          );
+          return false;
+        }
+
+        return true; // Incluir todos os lembretes ativos
+      })
+      .sort((a, b) => {
+        // Ordenar por data: vencidos primeiro, depois por data crescente
+        const dataA = new Date(a.data_lembrete + "T00:00:00");
+        const dataB = new Date(b.data_lembrete + "T00:00:00");
+        return dataA.getTime() - dataB.getTime();
       });
 
-      // Só lembretes ativos
-      if (lembrete.status !== 'ativo') {
-        console.log(`LembretesActiveCard - Lembrete ${lembrete.id} ignorado (status: ${lembrete.status})`);
-        return false;
-      }
-      
-      return true; // Incluir todos os lembretes ativos
-    }).sort((a, b) => {
-      // Ordenar por data: vencidos primeiro, depois por data crescente
-      const dataA = new Date(a.data_lembrete + 'T00:00:00');
-      const dataB = new Date(b.data_lembrete + 'T00:00:00');
-      return dataA.getTime() - dataB.getTime();
-    });
+    console.log(
+      "LembretesActiveCard - Lembretes relevantes filtrados:",
+      lembretesRelevantes.length,
+    );
+    console.log(
+      "LembretesActiveCard - Dados dos lembretes filtrados:",
+      lembretesRelevantes,
+    );
 
-    console.log('LembretesActiveCard - Lembretes relevantes filtrados:', lembretesRelevantes.length);
-    console.log('LembretesActiveCard - Dados dos lembretes filtrados:', lembretesRelevantes);
-    
     return lembretesRelevantes;
   };
 
   const lembretesRelevantes = getLembretesRelevantes();
 
   const formatDate = (date: string) => {
-    return new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
+    return new Date(date + "T00:00:00").toLocaleDateString("pt-BR");
   };
 
   const formatTime = (time: string | null) => {
-    if (!time) return '';
+    if (!time) return "";
     return time.slice(0, 5);
   };
 
   const isVencido = (dataLembrete: string) => {
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = new Date().toISOString().split("T")[0];
     return dataLembrete < hoje;
   };
 
   const isHoje = (dataLembrete: string) => {
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = new Date().toISOString().split("T")[0];
     return dataLembrete === hoje;
   };
 
   const isAmanha = (dataLembrete: string) => {
     const amanha = new Date();
     amanha.setDate(amanha.getDate() + 1);
-    const amanhaStr = amanha.toISOString().split('T')[0];
+    const amanhaStr = amanha.toISOString().split("T")[0];
     return dataLembrete === amanhaStr;
   };
 
@@ -110,8 +122,12 @@ const LembretesActiveCard: React.FC = () => {
         {lembretesRelevantes.length === 0 ? (
           <div className="text-center py-6">
             <Bell className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-            <p className="text-gray-500 text-sm font-medium">Nenhum lembrete ativo</p>
-            <p className="text-gray-400 text-xs mt-1">Crie lembretes na seção dedicada</p>
+            <p className="text-gray-500 text-sm font-medium">
+              Nenhum lembrete ativo
+            </p>
+            <p className="text-gray-400 text-xs mt-1">
+              Crie lembretes na seção dedicada
+            </p>
           </div>
         ) : (
           <div className="space-y-3 max-h-64 overflow-y-auto">
@@ -119,11 +135,11 @@ const LembretesActiveCard: React.FC = () => {
               <div
                 key={lembrete.id}
                 className={`p-3 rounded-lg border-l-4 ${
-                  isVencido(lembrete.data_lembrete) 
-                    ? 'bg-gradient-to-r from-red-50 to-red-100 border-red-500' 
+                  isVencido(lembrete.data_lembrete)
+                    ? "bg-gradient-to-r from-red-50 to-red-100 border-red-500"
                     : isHoje(lembrete.data_lembrete)
-                    ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-500'
-                    : 'bg-gradient-to-r from-blue-50 to-purple-50 border-blue-500'
+                      ? "bg-gradient-to-r from-orange-50 to-orange-100 border-orange-500"
+                      : "bg-gradient-to-r from-blue-50 to-purple-50 border-blue-500"
                 }`}
               >
                 <div className="flex items-start justify-between">
@@ -133,7 +149,10 @@ const LembretesActiveCard: React.FC = () => {
                         {lembrete.titulo}
                       </h4>
                       {isVencido(lembrete.data_lembrete) && (
-                        <Badge variant="destructive" className="text-xs shrink-0">
+                        <Badge
+                          variant="destructive"
+                          className="text-xs shrink-0"
+                        >
                           <AlertTriangle className="h-3 w-3 mr-1" />
                           Vencido
                         </Badge>
@@ -149,7 +168,7 @@ const LembretesActiveCard: React.FC = () => {
                         </Badge>
                       )}
                     </div>
-                    
+
                     <div className="flex items-center text-xs text-gray-600 gap-3 mb-2">
                       <div className="flex items-center">
                         <Calendar className="h-3 w-3 mr-1" />
@@ -162,7 +181,7 @@ const LembretesActiveCard: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     {lembrete.descricao && (
                       <p className="text-xs text-gray-600 line-clamp-2">
                         {lembrete.descricao}
@@ -172,7 +191,7 @@ const LembretesActiveCard: React.FC = () => {
                 </div>
               </div>
             ))}
-            
+
             {lembretesRelevantes.length > 6 && (
               <div className="text-center pt-2 border-t border-gray-200">
                 <p className="text-xs text-gray-500">

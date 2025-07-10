@@ -1,87 +1,120 @@
-
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
-import { useLancamentos, type LancamentoComRelacoes } from '@/hooks/useLancamentos';
-import { useCadastros } from '@/hooks/useCadastros';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import {
+  useLancamentos,
+  type LancamentoComRelacoes,
+} from "@/hooks/useLancamentos";
+import { useCadastros } from "@/hooks/useCadastros";
 
 export const useLancamentosPage = () => {
-  const [filteredLancamentos, setFilteredLancamentos] = useState<LancamentoComRelacoes[]>([]);
+  const [filteredLancamentos, setFilteredLancamentos] = useState<
+    LancamentoComRelacoes[]
+  >([]);
   const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [tipoFilter, setTipoFilter] = useState('todos');
-  const [categoriaFilter, setCategoriaFilter] = useState('todas');
-  const [activeTab, setActiveTab] = useState('lista');
-  const [editingLancamento, setEditingLancamento] = useState<LancamentoComRelacoes | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [tipoFilter, setTipoFilter] = useState("todos");
+  const [categoriaFilter, setCategoriaFilter] = useState("todas");
+  const [activeTab, setActiveTab] = useState("lista");
+  const [editingLancamento, setEditingLancamento] =
+    useState<LancamentoComRelacoes | null>(null);
   const { user, session } = useAuth();
   const { toast } = useToast();
 
-  console.log('useLancamentosPage: Usuário autenticado:', !!user);
-  console.log('useLancamentosPage: Sessão ativa:', !!session);
-  console.log('useLancamentosPage: User ID:', user?.id);
+  console.log("useLancamentosPage: Usuário autenticado:", !!user);
+  console.log("useLancamentosPage: Sessão ativa:", !!session);
+  console.log("useLancamentosPage: User ID:", user?.id);
 
-  const { useQuery: useLancamentosQuery, useCreate, useUpdate, useDelete } = useLancamentos();
+  const {
+    useQuery: useLancamentosQuery,
+    useCreate,
+    useUpdate,
+    useDelete,
+  } = useLancamentos();
   const { data: lancamentos, isLoading, error } = useLancamentosQuery();
-  
-  console.log('useLancamentosPage: Dados de lançamentos:', lancamentos);
-  console.log('useLancamentosPage: Quantidade de lançamentos:', lancamentos?.length || 0);
-  console.log('useLancamentosPage: Carregando:', isLoading);
-  console.log('useLancamentosPage: Erro:', error);
+
+  console.log("useLancamentosPage: Dados de lançamentos:", lancamentos);
+  console.log(
+    "useLancamentosPage: Quantidade de lançamentos:",
+    lancamentos?.length || 0,
+  );
+  console.log("useLancamentosPage: Carregando:", isLoading);
+  console.log("useLancamentosPage: Erro:", error);
 
   const createLancamento = useCreate();
   const updateLancamento = useUpdate();
   const deleteLancamento = useDelete();
 
   const { useQuery: useCadastrosQuery } = useCadastros();
-  const { data: clientes } = useCadastrosQuery('Cliente');
-  const { data: fornecedores } = useCadastrosQuery('Fornecedor');
+  const { data: clientes } = useCadastrosQuery("Cliente");
+  const { data: fornecedores } = useCadastrosQuery("Fornecedor");
 
   useEffect(() => {
-    console.log('useLancamentosPage: useEffect chamado - lancamentos:', lancamentos?.length || 0);
+    console.log(
+      "useLancamentosPage: useEffect chamado - lancamentos:",
+      lancamentos?.length || 0,
+    );
     if (lancamentos) {
-      console.log('useLancamentosPage: Aplicando filtros aos lançamentos');
+      console.log("useLancamentosPage: Aplicando filtros aos lançamentos");
       filterLancamentos();
     }
   }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
 
   const filterLancamentos = () => {
     if (!lancamentos) {
-      console.log('useLancamentosPage: Sem lançamentos para filtrar');
+      console.log("useLancamentosPage: Sem lançamentos para filtrar");
       setFilteredLancamentos([]);
       return;
     }
-    
-    console.log('useLancamentosPage: Filtrando', lancamentos.length, 'lançamentos');
+
+    console.log(
+      "useLancamentosPage: Filtrando",
+      lancamentos.length,
+      "lançamentos",
+    );
     let filtered: LancamentoComRelacoes[] = [...lancamentos];
 
     if (searchTerm) {
-      filtered = filtered.filter(lancamento =>
-        lancamento.categoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (lancamento.observacoes && lancamento.observacoes.toLowerCase().includes(searchTerm.toLowerCase()))
+      filtered = filtered.filter(
+        (lancamento) =>
+          lancamento.categoria
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          (lancamento.observacoes &&
+            lancamento.observacoes
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())),
       );
     }
 
-    if (tipoFilter !== 'todos') {
-      filtered = filtered.filter(lancamento => lancamento.tipo === tipoFilter);
+    if (tipoFilter !== "todos") {
+      filtered = filtered.filter(
+        (lancamento) => lancamento.tipo === tipoFilter,
+      );
     }
 
-    if (categoriaFilter !== 'todas') {
-      filtered = filtered.filter(lancamento => lancamento.categoria === categoriaFilter);
+    if (categoriaFilter !== "todas") {
+      filtered = filtered.filter(
+        (lancamento) => lancamento.categoria === categoriaFilter,
+      );
     }
 
-    console.log('useLancamentosPage: Lançamentos filtrados:', filtered.length);
-    console.log('useLancamentosPage: Primeiros 3 lançamentos filtrados:', filtered.slice(0, 3));
+    console.log("useLancamentosPage: Lançamentos filtrados:", filtered.length);
+    console.log(
+      "useLancamentosPage: Primeiros 3 lançamentos filtrados:",
+      filtered.slice(0, 3),
+    );
     setFilteredLancamentos(filtered);
   };
 
   const handleEdit = (lancamento: LancamentoComRelacoes) => {
-    console.log('Editando lançamento:', lancamento);
+    console.log("Editando lançamento:", lancamento);
     setEditingLancamento(lancamento);
-    setActiveTab('formulario');
+    setActiveTab("formulario");
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Tem certeza que deseja excluir este lançamento?')) {
+    if (window.confirm("Tem certeza que deseja excluir este lançamento?")) {
       try {
         await deleteLancamento.mutateAsync(id);
         toast({
@@ -89,7 +122,7 @@ export const useLancamentosPage = () => {
           description: "Lançamento excluído com sucesso.",
         });
       } catch (error) {
-        console.error('Erro ao excluir lançamento:', error);
+        console.error("Erro ao excluir lançamento:", error);
         toast({
           title: "Erro ao excluir",
           description: "Ocorreu um erro ao excluir o lançamento.",
@@ -100,9 +133,9 @@ export const useLancamentosPage = () => {
   };
 
   const handleNewLancamento = () => {
-    console.log('Clicando em Novo Lançamento');
+    console.log("Clicando em Novo Lançamento");
     setEditingLancamento(null);
-    setActiveTab('formulario');
+    setActiveTab("formulario");
   };
 
   return {
@@ -120,19 +153,19 @@ export const useLancamentosPage = () => {
     setActiveTab,
     editingLancamento,
     setEditingLancamento,
-    
+
     // Data
     isLoading,
     clientes,
     fornecedores,
     user,
     toast,
-    
+
     // Mutations
     createLancamento,
     updateLancamento,
     deleteLancamento,
-    
+
     // Handlers
     handleEdit,
     handleDelete,

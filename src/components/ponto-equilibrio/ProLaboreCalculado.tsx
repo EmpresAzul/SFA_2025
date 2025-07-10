@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calculator } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calculator } from "lucide-react";
 
 interface ProLaboreCalculadoProps {
   value: number;
@@ -18,9 +17,11 @@ const ProLaboreCalculado: React.FC<ProLaboreCalculadoProps> = ({ value }) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="text-center">
-          <p className="text-sm text-gray-600 mb-2">Pró-labore máximo possível com o faturamento atual:</p>
+          <p className="text-sm text-gray-600 mb-2">
+            Pró-labore máximo possível com o faturamento atual:
+          </p>
           <div className="text-3xl font-bold text-green-600">
-            R$ {value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            R$ {value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
           </div>
           <p className="text-xs text-gray-500 mt-2">
             Calculado automaticamente com base nos parâmetros informados

@@ -1,10 +1,15 @@
-
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter } from 'lucide-react';
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Filter } from "lucide-react";
 
 interface LembretesFiltersProps {
   searchTerm: string;
@@ -21,7 +26,7 @@ const LembretesFilters: React.FC<LembretesFiltersProps> = ({
   statusFilter,
   setStatusFilter,
   dateFilter,
-  setDateFilter
+  setDateFilter,
 }) => {
   return (
     <Card className="shadow-lg">
@@ -30,7 +35,7 @@ const LembretesFilters: React.FC<LembretesFiltersProps> = ({
           <Filter className="h-5 w-5 text-gray-600 mr-2" />
           <h3 className="text-lg font-semibold text-gray-800">Filtros</h3>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <Label htmlFor="search">Buscar</Label>

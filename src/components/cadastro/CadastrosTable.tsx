@@ -1,117 +1,148 @@
-
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Edit, Trash2, Users, ToggleLeft, ToggleRight } from 'lucide-react';
-import CadastroViewModal from '@/components/cadastro/CadastroViewModal';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal, Edit, Eye, Trash2, Plus } from 'lucide-react';
+import { CadastroData } from '@/types/cadastros';
 
 interface CadastrosTableProps {
-  filteredItems: any[];
-  onEdit: (item: any) => void;
-  onToggleStatus: (item: any) => void;
-  onDelete: (id: string, nome: string) => void;
+  cadastros: CadastroData[];
+  onEdit: (cadastro: CadastroData) => void;
+  onView: (cadastro: CadastroData) => void;
+  onDelete: (id: string) => void;
+  onAdd: () => void;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+  selectedType: string;
+  onTypeChange: (type: string) => void;
 }
 
 const CadastrosTable: React.FC<CadastrosTableProps> = ({
-  filteredItems,
+  cadastros,
   onEdit,
-  onToggleStatus,
-  onDelete
+  onView,
+  onDelete,
+  onAdd,
+  searchTerm,
+  onSearchChange,
+  selectedType,
+  onTypeChange
 }) => {
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'cliente':
+        return 'bg-blue-100 text-blue-800';
+      case 'fornecedor':
+        return 'bg-green-100 text-green-800';
+      case 'funcionario':
+        return 'bg-purple-100 text-purple-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const columns = [
+    { key: 'nome', label: 'Nome' },
+    { key: 'email', label: 'Email' },
+    { key: 'telefone', label: 'Telefone' },
+    { key: 'tipo', label: 'Tipo' },
+    { key: 'actions', label: 'Ações' }
+  ];
+
   return (
-    <Card className="shadow-colorful border-0 bg-white/90 backdrop-blur-sm">
-      <CardHeader className="pb-3 sm:pb-4">
-        <CardTitle className="text-sm sm:text-base">📊 Lista de Cadastros ({filteredItems.length})</CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        <div className="responsive-table">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-xs sm:text-sm">Nome</TableHead>
-                <TableHead className="text-xs sm:text-sm">Tipo</TableHead>
-                <TableHead className="mobile-hidden text-xs sm:text-sm">E-mail</TableHead>
-                <TableHead className="mobile-hidden text-xs sm:text-sm">Telefone</TableHead>
-                <TableHead className="text-xs sm:text-sm">Status</TableHead>
-                <TableHead className="text-right text-xs sm:text-sm">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredItems.map((item) => (
-                <TableRow key={`${item.tipoDisplay}-${item.id}`}>
-                  <TableCell className="font-medium text-xs sm:text-sm">{item.nome}</TableCell>
-                  <TableCell className="text-xs sm:text-sm">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      item.tipoDisplay === 'Cliente' ? 'bg-blue-100 text-blue-800' :
-                      item.tipoDisplay === 'Fornecedor' ? 'bg-purple-100 text-purple-800' :
-                      'bg-orange-100 text-orange-800'
-                    }`}>
-                      {item.tipoDisplay === 'Cliente' ? '👤 Cliente' :
-                       item.tipoDisplay === 'Fornecedor' ? '🏢 Fornecedor' :
-                       '👨‍💼 Funcionário'}
-                    </span>
-                  </TableCell>
-                  <TableCell className="mobile-hidden text-xs sm:text-sm">{item.email}</TableCell>
-                  <TableCell className="mobile-hidden text-xs sm:text-sm">{item.telefone}</TableCell>
-                  <TableCell className="text-xs sm:text-sm">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      item.status === 'ativo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
-                      {item.status === 'ativo' ? '✅ Ativo' : '❌ Inativo'}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end space-x-1">
-                      <CadastroViewModal cadastro={item} />
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => onToggleStatus(item)}
-                        className={`hover:bg-gray-50 h-6 w-6 sm:h-8 sm:w-8 p-0 ${
-                          item.status === 'ativo' ? 'text-green-600' : 'text-red-600'
-                        }`}
-                        title={item.status === 'ativo' ? 'Desativar' : 'Ativar'}
-                      >
-                        {item.status === 'ativo' ? 
-                          <ToggleRight className="h-2 w-2 sm:h-3 sm:w-3" /> : 
-                          <ToggleLeft className="h-2 w-2 sm:h-3 sm:w-3" />
-                        }
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => onEdit(item)}
-                        className="hover:bg-blue-50 h-6 w-6 sm:h-8 sm:w-8 p-0"
-                        title="Editar"
-                      >
-                        <Edit className="h-2 w-2 sm:h-3 sm:w-3" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => onDelete(item.id, item.nome)}
-                        className="hover:bg-red-50 text-red-600 h-6 w-6 sm:h-8 sm:w-8 p-0"
-                        title="Excluir"
-                      >
-                        <Trash2 className="h-2 w-2 sm:h-3 sm:w-3" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-              
-              {filteredItems.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-6 sm:py-8 text-gray-500">
-                    <Users className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-gray-300 mb-3 sm:mb-4" />
-                    <p className="text-xs sm:text-sm">Nenhum cadastro encontrado</p>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle>Cadastros</CardTitle>
+          <Button onClick={onAdd} className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900">
+            <Plus className="w-4 h-4 mr-2" />
+            Novo Cadastro
+          </Button>
         </div>
+        <div className="flex gap-4">
+          <Input
+            placeholder="Buscar cadastros..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="max-w-sm"
+          />
+          <select
+            value={selectedType}
+            onChange={(e) => onTypeChange(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Todos os tipos</option>
+            <option value="cliente">Clientes</option>
+            <option value="fornecedor">Fornecedores</option>
+            <option value="funcionario">Funcionários</option>
+          </select>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {columns.map((column) => (
+                <TableHead key={column.key}>{column.label}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {cadastros.map((cadastro) => (
+              <TableRow key={cadastro.id}>
+                <TableCell className="font-medium">{cadastro.nome}</TableCell>
+                <TableCell>{cadastro.email}</TableCell>
+                <TableCell>{cadastro.telefone}</TableCell>
+                <TableCell>
+                  <Badge className={getTypeColor(cadastro.tipo)}>
+                    {cadastro.tipo}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => onView(cadastro)}>
+                        <Eye className="mr-2 h-4 w-4" />
+                        Visualizar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEdit(cadastro)}>
+                        <Edit className="mr-2 h-4 w-4" />
+                        Editar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => onDelete(cadastro.id)}
+                        className="text-red-600"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Excluir
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

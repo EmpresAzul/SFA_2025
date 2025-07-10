@@ -1,9 +1,8 @@
-
-import { useEstoques } from './useEstoques';
-import { useLancamentos } from './useLancamentos';
-import { useSaldosBancarios } from './useSaldosBancarios';
-import { useCadastros } from './useCadastros';
-import { usePrecificacao } from './usePrecificacao';
+import { useEstoques } from "./useEstoques";
+import { useLancamentos } from "./useLancamentos";
+import { useSaldosBancarios } from "./useSaldosBancarios";
+import { useCadastros } from "./useCadastros";
+import { usePrecificacao } from "./usePrecificacao";
 
 export const useSupabaseQuery = () => {
   const estoques = useEstoques();
@@ -19,7 +18,7 @@ export const useSupabaseQuery = () => {
     useSaldosBancarios: saldosBancarios.useQuery,
     useCadastros: cadastros.useQuery,
     usePrecificacao: precificacao.useQuery,
-    
+
     // Mutations - retornando as funções diretamente
     useCreateEstoque: estoques.useCreate,
     useDeleteEstoque: estoques.useDelete,

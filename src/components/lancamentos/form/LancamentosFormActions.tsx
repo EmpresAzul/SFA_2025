@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import type { LancamentoComRelacoes } from '@/types/lancamentosForm';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import type { LancamentoComRelacoes } from "@/types/lancamentosForm";
 
 interface LancamentosFormActionsProps {
   loading: boolean;
@@ -21,14 +20,14 @@ const LancamentosFormActions: React.FC<LancamentosFormActionsProps> = ({
         disabled={loading}
         className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
       >
-        {loading ? "Salvando..." : editingLancamento ? "Atualizar Lançamento" : "Cadastrar Lançamento"}
+        {loading
+          ? "Salvando..."
+          : editingLancamento
+            ? "Atualizar Lançamento"
+            : "Cadastrar Lançamento"}
       </Button>
       {editingLancamento && (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="outline" onClick={onCancel}>
           Cancelar
         </Button>
       )}

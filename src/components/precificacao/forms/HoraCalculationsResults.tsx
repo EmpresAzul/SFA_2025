@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calculator, Clock, DollarSign, TrendingUp } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calculator, Clock, DollarSign, TrendingUp } from "lucide-react";
 
 interface HoraCalculationsResultsProps {
   diasTrabalhados: string;
@@ -25,9 +24,9 @@ const HoraCalculationsResults: React.FC<HoraCalculationsResultsProps> = ({
   totalTaxasPercentual = 0,
 }) => {
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
     }).format(value);
   };
 
@@ -48,7 +47,9 @@ const HoraCalculationsResults: React.FC<HoraCalculationsResultsProps> = ({
             <div className="flex items-center justify-between p-3 bg-white/60 rounded-lg">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-medium text-gray-700">Horas trabalhadas/mês:</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Horas trabalhadas/mês:
+                </span>
               </div>
               <span className="font-semibold text-blue-600">
                 {horasTrabalhadasMes.toFixed(1)}h
@@ -58,7 +59,9 @@ const HoraCalculationsResults: React.FC<HoraCalculationsResultsProps> = ({
             <div className="flex items-center justify-between p-3 bg-white/60 rounded-lg">
               <div className="flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-green-600" />
-                <span className="text-sm font-medium text-gray-700">Valor base da hora:</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Valor base da hora:
+                </span>
               </div>
               <span className="font-semibold text-green-600">
                 {formatCurrency(valorHoraTrabalhada)}
@@ -70,7 +73,9 @@ const HoraCalculationsResults: React.FC<HoraCalculationsResultsProps> = ({
                 <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
                   <div className="flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-purple-600" />
-                    <span className="text-sm font-medium text-gray-700">Taxas adicionais ({totalTaxasPercentual.toFixed(2)}%):</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      Taxas adicionais ({totalTaxasPercentual.toFixed(2)}%):
+                    </span>
                   </div>
                   <span className="font-semibold text-purple-600">
                     {formatCurrency(valorTaxasHora)}
@@ -82,7 +87,9 @@ const HoraCalculationsResults: React.FC<HoraCalculationsResultsProps> = ({
             <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-100 to-green-100 rounded-lg border-2 border-emerald-300">
               <div className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-emerald-700" />
-                <span className="text-base font-semibold text-emerald-800">Valor final da hora:</span>
+                <span className="text-base font-semibold text-emerald-800">
+                  Valor final da hora:
+                </span>
               </div>
               <span className="text-xl font-bold text-emerald-700">
                 {formatCurrency(valorHoraFinal)}
@@ -94,7 +101,9 @@ const HoraCalculationsResults: React.FC<HoraCalculationsResultsProps> = ({
             <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg border-2 border-blue-300">
               <div className="flex items-center gap-2">
                 <Clock className="w-5 h-5 text-blue-700" />
-                <span className="text-base font-semibold text-blue-800">Valor por dia trabalhado:</span>
+                <span className="text-base font-semibold text-blue-800">
+                  Valor por dia trabalhado:
+                </span>
               </div>
               <span className="text-xl font-bold text-blue-700">
                 {formatCurrency(valorDiaTrabalhado)}
@@ -102,22 +111,31 @@ const HoraCalculationsResults: React.FC<HoraCalculationsResultsProps> = ({
             </div>
 
             <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-              <h4 className="text-sm font-semibold text-yellow-800 mb-2">💡 Composição do Valor:</h4>
+              <h4 className="text-sm font-semibold text-yellow-800 mb-2">
+                💡 Composição do Valor:
+              </h4>
               <ul className="text-xs text-yellow-700 space-y-1">
                 <li>• Valor base: {formatCurrency(valorHoraTrabalhada)}</li>
                 {valorTaxasHora > 0 && (
-                  <li>• Taxas adicionais: {formatCurrency(valorTaxasHora)} ({totalTaxasPercentual.toFixed(2)}%)</li>
+                  <li>
+                    • Taxas adicionais: {formatCurrency(valorTaxasHora)} (
+                    {totalTaxasPercentual.toFixed(2)}%)
+                  </li>
                 )}
-                <li className="font-semibold">• Total: {formatCurrency(valorHoraFinal)}</li>
+                <li className="font-semibold">
+                  • Total: {formatCurrency(valorHoraFinal)}
+                </li>
               </ul>
             </div>
           </div>
         </div>
 
-        {(parseFloat(diasTrabalhados) === 0 || parseFloat(horasPorDia) === 0) && (
+        {(parseFloat(diasTrabalhados) === 0 ||
+          parseFloat(horasPorDia) === 0) && (
           <div className="p-3 bg-gray-100 rounded-lg">
             <p className="text-sm text-gray-600 text-center">
-              ⚠️ Preencha os dias trabalhados e horas por dia para ver os cálculos
+              ⚠️ Preencha os dias trabalhados e horas por dia para ver os
+              cálculos
             </p>
           </div>
         )}

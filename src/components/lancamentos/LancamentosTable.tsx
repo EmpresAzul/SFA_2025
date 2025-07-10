@@ -1,16 +1,39 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Eye, Edit, Trash2, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { formatNumberToDisplay } from '@/utils/currency';
-import { usePagination } from '@/hooks/usePagination';
-import LancamentosViewModal from './LancamentosViewModal';
-import LancamentosPagination from './LancamentosPagination';
-import type { LancamentoComRelacoes } from '@/types/lancamentosForm';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Eye,
+  Edit,
+  Trash2,
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+} from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { formatNumberToDisplay } from "@/utils/currency";
+import { usePagination } from "@/hooks/usePagination";
+import LancamentosViewModal from "./LancamentosViewModal";
+import LancamentosPagination from "./LancamentosPagination";
+import type { LancamentoComRelacoes } from "@/types/lancamentosForm";
 
 interface LancamentosTableProps {
   data: LancamentoComRelacoes[];
@@ -40,11 +63,11 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
   } = usePagination({ data, itemsPerPage: 20 });
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    return new Date(dateString).toLocaleDateString("pt-BR");
   };
 
   const getTipoIcon = (tipo: string) => {
-    return tipo === 'receita' ? (
+    return tipo === "receita" ? (
       <TrendingUp className="h-3 w-3 text-green-600" />
     ) : (
       <TrendingDown className="h-3 w-3 text-red-600" />
@@ -74,12 +97,24 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-50/50 h-10">
-                <TableHead className="font-semibold text-gray-700 py-2 text-sm">Data</TableHead>
-                <TableHead className="font-semibold text-gray-700 py-2 text-sm">Tipo</TableHead>
-                <TableHead className="font-semibold text-gray-700 py-2 text-sm">Categoria</TableHead>
-                <TableHead className="font-semibold text-gray-700 py-2 text-sm">Valor</TableHead>
-                <TableHead className="font-semibold text-gray-700 py-2 text-sm">Cliente/Fornecedor</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-center py-2 text-sm">Ações</TableHead>
+                <TableHead className="font-semibold text-gray-700 py-2 text-sm">
+                  Data
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700 py-2 text-sm">
+                  Tipo
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700 py-2 text-sm">
+                  Categoria
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700 py-2 text-sm">
+                  Valor
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700 py-2 text-sm">
+                  Cliente/Fornecedor
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700 text-center py-2 text-sm">
+                  Ações
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -89,13 +124,18 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                     <div className="flex flex-col items-center gap-2 text-gray-500">
                       <DollarSign className="h-8 w-8" />
                       <p>Nenhum lançamento encontrado</p>
-                      <p className="text-sm">Cadastre seus primeiros lançamentos financeiros</p>
+                      <p className="text-sm">
+                        Cadastre seus primeiros lançamentos financeiros
+                      </p>
                     </div>
                   </TableCell>
                 </TableRow>
               ) : (
                 paginatedData.map((lancamento) => (
-                  <TableRow key={lancamento.id} className="hover:bg-gray-50/50 transition-colors h-12">
+                  <TableRow
+                    key={lancamento.id}
+                    className="hover:bg-gray-50/50 transition-colors h-12"
+                  >
                     <TableCell className="font-medium py-2 text-sm">
                       {formatDate(lancamento.data)}
                     </TableCell>
@@ -103,23 +143,38 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                       <div className="flex items-center gap-1">
                         {getTipoIcon(lancamento.tipo)}
                         <Badge
-                          variant={lancamento.tipo === 'receita' ? 'default' : 'destructive'}
+                          variant={
+                            lancamento.tipo === "receita"
+                              ? "default"
+                              : "destructive"
+                          }
                           className="text-xs py-0 px-2 h-5"
                         >
-                          {lancamento.tipo === 'receita' ? 'Receita' : 'Despesa'}
+                          {lancamento.tipo === "receita"
+                            ? "Receita"
+                            : "Despesa"}
                         </Badge>
                       </div>
                     </TableCell>
-                    <TableCell className="py-2 text-sm max-w-[120px] truncate" title={lancamento.categoria}>
+                    <TableCell
+                      className="py-2 text-sm max-w-[120px] truncate"
+                      title={lancamento.categoria}
+                    >
                       {lancamento.categoria}
                     </TableCell>
-                    <TableCell className={`font-semibold py-2 text-sm ${
-                      lancamento.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
-                    }`}>
+                    <TableCell
+                      className={`font-semibold py-2 text-sm ${
+                        lancamento.tipo === "receita"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
                       {formatNumberToDisplay(lancamento.valor)}
                     </TableCell>
                     <TableCell className="py-2 text-sm max-w-[150px] truncate">
-                      {lancamento.cliente?.nome || lancamento.fornecedor?.nome || '-'}
+                      {lancamento.cliente?.nome ||
+                        lancamento.fornecedor?.nome ||
+                        "-"}
                     </TableCell>
                     <TableCell className="py-2">
                       <div className="flex items-center justify-center gap-1">
@@ -151,17 +206,18 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+                              <AlertDialogTitle>
+                                Confirmar Exclusão
+                              </AlertDialogTitle>
                               <AlertDialogDescription>
-                                Tem certeza que deseja excluir este lançamento de {formatNumberToDisplay(lancamento.valor)}? 
+                                Tem certeza que deseja excluir este lançamento
+                                de {formatNumberToDisplay(lancamento.valor)}?
                                 Esta ação não pode ser desfeita.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel>
-                                Cancelar
-                              </AlertDialogCancel>
-                              <AlertDialogAction 
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
                                 onClick={() => onDelete(lancamento.id)}
                                 className="bg-red-600 hover:bg-red-700"
                               >
@@ -178,7 +234,7 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
             </TableBody>
           </Table>
         </div>
-        
+
         <LancamentosPagination
           currentPage={currentPage}
           totalPages={totalPages}

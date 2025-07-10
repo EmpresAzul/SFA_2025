@@ -1,12 +1,14 @@
-
-import { useState, useMemo } from 'react';
+import { useState, useMemo } from "react";
 
 interface UsePaginationProps<T> {
   data: T[];
   itemsPerPage: number;
 }
 
-export const usePagination = <T>({ data, itemsPerPage }: UsePaginationProps<T>) => {
+export const usePagination = <T>({
+  data,
+  itemsPerPage,
+}: UsePaginationProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(data.length / itemsPerPage);

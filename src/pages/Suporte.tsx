@@ -1,20 +1,14 @@
-
-import React from 'react';
-import { useSupport } from '@/hooks/useSupport';
-import ChatInterface from '@/components/support/ChatInterface';
-import SupportSidebar from '@/components/support/SupportSidebar';
+import React from "react";
+import { useSupport } from "@/hooks/useSupport";
+import ChatInterface from "@/components/support/ChatInterface";
+import SupportSidebar from "@/components/support/SupportSidebar";
 
 const Suporte: React.FC = () => {
-  const {
-    messages,
-    inputMessage,
-    setInputMessage,
-    isLoading,
-    sendMessage,
-  } = useSupport();
+  const { messages, inputMessage, setInputMessage, isLoading, sendMessage } =
+    useSupport();
 
   const openWhatsApp = () => {
-    window.open('https://wa.me/5519990068219', '_blank');
+    window.open("https://wa.me/5519990068219", "_blank");
   };
 
   return (

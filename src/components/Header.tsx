@@ -1,17 +1,16 @@
-
-import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { LogOut, User, Menu } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { LogOut, User, Menu } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   onMenuToggle: () => void;
@@ -26,19 +25,20 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
   };
 
   const handleProfile = () => {
-    navigate('/dashboard/perfil');
+    navigate("/dashboard/perfil");
   };
 
   const getInitials = (name: string) => {
     return name
-      .split(' ')
-      .map(word => word.charAt(0))
-      .join('')
+      .split(" ")
+      .map((word) => word.charAt(0))
+      .join("")
       .toUpperCase()
       .slice(0, 2);
   };
 
-  const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuário';
+  const userName =
+    user?.user_metadata?.name || user?.email?.split("@")[0] || "Usuário";
 
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm">
@@ -62,7 +62,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
             <Button variant="ghost" className="relative h-10 w-10 rounded-full">
               <Avatar className="h-10 w-10 gradient-fluxo">
                 <AvatarFallback className="gradient-fluxo text-white font-semibold">
-                  {user ? getInitials(userName) : 'U'}
+                  {user ? getInitials(userName) : "U"}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -75,12 +75,18 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
               </p>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleProfile} className="cursor-pointer">
+            <DropdownMenuItem
+              onClick={handleProfile}
+              className="cursor-pointer"
+            >
               <User className="mr-2 h-4 w-4" />
               <span>Perfil</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="cursor-pointer text-red-600"
+            >
               <LogOut className="mr-2 h-4 w-4" />
               <span>Sair do Sistema</span>
             </DropdownMenuItem>

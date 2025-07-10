@@ -1,13 +1,12 @@
-
-import { useMemo } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { useFluxoCaixaData } from './useFluxoCaixaData';
-import { useFluxoCaixaCalculations } from './useFluxoCaixaCalculations';
+import { useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useFluxoCaixaData } from "./useFluxoCaixaData";
+import { useFluxoCaixaCalculations } from "./useFluxoCaixaCalculations";
 
 export const useIntegratedFluxoCaixa = (periodoFilter: string) => {
   const queryClient = useQueryClient();
   const { lancamentos, loading, refetch } = useFluxoCaixaData(periodoFilter);
-  
+
   const calculations = useFluxoCaixaCalculations(lancamentos);
 
   // Escutar mudanças nos lançamentos e atualizar automaticamente
@@ -18,7 +17,7 @@ export const useIntegratedFluxoCaixa = (periodoFilter: string) => {
   // Função para ser chamada quando lançamentos são modificados
   const onLancamentosChange = () => {
     // Invalidar o cache dos lançamentos
-    queryClient.invalidateQueries({ queryKey: ['lancamentos'] });
+    queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
     // Recarregar dados do fluxo de caixa
     invalidateFluxoCaixa();
   };
@@ -28,6 +27,6 @@ export const useIntegratedFluxoCaixa = (periodoFilter: string) => {
     loading,
     refetch,
     onLancamentosChange,
-    ...calculations
+    ...calculations,
   };
 };

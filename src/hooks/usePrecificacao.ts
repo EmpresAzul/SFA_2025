@@ -1,12 +1,13 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import type { Database } from "@/integrations/supabase/types";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import type { Database } from '@/integrations/supabase/types';
-
-type Precificacao = Database['public']['Tables']['precificacao']['Row'];
-type PrecificacaoInsert = Database['public']['Tables']['precificacao']['Insert'];
-type PrecificacaoUpdate = Database['public']['Tables']['precificacao']['Update'];
+type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
+type PrecificacaoInsert =
+  Database["public"]["Tables"]["precificacao"]["Insert"];
+type PrecificacaoUpdate =
+  Database["public"]["Tables"]["precificacao"]["Update"];
 
 export const usePrecificacao = () => {
   const { toast } = useToast();
@@ -14,32 +15,34 @@ export const usePrecificacao = () => {
 
   const useQueryHook = () => {
     return useQuery({
-      queryKey: ['precificacao'],
+      queryKey: ["precificacao"],
       queryFn: async () => {
-        console.log('🔍 Buscando dados de precificação...');
-        
+        console.log("🔍 Buscando dados de precificação...");
+
         // Obter o usuário atual
-        const { data: { user } } = await supabase.auth.getUser();
-        
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
         if (!user) {
-          console.log('❌ Usuário não autenticado na query');
+          console.log("❌ Usuário não autenticado na query");
           return [];
         }
 
-        console.log('👤 Usuário autenticado na query:', user.id);
+        console.log("👤 Usuário autenticado na query:", user.id);
 
         const { data, error } = await supabase
-          .from('precificacao')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
+          .from("precificacao")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
 
         if (error) {
-          console.error('❌ Erro ao buscar precificação:', error);
+          console.error("❌ Erro ao buscar precificação:", error);
           throw error;
         }
 
-        console.log('✅ Dados de precificação carregados:', data);
+        console.log("✅ Dados de precificação carregados:", data);
         return data as Precificacao[];
       },
     });
@@ -48,81 +51,89 @@ export const usePrecificacao = () => {
   const useCreate = () => {
     return useMutation({
       mutationFn: async (data: PrecificacaoInsert) => {
-        console.log('🚀 MUTATION CREATE - Iniciando criação de item:', data);
-        
+        console.log("🚀 MUTATION CREATE - Iniciando criação de item:", data);
+
         // Garantir que o user_id está presente
         if (!data.user_id) {
-          console.log('⚠️ user_id não fornecido, buscando...');
-          const { data: { user } } = await supabase.auth.getUser();
+          console.log("⚠️ user_id não fornecido, buscando...");
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
           if (!user) {
-            console.log('❌ Usuário não autenticado na mutation create');
-            throw new Error('Usuário não autenticado');
+            console.log("❌ Usuário não autenticado na mutation create");
+            throw new Error("Usuário não autenticado");
           }
           data.user_id = user.id;
-          console.log('✅ user_id definido:', user.id);
+          console.log("✅ user_id definido:", user.id);
         }
 
-        console.log('📦 Dados finais para inserir:', data);
+        console.log("📦 Dados finais para inserir:", data);
 
         const { data: result, error } = await supabase
-          .from('precificacao')
+          .from("precificacao")
           .insert(data)
           .select()
           .single();
 
         if (error) {
-          console.error('❌ Erro no Supabase ao criar precificação:', error);
-          console.error('❌ Detalhes do erro:', {
+          console.error("❌ Erro no Supabase ao criar precificação:", error);
+          console.error("❌ Detalhes do erro:", {
             message: error.message,
             details: error.details,
             hint: error.hint,
-            code: error.code
+            code: error.code,
           });
           throw error;
         }
 
-        console.log('✅ Item de precificação criado com sucesso:', result);
+        console.log("✅ Item de precificação criado com sucesso:", result);
         return result;
       },
       onSuccess: (data) => {
-        console.log('🎉 Mutation CREATE bem-sucedida, invalidando queries...');
-        queryClient.invalidateQueries({ queryKey: ['precificacao'] });
-        console.log('✅ Queries invalidadas após criação');
+        console.log("🎉 Mutation CREATE bem-sucedida, invalidando queries...");
+        queryClient.invalidateQueries({ queryKey: ["precificacao"] });
+        console.log("✅ Queries invalidadas após criação");
       },
       onError: (error) => {
-        console.error('💥 Erro na mutation de criação:', error);
+        console.error("💥 Erro na mutation de criação:", error);
       },
     });
   };
 
   const useUpdate = () => {
     return useMutation({
-      mutationFn: async ({ id, data }: { id: string; data: PrecificacaoUpdate }) => {
-        console.log('✏️ MUTATION UPDATE - Atualizando item:', id, data);
+      mutationFn: async ({
+        id,
+        data,
+      }: {
+        id: string;
+        data: PrecificacaoUpdate;
+      }) => {
+        console.log("✏️ MUTATION UPDATE - Atualizando item:", id, data);
         const { data: result, error } = await supabase
-          .from('precificacao')
+          .from("precificacao")
           .update(data)
-          .eq('id', id)
+          .eq("id", id)
           .select()
           .single();
 
         if (error) {
-          console.error('❌ Erro ao atualizar precificação:', error);
+          console.error("❌ Erro ao atualizar precificação:", error);
           throw error;
         }
 
-        console.log('✅ Item atualizado com sucesso:', result);
+        console.log("✅ Item atualizado com sucesso:", result);
         return result;
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['precificacao'] });
+        queryClient.invalidateQueries({ queryKey: ["precificacao"] });
         toast({
           title: "Sucesso!",
           description: "Item atualizado com êxito.",
         });
       },
       onError: (error) => {
-        console.error('❌ Erro na mutação de atualização:', error);
+        console.error("❌ Erro na mutação de atualização:", error);
         toast({
           title: "Erro",
           description: "Erro ao atualizar item. Tente novamente.",
@@ -135,26 +146,26 @@ export const usePrecificacao = () => {
   const useDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
-        console.log('🗑️ MUTATION DELETE - Excluindo item:', id);
+        console.log("🗑️ MUTATION DELETE - Excluindo item:", id);
         const { error } = await supabase
-          .from('precificacao')
+          .from("precificacao")
           .delete()
-          .eq('id', id);
+          .eq("id", id);
 
         if (error) {
-          console.error('❌ Erro ao excluir precificação:', error);
+          console.error("❌ Erro ao excluir precificação:", error);
           throw error;
         }
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['precificacao'] });
+        queryClient.invalidateQueries({ queryKey: ["precificacao"] });
         toast({
           title: "Sucesso!",
           description: "Item excluído com êxito.",
         });
       },
       onError: (error) => {
-        console.error('❌ Erro na mutação de exclusão:', error);
+        console.error("❌ Erro na mutação de exclusão:", error);
         toast({
           title: "Erro",
           description: "Erro ao excluir item. Tente novamente.",

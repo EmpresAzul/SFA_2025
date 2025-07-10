@@ -1,19 +1,18 @@
-
-import React, { useState } from 'react';
-import { format, subMonths } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import { useLancamentos } from '@/hooks/useLancamentos';
-import { useDRECalculations } from '@/hooks/useDRECalculations';
-import DREHeader from '@/components/dre/DREHeader';
-import DRESummaryCards from '@/components/dre/DRESummaryCards';
-import DREReport from '@/components/dre/DREReport';
+import React, { useState } from "react";
+import { format, subMonths } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { useLancamentos } from "@/hooks/useLancamentos";
+import { useDRECalculations } from "@/hooks/useDRECalculations";
+import DREHeader from "@/components/dre/DREHeader";
+import DRESummaryCards from "@/components/dre/DRESummaryCards";
+import DREReport from "@/components/dre/DREReport";
 
 const DRE: React.FC = () => {
-  const [periodo, setPeriodo] = useState<string>('mes-atual');
-  
+  const [periodo, setPeriodo] = useState<string>("mes-atual");
+
   const { useQuery } = useLancamentos();
   const { data: lancamentos = [], isLoading } = useQuery();
-  
+
   // Filtrar lançamentos por período
   const lancamentosFiltrados = React.useMemo(() => {
     const hoje = new Date();
@@ -21,11 +20,11 @@ const DRE: React.FC = () => {
     let dataFim: Date;
 
     switch (periodo) {
-      case 'mes-anterior':
+      case "mes-anterior":
         dataInicio = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
         dataFim = new Date(hoje.getFullYear(), hoje.getMonth(), 0);
         break;
-      case 'ano-atual':
+      case "ano-atual":
         dataInicio = new Date(hoje.getFullYear(), 0, 1);
         dataFim = new Date(hoje.getFullYear(), 11, 31);
         break;
@@ -34,7 +33,7 @@ const DRE: React.FC = () => {
         dataFim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
     }
 
-    return lancamentos.filter(l => {
+    return lancamentos.filter((l) => {
       const dataLancamento = new Date(l.data);
       return dataLancamento >= dataInicio && dataLancamento <= dataFim;
     });
@@ -43,22 +42,24 @@ const DRE: React.FC = () => {
   const dreData = useDRECalculations(lancamentosFiltrados);
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
     }).format(value);
   };
 
   const getPeriodoLabel = () => {
     switch (periodo) {
-      case 'mes-atual':
+      case "mes-atual":
         return format(new Date(), "MMMM 'de' yyyy", { locale: ptBR });
-      case 'mes-anterior':
-        return format(subMonths(new Date(), 1), "MMMM 'de' yyyy", { locale: ptBR });
-      case 'ano-atual':
+      case "mes-anterior":
+        return format(subMonths(new Date(), 1), "MMMM 'de' yyyy", {
+          locale: ptBR,
+        });
+      case "ano-atual":
         return format(new Date(), "yyyy", { locale: ptBR });
       default:
-        return '';
+        return "";
     }
   };
 
@@ -80,7 +81,8 @@ const DRE: React.FC = () => {
           📊 Demonstração do Resultado do Exercício (DRE)
         </h1>
         <p className="text-gray-600 text-sm">
-          Análise financeira completa baseada em {lancamentosFiltrados.length} lançamentos do período
+          Análise financeira completa baseada em {lancamentosFiltrados.length}{" "}
+          lançamentos do período
         </p>
       </div>
 
@@ -90,10 +92,7 @@ const DRE: React.FC = () => {
         lancamentosCount={lancamentosFiltrados.length}
       />
 
-      <DRESummaryCards
-        dreData={dreData}
-        formatCurrency={formatCurrency}
-      />
+      <DRESummaryCards dreData={dreData} formatCurrency={formatCurrency} />
 
       <DREReport
         dreData={dreData}

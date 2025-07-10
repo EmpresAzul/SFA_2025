@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface ProdutoData {
   nome: string;
@@ -49,7 +48,9 @@ const ProdutoFormFields: React.FC<ProdutoFormFieldsProps> = ({
           max="100"
           step="0.1"
           value={produtoData.margemLucro}
-          onChange={(e) => onUpdateProduto({ margemLucro: parseFloat(e.target.value) || 0 })}
+          onChange={(e) =>
+            onUpdateProduto({ margemLucro: parseFloat(e.target.value) || 0 })
+          }
           placeholder="30"
         />
       </div>

@@ -1,15 +1,14 @@
-
-import React, { useState, useEffect } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
-import { useSaldosBancarios } from '@/hooks/useSaldosBancarios';
-import { CurrencyInput } from '@/components/ui/currency-input';
-import SaldoBancarioSummaryCard from '@/components/saldos-bancarios/SaldoBancarioSummaryCard';
+import React, { useState, useEffect } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useSaldosBancarios } from "@/hooks/useSaldosBancarios";
+import { CurrencyInput } from "@/components/ui/currency-input";
+import SaldoBancarioSummaryCard from "@/components/saldos-bancarios/SaldoBancarioSummaryCard";
 import {
   Table,
   TableBody,
@@ -19,9 +18,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Edit, Trash2 } from 'lucide-react';
-import { parseStringToNumber, formatNumberToInput } from '@/utils/currency';
+} from "@/components/ui/table";
+import { Edit, Trash2 } from "lucide-react";
+import { parseStringToNumber, formatNumberToInput } from "@/utils/currency";
 
 interface SaldoBancario {
   id: string;
@@ -36,67 +35,78 @@ interface SaldoBancario {
 const SaldosBancarios: React.FC = () => {
   const { toast } = useToast();
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('lista');
+  const [activeTab, setActiveTab] = useState("lista");
   const [editingSaldo, setEditingSaldo] = useState<SaldoBancario | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const { useQuery: useSaldosQuery, useCreate, useUpdate, useDelete } = useSaldosBancarios();
+  const {
+    useQuery: useSaldosQuery,
+    useCreate,
+    useUpdate,
+    useDelete,
+  } = useSaldosBancarios();
   const { data: saldos, isLoading } = useSaldosQuery();
   const createSaldo = useCreate();
   const updateSaldo = useUpdate();
   const deleteSaldo = useDelete();
 
   const [formData, setFormData] = useState({
-    banco: '',
-    saldo: '',
+    banco: "",
+    saldo: "",
   });
 
-  console.log('SaldosBancarios: FormData atual:', formData);
-  console.log('SaldosBancarios: Editando saldo:', editingSaldo);
+  console.log("SaldosBancarios: FormData atual:", formData);
+  console.log("SaldosBancarios: Editando saldo:", editingSaldo);
 
   useEffect(() => {
     if (editingSaldo) {
-      console.log('SaldosBancarios: Carregando dados para edição:', editingSaldo);
+      console.log(
+        "SaldosBancarios: Carregando dados para edição:",
+        editingSaldo,
+      );
       // Usar formatNumberToInput para garantir formato correto
       const saldoFormatado = formatNumberToInput(editingSaldo.saldo);
-      console.log('SaldosBancarios: Saldo formatado para edição:', saldoFormatado);
-      
+      console.log(
+        "SaldosBancarios: Saldo formatado para edição:",
+        saldoFormatado,
+      );
+
       setFormData({
         banco: editingSaldo.banco,
         saldo: saldoFormatado,
       });
-      setActiveTab('formulario');
+      setActiveTab("formulario");
     }
   }, [editingSaldo]);
 
   const resetForm = () => {
-    console.log('SaldosBancarios: Resetando formulário');
+    console.log("SaldosBancarios: Resetando formulário");
     setFormData({
-      banco: '',
-      saldo: '',
+      banco: "",
+      saldo: "",
     });
     setEditingSaldo(null);
   };
 
   const handleEdit = (saldo: SaldoBancario) => {
-    console.log('SaldosBancarios: Editando saldo:', saldo);
+    console.log("SaldosBancarios: Editando saldo:", saldo);
     setEditingSaldo(saldo);
-    setActiveTab('formulario');
+    setActiveTab("formulario");
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Tem certeza que deseja excluir este saldo bancário?')) {
+    if (window.confirm("Tem certeza que deseja excluir este saldo bancário?")) {
       try {
         await deleteSaldo.mutateAsync(id);
         toast({
           title: "Sucesso!",
           description: "Saldo bancário excluído com sucesso.",
         });
-      } catch (error: any) {
-        console.error('SaldosBancarios: Erro ao excluir:', error);
+      } catch (error) {
+        console.error("SaldosBancarios: Erro ao excluir:", error);
         toast({
           title: "Erro ao excluir",
-          description: error.message,
+          description: error instanceof Error ? error.message : "Erro desconhecido",
           variant: "destructive",
         });
       }
@@ -105,9 +115,9 @@ const SaldosBancarios: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    console.log('SaldosBancarios: Submetendo formulário:', formData);
-    
+
+    console.log("SaldosBancarios: Submetendo formulário:", formData);
+
     if (!formData.banco.trim()) {
       toast({
         title: "Erro",
@@ -117,7 +127,7 @@ const SaldosBancarios: React.FC = () => {
       return;
     }
 
-    if (!formData.saldo || formData.saldo.trim() === '') {
+    if (!formData.saldo || formData.saldo.trim() === "") {
       toast({
         title: "Erro",
         description: "Saldo é obrigatório.",
@@ -129,7 +139,7 @@ const SaldosBancarios: React.FC = () => {
     setLoading(true);
 
     const saldoNumerico = parseStringToNumber(formData.saldo);
-    console.log('SaldosBancarios: Saldo numérico convertido:', saldoNumerico);
+    console.log("SaldosBancarios: Saldo numérico convertido:", saldoNumerico);
 
     if (isNaN(saldoNumerico)) {
       toast({
@@ -144,33 +154,33 @@ const SaldosBancarios: React.FC = () => {
     const saldoData = {
       banco: formData.banco.trim(),
       saldo: saldoNumerico,
-      data: new Date().toISOString().split('T')[0],
+      data: new Date().toISOString().split("T")[0],
       user_id: user?.id!,
     };
 
-    console.log('SaldosBancarios: Dados para salvar:', saldoData);
+    console.log("SaldosBancarios: Dados para salvar:", saldoData);
 
     try {
       if (editingSaldo) {
-        console.log('SaldosBancarios: Atualizando saldo existente');
+        console.log("SaldosBancarios: Atualizando saldo existente");
         await updateSaldo.mutateAsync({ id: editingSaldo.id, data: saldoData });
         toast({
           title: "Sucesso!",
           description: "Saldo bancário atualizado com sucesso.",
         });
       } else {
-        console.log('SaldosBancarios: Criando novo saldo');
+        console.log("SaldosBancarios: Criando novo saldo");
         await createSaldo.mutateAsync(saldoData);
         toast({
           title: "Sucesso!",
           description: "Saldo bancário criado com sucesso.",
         });
       }
-      
+
       resetForm();
-      setActiveTab('lista');
+      setActiveTab("lista");
     } catch (error: any) {
-      console.error('SaldosBancarios: Erro ao salvar:', error);
+      console.error("SaldosBancarios: Erro ao salvar:", error);
       toast({
         title: "Erro ao salvar",
         description: error.message,
@@ -182,8 +192,8 @@ const SaldosBancarios: React.FC = () => {
   };
 
   const handleCurrencyChange = (value: string) => {
-    console.log('SaldosBancarios: Valor da moeda alterado:', value);
-    setFormData(prev => ({ ...prev, saldo: value }));
+    console.log("SaldosBancarios: Valor da moeda alterado:", value);
+    setFormData((prev) => ({ ...prev, saldo: value }));
   };
 
   return (
@@ -193,7 +203,9 @@ const SaldosBancarios: React.FC = () => {
           <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             🏦 Saldos Bancários
           </h1>
-          <p className="text-gray-600 mt-1 sm:mt-2 text-xs sm:text-sm">Controle de saldos em suas contas bancárias</p>
+          <p className="text-gray-600 mt-1 sm:mt-2 text-xs sm:text-sm">
+            Controle de saldos em suas contas bancárias
+          </p>
         </div>
       </div>
 
@@ -213,66 +225,87 @@ const SaldosBancarios: React.FC = () => {
             value="formulario"
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-xs sm:text-sm md:text-base py-2 sm:py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
-            {editingSaldo ? '✏️ Editar Saldo' : '➕ Novo Saldo'}
+            {editingSaldo ? "✏️ Editar Saldo" : "➕ Novo Saldo"}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="lista" className="mt-4 sm:mt-6 md:mt-8">
           <Card className="responsive-card">
             <CardHeader className="responsive-card-header">
-              <CardTitle className="text-base sm:text-lg md:text-xl">Lista de Saldos Bancários</CardTitle>
+              <CardTitle className="text-base sm:text-lg md:text-xl">
+                Lista de Saldos Bancários
+              </CardTitle>
             </CardHeader>
             <CardContent className="p-2 sm:p-4 md:p-6">
               <div className="responsive-table-container">
                 <Table className="responsive-table">
-                  <TableCaption className="text-xs sm:text-sm">Seus saldos bancários atuais.</TableCaption>
+                  <TableCaption className="text-xs sm:text-sm">
+                    Seus saldos bancários atuais.
+                  </TableCaption>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[120px] sm:w-[200px]">Banco</TableHead>
+                      <TableHead className="w-[120px] sm:w-[200px]">
+                        Banco
+                      </TableHead>
                       <TableHead>Saldo</TableHead>
-                      <TableHead className="hidden sm:table-cell">Data</TableHead>
+                      <TableHead className="hidden sm:table-cell">
+                        Data
+                      </TableHead>
                       <TableHead>Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {saldos && saldos.map((saldo) => (
-                      <TableRow key={saldo.id}>
-                        <TableCell className="font-medium">{saldo.banco}</TableCell>
-                        <TableCell className="font-mono text-green-600">
-                          R$ {saldo.saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          {new Date(saldo.data).toLocaleDateString('pt-BR')}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-1 sm:space-x-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleEdit(saldo)}
-                              className="h-6 sm:h-8 px-1 sm:px-2 text-xs sm:text-sm"
-                            >
-                              <Edit className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
-                              <span className="hidden sm:inline">Editar</span>
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 sm:h-8 px-1 sm:px-2 text-xs sm:text-sm text-red-600 hover:text-red-700"
-                              onClick={() => handleDelete(saldo.id)}
-                            >
-                              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
-                              <span className="hidden sm:inline">Excluir</span>
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {saldos &&
+                      saldos.map((saldo) => (
+                        <TableRow key={saldo.id}>
+                          <TableCell className="font-medium">
+                            {saldo.banco}
+                          </TableCell>
+                          <TableCell className="font-mono text-green-600">
+                            R${" "}
+                            {saldo.saldo.toLocaleString("pt-BR", {
+                              minimumFractionDigits: 2,
+                            })}
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {new Date(saldo.data).toLocaleDateString("pt-BR")}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center space-x-1 sm:space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleEdit(saldo)}
+                                className="h-6 sm:h-8 px-1 sm:px-2 text-xs sm:text-sm"
+                              >
+                                <Edit className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+                                <span className="hidden sm:inline">Editar</span>
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 sm:h-8 px-1 sm:px-2 text-xs sm:text-sm text-red-600 hover:text-red-700"
+                                onClick={() => handleDelete(saldo.id)}
+                              >
+                                <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+                                <span className="hidden sm:inline">
+                                  Excluir
+                                </span>
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                   <TableFooter>
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center text-xs sm:text-sm">
-                        {isLoading ? 'Carregando...' : 'Fim dos saldos bancários'}
+                      <TableCell
+                        colSpan={4}
+                        className="text-center text-xs sm:text-sm"
+                      >
+                        {isLoading
+                          ? "Carregando..."
+                          : "Fim dos saldos bancários"}
                       </TableCell>
                     </TableRow>
                   </TableFooter>
@@ -286,24 +319,30 @@ const SaldosBancarios: React.FC = () => {
           <Card className="responsive-card">
             <CardHeader className="responsive-card-header">
               <CardTitle className="text-base sm:text-lg md:text-xl">
-                {editingSaldo ? 'Editar Saldo Bancário' : 'Novo Saldo Bancário'}
+                {editingSaldo ? "Editar Saldo Bancário" : "Novo Saldo Bancário"}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-2 sm:p-4 md:p-6">
               <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                 <div className="responsive-form-grid">
                   <div className="space-y-2">
-                    <Label htmlFor="banco" className="text-xs sm:text-sm">Banco *</Label>
+                    <Label htmlFor="banco" className="text-xs sm:text-sm">
+                      Banco *
+                    </Label>
                     <Input
                       id="banco"
                       value={formData.banco}
-                      onChange={(e) => setFormData({ ...formData, banco: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, banco: e.target.value })
+                      }
                       placeholder="Nome do banco"
                       className="responsive-input"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="saldo" className="text-xs sm:text-sm">Saldo *</Label>
+                    <Label htmlFor="saldo" className="text-xs sm:text-sm">
+                      Saldo *
+                    </Label>
                     <CurrencyInput
                       id="saldo"
                       value={formData.saldo}
@@ -314,8 +353,8 @@ const SaldosBancarios: React.FC = () => {
                   </div>
                 </div>
                 <div className="responsive-form-actions">
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     onClick={resetForm}
                     className="responsive-button mobile-full"
                     type="button"
@@ -327,7 +366,11 @@ const SaldosBancarios: React.FC = () => {
                     disabled={loading}
                     className="responsive-button mobile-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                   >
-                    {loading ? 'Salvando...' : (editingSaldo ? 'Atualizar Saldo' : 'Salvar')}
+                    {loading
+                      ? "Salvando..."
+                      : editingSaldo
+                        ? "Atualizar Saldo"
+                        : "Salvar"}
                   </Button>
                 </div>
               </form>

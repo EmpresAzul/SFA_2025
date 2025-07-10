@@ -1,8 +1,7 @@
-
-import { useState, useMemo } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { useState, useMemo } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export interface CustosVariaveis {
   fornecedores: number;
@@ -48,23 +47,25 @@ export const usePontoEquilibrio = () => {
     comissoes: 5,
     taxaCartao: 3,
     outros: 2,
-    lucratividade: 15
+    lucratividade: 15,
   });
   const [gastosFixos, setGastosFixos] = useState<GastosFixos>({
     gastosFixosMensais: 8000,
-    proLabore: 5000
+    proLabore: 5000,
   });
   const [saidasNaoOperacionais, setSaidasNaoOperacionais] = useState(1000);
   const [projecaoAtual, setProjecaoAtual] = useState<string | null>(null);
 
   // Cálculos
   const totalCustosVariaveisPercentual = useMemo(() => {
-    return custosVariaveis.fornecedores + 
-           custosVariaveis.impostos + 
-           custosVariaveis.comissoes + 
-           custosVariaveis.taxaCartao + 
-           custosVariaveis.outros + 
-           custosVariaveis.lucratividade;
+    return (
+      custosVariaveis.fornecedores +
+      custosVariaveis.impostos +
+      custosVariaveis.comissoes +
+      custosVariaveis.taxaCartao +
+      custosVariaveis.outros +
+      custosVariaveis.lucratividade
+    );
   }, [custosVariaveis]);
 
   const margemContribuicao = useMemo(() => {
@@ -72,7 +73,11 @@ export const usePontoEquilibrio = () => {
   }, [totalCustosVariaveisPercentual]);
 
   const totalGastosFixos = useMemo(() => {
-    return gastosFixos.gastosFixosMensais + gastosFixos.proLabore + saidasNaoOperacionais;
+    return (
+      gastosFixos.gastosFixosMensais +
+      gastosFixos.proLabore +
+      saidasNaoOperacionais
+    );
   }, [gastosFixos, saidasNaoOperacionais]);
 
   const pontoEquilibrio = useMemo(() => {
@@ -87,27 +92,35 @@ export const usePontoEquilibrio = () => {
 
   const proLaboreMaximo = useMemo(() => {
     const receitaDisponivel = faturamento * margemContribuicao;
-    const proLaboreMax = receitaDisponivel - gastosFixos.gastosFixosMensais - saidasNaoOperacionais;
+    const proLaboreMax =
+      receitaDisponivel -
+      gastosFixos.gastosFixosMensais -
+      saidasNaoOperacionais;
     return Math.max(0, proLaboreMax);
-  }, [faturamento, margemContribuicao, gastosFixos.gastosFixosMensais, saidasNaoOperacionais]);
+  }, [
+    faturamento,
+    margemContribuicao,
+    gastosFixos.gastosFixosMensais,
+    saidasNaoOperacionais,
+  ]);
 
   // Query para buscar projeções
   const { data: projecoes = [], isLoading: isLoadingProjecoes } = useQuery({
-    queryKey: ['projecoes-ponto-equilibrio'],
+    queryKey: ["projecoes-ponto-equilibrio"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('projecoes_ponto_equilibrio')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("projecoes_ponto_equilibrio")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
-      
+
       // Converter os dados do Supabase para nosso tipo customizado
-      return (data || []).map(item => ({
+      return (data || []).map((item) => ({
         ...item,
-        dados_projecao: item.dados_projecao as unknown as ProjecaoData
+        dados_projecao: item.dados_projecao as unknown as ProjecaoData,
       })) as Projecao[];
-    }
+    },
   });
 
   // Mutation para salvar projeção
@@ -122,16 +135,16 @@ export const usePontoEquilibrio = () => {
           pontoEquilibrio,
           percentualPE,
           margemContribuicao: margemContribuicao * 100,
-          proLaboreMaximo
-        }
+          proLaboreMaximo,
+        },
       };
 
       const { data, error } = await supabase
-        .from('projecoes_ponto_equilibrio')
+        .from("projecoes_ponto_equilibrio")
         .insert({
           nome_projecao: nomeProjecao,
-          dados_projecao: dadosProjecao as any, // Conversão para Json
-          user_id: (await supabase.auth.getUser()).data.user?.id
+          dados_projecao: dadosProjecao as Record<string, unknown>, // Conversão para Json
+          user_id: (await supabase.auth.getUser()).data.user?.id,
         })
         .select()
         .single();
@@ -139,23 +152,31 @@ export const usePontoEquilibrio = () => {
       if (error) throw error;
       return {
         ...data,
-        dados_projecao: data.dados_projecao as unknown as ProjecaoData
+        dados_projecao: data.dados_projecao as unknown as ProjecaoData,
       } as Projecao;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['projecoes-ponto-equilibrio'] });
+      queryClient.invalidateQueries({
+        queryKey: ["projecoes-ponto-equilibrio"],
+      });
       setProjecaoAtual(data.id);
-      toast.success('Projeção salva com sucesso!');
+      toast.success("Projeção salva com sucesso!");
     },
     onError: (error) => {
-      console.error('Erro ao salvar projeção:', error);
-      toast.error('Erro ao salvar projeção');
-    }
+      console.error("Erro ao salvar projeção:", error);
+      toast.error("Erro ao salvar projeção");
+    },
   });
 
   // Mutation para atualizar projeção
   const atualizarProjecaoMutation = useMutation({
-    mutationFn: async ({ id, nomeProjecao }: { id: string; nomeProjecao?: string }) => {
+    mutationFn: async ({
+      id,
+      nomeProjecao,
+    }: {
+      id: string;
+      nomeProjecao?: string;
+    }) => {
       const dadosProjecao: ProjecaoData = {
         faturamento,
         custosVariaveis,
@@ -165,55 +186,59 @@ export const usePontoEquilibrio = () => {
           pontoEquilibrio,
           percentualPE,
           margemContribuicao: margemContribuicao * 100,
-          proLaboreMaximo
-        }
+          proLaboreMaximo,
+        },
       };
 
-      const updateData: any = { dados_projecao: dadosProjecao as any };
+      const updateData: Record<string, unknown> = { dados_projecao: dadosProjecao as Record<string, unknown> };
       if (nomeProjecao) updateData.nome_projecao = nomeProjecao;
 
       const { data, error } = await supabase
-        .from('projecoes_ponto_equilibrio')
+        .from("projecoes_ponto_equilibrio")
         .update(updateData)
-        .eq('id', id)
+        .eq("id", id)
         .select()
         .single();
 
       if (error) throw error;
       return {
         ...data,
-        dados_projecao: data.dados_projecao as unknown as ProjecaoData
+        dados_projecao: data.dados_projecao as unknown as ProjecaoData,
       } as Projecao;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projecoes-ponto-equilibrio'] });
-      toast.success('Projeção atualizada com sucesso!');
+      queryClient.invalidateQueries({
+        queryKey: ["projecoes-ponto-equilibrio"],
+      });
+      toast.success("Projeção atualizada com sucesso!");
     },
     onError: (error) => {
-      console.error('Erro ao atualizar projeção:', error);
-      toast.error('Erro ao atualizar projeção');
-    }
+      console.error("Erro ao atualizar projeção:", error);
+      toast.error("Erro ao atualizar projeção");
+    },
   });
 
   // Mutation para deletar projeção
   const deletarProjecaoMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from('projecoes_ponto_equilibrio')
+        .from("projecoes_ponto_equilibrio")
         .delete()
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projecoes-ponto-equilibrio'] });
+      queryClient.invalidateQueries({
+        queryKey: ["projecoes-ponto-equilibrio"],
+      });
       setProjecaoAtual(null);
-      toast.success('Projeção excluída com sucesso!');
+      toast.success("Projeção excluída com sucesso!");
     },
     onError: (error) => {
-      console.error('Erro ao deletar projeção:', error);
-      toast.error('Erro ao deletar projeção');
-    }
+      console.error("Erro ao deletar projeção:", error);
+      toast.error("Erro ao deletar projeção");
+    },
   });
 
   const carregarProjecao = (projecao: Projecao) => {
@@ -234,15 +259,15 @@ export const usePontoEquilibrio = () => {
       comissoes: 5,
       taxaCartao: 3,
       outros: 2,
-      lucratividade: 15
+      lucratividade: 15,
     });
     setGastosFixos({
       gastosFixosMensais: 8000,
-      proLabore: 5000
+      proLabore: 5000,
     });
     setSaidasNaoOperacionais(1000);
     setProjecaoAtual(null);
-    toast.success('Nova projeção criada!');
+    toast.success("Nova projeção criada!");
   };
 
   return {
@@ -268,7 +293,8 @@ export const usePontoEquilibrio = () => {
     deletarProjecao: deletarProjecaoMutation.mutate,
     carregarProjecao,
     novaProjecao,
-    isSaving: salvarProjecaoMutation.isPending || atualizarProjecaoMutation.isPending,
-    isDeleting: deletarProjecaoMutation.isPending
+    isSaving:
+      salvarProjecaoMutation.isPending || atualizarProjecaoMutation.isPending,
+    isDeleting: deletarProjecaoMutation.isPending,
   };
 };

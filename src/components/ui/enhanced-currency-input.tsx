@@ -1,8 +1,11 @@
-
-import React, { forwardRef, useEffect, useState } from 'react';
-import { Input } from './input';
-import { formatNumberToInput, parseStringToNumber, formatCurrencyInput } from '@/utils/currency';
-import { cn } from '@/lib/utils';
+import React, { forwardRef, useEffect, useState } from "react";
+import { Input } from "./input";
+import {
+  formatNumberToInput,
+  parseStringToNumber,
+  formatCurrencyInput,
+} from "@/utils/currency";
+import { cn } from "@/lib/utils";
 
 interface EnhancedCurrencyInputProps {
   value?: string | number;
@@ -15,19 +18,25 @@ interface EnhancedCurrencyInputProps {
   id?: string;
 }
 
-export const EnhancedCurrencyInput = forwardRef<HTMLInputElement, EnhancedCurrencyInputProps>(
-  ({ 
-    value, 
-    onChange, 
-    placeholder = "0,00", 
-    className, 
-    disabled = false,
-    allowNegative = false,
-    error = false,
-    id,
-    ...props 
-  }, ref) => {
-    const [inputValue, setInputValue] = useState('');
+export const EnhancedCurrencyInput = forwardRef<
+  HTMLInputElement,
+  EnhancedCurrencyInputProps
+>(
+  (
+    {
+      value,
+      onChange,
+      placeholder = "0,00",
+      className,
+      disabled = false,
+      allowNegative = false,
+      error = false,
+      id,
+      ...props
+    },
+    ref,
+  ) => {
+    const [inputValue, setInputValue] = useState("");
     const [isFocused, setIsFocused] = useState(false);
 
     // Sincronizar com valor externo
@@ -37,21 +46,21 @@ export const EnhancedCurrencyInput = forwardRef<HTMLInputElement, EnhancedCurren
         const formattedValue = formatNumberToInput(numericValue);
         setInputValue(formattedValue);
       } else {
-        setInputValue('');
+        setInputValue("");
       }
     }, [value]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value;
-      
+
       // Aplicar máscara em tempo real
       const formattedValue = formatCurrencyInput(rawValue);
       const numericValue = parseStringToNumber(formattedValue);
-      
+
       if (!allowNegative && numericValue < 0) {
         return;
       }
-      
+
       setInputValue(formattedValue);
       onChange?.(numericValue, formattedValue);
     };
@@ -72,20 +81,29 @@ export const EnhancedCurrencyInput = forwardRef<HTMLInputElement, EnhancedCurren
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       // Permitir teclas de navegação e controle
       const allowedKeys = [
-        'Backspace', 'Delete', 'Tab', 'Escape', 'Enter',
-        'Home', 'End', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'
+        "Backspace",
+        "Delete",
+        "Tab",
+        "Escape",
+        "Enter",
+        "Home",
+        "End",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
       ];
-      
+
       // Permitir Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-      if (e.ctrlKey && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
+      if (e.ctrlKey && ["a", "c", "v", "x"].includes(e.key.toLowerCase())) {
         return;
       }
-      
+
       // Permitir teclas de controle
       if (allowedKeys.includes(e.key)) {
         return;
       }
-      
+
       // Permitir apenas números
       if (!/^\d$/.test(e.key)) {
         e.preventDefault();
@@ -110,14 +128,14 @@ export const EnhancedCurrencyInput = forwardRef<HTMLInputElement, EnhancedCurren
           className={cn(
             "pl-10", // Espaço para o R$
             error && "border-red-500 focus:border-red-500",
-            className
+            className,
           )}
           disabled={disabled}
           {...props}
         />
       </div>
     );
-  }
+  },
 );
 
 EnhancedCurrencyInput.displayName = "EnhancedCurrencyInput";

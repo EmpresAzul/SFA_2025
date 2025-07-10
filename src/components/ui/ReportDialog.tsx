@@ -1,7 +1,13 @@
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
 interface ReportDialogProps {
   open: boolean;
@@ -22,7 +28,7 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
   filters,
   children,
   onExport,
-  exportLabel = 'Exportar',
+  exportLabel = "Exportar",
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -44,4 +50,4 @@ const ReportDialog: React.FC<ReportDialogProps> = ({
   );
 };
 
-export default ReportDialog; 
+export default ReportDialog;

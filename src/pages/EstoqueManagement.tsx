@@ -1,19 +1,21 @@
-
-import React, { useState, useEffect } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useEstoqueData } from '@/hooks/useEstoqueData';
-import { useEstoqueForm } from '@/hooks/useEstoqueForm';
-import { EstoqueSummaryCards } from '@/components/estoque/EstoqueSummaryCards';
-import { EstoqueFilters } from '@/components/estoque/EstoqueFilters';
-import { EstoqueTable } from '@/components/estoque/EstoqueTable';
-import { EstoqueForm } from '@/components/estoque/EstoqueForm';
+import React, { useState, useEffect } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEstoqueData } from "@/hooks/useEstoqueData";
+import { useEstoqueForm } from "@/hooks/useEstoqueForm";
+import { EstoqueSummaryCards } from "@/components/estoque/EstoqueSummaryCards";
+import { EstoqueFilters } from "@/components/estoque/EstoqueFilters";
+import { EstoqueTable } from "@/components/estoque/EstoqueTable";
+import { EstoqueForm } from "@/components/estoque/EstoqueForm";
+import { Estoque } from "@/types/estoque";
 
 const EstoqueManagement: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('todos');
-  const [filteredEstoques, setFilteredEstoques] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("todos");
+  const [filteredEstoques, setFilteredEstoques] = useState<Estoque[]>([]);
+  const [editingItem, setEditingItem] = useState<Estoque | null>(null);
 
-  const { estoques, loading, fetchEstoques, handleToggleStatus, handleDelete } = useEstoqueData();
+  const { estoques, loading, fetchEstoques, handleToggleStatus, handleDelete } =
+    useEstoqueData();
   const {
     formData,
     setFormData,
@@ -23,7 +25,7 @@ const EstoqueManagement: React.FC = () => {
     loading: formLoading,
     handleSubmit,
     handleEdit,
-    resetForm
+    resetForm,
   } = useEstoqueForm(fetchEstoques);
 
   useEffect(() => {
@@ -34,13 +36,13 @@ const EstoqueManagement: React.FC = () => {
     let filtered = estoques;
 
     if (searchTerm) {
-      filtered = filtered.filter(estoque =>
-        estoque.nome_produto.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter((estoque) =>
+        estoque.nome_produto.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
-    if (statusFilter !== 'todos') {
-      filtered = filtered.filter(estoque => estoque.status === statusFilter);
+    if (statusFilter !== "todos") {
+      filtered = filtered.filter((estoque) => estoque.status === statusFilter);
     }
 
     setFilteredEstoques(filtered);
@@ -53,7 +55,9 @@ const EstoqueManagement: React.FC = () => {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Gestão de Estoques
           </h1>
-          <p className="text-gray-600 mt-2">Controle completo e inteligente do seu estoque</p>
+          <p className="text-gray-600 mt-2">
+            Controle completo e inteligente do seu estoque
+          </p>
         </div>
       </div>
 
@@ -61,17 +65,17 @@ const EstoqueManagement: React.FC = () => {
 
       <Tabs defaultValue="lista" className="w-full">
         <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-14">
-          <TabsTrigger 
-            value="lista" 
+          <TabsTrigger
+            value="lista"
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-lg py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
             📋 Lista de Estoques
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="formulario"
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-lg py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
-            ➕ {isEditMode ? 'Editar Item' : 'Cadastrar Item'}
+            ➕ {isEditMode ? "Editar Item" : "Cadastrar Item"}
           </TabsTrigger>
         </TabsList>
 

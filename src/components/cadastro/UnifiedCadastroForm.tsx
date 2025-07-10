@@ -1,24 +1,53 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
-import { useCadastros } from '@/hooks/useCadastros';
-import { useAuth } from '@/contexts/AuthContext';
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { useCadastros } from "@/hooks/useCadastros";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ESTADOS = [
-  'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
-  'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
-  'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+  "AC",
+  "AL",
+  "AP",
+  "AM",
+  "BA",
+  "CE",
+  "DF",
+  "ES",
+  "GO",
+  "MA",
+  "MT",
+  "MS",
+  "MG",
+  "PA",
+  "PB",
+  "PR",
+  "PE",
+  "PI",
+  "RJ",
+  "RN",
+  "RS",
+  "RO",
+  "RR",
+  "SC",
+  "SP",
+  "SE",
+  "TO",
 ];
 
 interface FormData {
   data: string;
-  tipo: 'Cliente' | 'Fornecedor' | 'Funcionário' | '';
+  tipo: "Cliente" | "Fornecedor" | "Funcionário" | "";
   nome: string;
   endereco: string;
   numero: string;
@@ -34,30 +63,32 @@ interface UnifiedCadastroFormProps {
   onSuccess?: () => void;
 }
 
-export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSuccess }) => {
+export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
+  onSuccess,
+}) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { useCreate } = useCadastros();
   const createCadastro = useCreate();
 
   const [formData, setFormData] = useState<FormData>({
-    data: new Date().toISOString().split('T')[0],
-    tipo: '',
-    nome: '',
-    endereco: '',
-    numero: '',
-    cidade: '',
-    estado: '',
-    observacoes: '',
-    telefone: '',
-    email: '',
-    cpf_cnpj: ''
+    data: new Date().toISOString().split("T")[0],
+    tipo: "",
+    nome: "",
+    endereco: "",
+    numero: "",
+    cidade: "",
+    estado: "",
+    observacoes: "",
+    telefone: "",
+    email: "",
+    cpf_cnpj: "",
   });
 
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const validateForm = (): boolean => {
@@ -93,23 +124,23 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
 
   const resetForm = () => {
     setFormData({
-      data: new Date().toISOString().split('T')[0],
-      tipo: '',
-      nome: '',
-      endereco: '',
-      numero: '',
-      cidade: '',
-      estado: '',
-      observacoes: '',
-      telefone: '',
-      email: '',
-      cpf_cnpj: ''
+      data: new Date().toISOString().split("T")[0],
+      tipo: "",
+      nome: "",
+      endereco: "",
+      numero: "",
+      cidade: "",
+      estado: "",
+      observacoes: "",
+      telefone: "",
+      email: "",
+      cpf_cnpj: "",
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (data: CadastroFormData) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -120,8 +151,8 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
       const cadastroData = {
         data: formData.data,
         nome: formData.nome.trim(),
-        tipo: formData.tipo as 'Cliente' | 'Fornecedor' | 'Funcionário',
-        pessoa: 'Física' as const,
+        tipo: formData.tipo as "Cliente" | "Fornecedor" | "Funcionário",
+        pessoa: "Física" as const,
         endereco: formData.endereco.trim() || undefined,
         numero: formData.numero.trim() || undefined,
         cidade: formData.cidade.trim() || undefined,
@@ -131,14 +162,14 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
         email: formData.email.trim() || undefined,
         cpf_cnpj: formData.cpf_cnpj.trim() || undefined,
         user_id: user!.id,
-        status: 'ativo',
+        status: "ativo",
         bairro: undefined,
         cep: undefined,
-        salario: undefined
+        salario: undefined,
       };
 
       await createCadastro.mutateAsync(cadastroData);
-      
+
       toast({
         title: "Sucesso",
         description: "Cadastro salvo com sucesso!",
@@ -148,11 +179,12 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
       if (onSuccess) {
         onSuccess();
       }
-    } catch (error: any) {
-      console.error('Erro ao salvar cadastro:', error);
+    } catch (error: unknown) {
+      console.error("Erro ao salvar cadastro:", error);
       toast({
         title: "Erro",
-        description: error.message || "Erro ao salvar cadastro. Tente novamente.",
+        description:
+          error instanceof Error ? error.message : "Erro ao salvar cadastro. Tente novamente.",
         variant: "destructive",
       });
     } finally {
@@ -176,14 +208,17 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
                 id="data"
                 type="date"
                 value={formData.data}
-                onChange={(e) => handleInputChange('data', e.target.value)}
+                onChange={(e) => handleInputChange("data", e.target.value)}
                 required
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="tipo">Tipo *</Label>
-              <Select value={formData.tipo} onValueChange={(value) => handleInputChange('tipo', value)}>
+              <Select
+                value={formData.tipo}
+                onValueChange={(value) => handleInputChange("tipo", value)}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
@@ -200,7 +235,7 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
               <Input
                 id="nome"
                 value={formData.nome}
-                onChange={(e) => handleInputChange('nome', e.target.value)}
+                onChange={(e) => handleInputChange("nome", e.target.value)}
                 placeholder="Digite o nome completo"
                 required
               />
@@ -211,7 +246,7 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
               <Input
                 id="cpf_cnpj"
                 value={formData.cpf_cnpj}
-                onChange={(e) => handleInputChange('cpf_cnpj', e.target.value)}
+                onChange={(e) => handleInputChange("cpf_cnpj", e.target.value)}
                 placeholder="Digite o CPF ou CNPJ"
               />
             </div>
@@ -221,7 +256,7 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
               <Input
                 id="telefone"
                 value={formData.telefone}
-                onChange={(e) => handleInputChange('telefone', e.target.value)}
+                onChange={(e) => handleInputChange("telefone", e.target.value)}
                 placeholder="Digite o telefone"
               />
             </div>
@@ -232,7 +267,7 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
+                onChange={(e) => handleInputChange("email", e.target.value)}
                 placeholder="Digite o e-mail"
               />
             </div>
@@ -242,7 +277,7 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
               <Input
                 id="endereco"
                 value={formData.endereco}
-                onChange={(e) => handleInputChange('endereco', e.target.value)}
+                onChange={(e) => handleInputChange("endereco", e.target.value)}
                 placeholder="Digite o endereço"
               />
             </div>
@@ -252,7 +287,7 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
               <Input
                 id="numero"
                 value={formData.numero}
-                onChange={(e) => handleInputChange('numero', e.target.value)}
+                onChange={(e) => handleInputChange("numero", e.target.value)}
                 placeholder="Digite o número"
               />
             </div>
@@ -262,14 +297,17 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
               <Input
                 id="cidade"
                 value={formData.cidade}
-                onChange={(e) => handleInputChange('cidade', e.target.value)}
+                onChange={(e) => handleInputChange("cidade", e.target.value)}
                 placeholder="Digite a cidade"
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="estado">UF</Label>
-              <Select value={formData.estado} onValueChange={(value) => handleInputChange('estado', value)}>
+              <Select
+                value={formData.estado}
+                onValueChange={(value) => handleInputChange("estado", value)}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o estado" />
                 </SelectTrigger>
@@ -289,7 +327,7 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({ onSucc
             <Textarea
               id="observacoes"
               value={formData.observacoes}
-              onChange={(e) => handleInputChange('observacoes', e.target.value)}
+              onChange={(e) => handleInputChange("observacoes", e.target.value)}
               placeholder="Observações adicionais..."
               rows={3}
             />

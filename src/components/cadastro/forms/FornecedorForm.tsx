@@ -1,12 +1,18 @@
-
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CadastroData } from "../CadastroEditModal";
 
 interface FornecedorFormProps {
-  formData: any;
-  setFormData: (data: any) => void;
+  formData: CadastroData;
+  setFormData: (data: CadastroData) => void;
 }
 
 export const FornecedorForm: React.FC<FornecedorFormProps> = ({
@@ -19,8 +25,14 @@ export const FornecedorForm: React.FC<FornecedorFormProps> = ({
         <Label htmlFor="razao_social">Razão Social *</Label>
         <Input
           id="razao_social"
-          value={formData.razao_social || ''}
-          onChange={(e) => setFormData({ ...formData, razao_social: e.target.value, nome: e.target.value })}
+          value={formData.razao_social || ""}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              razao_social: e.target.value,
+              nome: e.target.value,
+            })
+          }
           placeholder="Digite a razão social da empresa"
           required
         />
@@ -31,7 +43,9 @@ export const FornecedorForm: React.FC<FornecedorFormProps> = ({
         <Input
           id="cpf_cnpj"
           value={formData.cpf_cnpj}
-          onChange={(e) => setFormData({ ...formData, cpf_cnpj: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, cpf_cnpj: e.target.value })
+          }
           placeholder="00.000.000/0000-00"
           required
         />
@@ -39,9 +53,12 @@ export const FornecedorForm: React.FC<FornecedorFormProps> = ({
 
       <div className="space-y-2">
         <Label htmlFor="tipo_fornecedor">Tipo de Fornecedor</Label>
-        <Select value={formData.tipo_fornecedor || ''} onValueChange={(value) => 
-          setFormData({ ...formData, tipo_fornecedor: value })
-        }>
+        <Select
+          value={formData.tipo_fornecedor || ""}
+          onValueChange={(value) =>
+            setFormData({ ...formData, tipo_fornecedor: value })
+          }
+        >
           <SelectTrigger>
             <SelectValue placeholder="Selecione o tipo" />
           </SelectTrigger>
@@ -59,7 +76,9 @@ export const FornecedorForm: React.FC<FornecedorFormProps> = ({
         <Input
           id="telefone"
           value={formData.telefone}
-          onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, telefone: e.target.value })
+          }
           placeholder="(00) 00000-0000"
           required
         />

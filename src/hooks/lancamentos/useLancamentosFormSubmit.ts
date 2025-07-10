@@ -1,15 +1,18 @@
-
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
-import type { FormData, LancamentoComRelacoes, LancamentoFormParams } from '@/types/lancamentosForm';
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import type {
+  FormData,
+  LancamentoComRelacoes,
+  LancamentoFormParams,
+} from "@/types/lancamentosForm";
 
 export const useLancamentosFormSubmit = ({
   createLancamento,
   updateLancamento,
   setLoading,
   setActiveTab,
-  setEditingLancamento
-}: Omit<LancamentoFormParams, 'editingLancamento'>) => {
+  setEditingLancamento,
+}: Omit<LancamentoFormParams, "editingLancamento">) => {
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -17,7 +20,7 @@ export const useLancamentosFormSubmit = ({
     formData: FormData,
     valorNumerico: number,
     editingLancamento: LancamentoComRelacoes | null,
-    resetForm: () => void
+    resetForm: () => void,
   ) => {
     if (!user) {
       toast({
@@ -43,11 +46,13 @@ export const useLancamentosFormSubmit = ({
           fornecedor_id: formData.fornecedor_id || null,
           observacoes: formData.observacoes.trim() || null,
           recorrente: formData.recorrente,
-          meses_recorrencia: formData.recorrente ? formData.meses_recorrencia : null
+          meses_recorrencia: formData.recorrente
+            ? formData.meses_recorrencia
+            : null,
         };
-        
+
         await updateLancamento.mutateAsync(updateData);
-        
+
         toast({
           title: "Sucesso!",
           description: "Lançamento atualizado com sucesso.",
@@ -62,18 +67,21 @@ export const useLancamentosFormSubmit = ({
           fornecedor_id: formData.fornecedor_id || null,
           observacoes: formData.observacoes.trim() || null,
           user_id: user.id,
-          status: 'ativo',
+          status: "ativo",
           recorrente: formData.recorrente,
-          meses_recorrencia: formData.recorrente ? formData.meses_recorrencia : null,
-          lancamento_pai_id: null
+          meses_recorrencia: formData.recorrente
+            ? formData.meses_recorrencia
+            : null,
+          lancamento_pai_id: null,
         };
 
         await createLancamento.mutateAsync(lancamentoData);
-        
-        const mensagem = formData.recorrente && formData.meses_recorrencia 
-          ? `Lançamento recorrente criado com sucesso! Serão criados ${formData.meses_recorrencia} lançamentos nos próximos meses.`
-          : "Lançamento criado com sucesso.";
-        
+
+        const mensagem =
+          formData.recorrente && formData.meses_recorrencia
+            ? `Lançamento recorrente criado com sucesso! Serão criados ${formData.meses_recorrencia} lançamentos nos próximos meses.`
+            : "Lançamento criado com sucesso.";
+
         toast({
           title: "Sucesso!",
           description: mensagem,
@@ -82,16 +90,16 @@ export const useLancamentosFormSubmit = ({
 
       resetForm();
       setEditingLancamento(null);
-      setActiveTab('lista');
-      
-    } catch (error: any) {
-      const errorMessage = error?.message || "Ocorreu um erro ao salvar o lançamento.";
-      
+      setActiveTab("lista");
+    } catch (error: unknown) {
+      console.error('Erro ao salvar lançamento:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao salvar lançamento';
       toast({
-        title: "Erro ao salvar",
+        title: 'Erro',
         description: errorMessage,
-        variant: "destructive",
+        variant: 'destructive',
       });
+      throw error;
     } finally {
       setLoading(false);
     }

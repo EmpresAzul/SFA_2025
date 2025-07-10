@@ -1,10 +1,15 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search } from "lucide-react";
 
 interface CadastrosFiltersProps {
   searchTerm: string;
@@ -21,7 +26,7 @@ const CadastrosFilters: React.FC<CadastrosFiltersProps> = ({
   tipoFilter,
   setTipoFilter,
   statusFilter,
-  setStatusFilter
+  setStatusFilter,
 }) => {
   return (
     <Card className="shadow-colorful border-0 bg-white/90 backdrop-blur-sm mb-4 sm:mb-6">

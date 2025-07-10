@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { menuItems } from './menuItems';
-import SidebarMenuItem from './SidebarMenuItem';
+import React from "react";
+import { menuItems } from "./menuItems";
+import SidebarMenuItem from "./SidebarMenuItem";
 
 interface SidebarNavigationProps {
   collapsed: boolean;
@@ -12,12 +11,12 @@ interface SidebarNavigationProps {
 const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   collapsed,
   expandedItems,
-  onToggleExpanded
+  onToggleExpanded,
 }) => {
   return (
     <nav className="flex-1 p-3 overflow-y-auto">
       <div className="space-y-1">
-        {menuItems.map(item => (
+        {menuItems.map((item) => (
           <SidebarMenuItem
             key={item.id}
             item={item}

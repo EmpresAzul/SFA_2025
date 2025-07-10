@@ -1,8 +1,7 @@
-
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { EnhancedCurrencyInput } from "@/components/ui/enhanced-currency-input";
 
 interface HoraData {
   nome: string;
@@ -42,7 +41,9 @@ const HoraFormFields: React.FC<HoraFormFieldsProps> = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="dias-trabalhados">Qtde. dias trabalhados no mês *</Label>
+        <Label htmlFor="dias-trabalhados">
+          Qtde. dias trabalhados no mês *
+        </Label>
         <Input
           id="dias-trabalhados"
           type="number"

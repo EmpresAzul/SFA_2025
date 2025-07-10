@@ -1,16 +1,15 @@
-
-import React, { useState, useEffect } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { useIntegratedFluxoCaixa } from '@/hooks/useIntegratedFluxoCaixa';
-import { SummaryCards } from '@/components/fluxo-caixa/SummaryCards';
-import { DailyFlowChart } from '@/components/fluxo-caixa/DailyFlowChart';
-import { CategoryChart } from '@/components/fluxo-caixa/CategoryChart';
-import { PeriodSelector } from '@/components/fluxo-caixa/PeriodSelector';
+import React, { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useIntegratedFluxoCaixa } from "@/hooks/useIntegratedFluxoCaixa";
+import { SummaryCards } from "@/components/fluxo-caixa/SummaryCards";
+import { DailyFlowChart } from "@/components/fluxo-caixa/DailyFlowChart";
+import { CategoryChart } from "@/components/fluxo-caixa/CategoryChart";
+import { PeriodSelector } from "@/components/fluxo-caixa/PeriodSelector";
 
 const FluxoCaixa: React.FC = () => {
-  const [periodoFilter, setPeriodoFilter] = useState('mes-atual');
+  const [periodoFilter, setPeriodoFilter] = useState("mes-atual");
   const queryClient = useQueryClient();
-  
+
   const {
     lancamentos,
     loading,
@@ -20,14 +19,16 @@ const FluxoCaixa: React.FC = () => {
     fluxoPorDia,
     receitasPorCategoria,
     despesasPorCategoria,
-    onLancamentosChange
+    onLancamentosChange,
   } = useIntegratedFluxoCaixa(periodoFilter);
 
   // Escutar mudanças nos lançamentos para atualização automática
   useEffect(() => {
     const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
-      if (event?.query?.queryKey?.[0] === 'lancamentos') {
-        console.log('Detectada mudança nos lançamentos, atualizando fluxo de caixa...');
+      if (event?.query?.queryKey?.[0] === "lancamentos") {
+        console.log(
+          "Detectada mudança nos lançamentos, atualizando fluxo de caixa...",
+        );
         onLancamentosChange();
       }
     });
@@ -37,11 +38,16 @@ const FluxoCaixa: React.FC = () => {
 
   const getPeriodoLabel = () => {
     switch (periodoFilter) {
-      case 'mes-atual': return 'Mês Atual';
-      case 'mes-anterior': return 'Mês Anterior';
-      case 'ultimos-3-meses': return 'Últimos 3 Meses';
-      case 'ultimos-6-meses': return 'Últimos 6 Meses';
-      default: return 'Mês Atual';
+      case "mes-atual":
+        return "Mês Atual";
+      case "mes-anterior":
+        return "Mês Anterior";
+      case "ultimos-3-meses":
+        return "Últimos 3 Meses";
+      case "ultimos-6-meses":
+        return "Últimos 6 Meses";
+      default:
+        return "Mês Atual";
     }
   };
 
@@ -64,10 +70,11 @@ const FluxoCaixa: React.FC = () => {
             💰 Fluxo de Caixa
           </h1>
           <p className="text-gray-600 mt-2 text-sm">
-            Análise detalhada do movimento financeiro - {lancamentos.length} lançamentos
+            Análise detalhada do movimento financeiro - {lancamentos.length}{" "}
+            lançamentos
           </p>
         </div>
-        
+
         <PeriodSelector value={periodoFilter} onChange={setPeriodoFilter} />
       </div>
 
@@ -87,7 +94,7 @@ const FluxoCaixa: React.FC = () => {
           title="💚 Receitas por Categoria"
           emptyMessage="Nenhuma receita encontrada no período"
         />
-        
+
         <CategoryChart
           data={despesasPorCategoria}
           title="❤️ Despesas por Categoria"

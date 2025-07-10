@@ -1,11 +1,11 @@
-
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { CadastroData } from "../CadastroEditModal";
 
 interface FuncionarioFormProps {
-  formData: any;
-  setFormData: (data: any) => void;
+  formData: CadastroData;
+  setFormData: (data: CadastroData) => void;
 }
 
 export const FuncionarioForm: React.FC<FuncionarioFormProps> = ({
@@ -30,7 +30,9 @@ export const FuncionarioForm: React.FC<FuncionarioFormProps> = ({
         <Input
           id="cpf_cnpj"
           value={formData.cpf_cnpj}
-          onChange={(e) => setFormData({ ...formData, cpf_cnpj: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, cpf_cnpj: e.target.value })
+          }
           placeholder="000.000.000-00"
           required
         />
@@ -40,7 +42,7 @@ export const FuncionarioForm: React.FC<FuncionarioFormProps> = ({
         <Label htmlFor="cargo">Cargo *</Label>
         <Input
           id="cargo"
-          value={formData.cargo || ''}
+          value={formData.cargo || ""}
           onChange={(e) => setFormData({ ...formData, cargo: e.target.value })}
           placeholder="Digite o cargo"
           required
@@ -52,7 +54,9 @@ export const FuncionarioForm: React.FC<FuncionarioFormProps> = ({
         <Input
           id="telefone"
           value={formData.telefone}
-          onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, telefone: e.target.value })
+          }
           placeholder="(00) 00000-0000"
           required
         />
@@ -75,8 +79,10 @@ export const FuncionarioForm: React.FC<FuncionarioFormProps> = ({
         <Input
           id="data_admissao"
           type="date"
-          value={formData.data_admissao || ''}
-          onChange={(e) => setFormData({ ...formData, data_admissao: e.target.value })}
+          value={formData.data_admissao || ""}
+          onChange={(e) =>
+            setFormData({ ...formData, data_admissao: e.target.value })
+          }
           required
         />
       </div>

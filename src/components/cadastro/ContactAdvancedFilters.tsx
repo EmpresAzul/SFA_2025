@@ -1,10 +1,15 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter, Calendar } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Filter, Calendar } from "lucide-react";
 
 interface ContactAdvancedFiltersProps {
   searchTerm: string;
@@ -27,7 +32,7 @@ export const ContactAdvancedFilters: React.FC<ContactAdvancedFiltersProps> = ({
   setStartDate,
   endDate,
   setEndDate,
-  hideTypeFilter = false
+  hideTypeFilter = false,
 }) => {
   return (
     <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
@@ -41,7 +46,10 @@ export const ContactAdvancedFilters: React.FC<ContactAdvancedFiltersProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Busca por nome */}
           <div>
-            <Label htmlFor="search" className="text-fluxo-blue-900 font-medium flex items-center">
+            <Label
+              htmlFor="search"
+              className="text-fluxo-blue-900 font-medium flex items-center"
+            >
               <Search className="mr-1 h-4 w-4" />
               Buscar por nome
             </Label>
@@ -76,7 +84,10 @@ export const ContactAdvancedFilters: React.FC<ContactAdvancedFiltersProps> = ({
 
           {/* Data início */}
           <div>
-            <Label htmlFor="startDate" className="text-fluxo-blue-900 font-medium flex items-center">
+            <Label
+              htmlFor="startDate"
+              className="text-fluxo-blue-900 font-medium flex items-center"
+            >
               <Calendar className="mr-1 h-4 w-4" />
               Data início
             </Label>
@@ -91,7 +102,10 @@ export const ContactAdvancedFilters: React.FC<ContactAdvancedFiltersProps> = ({
 
           {/* Data fim */}
           <div>
-            <Label htmlFor="endDate" className="text-fluxo-blue-900 font-medium flex items-center">
+            <Label
+              htmlFor="endDate"
+              className="text-fluxo-blue-900 font-medium flex items-center"
+            >
               <Calendar className="mr-1 h-4 w-4" />
               Data fim
             </Label>

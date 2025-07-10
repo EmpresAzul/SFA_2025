@@ -1,8 +1,7 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Phone, Mail, MapPin } from "lucide-react";
 
 interface SupportSidebarProps {
   onOpenWhatsApp: () => void;
@@ -17,7 +16,7 @@ const SupportSidebar: React.FC<SupportSidebarProps> = ({ onOpenWhatsApp }) => {
           <CardTitle>Suporte Direto</CardTitle>
         </CardHeader>
         <CardContent>
-          <Button 
+          <Button
             onClick={onOpenWhatsApp}
             className="w-full bg-green-500 hover:bg-green-600 text-white"
           >
@@ -40,7 +39,7 @@ const SupportSidebar: React.FC<SupportSidebarProps> = ({ onOpenWhatsApp }) => {
               <p className="text-sm text-gray-600">suporte@fluxoazul.com</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <MapPin className="w-5 h-5 text-red-500" />
             <div>

@@ -1,12 +1,18 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Edit, Trash2 } from 'lucide-react';
-import { format } from 'date-fns';
-import { Cadastro } from '@/hooks/useCadastros';
-import CadastroViewModal from './CadastroViewModal';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Edit, Trash2 } from "lucide-react";
+import { format } from "date-fns";
+import { Cadastro } from "@/hooks/useCadastros";
+import CadastroViewModal from "./CadastroViewModal";
 
 interface CadastroTableProps {
   cadastros: Cadastro[];
@@ -26,7 +32,9 @@ export const CadastroTable: React.FC<CadastroTableProps> = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{tipo} ({cadastros.length})</CardTitle>
+        <CardTitle>
+          {tipo} ({cadastros.length})
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -59,9 +67,11 @@ export const CadastroTable: React.FC<CadastroTableProps> = ({
               <TableRow key={cadastro.id}>
                 <TableCell className="font-medium">{cadastro.nome}</TableCell>
                 <TableCell>{cadastro.tipo}</TableCell>
-                <TableCell>{cadastro.telefone || '-'}</TableCell>
-                <TableCell>{cadastro.email || '-'}</TableCell>
-                <TableCell>{format(new Date(cadastro.data), 'dd/MM/yyyy')}</TableCell>
+                <TableCell>{cadastro.telefone || "-"}</TableCell>
+                <TableCell>{cadastro.email || "-"}</TableCell>
+                <TableCell>
+                  {format(new Date(cadastro.data), "dd/MM/yyyy")}
+                </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
                     <CadastroViewModal cadastro={cadastro} />

@@ -1,16 +1,16 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.0';
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.0";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 serve(async (req) => {
   // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
@@ -18,19 +18,19 @@ serve(async (req) => {
     const { message } = await req.json();
 
     // Criar cliente Supabase
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Buscar API key da OpenAI
     const { data: apiKeyData, error: apiKeyError } = await supabase
-      .from('system_settings')
-      .select('value')
-      .eq('key', 'openai_api_key')
+      .from("system_settings")
+      .select("value")
+      .eq("key", "openai_api_key")
       .single();
 
     if (apiKeyError || !apiKeyData?.value) {
-      throw new Error('API key da OpenAI não configurada');
+      throw new Error("API key da OpenAI não configurada");
     }
 
     const openAIApiKey = apiKeyData.value;
@@ -60,17 +60,17 @@ Se não souber algo específico, oriente o usuário a entrar em contato pelo Wha
 Mantenha respostas concisas e práticas.`;
 
     // Fazer chamada para OpenAI
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${openAIApiKey}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: "gpt-4o-mini",
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: message }
+          { role: "system", content: systemPrompt },
+          { role: "user", content: message },
         ],
         max_tokens: 500,
         temperature: 0.7,
@@ -78,24 +78,27 @@ Mantenha respostas concisas e práticas.`;
     });
 
     if (!response.ok) {
-      throw new Error('Erro na chamada para OpenAI');
+      throw new Error("Erro na chamada para OpenAI");
     }
 
     const data = await response.json();
     const aiResponse = data.choices[0].message.content;
 
     return new Response(JSON.stringify({ response: aiResponse }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error('Erro no chat de suporte:', error);
+    console.error("Erro no chat de suporte:", error);
     return new Response(
-      JSON.stringify({ 
-        error: 'Erro interno do servidor',
-        response: 'Desculpe, ocorreu um erro. Por favor, tente novamente ou entre em contato pelo WhatsApp.' 
-      }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+      JSON.stringify({
+        error: "Erro interno do servidor",
+        response:
+          "Desculpe, ocorreu um erro. Por favor, tente novamente ou entre em contato pelo WhatsApp.",
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   }
 });

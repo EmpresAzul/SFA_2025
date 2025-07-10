@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface LancamentosPaginationProps {
   currentPage: number;
@@ -33,18 +32,18 @@ const LancamentosPagination: React.FC<LancamentosPaginationProps> = ({
   const getVisiblePages = () => {
     const pages = [];
     const maxVisible = 5;
-    
+
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-    let end = Math.min(totalPages, start + maxVisible - 1);
-    
+    const end = Math.min(start + maxVisible - 1, totalPages);
+
     if (end - start + 1 < maxVisible) {
       start = Math.max(1, end - maxVisible + 1);
     }
-    
+
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-    
+
     return pages;
   };
 
@@ -53,7 +52,7 @@ const LancamentosPagination: React.FC<LancamentosPaginationProps> = ({
       <div className="text-sm text-gray-600">
         Mostrando {startIndex} a {endIndex} de {totalItems} lançamentos
       </div>
-      
+
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
@@ -64,7 +63,7 @@ const LancamentosPagination: React.FC<LancamentosPaginationProps> = ({
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        
+
         {getVisiblePages().map((page) => (
           <Button
             key={page}
@@ -76,7 +75,7 @@ const LancamentosPagination: React.FC<LancamentosPaginationProps> = ({
             {page}
           </Button>
         ))}
-        
+
         <Button
           variant="outline"
           size="sm"

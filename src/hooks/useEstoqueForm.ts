@@ -1,9 +1,8 @@
-
-import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
-import { Estoque } from '@/types/estoque';
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { Estoque } from "@/types/estoque";
 
 export const useEstoqueForm = (fetchEstoques: () => void) => {
   const [selectedEstoque, setSelectedEstoque] = useState<Estoque | null>(null);
@@ -13,14 +12,14 @@ export const useEstoqueForm = (fetchEstoques: () => void) => {
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
-    data: '',
-    nome_produto: '',
-    unidade_medida: '',
-    quantidade: '',
-    valor_unitario: '',
-    valor_total: '',
-    quantidade_bruta: '',
-    quantidade_liquida: ''
+    data: "",
+    nome_produto: "",
+    unidade_medida: "",
+    quantidade: "",
+    valor_unitario: "",
+    valor_total: "",
+    quantidade_bruta: "",
+    quantidade_liquida: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,7 +30,7 @@ export const useEstoqueForm = (fetchEstoques: () => void) => {
       if (isEditMode && selectedEstoque) {
         // Atualizar estoque existente
         const { error } = await supabase
-          .from('estoques')
+          .from("estoques")
           .update({
             data: formData.data,
             nome_produto: formData.nome_produto,
@@ -41,10 +40,10 @@ export const useEstoqueForm = (fetchEstoques: () => void) => {
             valor_total: parseFloat(formData.valor_total),
             quantidade_bruta: parseFloat(formData.quantidade_bruta),
             quantidade_liquida: parseFloat(formData.quantidade_liquida),
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           })
-          .eq('id', selectedEstoque.id)
-          .eq('user_id', user?.id);
+          .eq("id", selectedEstoque.id)
+          .eq("user_id", user?.id);
 
         if (error) throw error;
 
@@ -54,9 +53,8 @@ export const useEstoqueForm = (fetchEstoques: () => void) => {
         });
       } else {
         // Criar novo estoque
-        const { error } = await supabase
-          .from('estoques')
-          .insert([{
+        const { error } = await supabase.from("estoques").insert([
+          {
             user_id: user?.id,
             data: formData.data,
             nome_produto: formData.nome_produto,
@@ -65,8 +63,9 @@ export const useEstoqueForm = (fetchEstoques: () => void) => {
             valor_unitario: parseFloat(formData.valor_unitario),
             valor_total: parseFloat(formData.valor_total),
             quantidade_bruta: parseFloat(formData.quantidade_bruta),
-            quantidade_liquida: parseFloat(formData.quantidade_liquida)
-          }]);
+            quantidade_liquida: parseFloat(formData.quantidade_liquida),
+          },
+        ]);
 
         if (error) throw error;
 
@@ -78,10 +77,11 @@ export const useEstoqueForm = (fetchEstoques: () => void) => {
 
       resetForm();
       fetchEstoques();
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Erro ao salvar estoque:", error);
       toast({
-        title: "Erro ao salvar estoque",
-        description: error.message,
+        title: "Erro ao salvar",
+        description: error instanceof Error ? error.message : "Erro desconhecido",
         variant: "destructive",
       });
     } finally {
@@ -99,21 +99,21 @@ export const useEstoqueForm = (fetchEstoques: () => void) => {
       valor_unitario: estoque.valor_unitario.toString(),
       valor_total: estoque.valor_total.toString(),
       quantidade_bruta: estoque.quantidade_bruta.toString(),
-      quantidade_liquida: estoque.quantidade_liquida.toString()
+      quantidade_liquida: estoque.quantidade_liquida.toString(),
     });
     setIsEditMode(true);
   };
 
   const resetForm = () => {
     setFormData({
-      data: '',
-      nome_produto: '',
-      unidade_medida: '',
-      quantidade: '',
-      valor_unitario: '',
-      valor_total: '',
-      quantidade_bruta: '',
-      quantidade_liquida: ''
+      data: "",
+      nome_produto: "",
+      unidade_medida: "",
+      quantidade: "",
+      valor_unitario: "",
+      valor_total: "",
+      quantidade_bruta: "",
+      quantidade_liquida: "",
     });
     setSelectedEstoque(null);
     setIsEditMode(false);
@@ -128,6 +128,6 @@ export const useEstoqueForm = (fetchEstoques: () => void) => {
     loading,
     handleSubmit,
     handleEdit,
-    resetForm
+    resetForm,
   };
 };

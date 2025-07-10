@@ -1,177 +1,125 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { useCallback, useState } from "react";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
+interface SaldoBancarioData {
+  id?: string;
+  data: string;
+  banco: string;
+  saldo: number;
+  user_id: string;
+  created_at?: string;
+  updated_at?: string;
+}
 
 export const useSaldosBancarios = () => {
   const { session } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [loading, setLoading] = useState(false);
+  const [saldos, setSaldos] = useState<SaldoBancarioData[]>([]);
 
-  // Query para saldos bancários
-  const useSaldosBancariosQuery = () => {
-    return useQuery({
-      queryKey: ['saldos_bancarios'],
-      queryFn: async () => {
-        if (!session?.user?.id) throw new Error('User not authenticated');
-        
-        console.log('useSaldosBancarios - Fetching saldos bancarios for user:', session.user.id);
-        
-        const { data, error } = await supabase
-          .from('saldos_bancarios')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .order('data', { ascending: false });
+  const fetchSaldos = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('saldos_bancarios')
+        .select('*')
+        .order('data', { ascending: false });
 
-        if (error) {
-          console.error('useSaldosBancarios - Error fetching saldos bancarios:', error);
-          throw error;
-        }
-        
-        console.log('useSaldosBancarios - Fetched saldos bancarios:', data);
-        return data;
-      },
-      enabled: !!session?.user?.id,
-    });
-  };
+      if (error) throw error;
+      setSaldos(data || []);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao carregar saldos bancários';
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
 
-  // Mutation para criar saldo bancário
-  const useSaldosBancariosCreate = () => {
-    return useMutation({
-      mutationFn: async (data: any) => {
-        if (!session?.user?.id) throw new Error('User not authenticated');
-        
-        console.log('useSaldosBancarios - Creating saldo bancario:', data);
-        
-        const { data: result, error } = await supabase
-          .from('saldos_bancarios')
-          .insert({
-            data: data.data || new Date().toISOString().split('T')[0],
-            banco: data.banco,
-            saldo: data.saldo,
-            user_id: session.user.id,
-          })
-          .select()
-          .single();
+  const createSaldo = useCallback(async (data: SaldoBancarioData) => {
+    try {
+      const { error } = await supabase
+        .from('saldos_bancarios')
+        .insert([data]);
 
-        if (error) {
-          console.error('useSaldosBancarios - Error creating saldo bancario:', error);
-          throw error;
-        }
-        
-        console.log('useSaldosBancarios - Created saldo bancario:', result);
-        return result;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['saldos_bancarios'] });
-        toast({
-          title: "Sucesso!",
-          description: "Saldo bancário salvo com sucesso",
-        });
-      },
-      onError: (error: any) => {
-        console.error('useSaldosBancarios - Error with saldo bancario:', error);
-        toast({
-          title: "Erro",
-          description: "Erro ao salvar saldo bancário: " + error.message,
-          variant: "destructive",
-        });
-      },
-    });
-  };
+      if (error) throw error;
+      toast({
+        title: 'Sucesso',
+        description: 'Saldo bancário criado com sucesso!',
+      });
+      await fetchSaldos();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao criar saldo bancário';
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw error;
+    }
+  }, [fetchSaldos, toast]);
 
-  // Mutation para atualizar saldo bancário
-  const useSaldosBancariosUpdate = () => {
-    return useMutation({
-      mutationFn: async ({ id, data }: { id: string; data: any }) => {
-        if (!session?.user?.id) throw new Error('User not authenticated');
-        
-        console.log('useSaldosBancarios - Updating saldo bancario:', id, data);
-        
-        const { data: result, error } = await supabase
-          .from('saldos_bancarios')
-          .update({
-            data: data.data || new Date().toISOString().split('T')[0],
-            banco: data.banco,
-            saldo: data.saldo,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', id)
-          .eq('user_id', session.user.id)
-          .select()
-          .single();
+  const updateSaldo = useCallback(async (id: string, data: Partial<SaldoBancarioData>) => {
+    try {
+      const { error } = await supabase
+        .from('saldos_bancarios')
+        .update(data)
+        .eq('id', id);
 
-        if (error) {
-          console.error('useSaldosBancarios - Error updating saldo bancario:', error);
-          throw error;
-        }
-        
-        console.log('useSaldosBancarios - Updated saldo bancario:', result);
-        return result;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['saldos_bancarios'] });
-        toast({
-          title: "Sucesso!",
-          description: "Saldo bancário atualizado com sucesso",
-        });
-      },
-      onError: (error: any) => {
-        console.error('useSaldosBancarios - Error updating saldo bancario:', error);
-        toast({
-          title: "Erro",
-          description: "Erro ao atualizar saldo bancário: " + error.message,
-          variant: "destructive",
-        });
-      },
-    });
-  };
+      if (error) throw error;
+      toast({
+        title: 'Sucesso',
+        description: 'Saldo bancário atualizado com sucesso!',
+      });
+      await fetchSaldos();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao atualizar saldo bancário';
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw error;
+    }
+  }, [fetchSaldos, toast]);
 
-  // Mutation para deletar saldo bancário
-  const useSaldosBancariosDelete = () => {
-    return useMutation({
-      mutationFn: async (id: string) => {
-        if (!session?.user?.id) throw new Error('User not authenticated');
-        
-        console.log('useSaldosBancarios - Deleting saldo bancario:', id);
-        
-        const { error } = await supabase
-          .from('saldos_bancarios')
-          .delete()
-          .eq('id', id)
-          .eq('user_id', session.user.id);
+  const deleteSaldo = useCallback(async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('saldos_bancarios')
+        .delete()
+        .eq('id', id);
 
-        if (error) {
-          console.error('useSaldosBancarios - Error deleting saldo bancario:', error);
-          throw error;
-        }
-        
-        console.log('useSaldosBancarios - Deleted saldo bancario:', id);
-        return id;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['saldos_bancarios'] });
-        toast({
-          title: "Sucesso!",
-          description: "Saldo bancário excluído com sucesso",
-        });
-      },
-      onError: (error: any) => {
-        console.error('useSaldosBancarios - Error deleting saldo bancario:', error);
-        toast({
-          title: "Erro",
-          description: "Erro ao excluir saldo bancário: " + error.message,
-          variant: "destructive",
-        });
-      },
-    });
-  };
+      if (error) throw error;
+      toast({
+        title: 'Sucesso',
+        description: 'Saldo bancário excluído com sucesso!',
+      });
+      await fetchSaldos();
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao excluir saldo bancário';
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw error;
+    }
+  }, [fetchSaldos, toast]);
 
   return {
-    useQuery: useSaldosBancariosQuery,
-    useCreate: useSaldosBancariosCreate,
-    useUpdate: useSaldosBancariosUpdate,
-    useDelete: useSaldosBancariosDelete,
+    loading,
+    saldos,
+    fetchSaldos,
+    createSaldo,
+    updateSaldo,
+    deleteSaldo,
   };
 };

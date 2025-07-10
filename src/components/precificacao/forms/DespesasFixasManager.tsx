@@ -1,12 +1,11 @@
-
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { EnhancedCurrencyInput } from '@/components/ui/enhanced-currency-input';
-import { Plus, Trash2 } from 'lucide-react';
-import { formatNumberToDisplay } from '@/utils/currency';
-import type { DespesaFixa } from '@/hooks/useHoraForm';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedCurrencyInput } from "@/components/ui/enhanced-currency-input";
+import { Plus, Trash2 } from "lucide-react";
+import { formatNumberToDisplay } from "@/utils/currency";
+import type { DespesaFixa } from "@/hooks/useHoraForm";
 
 interface DespesasFixasManagerProps {
   despesasFixas: DespesaFixa[];
@@ -21,8 +20,8 @@ const DespesasFixasManager: React.FC<DespesasFixasManagerProps> = ({
     if (despesasFixas.length < 50) {
       const novaDespesa: DespesaFixa = {
         id: Date.now().toString(),
-        descricao: '',
-        valor: 0
+        descricao: "",
+        valor: 0,
       };
       onUpdateDespesas([...despesasFixas, novaDespesa]);
     }
@@ -30,17 +29,26 @@ const DespesasFixasManager: React.FC<DespesasFixasManagerProps> = ({
 
   const removerDespesa = (id: string) => {
     if (despesasFixas.length > 1) {
-      onUpdateDespesas(despesasFixas.filter(despesa => despesa.id !== id));
+      onUpdateDespesas(despesasFixas.filter((despesa) => despesa.id !== id));
     }
   };
 
-  const atualizarDespesa = (id: string, campo: 'descricao' | 'valor', valor: string | number) => {
-    onUpdateDespesas(despesasFixas.map(despesa => 
-      despesa.id === id ? { ...despesa, [campo]: valor } : despesa
-    ));
+  const atualizarDespesa = (
+    id: string,
+    campo: "descricao" | "valor",
+    valor: string | number,
+  ) => {
+    onUpdateDespesas(
+      despesasFixas.map((despesa) =>
+        despesa.id === id ? { ...despesa, [campo]: valor } : despesa,
+      ),
+    );
   };
 
-  const totalCustosFixos = despesasFixas.reduce((total, despesa) => total + despesa.valor, 0);
+  const totalCustosFixos = despesasFixas.reduce(
+    (total, despesa) => total + despesa.valor,
+    0,
+  );
 
   return (
     <Card>
@@ -66,20 +74,24 @@ const DespesasFixasManager: React.FC<DespesasFixasManagerProps> = ({
             <div className="col-span-4">Valor</div>
             <div className="col-span-2">Ação</div>
           </div>
-          
+
           {despesasFixas.map((despesa) => (
             <div key={despesa.id} className="grid grid-cols-12 gap-2">
               <div className="col-span-6">
                 <Input
                   value={despesa.descricao}
-                  onChange={(e) => atualizarDespesa(despesa.id, 'descricao', e.target.value)}
+                  onChange={(e) =>
+                    atualizarDespesa(despesa.id, "descricao", e.target.value)
+                  }
                   placeholder="Descrição do custo"
                 />
               </div>
               <div className="col-span-4">
                 <EnhancedCurrencyInput
                   value={despesa.valor}
-                  onChange={(numericValue) => atualizarDespesa(despesa.id, 'valor', numericValue)}
+                  onChange={(numericValue) =>
+                    atualizarDespesa(despesa.id, "valor", numericValue)
+                  }
                 />
               </div>
               <div className="col-span-2">
@@ -96,11 +108,13 @@ const DespesasFixasManager: React.FC<DespesasFixasManagerProps> = ({
               </div>
             </div>
           ))}
-          
+
           <div className="border-t pt-3">
             <div className="flex justify-between items-center font-semibold">
               <span>Total Custos Fixos:</span>
-              <span className="text-lg">{formatNumberToDisplay(totalCustosFixos)}</span>
+              <span className="text-lg">
+                {formatNumberToDisplay(totalCustosFixos)}
+              </span>
             </div>
           </div>
         </div>

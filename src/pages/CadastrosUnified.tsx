@@ -1,12 +1,11 @@
-
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useCadastrosUnified } from '@/hooks/useCadastrosUnified';
-import CadastroEditModal from '@/components/cadastro/CadastroEditModal';
-import CadastrosStats from '@/components/cadastro/CadastrosStats';
-import CadastrosFilters from '@/components/cadastro/CadastrosFilters';
-import CadastrosTable from '@/components/cadastro/CadastrosTable';
-import { UnifiedCadastroForm } from '@/components/cadastro/UnifiedCadastroForm';
+import React from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCadastrosUnified } from "@/hooks/useCadastrosUnified";
+import CadastroEditModal from "@/components/cadastro/CadastroEditModal";
+import CadastrosStats from "@/components/cadastro/CadastrosStats";
+import CadastrosFilters from "@/components/cadastro/CadastrosFilters";
+import CadastrosTable from "@/components/cadastro/CadastrosTable";
+import { UnifiedCadastroForm } from "@/components/cadastro/UnifiedCadastroForm";
 
 const CadastrosUnified: React.FC = () => {
   const {
@@ -50,7 +49,9 @@ const CadastrosUnified: React.FC = () => {
           <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
             👥 Cadastros Unificados
           </h1>
-          <p className="text-gray-600 mt-2 text-xs sm:text-sm">Gestão completa de clientes, fornecedores e funcionários</p>
+          <p className="text-gray-600 mt-2 text-xs sm:text-sm">
+            Gestão completa de clientes, fornecedores e funcionários
+          </p>
         </div>
       </div>
 
@@ -58,13 +59,13 @@ const CadastrosUnified: React.FC = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-10 sm:h-12">
-          <TabsTrigger 
+          <TabsTrigger
             value="lista"
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-blue-600 data-[state=active]:text-white font-semibold text-xs sm:text-sm py-2 sm:py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
             📋 Lista de Cadastros
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="formulario"
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-blue-600 data-[state=active]:text-white font-semibold text-xs sm:text-sm py-2 sm:py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
           >
@@ -91,7 +92,7 @@ const CadastrosUnified: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="formulario" className="mt-4 sm:mt-6">
-          <UnifiedCadastroForm onSuccess={() => setActiveTab('lista')} />
+          <UnifiedCadastroForm onSuccess={() => setActiveTab("lista")} />
         </TabsContent>
       </Tabs>
 

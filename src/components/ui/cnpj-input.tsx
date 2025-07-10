@@ -1,9 +1,9 @@
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { formatCNPJ, parseCNPJ } from "@/utils/formatters";
 
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { formatCNPJ, parseCNPJ } from '@/utils/formatters';
-
-interface CNPJInputProps extends Omit<React.ComponentProps<typeof Input>, 'onChange'> {
+interface CNPJInputProps
+  extends Omit<React.ComponentProps<typeof Input>, "onChange"> {
   onChange: (value: string) => void;
 }
 
@@ -12,7 +12,7 @@ export const CNPJInput = React.forwardRef<HTMLInputElement, CNPJInputProps>(
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const formatted = formatCNPJ(e.target.value);
       const cleaned = parseCNPJ(formatted);
-      
+
       if (cleaned.length <= 14) {
         onChange(cleaned);
         e.target.value = formatted;
@@ -28,7 +28,7 @@ export const CNPJInput = React.forwardRef<HTMLInputElement, CNPJInputProps>(
         maxLength={18}
       />
     );
-  }
+  },
 );
 
 CNPJInput.displayName = "CNPJInput";

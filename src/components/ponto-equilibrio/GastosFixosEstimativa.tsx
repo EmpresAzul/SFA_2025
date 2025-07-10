@@ -1,21 +1,23 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Building } from 'lucide-react';
-import type { GastosFixos } from '@/hooks/usePontoEquilibrio';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Building } from "lucide-react";
+import type { GastosFixos } from "@/hooks/usePontoEquilibrio";
 
 interface GastosFixosEstimativaProps {
   values: GastosFixos;
   onChange: (values: GastosFixos) => void;
 }
 
-const GastosFixosEstimativa: React.FC<GastosFixosEstimativaProps> = ({ values, onChange }) => {
+const GastosFixosEstimativa: React.FC<GastosFixosEstimativaProps> = ({
+  values,
+  onChange,
+}) => {
   const handleChange = (field: keyof GastosFixos, newValue: number) => {
     onChange({
       ...values,
-      [field]: newValue
+      [field]: newValue,
     });
   };
 
@@ -29,16 +31,26 @@ const GastosFixosEstimativa: React.FC<GastosFixosEstimativaProps> = ({ values, o
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="gastosFixosMensais" className="text-sm font-medium text-gray-700">
+          <Label
+            htmlFor="gastosFixosMensais"
+            className="text-sm font-medium text-gray-700"
+          >
             Gastos Fixos Mensais (excluindo Pró-Labore)
           </Label>
           <div className="relative mt-1">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              R$
+            </span>
             <Input
               id="gastosFixosMensais"
               type="number"
               value={values.gastosFixosMensais}
-              onChange={(e) => handleChange('gastosFixosMensais', parseFloat(e.target.value) || 0)}
+              onChange={(e) =>
+                handleChange(
+                  "gastosFixosMensais",
+                  parseFloat(e.target.value) || 0,
+                )
+              }
               className="pl-10 text-right"
               placeholder="8.000,00"
             />
@@ -49,16 +61,23 @@ const GastosFixosEstimativa: React.FC<GastosFixosEstimativaProps> = ({ values, o
         </div>
 
         <div>
-          <Label htmlFor="proLabore" className="text-sm font-medium text-gray-700">
+          <Label
+            htmlFor="proLabore"
+            className="text-sm font-medium text-gray-700"
+          >
             Pró-labore Retirado
           </Label>
           <div className="relative mt-1">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              R$
+            </span>
             <Input
               id="proLabore"
               type="number"
               value={values.proLabore}
-              onChange={(e) => handleChange('proLabore', parseFloat(e.target.value) || 0)}
+              onChange={(e) =>
+                handleChange("proLabore", parseFloat(e.target.value) || 0)
+              }
               className="pl-10 text-right"
               placeholder="5.000,00"
             />
@@ -70,9 +89,15 @@ const GastosFixosEstimativa: React.FC<GastosFixosEstimativaProps> = ({ values, o
 
         <div className="border-t pt-3 mt-4">
           <div className="flex justify-between items-center">
-            <span className="font-medium text-gray-700">Total de Gastos Fixos:</span>
+            <span className="font-medium text-gray-700">
+              Total de Gastos Fixos:
+            </span>
             <span className="font-bold text-lg text-blue-600">
-              R$ {(values.gastosFixosMensais + values.proLabore).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R${" "}
+              {(values.gastosFixosMensais + values.proLabore).toLocaleString(
+                "pt-BR",
+                { minimumFractionDigits: 2 },
+              )}
             </span>
           </div>
         </div>

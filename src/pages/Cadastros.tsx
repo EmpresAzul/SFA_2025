@@ -1,27 +1,29 @@
-
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { UserCheck, Building2, UserCog } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useCadastros, type Cadastro } from '@/hooks/useCadastros';
-import { useCadastroForm } from '@/hooks/useCadastroForm';
-import { useParams } from 'react-router-dom';
-import { CadastroHeader } from '@/components/cadastro/CadastroHeader';
-import { CadastroSummaryCards } from '@/components/cadastro/CadastroSummaryCards';
-import { CadastroTable } from '@/components/cadastro/CadastroTable';
-import { CadastroForm } from '@/components/cadastro/CadastroForm';
-import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserCheck, Building2, UserCog } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useCadastros, type Cadastro } from "@/hooks/useCadastros";
+import { useCadastroForm } from "@/hooks/useCadastroForm";
+import { useParams } from "react-router-dom";
+import { CadastroHeader } from "@/components/cadastro/CadastroHeader";
+import { CadastroSummaryCards } from "@/components/cadastro/CadastroSummaryCards";
+import { CadastroTable } from "@/components/cadastro/CadastroTable";
+import { CadastroForm } from "@/components/cadastro/CadastroForm";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 const Cadastros: React.FC = () => {
   const { tipo } = useParams<{ tipo: string }>();
-  const tipoCapitalized = tipo?.charAt(0).toUpperCase() + tipo?.slice(1) as 'Cliente' | 'Fornecedor' | 'Funcionário';
-  
+  const tipoCapitalized = (tipo?.charAt(0).toUpperCase() + tipo?.slice(1)) as
+    | "Cliente"
+    | "Fornecedor"
+    | "Funcionário";
+
   const [cadastros, setCadastros] = useState<Cadastro[]>([]);
   const [filteredCadastros, setFilteredCadastros] = useState<Cadastro[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('lista');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("lista");
   const { user } = useAuth();
 
   const { useQuery, useDelete } = useCadastros();
@@ -40,7 +42,7 @@ const Cadastros: React.FC = () => {
 
   useEffect(() => {
     if (cadastrosData) {
-      console.log('Cadastros data received:', cadastrosData);
+      console.log("Cadastros data received:", cadastrosData);
       setCadastros(cadastrosData);
     }
   }, [cadastrosData]);
@@ -53,10 +55,15 @@ const Cadastros: React.FC = () => {
     let filtered = cadastros;
 
     if (searchTerm) {
-      filtered = filtered.filter(cadastro =>
-        cadastro.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (cadastro.cpf_cnpj && cadastro.cpf_cnpj.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (cadastro.email && cadastro.email.toLowerCase().includes(searchTerm.toLowerCase()))
+      filtered = filtered.filter(
+        (cadastro) =>
+          cadastro.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (cadastro.cpf_cnpj &&
+            cadastro.cpf_cnpj
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())) ||
+          (cadastro.email &&
+            cadastro.email.toLowerCase().includes(searchTerm.toLowerCase())),
       );
     }
 
@@ -64,53 +71,60 @@ const Cadastros: React.FC = () => {
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
-    console.log('Form submit triggered');
+    console.log("Form submit triggered");
     const success = await handleSubmit(e);
     if (success) {
-      console.log('Form submitted successfully, switching to lista tab');
-      setActiveTab('lista');
+      console.log("Form submitted successfully, switching to lista tab");
+      setActiveTab("lista");
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Tem certeza que deseja excluir este cadastro?')) {
+    if (window.confirm("Tem certeza que deseja excluir este cadastro?")) {
       try {
         await deleteCadastro.mutateAsync(id);
       } catch (error) {
-        console.error('Erro ao excluir cadastro:', error);
+        console.error("Erro ao excluir cadastro:", error);
       }
     }
   };
 
   const handleEditClick = (cadastro: Cadastro) => {
     handleEdit(cadastro);
-    setActiveTab('formulario');
+    setActiveTab("formulario");
   };
 
   const handleCancelEdit = () => {
     resetForm();
-    setActiveTab('lista');
+    setActiveTab("lista");
   };
 
-  const getDisplayName = (tipo: 'Cliente' | 'Fornecedor' | 'Funcionário', plural: boolean = false) => {
+  const getDisplayName = (
+    tipo: "Cliente" | "Fornecedor" | "Funcionário",
+    plural: boolean = false,
+  ) => {
     switch (tipo) {
-      case 'Cliente':
-        return plural ? 'Clientes' : 'Cliente';
-      case 'Fornecedor':
-        return plural ? 'Fornecedores' : 'Fornecedor';
-      case 'Funcionário':
-        return plural ? 'Funcionários' : 'Funcionário';
+      case "Cliente":
+        return plural ? "Clientes" : "Cliente";
+      case "Fornecedor":
+        return plural ? "Fornecedores" : "Fornecedor";
+      case "Funcionário":
+        return plural ? "Funcionários" : "Funcionário";
       default:
-        return plural ? 'Cadastros' : 'Cadastro';
+        return plural ? "Cadastros" : "Cadastro";
     }
   };
 
   const getIcon = () => {
     switch (tipoCapitalized) {
-      case 'Cliente': return UserCheck;
-      case 'Fornecedor': return Building2;
-      case 'Funcionário': return UserCog;
-      default: return UserCheck;
+      case "Cliente":
+        return UserCheck;
+      case "Fornecedor":
+        return Building2;
+      case "Funcionário":
+        return UserCog;
+      default:
+        return UserCheck;
     }
   };
 
@@ -124,7 +138,7 @@ const Cadastros: React.FC = () => {
         description={`Gerencie o cadastro de ${getDisplayName(tipoCapitalized, true).toLowerCase()}`}
         onNewClick={() => {
           resetForm();
-          setActiveTab('formulario');
+          setActiveTab("formulario");
         }}
       />
 
@@ -136,9 +150,13 @@ const Cadastros: React.FC = () => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="lista">Lista de {getDisplayName(tipoCapitalized, true)}</TabsTrigger>
+          <TabsTrigger value="lista">
+            Lista de {getDisplayName(tipoCapitalized, true)}
+          </TabsTrigger>
           <TabsTrigger value="formulario">
-            {editingCadastro ? `Editar ${getDisplayName(tipoCapitalized)}` : `Novo ${getDisplayName(tipoCapitalized)}`}
+            {editingCadastro
+              ? `Editar ${getDisplayName(tipoCapitalized)}`
+              : `Novo ${getDisplayName(tipoCapitalized)}`}
           </TabsTrigger>
         </TabsList>
 

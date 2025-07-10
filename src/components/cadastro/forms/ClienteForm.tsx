@@ -1,12 +1,18 @@
-
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CadastroData } from "../CadastroEditModal";
 
 interface ClienteFormProps {
-  formData: any;
-  setFormData: (data: any) => void;
+  formData: CadastroData;
+  setFormData: (data: CadastroData) => void;
 }
 
 export const ClienteForm: React.FC<ClienteFormProps> = ({
@@ -25,12 +31,15 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
           required
         />
       </div>
-      
+
       <div className="space-y-2">
         <Label htmlFor="pessoa">Tipo de Pessoa *</Label>
-        <Select value={formData.pessoa} onValueChange={(value: 'Física' | 'Jurídica') => 
-          setFormData({ ...formData, pessoa: value })
-        }>
+        <Select
+          value={formData.pessoa}
+          onValueChange={(value: "Física" | "Jurídica") =>
+            setFormData({ ...formData, pessoa: value })
+          }
+        >
           <SelectTrigger>
             <SelectValue placeholder="Selecione o tipo" />
           </SelectTrigger>
@@ -42,12 +51,20 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="cpf_cnpj">{formData.pessoa === 'Física' ? 'CPF *' : 'CNPJ *'}</Label>
+        <Label htmlFor="cpf_cnpj">
+          {formData.pessoa === "Física" ? "CPF *" : "CNPJ *"}
+        </Label>
         <Input
           id="cpf_cnpj"
           value={formData.cpf_cnpj}
-          onChange={(e) => setFormData({ ...formData, cpf_cnpj: e.target.value })}
-          placeholder={formData.pessoa === 'Física' ? '000.000.000-00' : '00.000.000/0000-00'}
+          onChange={(e) =>
+            setFormData({ ...formData, cpf_cnpj: e.target.value })
+          }
+          placeholder={
+            formData.pessoa === "Física"
+              ? "000.000.000-00"
+              : "00.000.000/0000-00"
+          }
           required
         />
       </div>
@@ -57,7 +74,9 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
         <Input
           id="telefone"
           value={formData.telefone}
-          onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, telefone: e.target.value })
+          }
           placeholder="(00) 00000-0000"
           required
         />

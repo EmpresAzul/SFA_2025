@@ -1,14 +1,13 @@
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Plus, Save, ArrowLeft } from "lucide-react";
+import { useHoraForm } from "@/hooks/useHoraForm";
+import HoraFormFields from "./forms/HoraFormFields";
+import DespesasFixasManager from "./forms/DespesasFixasManager";
+import HoraCalculationsResults from "./forms/HoraCalculationsResults";
+import type { Database } from "@/integrations/supabase/types";
 
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus, Save, ArrowLeft } from 'lucide-react';
-import { useHoraForm } from '@/hooks/useHoraForm';
-import HoraFormFields from './forms/HoraFormFields';
-import DespesasFixasManager from './forms/DespesasFixasManager';
-import HoraCalculationsResults from './forms/HoraCalculationsResults';
-import type { Database } from '@/integrations/supabase/types';
-
-type Precificacao = Database['public']['Tables']['precificacao']['Row'];
+type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
 
 interface CadastrarHoraProps {
   editingItem?: Precificacao | null;
@@ -21,7 +20,11 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
   onCancelEdit,
   onSaveSuccess,
 }) => {
-  console.log('🏗️ CadastrarHora renderizando com props:', { editingItem, onCancelEdit, onSaveSuccess });
+  console.log("🏗️ CadastrarHora renderizando com props:", {
+    editingItem,
+    onCancelEdit,
+    onSaveSuccess,
+  });
 
   const {
     horaData,
@@ -34,25 +37,30 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
   } = useHoraForm(editingItem, onCancelEdit, onSaveSuccess);
 
   const handleUpdateHora = (updates: Partial<typeof horaData>) => {
-    console.log('📝 Atualizando dados da hora:', updates);
-    setHoraData(prev => ({ ...prev, ...updates }));
+    console.log("📝 Atualizando dados da hora:", updates);
+    setHoraData((prev) => ({ ...prev, ...updates }));
   };
 
   const onFormSubmit = (e: React.FormEvent) => {
-    console.log('📝 Form submit disparado no CadastrarHora');
-    console.log('📊 Estado atual do loading:', loading);
-    console.log('📊 Estado atual dos dados:', horaData);
+    console.log("📝 Form submit disparado no CadastrarHora");
+    console.log("📊 Estado atual do loading:", loading);
+    console.log("📊 Estado atual dos dados:", horaData);
     handleSubmit(e);
   };
 
   // Cálculos automáticos (sem taxas adicionais)
   const diasTrabalhadosNumerico = parseFloat(horaData.diasTrabalhados) || 0;
   const horasPorDiaNumerico = parseFloat(horaData.horasPorDia) || 0;
-  const totalCustosFixos = despesasFixas.reduce((total, despesa) => total + despesa.valor, 0);
+  const totalCustosFixos = despesasFixas.reduce(
+    (total, despesa) => total + despesa.valor,
+    0,
+  );
   const horasTrabalhadasMes = diasTrabalhadosNumerico * horasPorDiaNumerico;
   const custoTotalMensal = horaData.proLabore + totalCustosFixos;
-  const valorHoraTrabalhada = horasTrabalhadasMes > 0 ? custoTotalMensal / horasTrabalhadasMes : 0;
-  const valorDiaTrabalhado = horasPorDiaNumerico > 0 ? valorHoraTrabalhada * horasPorDiaNumerico : 0;
+  const valorHoraTrabalhada =
+    horasTrabalhadasMes > 0 ? custoTotalMensal / horasTrabalhadasMes : 0;
+  const valorDiaTrabalhado =
+    horasPorDiaNumerico > 0 ? valorHoraTrabalhada * horasPorDiaNumerico : 0;
 
   return (
     <form onSubmit={onFormSubmit} className="space-y-6">
@@ -69,16 +77,17 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
             Cancelar Edição
           </Button>
           <div>
-            <h3 className="font-semibold text-orange-800">Editando: {editingItem.nome}</h3>
-            <p className="text-sm text-orange-600">Modifique os campos e clique em "Salvar Alterações"</p>
+            <h3 className="font-semibold text-orange-800">
+              Editando: {editingItem.nome}
+            </h3>
+            <p className="text-sm text-orange-600">
+              Modifique os campos e clique em "Salvar Alterações"
+            </p>
           </div>
         </div>
       )}
 
-      <HoraFormFields
-        horaData={horaData}
-        onUpdateHora={handleUpdateHora}
-      />
+      <HoraFormFields horaData={horaData} onUpdateHora={handleUpdateHora} />
 
       <DespesasFixasManager
         despesasFixas={despesasFixas}
@@ -100,12 +109,20 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
           type="submit"
           disabled={loading}
           className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
-          onClick={() => console.log('🖱️ Botão de submit clicado!')}
+          onClick={() => console.log("🖱️ Botão de submit clicado!")}
         >
-          {editingItem ? <Save className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-          {loading ? "Salvando..." : editingItem ? "Salvar Alterações" : "Cadastrar Precificação de Hora"}
+          {editingItem ? (
+            <Save className="w-4 h-4 mr-2" />
+          ) : (
+            <Plus className="w-4 h-4 mr-2" />
+          )}
+          {loading
+            ? "Salvando..."
+            : editingItem
+              ? "Salvar Alterações"
+              : "Cadastrar Precificação de Hora"}
         </Button>
-        
+
         {editingItem && (
           <Button
             type="button"

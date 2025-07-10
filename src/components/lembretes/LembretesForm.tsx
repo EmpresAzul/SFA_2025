@@ -1,12 +1,15 @@
-
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Bell, Save, X } from 'lucide-react';
-import { useLembretes, type LembreteFormData, type Lembrete } from '@/hooks/useLembretes';
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Bell, Save, X } from "lucide-react";
+import {
+  useLembretes,
+  type LembreteFormData,
+  type Lembrete,
+} from "@/hooks/useLembretes";
 
 interface LembretesFormProps {
   isOpen: boolean;
@@ -14,64 +17,64 @@ interface LembretesFormProps {
   editingLembrete?: Lembrete | null;
 }
 
-const LembretesForm: React.FC<LembretesFormProps> = ({ 
-  isOpen, 
+const LembretesForm: React.FC<LembretesFormProps> = ({
+  isOpen,
   onClose,
-  editingLembrete 
+  editingLembrete,
 }) => {
   const { createLembrete, updateLembrete } = useLembretes();
   const [formData, setFormData] = useState<LembreteFormData>({
-    titulo: '',
-    descricao: '',
-    data_lembrete: '',
-    hora_lembrete: ''
+    titulo: "",
+    descricao: "",
+    data_lembrete: "",
+    hora_lembrete: "",
   });
 
   // Carrega dados quando está editando
   useEffect(() => {
     if (editingLembrete) {
-      console.log('Carregando dados para edição:', editingLembrete);
+      console.log("Carregando dados para edição:", editingLembrete);
       setFormData({
-        titulo: editingLembrete.titulo || '',
-        descricao: editingLembrete.descricao || '',
-        data_lembrete: editingLembrete.data_lembrete || '',
-        hora_lembrete: editingLembrete.hora_lembrete || ''
+        titulo: editingLembrete.titulo || "",
+        descricao: editingLembrete.descricao || "",
+        data_lembrete: editingLembrete.data_lembrete || "",
+        hora_lembrete: editingLembrete.hora_lembrete || "",
       });
     } else {
       // Limpa formulário quando não está editando
       setFormData({
-        titulo: '',
-        descricao: '',
-        data_lembrete: '',
-        hora_lembrete: ''
+        titulo: "",
+        descricao: "",
+        data_lembrete: "",
+        hora_lembrete: "",
       });
     }
   }, [editingLembrete, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       if (editingLembrete) {
-        console.log('Atualizando lembrete:', editingLembrete.id, formData);
+        console.log("Atualizando lembrete:", editingLembrete.id, formData);
         await updateLembrete.mutateAsync({
           id: editingLembrete.id,
-          ...formData
+          ...formData,
         });
       } else {
-        console.log('Criando novo lembrete:', formData);
+        console.log("Criando novo lembrete:", formData);
         await createLembrete.mutateAsync(formData);
       }
-      
+
       onClose();
       setFormData({
-        titulo: '',
-        descricao: '',
-        data_lembrete: '',
-        hora_lembrete: ''
+        titulo: "",
+        descricao: "",
+        data_lembrete: "",
+        hora_lembrete: "",
       });
     } catch (error) {
-      console.error('Erro ao salvar lembrete:', error);
+      console.error("Erro ao salvar lembrete:", error);
     }
   };
 
@@ -84,7 +87,7 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center">
               <Bell className="h-5 w-5 mr-2" />
-              {editingLembrete ? 'Editar Lembrete' : 'Novo Lembrete'}
+              {editingLembrete ? "Editar Lembrete" : "Novo Lembrete"}
             </CardTitle>
             <Button
               variant="ghost"
@@ -96,7 +99,7 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
             </Button>
           </div>
         </CardHeader>
-        
+
         <CardContent className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -104,7 +107,9 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
               <Input
                 id="titulo"
                 value={formData.titulo}
-                onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, titulo: e.target.value })
+                }
                 placeholder="Digite o título do lembrete"
                 required
                 className="mt-1"
@@ -116,7 +121,9 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
               <Textarea
                 id="descricao"
                 value={formData.descricao}
-                onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, descricao: e.target.value })
+                }
                 placeholder="Descreva o lembrete (opcional)"
                 className="mt-1"
                 rows={3}
@@ -130,7 +137,9 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
                   id="data_lembrete"
                   type="date"
                   value={formData.data_lembrete}
-                  onChange={(e) => setFormData({ ...formData, data_lembrete: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, data_lembrete: e.target.value })
+                  }
                   required
                   className="mt-1"
                 />
@@ -142,7 +151,9 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
                   id="hora_lembrete"
                   type="time"
                   value={formData.hora_lembrete}
-                  onChange={(e) => setFormData({ ...formData, hora_lembrete: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, hora_lembrete: e.target.value })
+                  }
                   className="mt-1"
                 />
               </div>
@@ -155,9 +166,9 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
                 className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
                 <Save className="h-4 w-4 mr-2" />
-                {editingLembrete ? 'Atualizar' : 'Salvar'}
+                {editingLembrete ? "Atualizar" : "Salvar"}
               </Button>
-              
+
               <Button
                 type="button"
                 variant="outline"

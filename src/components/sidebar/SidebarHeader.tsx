@@ -1,6 +1,5 @@
-
-import React from 'react';
-import Logo from '../Logo';
+import React from "react";
+import Logo from "../Logo";
 
 interface SidebarHeaderProps {
   collapsed: boolean;

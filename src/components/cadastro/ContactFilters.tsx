@@ -1,11 +1,16 @@
-
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter } from 'lucide-react';
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Filter } from "lucide-react";
 
 interface ContactFiltersProps {
   searchTerm: string;
@@ -18,7 +23,7 @@ export const ContactFilters: React.FC<ContactFiltersProps> = ({
   searchTerm,
   setSearchTerm,
   typeFilter,
-  setTypeFilter
+  setTypeFilter,
 }) => {
   return (
     <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
@@ -39,7 +44,7 @@ export const ContactFilters: React.FC<ContactFiltersProps> = ({
               />
             </div>
           </div>
-          
+
           <div>
             <Label className="text-fluxo-blue-900 font-medium">Tipo</Label>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
@@ -54,12 +59,12 @@ export const ContactFilters: React.FC<ContactFiltersProps> = ({
               </SelectContent>
             </Select>
           </div>
-          
+
           <div className="flex items-end">
             <Button
               onClick={() => {
-                setSearchTerm('');
-                setTypeFilter('all');
+                setSearchTerm("");
+                setTypeFilter("all");
               }}
               variant="outline"
               className="w-full"

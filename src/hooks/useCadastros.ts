@@ -1,181 +1,199 @@
-
-import { useQuery as useReactQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { CadastroData, CadastroFormData } from '@/types/cadastros';
 import { useToast } from '@/hooks/use-toast';
 
-export interface Cadastro {
-  id: string;
-  user_id: string;
-  nome: string;
-  tipo: 'Cliente' | 'Fornecedor' | 'Funcionário';
-  pessoa: 'Física' | 'Jurídica';
-  cpf_cnpj?: string;
-  telefone?: string;
-  email?: string;
-  endereco?: string;
-  numero?: string;
-  bairro?: string;
-  cidade?: string;
-  estado?: string;
-  cep?: string;
-  observacoes?: string;
-  salario?: number;
-  data: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
+interface UseCadastrosReturn {
+  cadastros: CadastroData[];
+  loading: boolean;
+  error: string | null;
+  createCadastro: (data: CadastroFormData) => Promise<void>;
+  updateCadastro: (id: string, data: Partial<CadastroFormData>) => Promise<void>;
+  deleteCadastro: (id: string) => Promise<void>;
+  toggleStatus: (id: string) => Promise<void>;
+  refreshCadastros: () => Promise<void>;
 }
 
-export const useCadastros = () => {
+export const useCadastros = (): UseCadastrosReturn => {
+  const [cadastros, setCadastros] = useState<CadastroData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
-  const useQuery = (tipo?: 'Cliente' | 'Fornecedor' | 'Funcionário') => {
-    return useReactQuery({
-      queryKey: ['cadastros', tipo],
-      queryFn: async () => {
-        console.log('Buscando cadastros, tipo:', tipo);
-        let query = supabase
-          .from('cadastros')
-          .select('*')
-          .order('nome', { ascending: true });
+  const fetchCadastros = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        if (tipo) {
-          query = query.eq('tipo', tipo);
-        }
+      const { data, error: fetchError } = await supabase
+        .from('cadastros')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-        const { data, error } = await query;
+      if (fetchError) {
+        throw fetchError;
+      }
 
-        if (error) {
-          console.error('Erro ao buscar cadastros:', error);
-          throw error;
-        }
+      setCadastros(data || []);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar cadastros';
+      setError(errorMessage);
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [toast]);
 
-        console.log('Cadastros encontrados:', data);
-        return data as Cadastro[];
-      },
-    });
-  };
+  const createCadastro = useCallback(async (data: CadastroFormData) => {
+    try {
+      setError(null);
 
-  const useCreate = () => {
-    return useMutation({
-      mutationFn: async (cadastroData: Omit<Cadastro, 'id' | 'created_at' | 'updated_at'>) => {
-        console.log('Criando cadastro:', cadastroData);
-        
-        // Validar dados obrigatórios
-        if (!cadastroData.nome || !cadastroData.tipo || !cadastroData.pessoa) {
-          throw new Error('Nome, tipo e pessoa são obrigatórios');
-        }
+      const { error: insertError } = await supabase
+        .from('cadastros')
+        .insert([data]);
 
-        const { data, error } = await supabase
-          .from('cadastros')
-          .insert([cadastroData])
-          .select()
-          .single();
+      if (insertError) {
+        throw insertError;
+      }
 
-        if (error) {
-          console.error('Erro ao criar cadastro:', error);
-          throw error;
-        }
-        
-        console.log('Cadastro criado com sucesso:', data);
-        return data;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['cadastros'] });
-        toast({
-          title: "Sucesso",
-          description: "Cadastro criado com sucesso!",
-        });
-      },
-      onError: (error: any) => {
-        console.error('Erro ao criar cadastro:', error);
-        toast({
-          title: "Erro",
-          description: error.message || "Erro ao criar cadastro. Tente novamente.",
-          variant: "destructive",
-        });
-      },
-    });
-  };
+      toast({
+        title: 'Sucesso',
+        description: 'Cadastro criado com sucesso!',
+      });
 
-  const useUpdate = () => {
-    return useMutation({
-      mutationFn: async ({ id, ...updateData }: Partial<Cadastro> & { id: string }) => {
-        console.log('Atualizando cadastro:', id, updateData);
-        
-        const { data, error } = await supabase
-          .from('cadastros')
-          .update(updateData)
-          .eq('id', id)
-          .select()
-          .single();
+      await fetchCadastros();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao criar cadastro';
+      setError(errorMessage);
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw err;
+    }
+  }, [fetchCadastros, toast]);
 
-        if (error) {
-          console.error('Erro ao atualizar cadastro:', error);
-          throw error;
-        }
-        
-        console.log('Cadastro atualizado com sucesso:', data);
-        return data;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['cadastros'] });
-        toast({
-          title: "Sucesso",
-          description: "Cadastro atualizado com sucesso!",
-        });
-      },
-      onError: (error: any) => {
-        console.error('Erro ao atualizar cadastro:', error);
-        toast({
-          title: "Erro",
-          description: error.message || "Erro ao atualizar cadastro. Tente novamente.",
-          variant: "destructive",
-        });
-      },
-    });
-  };
+  const updateCadastro = useCallback(async (id: string, data: Partial<CadastroFormData>) => {
+    try {
+      setError(null);
 
-  const useDelete = () => {
-    return useMutation({
-      mutationFn: async (id: string) => {
-        console.log('Excluindo cadastro:', id);
-        
-        const { error } = await supabase
-          .from('cadastros')
-          .delete()
-          .eq('id', id);
+      const { error: updateError } = await supabase
+        .from('cadastros')
+        .update(data)
+        .eq('id', id);
 
-        if (error) {
-          console.error('Erro ao excluir cadastro:', error);
-          throw error;
-        }
-        
-        console.log('Cadastro excluído com sucesso');
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['cadastros'] });
-        toast({
-          title: "Sucesso",
-          description: "Cadastro excluído com sucesso!",
-        });
-      },
-      onError: (error: any) => {
-        console.error('Erro ao excluir cadastro:', error);
-        toast({
-          title: "Erro",
-          description: error.message || "Erro ao excluir cadastro. Tente novamente.",
-          variant: "destructive",
-        });
-      },
-    });
-  };
+      if (updateError) {
+        throw updateError;
+      }
+
+      toast({
+        title: 'Sucesso',
+        description: 'Cadastro atualizado com sucesso!',
+      });
+
+      await fetchCadastros();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao atualizar cadastro';
+      setError(errorMessage);
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw err;
+    }
+  }, [fetchCadastros, toast]);
+
+  const deleteCadastro = useCallback(async (id: string) => {
+    try {
+      setError(null);
+
+      const { error: deleteError } = await supabase
+        .from('cadastros')
+        .delete()
+        .eq('id', id);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      toast({
+        title: 'Sucesso',
+        description: 'Cadastro excluído com sucesso!',
+      });
+
+      await fetchCadastros();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao excluir cadastro';
+      setError(errorMessage);
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw err;
+    }
+  }, [fetchCadastros, toast]);
+
+  const toggleStatus = useCallback(async (id: string) => {
+    try {
+      setError(null);
+
+      const cadastro = cadastros.find(c => c.id === id);
+      if (!cadastro) {
+        throw new Error('Cadastro não encontrado');
+      }
+
+      const newStatus = cadastro.status === 'ativo' ? 'inativo' : 'ativo';
+
+      const { error: updateError } = await supabase
+        .from('cadastros')
+        .update({ status: newStatus })
+        .eq('id', id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      toast({
+        title: 'Sucesso',
+        description: `Status alterado para ${newStatus}!`,
+      });
+
+      await fetchCadastros();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao alterar status';
+      setError(errorMessage);
+      toast({
+        title: 'Erro',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+      throw err;
+    }
+  }, [cadastros, fetchCadastros, toast]);
+
+  const refreshCadastros = useCallback(async () => {
+    await fetchCadastros();
+  }, [fetchCadastros]);
+
+  useEffect(() => {
+    fetchCadastros();
+  }, [fetchCadastros]);
 
   return {
-    useQuery,
-    useCreate,
-    useUpdate,
-    useDelete,
+    cadastros,
+    loading,
+    error,
+    createCadastro,
+    updateCadastro,
+    deleteCadastro,
+    toggleStatus,
+    refreshCadastros,
   };
 };
