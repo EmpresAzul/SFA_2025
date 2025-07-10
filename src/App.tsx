@@ -1,5 +1,9 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 import DashboardLayout from "./components/DashboardLayout";
+import PWAInstallBanner from "./components/PWAInstallBanner";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -21,7 +25,11 @@ import AdminSettings from "./pages/AdminSettings";
 import Pipeline from "./pages/Pipeline";
 
 const App = () => (
-  <Routes>
+  <BrowserRouter>
+    <AuthProvider>
+      <Toaster />
+      <Sonner />
+      <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route
@@ -145,7 +153,10 @@ const App = () => (
               }
             />
             <Route path="*" element={<NotFound />} />
-  </Routes>
+      </Routes>
+      <PWAInstallBanner />
+    </AuthProvider>
+  </BrowserRouter>
 );
 
 export default App;
