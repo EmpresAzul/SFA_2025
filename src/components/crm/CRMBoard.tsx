@@ -3,12 +3,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Eye, Edit, Trash2, Plus, MessageSquare } from 'lucide-react';
-import { useCRMLeads, useUpdateLead, useDeleteLead } from '@/hooks/useCRM';
-import { LeadForm } from './LeadForm';
-import { LeadViewModal } from './LeadViewModal';
-import { InteractionForm } from './InteractionForm';
-import type { CRMLead } from '@/types/crm';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { MoreHorizontal, Eye, Edit, Trash2, Plus, MessageSquare, X, Check, Calendar, Phone, Mail, Building, DollarSign, Target, FileText, Clock } from 'lucide-react';
+import { useCRMLeads, useUpdateLead, useDeleteLead, useCreateInteraction, useCRMInteractions } from '@/hooks/useCRM';
+import type { CRMLead, CreateLeadData, CreateInteractionData } from '@/types/crm';
 
 const statusConfig = {
   prospeccao: { label: 'Prospecção', color: 'bg-blue-100 text-blue-800', order: 1 },
@@ -28,15 +31,55 @@ const nextStatus = {
   perdido: 'perdido'
 };
 
+const sources = [
+  'Website',
+  'LinkedIn',
+  'Indicação',
+  'Email Marketing',
+  'Evento',
+  'Cold Call',
+  'Outros'
+];
+
+const interactionTypes = [
+  { value: 'call', label: 'Ligação' },
+  { value: 'email', label: 'Email' },
+  { value: 'meeting', label: 'Reunião' },
+  { value: 'proposal', label: 'Proposta' },
+  { value: 'follow-up', label: 'Follow-up' }
+];
+
 export function CRMBoard() {
   const { data: leads = [], isLoading } = useCRMLeads();
   const updateLead = useUpdateLead();
   const deleteLead = useDeleteLead();
+  const createInteraction = useCreateInteraction();
 
   const [selectedLead, setSelectedLead] = useState<CRMLead | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [isInteractionFormOpen, setIsInteractionFormOpen] = useState(false);
+  const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
+  const [isInteractionDrawerOpen, setIsInteractionDrawerOpen] = useState(false);
+  const [editingLead, setEditingLead] = useState<CRMLead | null>(null);
+  const [formData, setFormData] = useState<CreateLeadData>({
+    name: '',
+    company: '',
+    email: '',
+    phone: '',
+    source: 'Website',
+    value: 0,
+    probability: 25,
+    next_follow_up: new Date().toISOString().split('T')[0],
+    notes: ''
+  });
+  const [interactionData, setInteractionData] = useState<CreateInteractionData>({
+    lead_id: '',
+    type: 'call',
+    description: '',
+    outcome: '',
+    interaction_date: new Date().toISOString().split('T')[0]
+  });
+
+  const { data: interactions = [] } = useCRMInteractions(selectedLead?.id);
 
   const handleStatusChange = async (lead: CRMLead, newStatus: CRMLead['status']) => {
     try {
@@ -50,6 +93,10 @@ export function CRMBoard() {
     if (confirm(`Tem certeza que deseja excluir o lead "${lead.name}"?`)) {
       try {
         await deleteLead.mutateAsync(lead.id);
+        if (selectedLead?.id === lead.id) {
+          setIsViewDrawerOpen(false);
+          setSelectedLead(null);
+        }
       } catch (error) {
         console.error('Erro ao deletar lead:', error);
       }
@@ -57,33 +104,95 @@ export function CRMBoard() {
   };
 
   const handleEditLead = (lead: CRMLead) => {
-    setSelectedLead(lead);
+    setEditingLead(lead);
+    setFormData({
+      name: lead.name,
+      company: lead.company,
+      email: lead.email,
+      phone: lead.phone || '',
+      source: lead.source,
+      value: lead.value,
+      probability: lead.probability,
+      next_follow_up: lead.next_follow_up || new Date().toISOString().split('T')[0],
+      notes: lead.notes || ''
+    });
     setIsFormOpen(true);
   };
 
   const handleViewLead = (lead: CRMLead) => {
     setSelectedLead(lead);
-    setIsViewModalOpen(true);
+    setIsViewDrawerOpen(true);
   };
 
   const handleAddInteraction = (lead: CRMLead) => {
     setSelectedLead(lead);
-    setIsInteractionFormOpen(true);
+    setInteractionData({
+      lead_id: lead.id,
+      type: 'call',
+      description: '',
+      outcome: '',
+      interaction_date: new Date().toISOString().split('T')[0]
+    });
+    setIsInteractionDrawerOpen(true);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editingLead) {
+        await updateLead.mutateAsync({ id: editingLead.id, ...formData });
+        setEditingLead(null);
+      } else {
+        await updateLead.mutateAsync({ id: selectedLead!.id, ...formData });
+      }
+      setIsFormOpen(false);
+      setFormData({
+        name: '',
+        company: '',
+        email: '',
+        phone: '',
+        source: 'Website',
+        value: 0,
+        probability: 25,
+        next_follow_up: new Date().toISOString().split('T')[0],
+        notes: ''
+      });
+    } catch (error) {
+      console.error('Erro ao salvar lead:', error);
+    }
+  };
+
+  const handleInteractionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createInteraction.mutateAsync(interactionData);
+      setIsInteractionDrawerOpen(false);
+      setInteractionData({
+        lead_id: '',
+        type: 'call',
+        description: '',
+        outcome: '',
+        interaction_date: new Date().toISOString().split('T')[0]
+      });
+    } catch (error) {
+      console.error('Erro ao criar interação:', error);
+    }
   };
 
   const handleFormClose = () => {
     setIsFormOpen(false);
-    setSelectedLead(null);
-  };
-
-  const handleViewModalClose = () => {
-    setIsViewModalOpen(false);
-    setSelectedLead(null);
-  };
-
-  const handleInteractionFormClose = () => {
-    setIsInteractionFormOpen(false);
-    setSelectedLead(null);
+    setEditingLead(null);
+    setFormData({
+      name: '',
+      company: '',
+      email: '',
+      phone: '',
+      source: 'Website',
+      value: 0,
+      probability: 25,
+      next_follow_up: new Date().toISOString().split('T')[0],
+      notes: ''
+    });
   };
 
   const groupedLeads = leads.reduce((acc, lead) => {
@@ -113,6 +222,124 @@ export function CRMBoard() {
         </Button>
       </div>
 
+      {/* Formulário Inline */}
+      {isFormOpen && (
+        <Card className="mb-6 border-2 border-blue-200 bg-blue-50/50">
+          <CardHeader className="pb-4">
+            <div className="flex justify-between items-center">
+              <CardTitle className="text-lg">
+                {editingLead ? 'Editar Lead' : 'Novo Lead'}
+              </CardTitle>
+              <Button variant="ghost" size="sm" onClick={handleFormClose}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleFormSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nome *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="company">Empresa *</Label>
+                  <Input
+                    id="company"
+                    value={formData.company}
+                    onChange={e => setFormData(prev => ({ ...prev, company: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Telefone</Label>
+                  <Input
+                    id="phone"
+                    value={formData.phone}
+                    onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="source">Origem</Label>
+                  <Select value={formData.source} onValueChange={value => setFormData(prev => ({ ...prev, source: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sources.map(source => (
+                        <SelectItem key={source} value={source}>{source}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="value">Valor (R$)</Label>
+                  <Input
+                    id="value"
+                    type="number"
+                    value={formData.value}
+                    onChange={e => setFormData(prev => ({ ...prev, value: parseFloat(e.target.value) || 0 }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="probability">Probabilidade (%)</Label>
+                  <Input
+                    id="probability"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.probability}
+                    onChange={e => setFormData(prev => ({ ...prev, probability: parseInt(e.target.value) || 0 }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="next_follow_up">Próximo Follow-up</Label>
+                  <Input
+                    id="next_follow_up"
+                    type="date"
+                    value={formData.next_follow_up}
+                    onChange={e => setFormData(prev => ({ ...prev, next_follow_up: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2 lg:col-span-3">
+                  <Label htmlFor="notes">Observações</Label>
+                  <Textarea
+                    id="notes"
+                    value={formData.notes}
+                    onChange={e => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                    rows={3}
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button type="button" variant="outline" onClick={handleFormClose}>
+                  Cancelar
+                </Button>
+                <Button type="submit">
+                  <Check className="w-4 h-4 mr-2" />
+                  {editingLead ? 'Atualizar' : 'Criar'} Lead
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Board */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {Object.entries(statusConfig)
@@ -131,13 +358,16 @@ export function CRMBoard() {
                 {groupedLeads[status]?.map((lead) => (
                   <div
                     key={lead.id}
-                    className="bg-white border rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow"
+                    className="bg-white border rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
+                    onClick={() => handleViewLead(lead)}
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium text-sm truncate">{lead.name}</h4>
+                      <h4 className="font-medium text-sm truncate group-hover:text-blue-600 transition-colors">
+                        {lead.name}
+                      </h4>
                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
                             <MoreHorizontal className="w-3 h-3" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -173,17 +403,25 @@ export function CRMBoard() {
                       </DropdownMenu>
                     </div>
                     
-                    <p className="text-xs text-gray-600 mb-2">{lead.company}</p>
+                    <p className="text-xs text-gray-600 mb-2 flex items-center">
+                      <Building className="w-3 h-3 mr-1" />
+                      {lead.company}
+                    </p>
                     
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="font-medium">
+                    <div className="flex justify-between items-center text-xs mb-2">
+                      <span className="font-medium flex items-center">
+                        <DollarSign className="w-3 h-3 mr-1" />
                         R$ {lead.value.toLocaleString('pt-BR')}
                       </span>
-                      <span className="text-gray-500">{lead.probability}%</span>
+                      <span className="text-gray-500 flex items-center">
+                        <Target className="w-3 h-3 mr-1" />
+                        {lead.probability}%
+                      </span>
                     </div>
 
                     {lead.next_follow_up && (
-                      <div className="mt-2 text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
                         Follow-up: {new Date(lead.next_follow_up).toLocaleDateString('pt-BR')}
                       </div>
                     )}
@@ -194,36 +432,207 @@ export function CRMBoard() {
           ))}
       </div>
 
-      {/* Modals */}
-      <LeadForm 
-        isOpen={isFormOpen} 
-        onClose={handleFormClose} 
-        lead={selectedLead}
-      />
+      {/* Drawer de Visualização */}
+      <Sheet open={isViewDrawerOpen} onOpenChange={setIsViewDrawerOpen}>
+        <SheetContent className="w-[400px] sm:w-[540px]">
+          <SheetHeader>
+            <SheetTitle>Detalhes do Lead</SheetTitle>
+          </SheetHeader>
+          {selectedLead && (
+            <div className="mt-6 space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-xl font-semibold">{selectedLead.name}</h3>
+                  <p className="text-gray-600 flex items-center mt-1">
+                    <Building className="w-4 h-4 mr-2" />
+                    {selectedLead.company}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Mail className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm">{selectedLead.email}</span>
+                  </div>
+                  {selectedLead.phone && (
+                    <div className="flex items-center space-x-2">
+                      <Phone className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm">{selectedLead.phone}</span>
+                    </div>
+                  )}
+                </div>
 
-      <LeadViewModal
-        isOpen={isViewModalOpen}
-        onClose={handleViewModalClose}
-        lead={selectedLead}
-        onEdit={() => {
-          setIsViewModalOpen(false);
-          setIsFormOpen(true);
-        }}
-        onDelete={() => {
-          if (selectedLead) {
-            handleDeleteLead(selectedLead);
-            setIsViewModalOpen(false);
-          }
-        }}
-      />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs text-gray-500">Valor</Label>
+                    <p className="font-semibold">R$ {selectedLead.value.toLocaleString('pt-BR')}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Probabilidade</Label>
+                    <p className="font-semibold">{selectedLead.probability}%</p>
+                  </div>
+                </div>
 
-      {selectedLead && (
-        <InteractionForm
-          isOpen={isInteractionFormOpen}
-          onClose={handleInteractionFormClose}
-          leadId={selectedLead.id}
-        />
-      )}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs text-gray-500">Origem</Label>
+                    <p className="font-semibold">{selectedLead.source}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-500">Status</Label>
+                    <Badge className={statusConfig[selectedLead.status].color}>
+                      {statusConfig[selectedLead.status].label}
+                    </Badge>
+                  </div>
+                </div>
+
+                {selectedLead.next_follow_up && (
+                  <div>
+                    <Label className="text-xs text-gray-500">Próximo Follow-up</Label>
+                    <p className="font-semibold">{new Date(selectedLead.next_follow_up).toLocaleDateString('pt-BR')}</p>
+                  </div>
+                )}
+
+                {selectedLead.notes && (
+                  <div>
+                    <Label className="text-xs text-gray-500">Observações</Label>
+                    <p className="text-sm mt-1">{selectedLead.notes}</p>
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h4 className="font-semibold">Interações</h4>
+                  <Button size="sm" onClick={() => handleAddInteraction(selectedLead)}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nova Interação
+                  </Button>
+                </div>
+                
+                {interactions.length === 0 ? (
+                  <p className="text-gray-500 text-sm">Nenhuma interação registrada.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {interactions.map((interaction) => (
+                      <div key={interaction.id} className="border rounded-lg p-3">
+                        <div className="flex justify-between items-start mb-2">
+                          <Badge variant="outline" className="text-xs">
+                            {interactionTypes.find(t => t.value === interaction.type)?.label}
+                          </Badge>
+                          <span className="text-xs text-gray-500">
+                            {new Date(interaction.interaction_date).toLocaleDateString('pt-BR')}
+                          </span>
+                        </div>
+                        <p className="text-sm mb-1">{interaction.description}</p>
+                        {interaction.outcome && (
+                          <p className="text-xs text-gray-600">Resultado: {interaction.outcome}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex space-x-2 pt-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => handleEditLead(selectedLead)}
+                  className="flex-1"
+                >
+                  <Edit className="w-4 h-4 mr-2" />
+                  Editar
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  onClick={() => handleDeleteLead(selectedLead)}
+                  className="flex-1"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Excluir
+                </Button>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      {/* Drawer de Interação */}
+      <Sheet open={isInteractionDrawerOpen} onOpenChange={setIsInteractionDrawerOpen}>
+        <SheetContent className="w-[400px] sm:w-[540px]">
+          <SheetHeader>
+            <SheetTitle>Nova Interação</SheetTitle>
+          </SheetHeader>
+          <form onSubmit={handleInteractionSubmit} className="mt-6 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="interaction-type">Tipo de Interação</Label>
+              <Select 
+                value={interactionData.type} 
+                onValueChange={value => setInteractionData(prev => ({ ...prev, type: value as any }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {interactionTypes.map(type => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="interaction-date">Data</Label>
+              <Input
+                id="interaction-date"
+                type="date"
+                value={interactionData.interaction_date}
+                onChange={e => setInteractionData(prev => ({ ...prev, interaction_date: e.target.value }))}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="interaction-description">Descrição *</Label>
+              <Textarea
+                id="interaction-description"
+                value={interactionData.description}
+                onChange={e => setInteractionData(prev => ({ ...prev, description: e.target.value }))}
+                rows={4}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="interaction-outcome">Resultado</Label>
+              <Textarea
+                id="interaction-outcome"
+                value={interactionData.outcome}
+                onChange={e => setInteractionData(prev => ({ ...prev, outcome: e.target.value }))}
+                rows={2}
+              />
+            </div>
+
+            <div className="flex space-x-2 pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setIsInteractionDrawerOpen(false)}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" className="flex-1">
+                <Check className="w-4 h-4 mr-2" />
+                Salvar Interação
+              </Button>
+            </div>
+          </form>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 } 
