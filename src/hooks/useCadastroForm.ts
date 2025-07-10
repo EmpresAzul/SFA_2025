@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCadastros, type Cadastro, type CadastroFormData } from '@/hooks/useCadastros';
@@ -48,6 +49,7 @@ export const useCadastroForm = (editingCadastro?: Cadastro) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [loading, setLoading] = useState(false);
+  const [editingItem, setEditingItem] = useState<Cadastro | null>(editingCadastro || null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -62,6 +64,33 @@ export const useCadastroForm = (editingCadastro?: Cadastro) => {
       ...prev,
       pessoa: value,
     }));
+  };
+
+  const handleEdit = (cadastro: Cadastro) => {
+    setEditingItem(cadastro);
+    setFormData({
+      nome: cadastro.nome,
+      tipo: cadastro.tipo,
+      pessoa: cadastro.pessoa as 'Física' | 'Jurídica',
+      cpf_cnpj: cadastro.cpf_cnpj || '',
+      telefone: cadastro.telefone || '',
+      email: cadastro.email || '',
+      endereco: cadastro.endereco || '',
+      numero: cadastro.numero || '',
+      bairro: cadastro.bairro || '',
+      cidade: cadastro.cidade || '',
+      estado: cadastro.estado || '',
+      cep: cadastro.cep || '',
+      observacoes: cadastro.observacoes || '',
+      salario: cadastro.salario?.toString() || '',
+      status: cadastro.status,
+      data: cadastro.data,
+    });
+  };
+
+  const resetForm = () => {
+    setFormData(initialFormData);
+    setEditingItem(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -99,9 +128,9 @@ export const useCadastroForm = (editingCadastro?: Cadastro) => {
         user_id: user.id,
       };
 
-      if (editingCadastro) {
+      if (editingItem) {
         await updateCadastro.mutateAsync({
-          id: editingCadastro.id,
+          id: editingItem.id,
           data: cadastroData
         });
         toast({
@@ -114,7 +143,7 @@ export const useCadastroForm = (editingCadastro?: Cadastro) => {
           title: 'Sucesso',
           description: 'Cadastro criado com sucesso!',
         });
-        setFormData(initialFormData);
+        resetForm();
       }
     } catch (error) {
       console.error('Erro ao salvar cadastro:', error);
@@ -131,24 +160,7 @@ export const useCadastroForm = (editingCadastro?: Cadastro) => {
   // Load editing data
   useEffect(() => {
     if (editingCadastro) {
-      setFormData({
-        nome: editingCadastro.nome,
-        tipo: editingCadastro.tipo,
-        pessoa: editingCadastro.pessoa as 'Física' | 'Jurídica',
-        cpf_cnpj: editingCadastro.cpf_cnpj || '',
-        telefone: editingCadastro.telefone || '',
-        email: editingCadastro.email || '',
-        endereco: editingCadastro.endereco || '',
-        numero: editingCadastro.numero || '',
-        bairro: editingCadastro.bairro || '',
-        cidade: editingCadastro.cidade || '',
-        estado: editingCadastro.estado || '',
-        cep: editingCadastro.cep || '',
-        observacoes: editingCadastro.observacoes || '',
-        salario: editingCadastro.salario?.toString() || '',
-        status: editingCadastro.status,
-        data: editingCadastro.data,
-      });
+      handleEdit(editingCadastro);
     }
   }, [editingCadastro]);
 
@@ -157,5 +169,8 @@ export const useCadastroForm = (editingCadastro?: Cadastro) => {
     setFormData,
     loading,
     handleSubmit,
+    editingCadastro: editingItem,
+    handleEdit,
+    resetForm,
   };
 };

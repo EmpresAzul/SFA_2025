@@ -1,4 +1,3 @@
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -60,8 +59,8 @@ export const useLancamentosMutations = () => {
           observacoes: lancamentoData.observacoes || null,
           user_id: lancamentoData.user_id,
           status: lancamentoData.status || 'ativo',
-          recorrente: false,
-          meses_recorrencia: null,
+          recorrente: lancamentoData.recorrente || false,
+          meses_recorrencia: lancamentoData.recorrente ? lancamentoData.meses_recorrencia || null : null,
           lancamento_pai_id: null,
         };
 

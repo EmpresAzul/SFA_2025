@@ -1,51 +1,26 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import type { Database } from "@/integrations/supabase/types";
 
-interface EstoqueItem {
-  id: string;
-  nome: string;
-  descricao?: string;
-  categoria: string;
-  quantidade: number;
-  preco_unitario: number;
-  preco_venda: number;
-  fornecedor?: string;
-  codigo_barras?: string;
-  localizacao?: string;
-  estoque_minimo: number;
-  status: 'ativo' | 'inativo';
-  created_at: string;
-  updated_at: string;
-}
-
-interface EstoqueFormData {
-  nome: string;
-  descricao?: string;
-  categoria: string;
-  quantidade: number;
-  preco_unitario: number;
-  preco_venda: number;
-  fornecedor?: string;
-  codigo_barras?: string;
-  localizacao?: string;
-  estoque_minimo: number;
-  status: 'ativo' | 'inativo';
-}
+// Use the actual database schema types
+type EstoqueRow = Database['public']['Tables']['estoques']['Row'];
+type EstoqueInsert = Database['public']['Tables']['estoques']['Insert'];
 
 interface UseEstoqueDataReturn {
-  estoques: EstoqueItem[];
+  estoques: EstoqueRow[];
   loading: boolean;
   error: string | null;
   fetchEstoques: () => Promise<void>;
-  createEstoque: (data: EstoqueFormData) => Promise<void>;
-  updateEstoque: (id: string, data: Partial<EstoqueFormData>) => Promise<void>;
+  createEstoque: (data: EstoqueInsert) => Promise<void>;
+  updateEstoque: (id: string, data: Partial<EstoqueInsert>) => Promise<void>;
   deleteEstoque: (id: string) => Promise<void>;
   adjustQuantity: (id: string, quantidade: number) => Promise<void>;
 }
 
 export const useEstoqueData = (): UseEstoqueDataReturn => {
-  const [estoques, setEstoques] = useState<EstoqueItem[]>([]);
+  const [estoques, setEstoques] = useState<EstoqueRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
@@ -58,7 +33,7 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
       const { data, error: fetchError } = await supabase
         .from('estoques')
         .select('*')
-        .order('nome', { ascending: true });
+        .order('nome_produto', { ascending: true });
 
       if (fetchError) {
         throw fetchError;
@@ -78,13 +53,13 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
     }
   }, [toast]);
 
-  const createEstoque = useCallback(async (data: EstoqueFormData) => {
+  const createEstoque = useCallback(async (data: EstoqueInsert) => {
     try {
       setError(null);
 
       const { error: insertError } = await supabase
         .from('estoques')
-        .insert([data]);
+        .insert(data);
 
       if (insertError) {
         throw insertError;
@@ -108,7 +83,7 @@ export const useEstoqueData = (): UseEstoqueDataReturn => {
     }
   }, [fetchEstoques, toast]);
 
-  const updateEstoque = useCallback(async (id: string, data: Partial<EstoqueFormData>) => {
+  const updateEstoque = useCallback(async (id: string, data: Partial<EstoqueInsert>) => {
     try {
       setError(null);
 
