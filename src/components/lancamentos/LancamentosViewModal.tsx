@@ -4,126 +4,142 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Eye,
   DollarSign,
   Calendar,
   User,
   Building,
   FileText,
   Tag,
+  ArrowUpRight,
+  ArrowDownRight,
 } from "lucide-react";
-import { formatNumberToDisplay } from "@/utils/currency";
-import type { LancamentoComRelacoes } from "@/types/lancamentosForm";
+import type { Lancamento } from "@/hooks/useLancamentos";
 
 interface LancamentosViewModalProps {
-  lancamento: LancamentoComRelacoes;
+  lancamento: Lancamento | null;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const LancamentosViewModal: React.FC<LancamentosViewModalProps> = ({
   lancamento,
+  isOpen,
+  onClose,
 }) => {
+  if (!lancamento) return null;
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(value);
+  };
+
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("pt-BR");
   };
 
-  const getTipoColor = (tipo: string) => {
-    return tipo === "receita"
-      ? "bg-green-100 text-green-800 border-green-200"
-      : "bg-red-100 text-red-800 border-red-200";
+  const getTipoIcon = (tipo: string) => {
+    return tipo === "receita" ? (
+      <ArrowUpRight className="h-5 w-5 text-green-600" />
+    ) : (
+      <ArrowDownRight className="h-5 w-5 text-red-600" />
+    );
+  };
+
+  const getTipoBadge = (tipo: string) => {
+    return tipo === "receita" ? (
+      <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
+        Receita
+      </Badge>
+    ) : (
+      <Badge className="bg-red-100 text-red-800 hover:bg-red-200">
+        Despesa
+      </Badge>
+    );
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-7 w-7 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-          title="Visualizar"
-        >
-          <Eye className="h-3 w-3" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-lg">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center text-lg">
-            <DollarSign className="h-5 w-5 mr-2 text-blue-600" />
+          <DialogTitle className="flex items-center text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <DollarSign className="h-6 w-6 mr-3 text-blue-600" />
             Detalhes do Lançamento
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Tipo e Valor */}
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
-            <div className="flex items-center justify-between mb-3">
-              <Badge className={getTipoColor(lancamento.tipo)}>
-                {lancamento.tipo === "receita" ? "Receita" : "Despesa"}
-              </Badge>
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {getTipoIcon(lancamento.tipo)}
+                {getTipoBadge(lancamento.tipo)}
+              </div>
               <div
-                className={`text-xl font-bold ${
+                className={`text-3xl font-bold ${
                   lancamento.tipo === "receita"
                     ? "text-green-600"
                     : "text-red-600"
                 }`}
               >
-                {formatNumberToDisplay(lancamento.valor)}
+                {formatCurrency(lancamento.valor)}
               </div>
             </div>
           </div>
 
           {/* Informações Básicas */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
-                <Calendar className="h-4 w-4 mr-1" />
-                Data
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                Data do Lançamento
               </h3>
-              <p className="text-gray-700 bg-gray-50 p-2 rounded text-center">
+              <p className="text-gray-700 text-lg font-medium">
                 {formatDate(lancamento.data)}
               </p>
             </div>
 
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
-                <Tag className="h-4 w-4 mr-1" />
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                <Tag className="h-5 w-5 mr-2 text-blue-600" />
                 Categoria
               </h3>
-              <p className="text-gray-700 bg-gray-50 p-2 rounded text-center">
-                {lancamento.categoria}
-              </p>
+              <Badge variant="outline" className="text-base px-3 py-1">
+                {lancamento.categoria || 'Sem categoria'}
+              </Badge>
             </div>
           </div>
 
           {/* Cliente/Fornecedor */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
               {lancamento.tipo === "receita" ? (
-                <User className="h-4 w-4 mr-1" />
+                <User className="h-5 w-5 mr-2 text-blue-600" />
               ) : (
-                <Building className="h-4 w-4 mr-1" />
+                <Building className="h-5 w-5 mr-2 text-blue-600" />
               )}
               {lancamento.tipo === "receita" ? "Cliente" : "Fornecedor"}
             </h3>
-            <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
+            <p className="text-gray-700 text-lg">
               {lancamento.tipo === "receita"
-                ? lancamento.cliente?.nome || "Não informado"
-                : lancamento.fornecedor?.nome || "Não informado"}
+                ? "Cliente não informado"
+                : "Fornecedor não informado"}
             </p>
           </div>
 
           {/* Observações */}
           {lancamento.observacoes && (
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
-                <FileText className="h-4 w-4 mr-1" />
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                <FileText className="h-5 w-5 mr-2 text-blue-600" />
                 Observações
               </h3>
-              <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-700 text-lg leading-relaxed">
                 {lancamento.observacoes}
               </p>
             </div>
@@ -131,9 +147,9 @@ const LancamentosViewModal: React.FC<LancamentosViewModalProps> = ({
 
           {/* Informações de Recorrência */}
           {lancamento.recorrente && (
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Recorrência</h3>
-              <p className="text-gray-700 bg-blue-50 p-3 rounded-lg">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <h3 className="font-semibold text-blue-900 mb-2">Recorrência</h3>
+              <p className="text-blue-700">
                 Lançamento recorrente{" "}
                 {lancamento.meses_recorrencia
                   ? `por ${lancamento.meses_recorrencia} meses`
@@ -142,15 +158,18 @@ const LancamentosViewModal: React.FC<LancamentosViewModalProps> = ({
             </div>
           )}
 
-          <div className="text-xs text-gray-500 pt-2 border-t">
-            <p>
-              Criado em:{" "}
-              {new Date(lancamento.created_at).toLocaleString("pt-BR")}
-            </p>
-            <p>
-              Atualizado em:{" "}
-              {new Date(lancamento.updated_at).toLocaleString("pt-BR")}
-            </p>
+          {/* Informações do Sistema */}
+          <div className="text-xs text-gray-500 pt-4 border-t border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <p>
+                <span className="font-medium">Criado em:</span>{" "}
+                {new Date(lancamento.created_at).toLocaleString("pt-BR")}
+              </p>
+              <p>
+                <span className="font-medium">Atualizado em:</span>{" "}
+                {new Date(lancamento.updated_at).toLocaleString("pt-BR")}
+              </p>
+            </div>
           </div>
         </div>
       </DialogContent>

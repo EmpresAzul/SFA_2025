@@ -134,7 +134,7 @@ const Cadastros: React.FC = () => {
   const Icon = getIcon();
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       <CadastroHeader
         icon={Icon}
         title={getDisplayName(tipoCapitalized, true)}
@@ -146,27 +146,50 @@ const Cadastros: React.FC = () => {
       />
 
       <CadastroSummaryCards
-        cadastros={filteredCadastros}
-        icon={Icon}
-        tipo={getDisplayName(tipoCapitalized, true)}
+        cards={[
+          {
+            title: `Total de ${getDisplayName(tipoCapitalized, true)}`,
+            value: filteredCadastros.length,
+            icon: <Icon className="h-5 w-5" />,
+          },
+          {
+            title: `${getDisplayName(tipoCapitalized)} Ativos`,
+            value: filteredCadastros.filter(c => c.status === 'ativo').length,
+            icon: <Icon className="h-5 w-5" />,
+          },
+          {
+            title: `${getDisplayName(tipoCapitalized)} Inativos`,
+            value: filteredCadastros.filter(c => c.status === 'inativo').length,
+            icon: <Icon className="h-5 w-5" />,
+          },
+        ]}
       />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="lista">
+        <TabsList className="grid w-full grid-cols-2 mb-6 bg-white/80 backdrop-blur-sm shadow-lg rounded-xl h-12 sm:h-14">
+          <TabsTrigger
+            value="lista"
+            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
             Lista de {getDisplayName(tipoCapitalized, true)}
           </TabsTrigger>
-          <TabsTrigger value="formulario">
+          <TabsTrigger
+            value="formulario"
+            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+          >
             {editingCadastro
               ? `Editar ${getDisplayName(tipoCapitalized)}`
               : `Novo ${getDisplayName(tipoCapitalized)}`}
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="lista" className="space-y-4">
-          <Card>
+        <TabsContent value="lista" className="space-y-6">
+          <Card className="mb-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <CardHeader>
-              <CardTitle>Filtros</CardTitle>
+              <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                <Search className="h-5 w-5 text-blue-600" />
+                Filtros de Busca
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex gap-4">
@@ -177,7 +200,7 @@ const Cadastros: React.FC = () => {
                       placeholder="Buscar por nome, CPF/CNPJ ou email..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -198,8 +221,8 @@ const Cadastros: React.FC = () => {
           <CadastroForm
             tipo={tipoCapitalized}
             formData={formData}
-            setFormData={(data: any) => setFormData(data)}
-            editingCadastro={editingCadastro as any}
+            setFormData={setFormData}
+            editingCadastro={editingCadastro}
             loading={loading}
             onSubmit={handleFormSubmit}
             onCancel={handleCancelEdit}

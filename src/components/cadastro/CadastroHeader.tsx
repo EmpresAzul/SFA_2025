@@ -16,20 +16,22 @@ export const CadastroHeader: React.FC<CadastroHeaderProps> = ({
   onNewClick,
 }) => {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
       <div>
         <div className="flex items-center gap-3">
-          <Icon className="w-8 h-8 text-fluxo-blue-600" />
-          <h1 className="text-3xl font-bold text-fluxo-black-900">{title}</h1>
+          <Icon className="w-8 h-8 text-blue-600" />
+          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            {title}
+          </h1>
         </div>
-        <p className="text-fluxo-black-600 mt-2">{description}</p>
+        <p className="text-gray-600 mt-2 text-sm">{description}</p>
       </div>
       <Button
         onClick={onNewClick}
-        className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600 text-white"
+        className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2"
       >
-        <Plus className="w-4 h-4 mr-2" />
-        {title.replace("s", "")}
+        <Plus className="h-4 w-4" />
+        Novo {title.replace("s", "")}
       </Button>
     </div>
   );

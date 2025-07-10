@@ -1,29 +1,20 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import {
-  useLancamentos,
-  type LancamentoComRelacoes,
-} from "@/hooks/useLancamentos";
+import { useLancamentos, type Lancamento } from "@/hooks/useLancamentos";
 import { useCadastros } from "@/hooks/useCadastros";
 
 export const useLancamentosPage = () => {
-  const [filteredLancamentos, setFilteredLancamentos] = useState<
-    LancamentoComRelacoes[]
-  >([]);
+  const [filteredLancamentos, setFilteredLancamentos] = useState<Lancamento[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [tipoFilter, setTipoFilter] = useState("todos");
   const [categoriaFilter, setCategoriaFilter] = useState("todas");
   const [activeTab, setActiveTab] = useState("lista");
-  const [editingLancamento, setEditingLancamento] =
-    useState<LancamentoComRelacoes | null>(null);
+  const [editingLancamento, setEditingLancamento] = useState<Lancamento | null>(null);
+  
   const { user, session } = useAuth();
   const { toast } = useToast();
-
-  console.log("useLancamentosPage: Usuário autenticado:", !!user);
-  console.log("useLancamentosPage: Sessão ativa:", !!session);
-  console.log("useLancamentosPage: User ID:", user?.id);
 
   const {
     useQuery: useLancamentosQuery,
@@ -31,15 +22,8 @@ export const useLancamentosPage = () => {
     useUpdate,
     useDelete,
   } = useLancamentos();
+  
   const { data: lancamentos, isLoading, error } = useLancamentosQuery();
-
-  console.log("useLancamentosPage: Dados de lançamentos:", lancamentos);
-  console.log(
-    "useLancamentosPage: Quantidade de lançamentos:",
-    lancamentos?.length || 0,
-  );
-  console.log("useLancamentosPage: Carregando:", isLoading);
-  console.log("useLancamentosPage: Erro:", error);
 
   const createLancamento = useCreate();
   const updateLancamento = useUpdate();
@@ -52,29 +36,18 @@ export const useLancamentosPage = () => {
   const fornecedores = allCadastros.filter((item: any) => item.tipo === "Fornecedor");
 
   useEffect(() => {
-    console.log(
-      "useLancamentosPage: useEffect chamado - lancamentos:",
-      lancamentos?.length || 0,
-    );
     if (lancamentos) {
-      console.log("useLancamentosPage: Aplicando filtros aos lançamentos");
       filterLancamentos();
     }
   }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
 
   const filterLancamentos = () => {
     if (!lancamentos) {
-      console.log("useLancamentosPage: Sem lançamentos para filtrar");
       setFilteredLancamentos([]);
       return;
     }
 
-    console.log(
-      "useLancamentosPage: Filtrando",
-      lancamentos.length,
-      "lançamentos",
-    );
-    let filtered: LancamentoComRelacoes[] = [...lancamentos];
+    let filtered: Lancamento[] = [...lancamentos];
 
     if (searchTerm) {
       filtered = filtered.filter(
@@ -101,41 +74,33 @@ export const useLancamentosPage = () => {
       );
     }
 
-    console.log("useLancamentosPage: Lançamentos filtrados:", filtered.length);
-    console.log(
-      "useLancamentosPage: Primeiros 3 lançamentos filtrados:",
-      filtered.slice(0, 3),
-    );
     setFilteredLancamentos(filtered);
   };
 
-  const handleEdit = (lancamento: LancamentoComRelacoes) => {
+  const handleEdit = (lancamento: Lancamento) => {
     console.log("Editando lançamento:", lancamento);
     setEditingLancamento(lancamento);
     setActiveTab("formulario");
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Tem certeza que deseja excluir este lançamento?")) {
-      try {
-        await deleteLancamento.mutateAsync(id);
-        toast({
-          title: "Sucesso!",
-          description: "Lançamento excluído com sucesso.",
-        });
-      } catch (error) {
-        console.error("Erro ao excluir lançamento:", error);
-        toast({
-          title: "Erro ao excluir",
-          description: "Ocorreu um erro ao excluir o lançamento.",
-          variant: "destructive",
-        });
-      }
+    try {
+      await deleteLancamento.mutateAsync(id);
+      toast({
+        title: "Sucesso!",
+        description: "Lançamento excluído com sucesso.",
+      });
+    } catch (error) {
+      console.error("Erro ao excluir lançamento:", error);
+      toast({
+        title: "Erro ao excluir",
+        description: "Ocorreu um erro ao excluir o lançamento.",
+        variant: "destructive",
+      });
     }
   };
 
   const handleNewLancamento = () => {
-    console.log("Clicando em Novo Lançamento");
     setEditingLancamento(null);
     setActiveTab("formulario");
   };

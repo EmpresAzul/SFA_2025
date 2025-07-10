@@ -1,106 +1,79 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, DollarSign, BarChart3 } from "lucide-react";
-import { formatNumberToDisplay } from "@/utils/currency";
-import type { Lancamento } from "@/hooks/useLancamentos";
-
-type LancamentoComRelacoes = Lancamento & {
-  cliente?: { nome: string } | null;
-  fornecedor?: { nome: string } | null;
-};
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight, Calendar } from "lucide-react";
 
 interface LancamentosSummaryCardsProps {
-  lancamentos: LancamentoComRelacoes[];
+  totalLancamentos: number;
+  totalReceitas: number;
+  totalDespesas: number;
+  saldoAtual: number;
 }
 
 const LancamentosSummaryCards: React.FC<LancamentosSummaryCardsProps> = ({
-  lancamentos,
+  totalLancamentos,
+  totalReceitas,
+  totalDespesas,
+  saldoAtual,
 }) => {
-  const getTotalReceitas = () => {
-    return lancamentos
-      .filter((l) => l.tipo === "receita")
-      .reduce((sum, l) => sum + l.valor, 0);
-  };
-
-  const getTotalDespesas = () => {
-    return lancamentos
-      .filter((l) => l.tipo === "despesa")
-      .reduce((sum, l) => sum + l.valor, 0);
-  };
-
-  const getSaldo = () => {
-    return getTotalReceitas() - getTotalDespesas();
-  };
-
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
-        <CardContent className="p-4">
-          <div className="flex items-center">
-            <TrendingUp className="h-8 w-8 text-emerald-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-emerald-600">
-                Total Receitas
-              </p>
-              <p className="text-xl font-bold text-emerald-900">
-                {formatNumberToDisplay(getTotalReceitas())}
-              </p>
-            </div>
-          </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      {/* Total de Lançamentos */}
+      <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total de Lançamentos</CardTitle>
+          <TrendingUp className="h-4 w-4" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{totalLancamentos}</div>
+          <p className="text-xs text-emerald-100">Todos os lançamentos</p>
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200">
-        <CardContent className="p-4">
-          <div className="flex items-center">
-            <TrendingDown className="h-8 w-8 text-red-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-red-600">Total Despesas</p>
-              <p className="text-xl font-bold text-red-900">
-                {formatNumberToDisplay(getTotalDespesas())}
-              </p>
-            </div>
+      {/* Receitas */}
+      <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Receitas</CardTitle>
+          <ArrowUpRight className="h-4 w-4" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            R$ {totalReceitas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </div>
+          <p className="text-xs text-green-100">Entradas de dinheiro</p>
         </CardContent>
       </Card>
 
-      <Card
-        className={`bg-gradient-to-br ${getSaldo() >= 0 ? "from-blue-50 to-blue-100 border-blue-200" : "from-orange-50 to-orange-100 border-orange-200"}`}
-      >
-        <CardContent className="p-4">
-          <div className="flex items-center">
-            <DollarSign
-              className={`h-8 w-8 ${getSaldo() >= 0 ? "text-blue-600" : "text-orange-600"}`}
-            />
-            <div className="ml-3">
-              <p
-                className={`text-sm font-medium ${getSaldo() >= 0 ? "text-blue-600" : "text-orange-600"}`}
-              >
-                Saldo
-              </p>
-              <p
-                className={`text-xl font-bold ${getSaldo() >= 0 ? "text-blue-900" : "text-orange-900"}`}
-              >
-                {formatNumberToDisplay(getSaldo())}
-              </p>
-            </div>
+      {/* Despesas */}
+      <Card className="bg-gradient-to-br from-red-500 to-red-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Despesas</CardTitle>
+          <ArrowDownRight className="h-4 w-4" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            R$ {totalDespesas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </div>
+          <p className="text-xs text-red-100">Saídas de dinheiro</p>
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-        <CardContent className="p-4">
-          <div className="flex items-center">
-            <BarChart3 className="h-8 w-8 text-purple-600" />
-            <div className="ml-3">
-              <p className="text-sm font-medium text-purple-600">
-                Total Lançamentos
-              </p>
-              <p className="text-xl font-bold text-purple-900">
-                {lancamentos.length}
-              </p>
-            </div>
+      {/* Saldo Atual */}
+      <Card className={`border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 ${
+        saldoAtual >= 0 
+          ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white' 
+          : 'bg-gradient-to-br from-orange-500 to-orange-600 text-white'
+      }`}>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Saldo Atual</CardTitle>
+          <DollarSign className="h-4 w-4" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            R$ {saldoAtual.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </div>
+          <p className={`text-xs ${saldoAtual >= 0 ? 'text-blue-100' : 'text-orange-100'}`}>
+            {saldoAtual >= 0 ? 'Saldo positivo' : 'Saldo negativo'}
+          </p>
         </CardContent>
       </Card>
     </div>

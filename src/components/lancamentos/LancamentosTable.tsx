@@ -1,5 +1,4 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -8,16 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Eye,
-  Edit,
-  Trash2,
-  DollarSign,
-  TrendingUp,
-  TrendingDown,
-} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,56 +21,78 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { formatNumberToDisplay } from "@/utils/currency";
-import { usePagination } from "@/hooks/usePagination";
-import LancamentosViewModal from "./LancamentosViewModal";
-import LancamentosPagination from "./LancamentosPagination";
-import type { LancamentoComRelacoes } from "@/types/lancamentosForm";
+import { Eye, Edit, Trash2, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import type { Lancamento } from "@/hooks/useLancamentos";
 
 interface LancamentosTableProps {
-  data: LancamentoComRelacoes[];
-  loading: boolean;
-  onEdit: (lancamento: LancamentoComRelacoes) => void;
-  onDelete: (id: string) => Promise<void>;
+  data: Lancamento[];
+  onView: (item: Lancamento) => void;
+  onEdit: (item: Lancamento) => void;
+  onDelete: (id: string) => void;
 }
 
 const LancamentosTable: React.FC<LancamentosTableProps> = ({
   data,
-  loading,
+  onView,
   onEdit,
   onDelete,
 }) => {
-  const {
-    currentPage,
-    totalPages,
-    paginatedData,
-    goToPage,
-    goToPreviousPage,
-    goToNextPage,
-    hasNextPage,
-    hasPreviousPage,
-    startIndex,
-    endIndex,
-    totalItems,
-  } = usePagination({ data, itemsPerPage: 20 });
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(value);
+  };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("pt-BR");
+    return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
   const getTipoIcon = (tipo: string) => {
-    return tipo === "receita" ? (
-      <TrendingUp className="h-3 w-3 text-green-600" />
+    return tipo === 'receita' ? (
+      <ArrowUpRight className="h-4 w-4 text-green-600" />
     ) : (
-      <TrendingDown className="h-3 w-3 text-red-600" />
+      <ArrowDownRight className="h-4 w-4 text-red-600" />
     );
   };
 
-  if (loading) {
+  const getTipoBadge = (tipo: string) => {
+    return tipo === 'receita' ? (
+      <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
+        Receita
+      </Badge>
+    ) : (
+      <Badge className="bg-red-100 text-red-800 hover:bg-red-200">
+        Despesa
+      </Badge>
+    );
+  };
+
+  if (data.length === 0) {
     return (
       <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-        <CardContent className="p-8">
-          <div className="text-center">Carregando lançamentos...</div>
+        <CardContent className="flex flex-col items-center justify-center py-12">
+          <div className="text-gray-400 mb-4">
+            <svg
+              className="w-16 h-16 mx-auto"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            Nenhum lançamento encontrado
+          </h3>
+          <p className="text-gray-500 text-center">
+            Não há lançamentos que correspondam aos filtros aplicados.
+          </p>
         </CardContent>
       </Card>
     );
@@ -86,167 +100,122 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
 
   return (
     <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-          <DollarSign className="h-5 w-5 text-green-600" />
-          Lançamentos Financeiros ({totalItems})
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold text-gray-800">
+          Lista de Lançamentos ({data.length})
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
+      <CardContent>
+        <div className="rounded-md border">
           <Table>
             <TableHeader>
-              <TableRow className="bg-gray-50/50 h-10">
-                <TableHead className="font-semibold text-gray-700 py-2 text-sm">
-                  Data
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 py-2 text-sm">
-                  Tipo
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 py-2 text-sm">
-                  Categoria
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 py-2 text-sm">
-                  Valor
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 py-2 text-sm">
-                  Cliente/Fornecedor
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 text-center py-2 text-sm">
-                  Ações
-                </TableHead>
+              <TableRow className="bg-gray-50">
+                <TableHead className="font-semibold text-gray-700">Tipo</TableHead>
+                <TableHead className="font-semibold text-gray-700">Descrição</TableHead>
+                <TableHead className="font-semibold text-gray-700">Categoria</TableHead>
+                <TableHead className="font-semibold text-gray-700">Valor</TableHead>
+                <TableHead className="font-semibold text-gray-700">Data</TableHead>
+                <TableHead className="font-semibold text-gray-700 text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedData.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
-                    <div className="flex flex-col items-center gap-2 text-gray-500">
-                      <DollarSign className="h-8 w-8" />
-                      <p>Nenhum lançamento encontrado</p>
-                      <p className="text-sm">
-                        Cadastre seus primeiros lançamentos financeiros
-                      </p>
+              {data.map((lancamento) => (
+                <TableRow key={lancamento.id} className="hover:bg-gray-50">
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      {getTipoIcon(lancamento.tipo)}
+                      {getTipoBadge(lancamento.tipo)}
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {lancamento.observacoes || 'Sem observações'}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="text-xs">
+                      {lancamento.categoria || 'Sem categoria'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className={`font-semibold ${
+                    lancamento.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {formatCurrency(lancamento.valor)}
+                  </TableCell>
+                  <TableCell className="text-gray-600">
+                    {formatDate(lancamento.data)}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onView(lancamento)}
+                        className="h-8 w-8 p-0 hover:bg-blue-100"
+                      >
+                        <Eye className="h-4 w-4 text-blue-600" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEdit(lancamento)}
+                        className="h-8 w-8 p-0 hover:bg-green-100"
+                      >
+                        <Edit className="h-4 w-4 text-green-600" />
+                      </Button>
+                      
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 hover:bg-red-100"
+                          >
+                            <Trash2 className="h-4 w-4 text-red-600" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="flex items-center gap-2 text-lg font-bold text-red-600">
+                              <Trash2 className="h-5 w-5" />
+                              Confirmar Exclusão
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-gray-700">
+                              Tem certeza que deseja excluir este lançamento?
+                              <br />
+                              <br />
+                              <strong>Tipo:</strong> {lancamento.tipo === 'receita' ? 'Receita' : 'Despesa'}
+                              <br />
+                              <strong>Valor:</strong> {formatCurrency(lancamento.valor)}
+                              <br />
+                              <strong>Data:</strong> {formatDate(lancamento.data)}
+                              <br />
+                              <strong>Categoria:</strong> {lancamento.categoria}
+                              <br />
+                              <br />
+                              <span className="text-red-600 font-medium">
+                                ⚠️ Esta ação não pode ser desfeita!
+                              </span>
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="border-gray-300 hover:bg-gray-50">
+                              Cancelar
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => onDelete(lancamento.id)}
+                              className="bg-red-600 hover:bg-red-700 text-white"
+                            >
+                              Sim, Excluir
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>
-              ) : (
-                paginatedData.map((lancamento) => (
-                  <TableRow
-                    key={lancamento.id}
-                    className="hover:bg-gray-50/50 transition-colors h-12"
-                  >
-                    <TableCell className="font-medium py-2 text-sm">
-                      {formatDate(lancamento.data)}
-                    </TableCell>
-                    <TableCell className="py-2">
-                      <div className="flex items-center gap-1">
-                        {getTipoIcon(lancamento.tipo)}
-                        <Badge
-                          variant={
-                            lancamento.tipo === "receita"
-                              ? "default"
-                              : "destructive"
-                          }
-                          className="text-xs py-0 px-2 h-5"
-                        >
-                          {lancamento.tipo === "receita"
-                            ? "Receita"
-                            : "Despesa"}
-                        </Badge>
-                      </div>
-                    </TableCell>
-                    <TableCell
-                      className="py-2 text-sm max-w-[120px] truncate"
-                      title={lancamento.categoria}
-                    >
-                      {lancamento.categoria}
-                    </TableCell>
-                    <TableCell
-                      className={`font-semibold py-2 text-sm ${
-                        lancamento.tipo === "receita"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {formatNumberToDisplay(lancamento.valor)}
-                    </TableCell>
-                    <TableCell className="py-2 text-sm max-w-[150px] truncate">
-                      {lancamento.cliente?.nome ||
-                        lancamento.fornecedor?.nome ||
-                        "-"}
-                    </TableCell>
-                    <TableCell className="py-2">
-                      <div className="flex items-center justify-center gap-1">
-                        {/* Visualizar */}
-                        <LancamentosViewModal lancamento={lancamento} />
-
-                        {/* Editar */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onEdit(lancamento)}
-                          className="h-7 w-7 p-0 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
-                          title="Editar"
-                        >
-                          <Edit className="h-3 w-3" />
-                        </Button>
-
-                        {/* Excluir */}
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                              title="Excluir"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                Confirmar Exclusão
-                              </AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Tem certeza que deseja excluir este lançamento
-                                de {formatNumberToDisplay(lancamento.valor)}?
-                                Esta ação não pode ser desfeita.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => onDelete(lancamento.id)}
-                                className="bg-red-600 hover:bg-red-700"
-                              >
-                                Excluir
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
+              ))}
             </TableBody>
           </Table>
         </div>
-
-        <LancamentosPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          hasNextPage={hasNextPage}
-          hasPreviousPage={hasPreviousPage}
-          startIndex={startIndex}
-          endIndex={endIndex}
-          totalItems={totalItems}
-          onPreviousPage={goToPreviousPage}
-          onNextPage={goToNextPage}
-          onGoToPage={goToPage}
-        />
       </CardContent>
     </Card>
   );

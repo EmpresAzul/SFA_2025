@@ -4,29 +4,41 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Eye,
   User,
   Building,
+  UserCog,
   Phone,
   Mail,
   MapPin,
   Calendar,
   DollarSign,
+  FileText,
+  Clock,
 } from "lucide-react";
 import { Cadastro } from "@/hooks/useCadastros";
 
 interface CadastroViewModalProps {
   cadastro: Cadastro;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
+const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ 
+  cadastro, 
+  isOpen, 
+  onClose 
+}) => {
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("pt-BR");
+    return new Date(date).toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   const formatSalary = (salary: number | null) => {
@@ -37,30 +49,38 @@ const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
     }).format(salary);
   };
 
-  const getTipoColor = (tipo: string) => {
+  const getTipoIcon = (tipo: string) => {
     switch (tipo) {
       case "Cliente":
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return <User className="h-5 w-5 text-blue-600" />;
       case "Fornecedor":
-        return "bg-green-100 text-green-800 border-green-200";
+        return <Building className="h-5 w-5 text-green-600" />;
       case "Funcionário":
-        return "bg-purple-100 text-purple-800 border-purple-200";
+        return <UserCog className="h-5 w-5 text-purple-600" />;
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return <User className="h-5 w-5 text-gray-600" />;
+    }
+  };
+
+  const getTipoBadgeVariant = (tipo: string) => {
+    switch (tipo) {
+      case "Cliente":
+        return "default";
+      case "Fornecedor":
+        return "secondary";
+      case "Funcionário":
+        return "outline";
+      default:
+        return "default";
     }
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="hover:bg-blue-50">
-          <Eye className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-white/95 backdrop-blur-xl border-0 shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center text-lg">
-            <User className="h-5 w-5 mr-2 text-blue-600" />
+          <DialogTitle className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-2">
+            {getTipoIcon(cadastro.tipo)}
             Detalhes do Cadastro
           </DialogTitle>
         </DialogHeader>
@@ -73,34 +93,38 @@ const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
                 <Building className="h-4 w-4 mr-1" />
                 Informações Básicas
               </h3>
-              <Badge className={getTipoColor(cadastro.tipo)}>
+              <Badge variant={getTipoBadgeVariant(cadastro.tipo)}>
                 {cadastro.tipo}
               </Badge>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-600">Nome</p>
-                <p className="text-gray-900">{cadastro.nome}</p>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Nome Completo
+                </label>
+                <p className="text-gray-900 font-medium">{cadastro.nome}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Pessoa</p>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Tipo de Pessoa
+                </label>
                 <p className="text-gray-900">{cadastro.pessoa}</p>
               </div>
               {cadastro.cpf_cnpj && (
                 <div>
-                  <p className="text-sm font-medium text-gray-600">
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
                     {cadastro.pessoa === "Física" ? "CPF" : "CNPJ"}
-                  </p>
-                  <p className="text-gray-900">{cadastro.cpf_cnpj}</p>
+                  </label>
+                  <p className="text-gray-900 font-mono">{cadastro.cpf_cnpj}</p>
                 </div>
               )}
               <div>
-                <p className="text-sm font-medium text-gray-600">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
                   Data de Cadastro
-                </p>
-                <p className="text-gray-900 flex items-center">
-                  <Calendar className="h-4 w-4 mr-1" />
+                </label>
+                <p className="text-gray-900 flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
                   {formatDate(cadastro.data)}
                 </p>
               </div>
@@ -108,24 +132,27 @@ const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
           </div>
 
           {/* Contato */}
-          <div>
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
               <Phone className="h-4 w-4 mr-1" />
-              Contato
+              Informações de Contato
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-600">Telefone</p>
-                <p className="text-gray-900">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Telefone
+                </label>
+                <p className="text-gray-900 flex items-center gap-1">
+                  <Phone className="h-4 w-4" />
                   {cadastro.telefone || "Não informado"}
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600 flex items-center">
-                  <Mail className="h-4 w-4 mr-1" />
+                <label className="block text-sm font-medium text-gray-600 mb-1">
                   E-mail
-                </p>
-                <p className="text-gray-900">
+                </label>
+                <p className="text-gray-900 flex items-center gap-1">
+                  <Mail className="h-4 w-4" />
                   {cadastro.email || "Não informado"}
                 </p>
               </div>
@@ -133,45 +160,58 @@ const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
           </div>
 
           {/* Endereço */}
-          <div>
+          <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-lg">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
               <MapPin className="h-4 w-4 mr-1" />
               Endereço
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-600">Endereço</p>
-                <p className="text-gray-900">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Endereço
+                </label>
+                <p className="text-gray-900 flex items-center gap-1">
+                  <MapPin className="h-4 w-4" />
                   {cadastro.endereco || "Não informado"}
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Número</p>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Número
+                </label>
                 <p className="text-gray-900">
                   {cadastro.numero || "Não informado"}
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Bairro</p>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Bairro
+                </label>
                 <p className="text-gray-900">
                   {cadastro.bairro || "Não informado"}
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Cidade</p>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Cidade
+                </label>
                 <p className="text-gray-900">
                   {cadastro.cidade || "Não informado"}
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Estado</p>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Estado
+                </label>
                 <p className="text-gray-900">
                   {cadastro.estado || "Não informado"}
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">CEP</p>
-                <p className="text-gray-900">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  CEP
+                </label>
+                <p className="text-gray-900 font-mono">
                   {cadastro.cep || "Não informado"}
                 </p>
               </div>
@@ -180,29 +220,38 @@ const CadastroViewModal: React.FC<CadastroViewModalProps> = ({ cadastro }) => {
 
           {/* Informações Específicas por Tipo */}
           {cadastro.tipo === "Funcionário" && (
-            <div>
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
                 <DollarSign className="h-4 w-4 mr-1" />
                 Informações Profissionais
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Salário</p>
-                  <p className="text-gray-900">
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Salário
+                  </label>
+                  <p className="text-gray-900 flex items-center gap-1">
+                    <DollarSign className="h-4 w-4" />
                     {formatSalary(cadastro.salario)}
                   </p>
                 </div>
+
               </div>
             </div>
           )}
 
           {/* Observações */}
           {cadastro.observacoes && (
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Observações</h3>
-              <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
-                {cadastro.observacoes}
-              </p>
+            <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                <FileText className="h-4 w-4 mr-1" />
+                Observações
+              </h3>
+              <div className="bg-white/80 backdrop-blur-sm p-4 rounded-lg border border-gray-200">
+                <p className="text-gray-700 leading-relaxed">
+                  {cadastro.observacoes}
+                </p>
+              </div>
             </div>
           )}
         </div>
