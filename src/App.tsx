@@ -26,12 +26,12 @@ import AdminSettings from "./pages/AdminSettings";
 import Pipeline from "./pages/Pipeline";
 
 const App = () => (
-  <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
+  <BrowserRouter>
+    <TooltipProvider>
+      <AuthProvider>
+        <Toaster />
+        <Sonner />
+        <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route
@@ -155,11 +155,11 @@ const App = () => (
               }
             />
             <Route path="*" element={<NotFound />} />
-          </Routes>
-          <PWAInstallBanner />
-        </AuthProvider>
-      </BrowserRouter>
+        </Routes>
+        <PWAInstallBanner />
+      </AuthProvider>
     </TooltipProvider>
+  </BrowserRouter>
 );
 
 export default App;
