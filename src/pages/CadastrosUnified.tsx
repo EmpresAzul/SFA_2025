@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCadastrosUnified } from "@/hooks/useCadastrosUnified";
@@ -104,7 +105,7 @@ const CadastrosUnified: React.FC = () => {
         }}
         editingItem={editingItem}
         onSave={handleSaveEdit}
-        loading={updateCadastro.isPending}
+        loading={updateCadastro.isPending || false}
       />
     </div>
   );

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEstoqueData } from "@/hooks/useEstoqueData";
@@ -92,8 +93,8 @@ const EstoqueManagement: React.FC = () => {
             selectedEstoque={selectedEstoque}
             setSelectedEstoque={setSelectedEstoque}
             handleEdit={handleEdit}
-            handleToggleStatus={handleToggleStatus}
-            handleDelete={handleDelete}
+            handleToggleStatus={(estoque: Estoque) => handleToggleStatus(estoque.id)}
+            handleDelete={(estoque: Estoque) => handleDelete(estoque.id)}
           />
         </TabsContent>
 
