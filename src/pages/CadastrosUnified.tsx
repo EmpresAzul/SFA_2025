@@ -82,10 +82,15 @@ const CadastrosUnified: React.FC = () => {
           />
 
           <CadastrosTable
-            filteredItems={filteredItems}
-            onEdit={handleEdit}
-            onToggleStatus={handleToggleStatus}
-            onDelete={handleDelete}
+            cadastros={filteredItems as any}
+            onEdit={(cadastro) => handleEdit(cadastro as any)}
+            onView={(cadastro) => handleEdit(cadastro as any)}
+            onDelete={(id) => handleDelete(id)}
+            onAdd={() => setActiveTab("formulario")}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            selectedType=""
+            onTypeChange={() => {}}
           />
         </TabsContent>
 

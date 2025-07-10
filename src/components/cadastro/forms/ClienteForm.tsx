@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CadastroData } from "../CadastroEditModal";
+import { CadastroData } from "@/types/cadastros";
 
 interface ClienteFormProps {
   formData: CadastroData;

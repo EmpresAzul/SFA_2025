@@ -5,20 +5,20 @@ export interface CadastroData {
   telefone: string;
   tipo: 'cliente' | 'fornecedor' | 'funcionario';
   status: 'ativo' | 'inativo';
-  endereco?: {
-    rua: string;
-    numero: string;
-    complemento?: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-  };
-  documento?: {
-    tipo: 'cpf' | 'cnpj';
-    numero: string;
-  };
+  pessoa: 'Física' | 'Jurídica';
+  cpf_cnpj: string;
+  endereco: string;
+  numero: string;
+  bairro: string;
+  cidade: string;
+  estado: string;
+  cep: string;
   observacoes?: string;
+  salario?: number;
+  cargo?: string;
+  data_admissao?: string;
+  razao_social?: string;
+  tipo_fornecedor?: string;
   created_at: string;
   updated_at: string;
 }

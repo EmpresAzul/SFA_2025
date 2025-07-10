@@ -58,9 +58,9 @@ const EstoqueManagement: React.FC = () => {
     }
   };
 
-  const handleDelete = async (estoque: Estoque) => {
+  const handleDelete = async (id: string) => {
     try {
-      await deleteEstoque(estoque.id);
+      await deleteEstoque(id);
     } catch (error) {
       console.error("Erro ao excluir estoque:", error);
     }
