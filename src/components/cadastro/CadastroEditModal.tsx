@@ -1,52 +1,18 @@
-import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
+import React, { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { X, Save } from "lucide-react";
-
-// Tipo unificado para cadastro
-export type CadastroData = {
-  nome: string;
-  pessoa?: "Física" | "Jurídica";
-  cpf_cnpj?: string;
-  telefone?: string;
-  email?: string;
-  endereco?: string;
-  numero?: string;
-  cidade?: string;
-  estado?: string;
-  bairro?: string;
-  cep?: string;
-  observacoes?: string;
-  salario?: string;
-  razao_social?: string;
-  tipo_fornecedor?: string;
-  cargo?: string;
-  data_admissao?: string;
-  status?: string;
-  tipo?: string;
-  tipoDisplay?: string;
-};
+import type { Cadastro } from "@/hooks/useCadastros";
 
 interface CadastroEditModalProps {
   isOpen: boolean;
   onClose: () => void;
-  editingItem: CadastroData | null;
-  onSave: (data: CadastroData) => void;
+  editingItem: Cadastro | null;
+  onSave: (data: Partial<Cadastro>) => Promise<void>;
   loading: boolean;
 }
 
@@ -57,167 +23,176 @@ const CadastroEditModal: React.FC<CadastroEditModalProps> = ({
   onSave,
   loading,
 }) => {
-  const [formData, setFormData] = React.useState<CadastroData>(editingItem || {} as CadastroData);
+  const [formData, setFormData] = useState<Partial<Cadastro>>({});
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (editingItem) {
-      setFormData({
-        ...editingItem,
-        // Garantir que todos os campos estejam presentes
-        cpf_cnpj: editingItem.cpf_cnpj || "",
-        telefone: editingItem.telefone || "",
-        email: editingItem.email || "",
-        endereco: editingItem.endereco || "",
-        numero: editingItem.numero || "",
-        cidade: editingItem.cidade || "",
-        estado: editingItem.estado || "",
-        bairro: editingItem.bairro || "",
-        cep: editingItem.cep || "",
-        observacoes: editingItem.observacoes || "",
-        salario: editingItem.salario || "",
-      });
+      setFormData(editingItem);
+    } else {
+      setFormData({});
     }
   }, [editingItem]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    await onSave(formData);
+    onClose();
   };
 
-  const handleInputChange = (field: keyof CadastroData, value: string | number) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleInputChange = (field: keyof Cadastro, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
-
-  if (!editingItem) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] bg-white/95 backdrop-blur-xl border-0 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-2">
-            ✏️ Editar {editingItem.tipoDisplay || editingItem.tipo}
+          <DialogTitle>
+            {editingItem ? "Editar Cadastro" : "Novo Cadastro"}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="nome" className="text-sm font-medium">
-                Nome *
-              </Label>
+              <Label htmlFor="nome">Nome *</Label>
               <Input
                 id="nome"
                 value={formData.nome || ""}
                 onChange={(e) => handleInputChange("nome", e.target.value)}
-                placeholder="Nome completo"
-                className="h-10 border-2 border-gray-200 focus:border-teal-500 rounded-lg"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="cpf_cnpj" className="text-sm font-medium">
-                CPF/CNPJ
-              </Label>
+              <Label htmlFor="tipo">Tipo *</Label>
+              <Select value={formData.tipo || ""} onValueChange={(value) => handleInputChange("tipo", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cliente">Cliente</SelectItem>
+                  <SelectItem value="fornecedor">Fornecedor</SelectItem>
+                  <SelectItem value="funcionario">Funcionário</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="pessoa">Pessoa *</Label>
+              <Select value={formData.pessoa || ""} onValueChange={(value) => handleInputChange("pessoa", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Física">Física</SelectItem>
+                  <SelectItem value="Jurídica">Jurídica</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cpf_cnpj">CPF/CNPJ</Label>
               <Input
                 id="cpf_cnpj"
                 value={formData.cpf_cnpj || ""}
                 onChange={(e) => handleInputChange("cpf_cnpj", e.target.value)}
-                placeholder="CPF ou CNPJ"
-                className="h-10 border-2 border-gray-200 focus:border-teal-500 rounded-lg"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="telefone" className="text-sm font-medium">
-                Telefone
-              </Label>
+              <Label htmlFor="telefone">Telefone</Label>
               <Input
                 id="telefone"
                 value={formData.telefone || ""}
                 onChange={(e) => handleInputChange("telefone", e.target.value)}
-                placeholder="Telefone"
-                className="h-10 border-2 border-gray-200 focus:border-teal-500 rounded-lg"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">
-                E-mail
-              </Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email || ""}
                 onChange={(e) => handleInputChange("email", e.target.value)}
-                placeholder="E-mail"
-                className="h-10 border-2 border-gray-200 focus:border-teal-500 rounded-lg"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="endereco" className="text-sm font-medium">
-                Endereço
-              </Label>
+              <Label htmlFor="endereco">Endereço</Label>
               <Input
                 id="endereco"
                 value={formData.endereco || ""}
                 onChange={(e) => handleInputChange("endereco", e.target.value)}
-                placeholder="Endereço"
-                className="h-10 border-2 border-gray-200 focus:border-teal-500 rounded-lg"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="numero" className="text-sm font-medium">
-                Número
-              </Label>
+              <Label htmlFor="numero">Número</Label>
               <Input
                 id="numero"
                 value={formData.numero || ""}
                 onChange={(e) => handleInputChange("numero", e.target.value)}
-                placeholder="Número"
-                className="h-10 border-2 border-gray-200 focus:border-teal-500 rounded-lg"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="cidade" className="text-sm font-medium">
-                Cidade
-              </Label>
+              <Label htmlFor="bairro">Bairro</Label>
+              <Input
+                id="bairro"
+                value={formData.bairro || ""}
+                onChange={(e) => handleInputChange("bairro", e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cidade">Cidade</Label>
               <Input
                 id="cidade"
                 value={formData.cidade || ""}
                 onChange={(e) => handleInputChange("cidade", e.target.value)}
-                placeholder="Cidade"
-                className="h-10 border-2 border-gray-200 focus:border-teal-500 rounded-lg"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="estado" className="text-sm font-medium">
-                Estado
-              </Label>
+              <Label htmlFor="estado">Estado</Label>
               <Input
                 id="estado"
                 value={formData.estado || ""}
                 onChange={(e) => handleInputChange("estado", e.target.value)}
-                placeholder="UF"
-                className="h-10 border-2 border-gray-200 focus:border-teal-500 rounded-lg"
-                maxLength={2}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="status" className="text-sm font-medium">
-                Status
-              </Label>
-              <Select
-                value={formData.status || ""}
-                onValueChange={(value) => handleInputChange("status", value)}
-              >
-                <SelectTrigger className="h-10 border-2 border-gray-200 focus:border-teal-500 rounded-lg">
-                  <SelectValue placeholder="Selecione o status" />
+              <Label htmlFor="cep">CEP</Label>
+              <Input
+                id="cep"
+                value={formData.cep || ""}
+                onChange={(e) => handleInputChange("cep", e.target.value)}
+              />
+            </div>
+
+            {formData.tipo === "funcionario" && (
+              <div className="space-y-2">
+                <Label htmlFor="salario">Salário</Label>
+                <Input
+                  id="salario"
+                  type="number"
+                  value={formData.salario || ""}
+                  onChange={(e) => handleInputChange("salario", parseFloat(e.target.value) || 0)}
+                />
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="status">Status</Label>
+              <Select value={formData.status || "ativo"} onValueChange={(value) => handleInputChange("status", value)}>
+                <SelectTrigger>
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ativo">Ativo</SelectItem>
@@ -225,64 +200,24 @@ const CadastroEditModal: React.FC<CadastroEditModalProps> = ({
                 </SelectContent>
               </Select>
             </div>
-
-            {(editingItem.tipo === "Funcionário" ||
-              editingItem.tipoDisplay === "Funcionário") && (
-              <div className="space-y-2">
-                <Label htmlFor="salario" className="text-sm font-medium">
-                  Salário
-                </Label>
-                <Input
-                  id="salario"
-                  type="number"
-                  value={formData.salario || ""}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "salario",
-                      parseFloat(e.target.value) || 0,
-                    )
-                  }
-                  placeholder="Salário"
-                  className="h-10 border-2 border-gray-200 focus:border-teal-500 rounded-lg"
-                />
-              </div>
-            )}
-
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="observacoes" className="text-sm font-medium">
-                Observações
-              </Label>
-              <Textarea
-                id="observacoes"
-                value={formData.observacoes || ""}
-                onChange={(e) =>
-                  handleInputChange("observacoes", e.target.value)
-                }
-                placeholder="Observações adicionais..."
-                className="border-2 border-gray-200 focus:border-teal-500 rounded-lg"
-                rows={3}
-              />
-            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <Button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg h-10"
-            >
-              <Save className="w-4 h-4 mr-2" />
-              {loading ? "Salvando..." : "Salvar Alterações"}
-            </Button>
+          <div className="space-y-2">
+            <Label htmlFor="observacoes">Observações</Label>
+            <Textarea
+              id="observacoes"
+              value={formData.observacoes || ""}
+              onChange={(e) => handleInputChange("observacoes", e.target.value)}
+              rows={3}
+            />
+          </div>
 
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              className="flex-1 border-2 border-gray-300 hover:bg-gray-50 rounded-lg h-10"
-            >
-              <X className="w-4 h-4 mr-2" />
+          <div className="flex gap-2 justify-end">
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Salvando..." : "Salvar"}
             </Button>
           </div>
         </form>
