@@ -11,6 +11,7 @@ import {
   HelpCircle,
   Video,
   UserPlus,
+  Target,
 } from "lucide-react";
 import type { MenuItem } from "./types";
 
@@ -70,6 +71,14 @@ export const menuItems: MenuItem[] = [
     iconColor: "text-pink-500",
     href: "/cadastros",
     description: "Clientes e fornecedores",
+  },
+  {
+    id: "pipeline",
+    label: "Pipeline",
+    icon: Target,
+    iconColor: "text-cyan-500",
+    href: "/pipeline",
+    description: "Gestão de leads e negócios",
   },
   {
     id: "saldos-bancarios",

@@ -118,3 +118,8 @@ export const formatCurrencyInput = (value: string): string => {
   // Formata no padrão brasileiro
   return formatNumberToInput(amount);
 };
+
+/**
+ * Alias para formatNumberToDisplay para compatibilidade
+ */
+export const formatCurrency = formatNumberToDisplay;

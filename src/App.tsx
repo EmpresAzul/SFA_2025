@@ -23,6 +23,7 @@ import VideosSistema from "./pages/VideosSistema";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import AdminSettings from "./pages/AdminSettings";
+import Pipeline from "./pages/Pipeline";
 
 const App = () => (
   <TooltipProvider>
@@ -94,6 +95,14 @@ const App = () => (
               element={
                 <DashboardLayout>
                   <CadastrosUnified />
+                </DashboardLayout>
+              }
+            />
+            <Route
+              path="/pipeline"
+              element={
+                <DashboardLayout>
+                  <Pipeline />
                 </DashboardLayout>
               }
             />
