@@ -1,6 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import DashboardLayout from "./components/DashboardLayout";
@@ -27,11 +26,10 @@ import Pipeline from "./pages/Pipeline";
 
 const App = () => (
   <BrowserRouter>
-    <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <Routes>
+    <AuthProvider>
+      <Toaster />
+      <Sonner />
+      <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route
@@ -155,10 +153,9 @@ const App = () => (
               }
             />
             <Route path="*" element={<NotFound />} />
-        </Routes>
-        <PWAInstallBanner />
-      </AuthProvider>
-    </TooltipProvider>
+      </Routes>
+      <PWAInstallBanner />
+    </AuthProvider>
   </BrowserRouter>
 );
 
