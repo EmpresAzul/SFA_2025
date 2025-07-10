@@ -36,27 +36,8 @@ export const useLancamentoCreateMutation = () => {
         lancamentoData.meses_recorrencia &&
         lancamentoData.meses_recorrencia > 0
       ) {
-        // Converter LancamentoCreateData para o formato esperado pela função
-        const lancamentoParaRecorrencia = {
-          id: '', // Will be set by the database
-          data: lancamentoData.data,
-          tipo: lancamentoData.tipo,
-          categoria: lancamentoData.categoria,
-          valor: lancamentoData.valor,
-          cliente_id: lancamentoData.cliente_id || null,
-          fornecedor_id: lancamentoData.fornecedor_id || null,
-          observacoes: lancamentoData.observacoes || null,
-          user_id: lancamentoData.user_id,
-          status: lancamentoData.status || 'ativo',
-          recorrente: lancamentoData.recorrente || false,
-          meses_recorrencia: lancamentoData.meses_recorrencia || null,
-          lancamento_pai_id: null,
-          created_at: '',
-          updated_at: '',
-        } as const;
-        
         return await criarLancamentosRecorrentes(
-          lancamentoParaRecorrencia as any,
+          lancamentoData,
           lancamentoData.meses_recorrencia,
         );
       }
