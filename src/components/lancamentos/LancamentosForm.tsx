@@ -41,6 +41,18 @@ interface FormData {
   meses_recorrencia: number | null;
 }
 
+interface FormErrors {
+  tipo?: string;
+  data?: string;
+  valor?: string;
+  categoria?: string;
+  cliente_id?: string;
+  fornecedor_id?: string;
+  observacoes?: string;
+  recorrente?: string;
+  meses_recorrencia?: string;
+}
+
 const LancamentosForm: React.FC<LancamentosFormProps> = ({
   editingLancamento,
   onCancelEdit,
@@ -62,7 +74,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
     meses_recorrencia: null,
   });
 
-  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -114,7 +126,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<FormData> = {};
+    const newErrors: FormErrors = {};
 
     if (!formData.data) newErrors.data = "Data é obrigatória";
     if (!formData.valor || parseStringToNumber(formData.valor) <= 0) {

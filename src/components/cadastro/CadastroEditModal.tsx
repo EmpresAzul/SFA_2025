@@ -21,7 +21,7 @@ import { X, Save } from "lucide-react";
 // Tipo unificado para cadastro
 export type CadastroData = {
   nome: string;
-  pessoa?: "Física" | "Jurídica";
+  pessoa: "Física" | "Jurídica";
   cpf_cnpj?: string;
   telefone?: string;
   email?: string;

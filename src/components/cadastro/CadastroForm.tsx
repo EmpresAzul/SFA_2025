@@ -11,9 +11,9 @@ import { CadastroData } from "./CadastroEditModal";
 
 interface CadastroFormProps {
   tipo: "Cliente" | "Fornecedor" | "Funcionário";
-  formData: CadastroData;
-  setFormData: (data: CadastroData) => void;
-  editingCadastro: CadastroData | null;
+  formData: any;
+  setFormData: (data: any) => void;
+  editingCadastro: any;
   loading: boolean;
   onSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
