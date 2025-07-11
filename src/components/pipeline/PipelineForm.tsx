@@ -12,6 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Negocio } from "@/types/pipeline";
+import { CurrencyInput } from "@/components/ui/currency-input";
+import { parseStringToNumber } from "@/utils/currency";
 
 interface PipelineFormProps {
   negocio?: Negocio;
@@ -37,16 +39,28 @@ export const PipelineForm: React.FC<PipelineFormProps> = ({
       nome_lead: negocio?.nome_lead || "",
       email: negocio?.email || "",
       whatsapp: negocio?.whatsapp || "",
-      valor_negocio: negocio?.valor_negocio || 0,
+      valor_negocio: negocio?.valor_negocio ? String(negocio.valor_negocio) : "",
       status: negocio?.status || "prospeccao",
       observacoes: negocio?.observacoes || "",
     },
   });
 
   const statusValue = watch("status");
+  const valorNegocioValue = watch("valor_negocio");
+
+  // Atualiza o valor do campo ao digitar na máscara
+  const handleCurrencyChange = (formatted: string) => {
+    setValue("valor_negocio", formatted);
+  };
+
+  // Adapta o submit para converter o valor formatado em número
+  const handleFormSubmit = async (data: any) => {
+    const valorNumerico = parseStringToNumber(data.valor_negocio);
+    await onSubmit({ ...data, valor_negocio: valorNumerico });
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="nome_lead">Nome do Lead *</Label>
@@ -81,12 +95,11 @@ export const PipelineForm: React.FC<PipelineFormProps> = ({
 
         <div className="space-y-2">
           <Label htmlFor="valor_negocio">Valor do Negócio</Label>
-          <Input
+          <CurrencyInput
             id="valor_negocio"
-            type="number"
-            step="0.01"
-            {...register("valor_negocio", { valueAsNumber: true })}
-            placeholder="0,00"
+            value={valorNegocioValue || ""}
+            onChange={handleCurrencyChange}
+            placeholder="R$ 0,00"
           />
         </div>
 

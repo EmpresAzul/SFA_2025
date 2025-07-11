@@ -2,13 +2,6 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -33,7 +26,6 @@ const Pipeline: React.FC = () => {
     deleteNegocio,
   } = usePipeline();
 
-  const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingNegocio, setEditingNegocio] = useState<Negocio | null>(null);
   const [formLoading, setFormLoading] = useState(false);
 
@@ -45,7 +37,6 @@ const Pipeline: React.FC = () => {
       } else {
         await createNegocio(data);
       }
-      setIsFormOpen(false);
       setEditingNegocio(null);
     } catch (error) {
       console.error("Erro ao salvar negócio:", error);
@@ -56,7 +47,7 @@ const Pipeline: React.FC = () => {
 
   const handleEdit = (negocio: Negocio) => {
     setEditingNegocio(negocio);
-    setIsFormOpen(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDelete = async (id: string) => {
@@ -69,50 +60,52 @@ const Pipeline: React.FC = () => {
     await updateNegocio(id, { status: newStatus as any });
   };
 
+  const handleCancel = () => {
+    setEditingNegocio(null);
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Pipeline de Vendas</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            🚀 Pipeline de Vendas
+          </h1>
+          <p className="text-gray-600 mt-2 text-sm">
             Gerencie seus leads e acompanhe o progresso dos negócios
           </p>
         </div>
-
-        <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-          <DialogTrigger asChild>
-            <Button
-              onClick={() => {
-                setEditingNegocio(null);
-                setIsFormOpen(true);
-              }}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Novo Lead
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>
-                {editingNegocio ? "Editar Negócio" : "Novo Lead"}
-              </DialogTitle>
-            </DialogHeader>
-            <PipelineForm
-              negocio={editingNegocio}
-              onSubmit={handleSubmit}
-              onCancel={() => {
-                setIsFormOpen(false);
-                setEditingNegocio(null);
-              }}
-              loading={formLoading}
-            />
-          </DialogContent>
-        </Dialog>
+        <Button
+          onClick={() => setEditingNegocio(null)}
+          className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Novo Lead
+        </Button>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      {/* Estatísticas no topo */}
+      <div className="mb-8">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg">
+          <PipelineStats negocios={negocios} />
+        </div>
+      </div>
+
+      {/* Formulário de Cadastro/Edição */}
+      <div className="mb-8">
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+          <PipelineForm
+            negocio={editingNegocio}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            loading={formLoading}
+          />
+        </div>
+      </div>
+
+      {/* Filtros */}
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
@@ -122,7 +115,6 @@ const Pipeline: React.FC = () => {
             className="pl-10"
           />
         </div>
-
         <Select
           value={filters.status || "all"}
           onValueChange={(status) =>
@@ -145,22 +137,21 @@ const Pipeline: React.FC = () => {
         </Select>
       </div>
 
-      {/* Stats */}
-      <PipelineStats negocios={negocios} />
-
       {/* Pipeline Board */}
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        </div>
-      ) : (
-        <PipelineBoard
-          negocios={negocios}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onUpdateStatus={handleUpdateStatus}
-        />
-      )}
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-lg">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        ) : (
+          <PipelineBoard
+            negocios={negocios}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onUpdateStatus={handleUpdateStatus}
+          />
+        )}
+      </div>
     </div>
   );
 };
