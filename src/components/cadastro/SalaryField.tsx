@@ -1,7 +1,7 @@
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { formatCurrency } from "@/utils/currency";
+import { formatNumberToDisplay } from "@/utils/currency";
 
 interface SalaryFieldProps {
   salario: number;
@@ -23,7 +23,7 @@ export const SalaryField: React.FC<SalaryFieldProps> = ({
       </Label>
       <Input
         id="salario"
-        value={formatCurrency(salario)}
+        value={formatNumberToDisplay(salario)}
         onChange={(e) => onSalaryChange(e.target.value)}
         placeholder="R$ 0,00"
       />

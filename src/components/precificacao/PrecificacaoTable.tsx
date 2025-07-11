@@ -31,7 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { formatCurrency } from "@/utils/currency";
+import { formatNumberToDisplay } from "@/utils/currency";
 import { usePrecificacao } from "@/hooks/usePrecificacao";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -156,7 +156,7 @@ const PrecificacaoTable: React.FC<PrecificacaoTableProps> = ({
                     <TableCell className="font-medium">{item.nome}</TableCell>
                     <TableCell>{item.categoria}</TableCell>
                     <TableCell className="font-semibold text-green-600">
-                      {formatCurrency(item.preco_final)}
+                      {formatNumberToDisplay(item.preco_final)}
                     </TableCell>
                     <TableCell>
                       <Badge

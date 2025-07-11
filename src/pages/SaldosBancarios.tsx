@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSaldosBancarios } from "@/hooks/useSaldosBancarios";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { formatCurrency } from "@/utils/currency";
+import { formatNumberToDisplay } from "@/utils/currency";
 import SaldoBancarioSummaryCard from "@/components/saldos-bancarios/SaldoBancarioSummaryCard";
 
 interface SaldoForm {
@@ -109,7 +109,7 @@ const SaldosBancarios: React.FC = () => {
         </div>
       </div>
 
-      <div>Total: {formatCurrency(totalSaldo)}</div>
+      <div>Total: {formatNumberToDisplay(totalSaldo)}</div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
@@ -148,7 +148,7 @@ const SaldosBancarios: React.FC = () => {
                             saldo.saldo >= 0 ? "text-green-600" : "text-red-600"
                           }`}
                         >
-                          {formatCurrency(saldo.saldo)}
+                          {formatNumberToDisplay(saldo.saldo)}
                         </span>
                         <Button
                           variant="outline"
