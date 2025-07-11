@@ -1,8 +1,9 @@
-# Welcome to your Lovable project
+# FluxoAzul - Sistema de Gestão Financeira
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/74ae3fbe-e863-4b94-bcb5-73a57e53dcff
+**Repository**: https://github.com/EducAI25/FluxoAzul.git
+**Lovable Project URL**: https://lovable.dev/projects/74ae3fbe-e863-4b94-bcb5-73a57e53dcff
 
 ## How can I edit this code?
 
@@ -24,10 +25,10 @@ Follow these steps:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone https://github.com/EducAI25/FluxoAzul.git
 
 # Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+cd FluxoAzul
 
 # Step 3: Install the necessary dependencies.
 npm i
