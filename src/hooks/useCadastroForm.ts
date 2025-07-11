@@ -90,7 +90,7 @@ export const useCadastroForm = (
       return false;
     }
 
-    if (!formData.cpf_cnpj.trim()) {
+    if (!formData.cpf_cnpj?.trim()) {
       toast({
         title: "Erro de validação",
         description: `${formData.pessoa === "Física" ? "CPF" : "CNPJ"} é obrigatório.`,
@@ -146,16 +146,16 @@ export const useCadastroForm = (
         nome: formData.razao_social?.trim() || formData.nome.trim(),
         tipo,
         pessoa: formData.pessoa,
-        cpf_cnpj: formData.cpf_cnpj.trim(),
-        telefone: formData.telefone.trim() || undefined,
-        email: formData.email.trim() || undefined,
-        endereco: formData.endereco.trim() || undefined,
-        numero: formData.numero.trim() || undefined,
-        bairro: formData.bairro.trim() || undefined,
-        cidade: formData.cidade.trim() || undefined,
-        estado: formData.estado.trim() || undefined,
-        cep: formData.cep.trim() || undefined,
-        observacoes: formData.observacoes.trim() || undefined,
+        cpf_cnpj: formData.cpf_cnpj?.trim() || undefined,
+        telefone: formData.telefone?.trim() || undefined,
+        email: formData.email?.trim() || undefined,
+        endereco: formData.endereco?.trim() || undefined,
+        numero: formData.numero?.trim() || undefined,
+        bairro: formData.bairro?.trim() || undefined,
+        cidade: formData.cidade?.trim() || undefined,
+        estado: formData.estado?.trim() || undefined,
+        cep: formData.cep?.trim() || undefined,
+        observacoes: formData.observacoes?.trim() || undefined,
         user_id: user!.id,
         status: "ativo",
         data: new Date().toISOString().split("T")[0],

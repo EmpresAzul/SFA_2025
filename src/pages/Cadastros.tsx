@@ -43,6 +43,24 @@ const Cadastros: React.FC = () => {
     resetForm,
   } = useCadastroForm(tipoCapitalized);
 
+  // Função para converter Cadastro para CadastroData
+  const convertCadastroToFormData = (cadastro: Cadastro) => {
+    return {
+      nome: cadastro.nome,
+      pessoa: (cadastro.pessoa as "Física" | "Jurídica") || "Física",
+      cpf_cnpj: cadastro.cpf_cnpj,
+      telefone: cadastro.telefone,
+      email: cadastro.email,
+      endereco: cadastro.endereco,
+      numero: cadastro.numero,
+      bairro: cadastro.bairro,
+      cidade: cadastro.cidade,
+      estado: cadastro.estado,
+      cep: cadastro.cep,
+      observacoes: cadastro.observacoes,
+    };
+  };
+
   useEffect(() => {
     if (cadastrosData) {
       console.log("Cadastros data received:", cadastrosData);
@@ -221,8 +239,8 @@ const Cadastros: React.FC = () => {
           <CadastroForm
             tipo={tipoCapitalized}
             formData={formData}
-            setFormData={setFormData}
-            editingCadastro={editingCadastro}
+            setFormData={(data) => setFormData(data)}
+            editingCadastro={editingCadastro ? convertCadastroToFormData(editingCadastro) : null}
             loading={loading}
             onSubmit={handleFormSubmit}
             onCancel={handleCancelEdit}
