@@ -1,4 +1,5 @@
 import React from "react";
+import { formatCurrency } from "@/utils/currency";
 
 interface DRELineItemProps {
   label: string;
@@ -8,7 +9,6 @@ interface DRELineItemProps {
   isNegative?: boolean;
   level?: number;
   detalhes?: { [key: string]: number } | null;
-  formatCurrency: (value: number) => string;
 }
 
 const DRELineItem: React.FC<DRELineItemProps> = ({
@@ -19,7 +19,6 @@ const DRELineItem: React.FC<DRELineItemProps> = ({
   isNegative = false,
   level = 0,
   detalhes = null,
-  formatCurrency,
 }) => (
   <div
     className={`

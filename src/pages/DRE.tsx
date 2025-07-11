@@ -3,6 +3,7 @@ import { format, subMonths } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useLancamentos } from "@/hooks/useLancamentos";
 import { useDRECalculations } from "@/hooks/useDRECalculations";
+import { formatCurrency } from "@/utils/currency";
 import DREHeader from "@/components/dre/DREHeader";
 import DRESummaryCards from "@/components/dre/DRESummaryCards";
 import DREReport from "@/components/dre/DREReport";
@@ -41,12 +42,6 @@ const DRE: React.FC = () => {
 
   const dreData = useDRECalculations(lancamentosFiltrados);
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
-  };
 
   const getPeriodoLabel = () => {
     switch (periodo) {
@@ -92,12 +87,11 @@ const DRE: React.FC = () => {
         lancamentosCount={lancamentosFiltrados.length}
       />
 
-      <DRESummaryCards dreData={dreData} formatCurrency={formatCurrency} />
+      <DRESummaryCards dreData={dreData} />
 
       <DREReport
         dreData={dreData}
         periodoLabel={getPeriodoLabel()}
-        formatCurrency={formatCurrency}
       />
     </div>
   );

@@ -16,6 +16,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
+import { formatCurrency } from "@/utils/currency";
 import type { Lancamento } from "@/hooks/useLancamentos";
 
 interface LancamentosViewModalProps {
@@ -31,12 +32,6 @@ const LancamentosViewModal: React.FC<LancamentosViewModalProps> = ({
 }) => {
   if (!lancamento) return null;
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value);
-  };
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("pt-BR");

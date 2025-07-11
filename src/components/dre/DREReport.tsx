@@ -1,19 +1,18 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText } from "lucide-react";
+import { formatCurrency } from "@/utils/currency";
 import DRELineItem from "./DRELineItem";
 import type { DREData } from "@/hooks/useDRECalculations";
 
 interface DREReportProps {
   dreData: DREData;
   periodoLabel: string;
-  formatCurrency: (value: number) => string;
 }
 
 const DREReport: React.FC<DREReportProps> = ({
   dreData,
   periodoLabel,
-  formatCurrency,
 }) => {
   return (
     <Card>
@@ -36,7 +35,6 @@ const DREReport: React.FC<DREReportProps> = ({
             value={dreData.receitaOperacionalBruta}
             detalhes={dreData.detalhamento.receitasOperacionais}
             level={1}
-            formatCurrency={formatCurrency}
           />
 
           {/* DEDUÇÕES */}
@@ -51,7 +49,6 @@ const DREReport: React.FC<DREReportProps> = ({
             isNegative
             detalhes={dreData.detalhamento.deducoes}
             level={1}
-            formatCurrency={formatCurrency}
           />
 
           {/* RECEITA LÍQUIDA */}
@@ -59,7 +56,6 @@ const DREReport: React.FC<DREReportProps> = ({
             label="= RECEITA OPERACIONAL LÍQUIDA"
             value={dreData.receitaOperacionalLiquida}
             isSubtotal
-            formatCurrency={formatCurrency}
           />
 
           {/* CUSTOS */}
@@ -72,7 +68,6 @@ const DREReport: React.FC<DREReportProps> = ({
             isNegative
             detalhes={dreData.detalhamento.custos}
             level={1}
-            formatCurrency={formatCurrency}
           />
 
           {/* RESULTADO BRUTO */}
@@ -80,7 +75,6 @@ const DREReport: React.FC<DREReportProps> = ({
             label="= RESULTADO OPERACIONAL BRUTO"
             value={dreData.resultadoOperacionalBruto}
             isSubtotal
-            formatCurrency={formatCurrency}
           />
 
           {/* DESPESAS OPERACIONAIS */}
@@ -95,7 +89,6 @@ const DREReport: React.FC<DREReportProps> = ({
             isNegative
             detalhes={dreData.detalhamento.despesasOperacionais}
             level={1}
-            formatCurrency={formatCurrency}
           />
 
           {/* DESPESAS FINANCEIRAS */}
@@ -110,7 +103,6 @@ const DREReport: React.FC<DREReportProps> = ({
             isNegative
             detalhes={dreData.detalhamento.despesasFinanceiras}
             level={1}
-            formatCurrency={formatCurrency}
           />
 
           {/* RESULTADO OPERACIONAL */}
@@ -118,7 +110,6 @@ const DREReport: React.FC<DREReportProps> = ({
             label="= RESULTADO OPERACIONAL"
             value={dreData.resultadoOperacional}
             isSubtotal
-            formatCurrency={formatCurrency}
           />
 
           {/* OUTRAS RECEITAS */}
@@ -135,7 +126,6 @@ const DREReport: React.FC<DREReportProps> = ({
             )}
             detalhes={dreData.detalhamento.outrasReceitas}
             level={1}
-            formatCurrency={formatCurrency}
           />
           <DRELineItem
             label="(-) Outras Despesas"
@@ -146,7 +136,6 @@ const DREReport: React.FC<DREReportProps> = ({
             isNegative
             detalhes={dreData.detalhamento.outrasDespesas}
             level={1}
-            formatCurrency={formatCurrency}
           />
 
           {/* RESULTADO ANTES IR */}
@@ -154,7 +143,6 @@ const DREReport: React.FC<DREReportProps> = ({
             label="= RESULTADO ANTES DO IR E CSLL"
             value={dreData.resultadoAntesIR}
             isSubtotal
-            formatCurrency={formatCurrency}
           />
 
           {/* PROVISÕES */}
@@ -168,7 +156,6 @@ const DREReport: React.FC<DREReportProps> = ({
             value={dreData.provisaoIR}
             isNegative
             level={1}
-            formatCurrency={formatCurrency}
           />
 
           {/* LUCRO LÍQUIDO */}
@@ -176,7 +163,7 @@ const DREReport: React.FC<DREReportProps> = ({
             label="= RESULTADO LÍQUIDO DO EXERCÍCIO"
             value={dreData.lucroLiquido}
             isTotal
-            formatCurrency={formatCurrency}
+            
           />
         </div>
       </CardContent>

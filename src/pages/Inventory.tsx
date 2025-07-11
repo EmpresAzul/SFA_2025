@@ -19,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatCurrency } from "@/utils/currency";
 import { useToast } from "@/hooks/use-toast";
 import {
   Plus,
@@ -257,12 +258,6 @@ const Inventory: React.FC = () => {
     });
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
-  };
 
   return (
     <div className="space-y-6">

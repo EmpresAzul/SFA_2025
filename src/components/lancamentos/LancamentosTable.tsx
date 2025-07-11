@@ -22,6 +22,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Eye, Edit, Trash2, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { formatCurrency } from "@/utils/currency";
 import type { Lancamento } from "@/hooks/useLancamentos";
 
 interface LancamentosTableProps {
@@ -37,12 +38,6 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value);
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR');

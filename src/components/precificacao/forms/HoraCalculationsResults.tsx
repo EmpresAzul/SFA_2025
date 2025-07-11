@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency } from "@/utils/currency";
 import { Calculator, Clock, DollarSign, TrendingUp } from "lucide-react";
 
 interface HoraCalculationsResultsProps {
@@ -23,12 +24,6 @@ const HoraCalculationsResults: React.FC<HoraCalculationsResultsProps> = ({
   valorDiaTrabalhado,
   totalTaxasPercentual = 0,
 }) => {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
-  };
 
   return (
     <Card className="w-full bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">

@@ -1,16 +1,15 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, DollarSign } from "lucide-react";
+import { formatCurrency } from "@/utils/currency";
 import type { DREData } from "@/hooks/useDRECalculations";
 
 interface DRESummaryCardsProps {
   dreData: DREData;
-  formatCurrency: (value: number) => string;
 }
 
 const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
   dreData,
-  formatCurrency,
 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
