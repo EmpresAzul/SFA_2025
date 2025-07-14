@@ -85,29 +85,24 @@ const VideoGallery: React.FC = () => {
       </div>
 
       {/* Lista de vídeos */}
-      <div className="w-full md:w-80 flex-shrink-0 space-y-2">
+      <div className="w-full md:w-80 flex-shrink-0 space-y-1">
         {videos.map((video) => (
           <Card
             key={video.id}
-            className={`flex items-center gap-3 p-3 cursor-pointer border-2 transition-all duration-200 ${selected?.id === video.id ? "border-rose-500 bg-rose-50" : "border-transparent hover:border-rose-200"}`}
+            className={`flex items-center gap-2 p-2 cursor-pointer border-2 transition-all duration-200 min-h-10 h-10 ${selected?.id === video.id ? "border-rose-500 bg-rose-50" : "border-transparent hover:border-rose-200"}`}
             onClick={() => setSelected(video)}
           >
             <div
-              className={`rounded-full w-8 h-8 flex items-center justify-center ${selected?.id === video.id ? "bg-rose-500 text-white" : "bg-gray-200 text-rose-500"}`}
+              className={`rounded-full w-7 h-7 flex items-center justify-center ${selected?.id === video.id ? "bg-rose-500 text-white" : "bg-gray-200 text-rose-500"}`}
             >
               <Play className="h-4 w-4" />
             </div>
             <div className="flex-1 min-w-0">
               <div
-                className={`font-semibold text-sm truncate ${selected?.id === video.id ? "gradient-fluxo-text" : ""}`}
+                className={`font-semibold text-xs truncate ${selected?.id === video.id ? "gradient-fluxo-text" : ""}`}
               >
                 {video.title}
               </div>
-              {video.description && (
-                <div className="text-xs text-gray-600 truncate mt-0.5">
-                  {video.description}
-                </div>
-              )}
             </div>
           </Card>
         ))}
