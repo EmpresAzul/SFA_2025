@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -10,10 +9,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8081,
   },
-  plugins: [
-    react(),
-    ...(mode === "development" ? [componentTagger()] : [])
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -28,15 +24,26 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: (id) => {
           if (id.includes("node_modules")) {
-            if (id.includes("react")) return "vendor-react";
+            if (id.includes("react") || id.includes("react-dom")) return "vendor-react";
             if (id.includes("@radix-ui")) return "vendor-radix";
+            if (id.includes("@supabase")) return "vendor-supabase";
+            if (id.includes("@tanstack")) return "vendor-query";
+            if (id.includes("lucide-react") || id.includes("chart")) return "vendor-ui";
             return "vendor-other";
           }
         },
       },
       onwarn: (warning, warn) => {
         if (warning.code === "CIRCULAR_DEPENDENCY") return;
+        if (warning.code === "THIS_IS_UNDEFINED") return;
         warn(warning);
+      },
+      external: (id) => {
+        // Exclude problematic dependencies in production
+        if (mode === "production" && id.includes("lovable-tagger")) {
+          return true;
+        }
+        return false;
       },
     },
   },
@@ -48,7 +55,6 @@ export default defineConfig(({ mode }) => ({
       "@tanstack/react-query",
       "@supabase/supabase-js",
     ],
-    exclude: ["lovable-tagger"],
   },
   esbuild: {
     target: "esnext",
