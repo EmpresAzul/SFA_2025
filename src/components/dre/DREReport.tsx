@@ -25,8 +25,8 @@ const DREReport: React.FC<DREReportProps> = ({
       <CardContent className="p-0">
         <div className="space-y-0">
           {/* RECEITA OPERACIONAL BRUTA */}
-          <div className="bg-green-50 border-b-2 border-green-200 p-4">
-            <h3 className="font-bold text-green-800 text-lg mb-2">
+          <div className="bg-gradient-to-r from-emerald-100 to-green-100 border-b border-emerald-200 py-2 px-4">
+            <h3 className="font-bold text-emerald-800 text-sm">
               RECEITA OPERACIONAL BRUTA
             </h3>
           </div>
@@ -38,8 +38,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* DEDUÇÕES */}
-          <div className="bg-red-50 border-b border-red-200 p-4">
-            <h3 className="font-bold text-red-800">
+          <div className="bg-gradient-to-r from-red-100 to-rose-100 border-b border-red-200 py-2 px-4">
+            <h3 className="font-bold text-red-800 text-sm">
               (-) DEDUÇÕES DA RECEITA BRUTA
             </h3>
           </div>
@@ -59,8 +59,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* CUSTOS */}
-          <div className="bg-orange-50 border-b border-orange-200 p-4">
-            <h3 className="font-bold text-orange-800">(-) CUSTOS DAS VENDAS</h3>
+          <div className="bg-gradient-to-r from-orange-100 to-amber-100 border-b border-orange-200 py-2 px-4">
+            <h3 className="font-bold text-orange-800 text-sm">(-) CUSTOS DAS VENDAS</h3>
           </div>
           <DRELineItem
             label="Custos Diretos"
@@ -78,8 +78,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* DESPESAS OPERACIONAIS */}
-          <div className="bg-blue-50 border-b border-blue-200 p-4">
-            <h3 className="font-bold text-blue-800">
+          <div className="bg-gradient-to-r from-blue-100 to-indigo-100 border-b border-blue-200 py-2 px-4">
+            <h3 className="font-bold text-blue-800 text-sm">
               (-) DESPESAS OPERACIONAIS
             </h3>
           </div>
@@ -92,8 +92,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* DESPESAS FINANCEIRAS */}
-          <div className="bg-purple-50 border-b border-purple-200 p-4">
-            <h3 className="font-bold text-purple-800">
+          <div className="bg-gradient-to-r from-purple-100 to-violet-100 border-b border-purple-200 py-2 px-4">
+            <h3 className="font-bold text-purple-800 text-sm">
               (-) DESPESAS FINANCEIRAS
             </h3>
           </div>
@@ -113,8 +113,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* OUTRAS RECEITAS */}
-          <div className="bg-gray-50 border-b border-gray-200 p-4">
-            <h3 className="font-bold text-gray-800">
+          <div className="bg-gradient-to-r from-slate-100 to-gray-100 border-b border-slate-200 py-2 px-4">
+            <h3 className="font-bold text-slate-800 text-sm">
               OUTRAS RECEITAS E DESPESAS
             </h3>
           </div>
@@ -146,8 +146,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* PROVISÕES */}
-          <div className="bg-yellow-50 border-b border-yellow-200 p-4">
-            <h3 className="font-bold text-yellow-800">
+          <div className="bg-gradient-to-r from-yellow-100 to-amber-100 border-b border-yellow-200 py-2 px-4">
+            <h3 className="font-bold text-yellow-800 text-sm">
               (-) Provisão para IR e CSLL
             </h3>
           </div>

@@ -22,17 +22,18 @@ const DRELineItem: React.FC<DRELineItemProps> = ({
 }) => (
   <div
     className={`
-    flex justify-between items-center py-2 px-4
-    ${isTotal ? "bg-gradient-to-r from-fluxo-blue-50 to-fluxo-blue-100 border-t-2 border-fluxo-blue-300 font-bold text-lg" : ""}
-    ${isSubtotal ? "bg-gray-50 border-t border-gray-200 font-semibold" : ""}
+    flex justify-between items-center py-1.5 px-4 text-sm
+    ${isTotal ? "bg-gradient-to-r from-indigo-50 to-purple-50 border-t-2 border-indigo-300 font-bold text-base" : ""}
+    ${isSubtotal ? "bg-slate-50 border-t border-slate-200 font-semibold" : ""}
     ${level > 0 ? `ml-${level * 4}` : ""}
+    hover:bg-gray-50 transition-colors duration-150
   `}
   >
     <div className="flex-1">
       <span
         className={`
-        ${isTotal ? "text-fluxo-blue-800" : ""}
-        ${isSubtotal ? "text-gray-700" : "text-gray-600"}
+        ${isTotal ? "text-indigo-800" : ""}
+        ${isSubtotal ? "text-slate-700" : "text-slate-600"}
         ${isNegative ? "text-red-600" : ""}
       `}
       >
@@ -40,11 +41,11 @@ const DRELineItem: React.FC<DRELineItemProps> = ({
         {label}
       </span>
       {detalhes && Object.keys(detalhes).length > 0 && (
-        <div className="text-xs text-gray-500 mt-1 ml-4">
+        <div className="text-xs text-slate-500 mt-1 ml-4 space-y-0.5">
           {Object.entries(detalhes).map(([cat, val]) => (
             <div key={cat} className="flex justify-between">
-              <span>{cat}</span>
-              <span>{formatCurrency(val)}</span>
+              <span className="truncate max-w-[200px]">{cat}</span>
+              <span className="font-mono">{formatCurrency(val)}</span>
             </div>
           ))}
         </div>
@@ -52,10 +53,10 @@ const DRELineItem: React.FC<DRELineItemProps> = ({
     </div>
     <span
       className={`
-      font-mono ml-4
-      ${isTotal ? "text-fluxo-blue-800 text-xl" : ""}
-      ${isSubtotal ? "text-gray-700 font-semibold" : "text-gray-600"}
-      ${value < 0 ? "text-red-600" : value > 0 ? "text-green-600" : "text-gray-600"}
+      font-mono ml-4 min-w-[120px] text-right
+      ${isTotal ? "text-indigo-800 text-base font-bold" : ""}
+      ${isSubtotal ? "text-slate-700 font-semibold" : "text-slate-600"}
+      ${value < 0 ? "text-red-600" : value > 0 ? "text-green-600" : "text-slate-600"}
     `}
     >
       {formatCurrency(value)}

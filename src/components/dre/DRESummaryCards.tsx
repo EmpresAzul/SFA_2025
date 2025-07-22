@@ -12,67 +12,79 @@ const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
   dreData,
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <Card className="border-l-4 border-l-green-500">
-        <CardContent className="p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {/* Card Receita Bruta */}
+      <Card className="bg-gradient-to-br from-emerald-400 via-emerald-500 to-green-600 border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+        <CardContent className="p-4 text-white">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Receita Bruta</p>
-              <p className="text-2xl font-bold text-green-600">
+            <div className="flex-1">
+              <p className="text-xs font-medium text-white/90 mb-1">Receita Bruta</p>
+              <p className="text-lg font-bold text-white">
                 {formatCurrency(dreData.receitaOperacionalBruta)}
               </p>
             </div>
-            <TrendingUp className="w-8 h-8 text-green-500" />
+            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <TrendingUp className="w-5 h-5 text-white" />
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-l-4 border-l-blue-500">
-        <CardContent className="p-4">
+      {/* Card Receita Líquida */}
+      <Card className="bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600 border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+        <CardContent className="p-4 text-white">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Receita Líquida</p>
-              <p className="text-2xl font-bold text-blue-600">
+            <div className="flex-1">
+              <p className="text-xs font-medium text-white/90 mb-1">Receita Líquida</p>
+              <p className="text-lg font-bold text-white">
                 {formatCurrency(dreData.receitaOperacionalLiquida)}
               </p>
             </div>
-            <DollarSign className="w-8 h-8 text-blue-500" />
+            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <DollarSign className="w-5 h-5 text-white" />
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-l-4 border-l-yellow-500">
-        <CardContent className="p-4">
+      {/* Card Resultado Operacional */}
+      <Card className={`bg-gradient-to-br ${
+        dreData.resultadoOperacional >= 0 
+          ? "from-amber-400 via-orange-500 to-yellow-600" 
+          : "from-red-400 via-red-500 to-rose-600"
+      } border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105`}>
+        <CardContent className="p-4 text-white">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Resultado Operacional</p>
-              <p
-                className={`text-2xl font-bold ${dreData.resultadoOperacional >= 0 ? "text-green-600" : "text-red-600"}`}
-              >
+            <div className="flex-1">
+              <p className="text-xs font-medium text-white/90 mb-1">Resultado Operacional</p>
+              <p className="text-lg font-bold text-white">
                 {formatCurrency(dreData.resultadoOperacional)}
               </p>
             </div>
-            <TrendingUp
-              className={`w-8 h-8 ${dreData.resultadoOperacional >= 0 ? "text-green-500" : "text-red-500"}`}
-            />
+            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <TrendingUp className="w-5 h-5 text-white" />
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-l-4 border-l-purple-500">
-        <CardContent className="p-4">
+      {/* Card Lucro Líquido */}
+      <Card className={`bg-gradient-to-br ${
+        dreData.lucroLiquido >= 0 
+          ? "from-purple-400 via-purple-500 to-violet-600" 
+          : "from-red-500 via-red-600 to-rose-700"
+      } border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105`}>
+        <CardContent className="p-4 text-white">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Lucro Líquido</p>
-              <p
-                className={`text-2xl font-bold ${dreData.lucroLiquido >= 0 ? "text-green-600" : "text-red-600"}`}
-              >
+            <div className="flex-1">
+              <p className="text-xs font-medium text-white/90 mb-1">Lucro Líquido</p>
+              <p className="text-lg font-bold text-white">
                 {formatCurrency(dreData.lucroLiquido)}
               </p>
             </div>
-            <DollarSign
-              className={`w-8 h-8 ${dreData.lucroLiquido >= 0 ? "text-green-500" : "text-red-500"}`}
-            />
+            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <DollarSign className="w-5 h-5 text-white" />
+            </div>
           </div>
         </CardContent>
       </Card>
