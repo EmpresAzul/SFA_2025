@@ -8,11 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Filter, Calendar } from "lucide-react";
+import { Search, Filter, Calendar, DollarSign } from "lucide-react";
 
 interface LancamentosFiltersProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
+  searchValue: string;
+  onSearchValueChange: (value: string) => void;
   selectedTipo: string;
   onTipoChange: (value: string) => void;
   selectedCategoria: string;
@@ -24,6 +26,8 @@ interface LancamentosFiltersProps {
 const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
   searchTerm,
   onSearchChange,
+  searchValue,
+  onSearchValueChange,
   selectedTipo,
   onTipoChange,
   selectedCategoria,
@@ -40,7 +44,7 @@ const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Busca por Descrição */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">
@@ -52,6 +56,22 @@ const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
                 placeholder="Digite a descrição..."
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
+                className="pl-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          {/* Busca por Valor */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">
+              Buscar por Valor
+            </label>
+            <div className="relative">
+              <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Ex: 1000 ou 1.500,00"
+                value={searchValue}
+                onChange={(e) => onSearchValueChange(e.target.value)}
                 className="pl-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>

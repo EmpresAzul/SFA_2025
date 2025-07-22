@@ -18,6 +18,7 @@ import { parseStringToNumber } from "@/utils/currency";
 import { ArrowLeft, Save, Plus, AlertCircle, AlertTriangle } from "lucide-react";
 import type { Lancamento } from "@/hooks/useLancamentos";
 import type { Cadastro } from "@/hooks/useCadastros";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LancamentosFormProps {
   editingLancamento: Lancamento | null;
@@ -62,6 +63,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
   createLancamento,
   updateLancamento,
 }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     tipo: "receita",
     data: new Date().toISOString().split('T')[0],
@@ -148,6 +150,16 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
       return;
     }
 
+    // Verificar se o usuário está autenticado
+    if (!user?.id) {
+      setErrors({ 
+        ...errors, 
+        categoria: "Usuário não autenticado. Faça login novamente." 
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const valorNumerico = parseStringToNumber(formData.valor);
@@ -162,6 +174,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
         recorrente: formData.recorrente,
         meses_recorrencia: formData.meses_recorrencia,
         status: "ativo",
+        user_id: user.id, // Adicionar o user_id
       };
 
       if (editingLancamento) {
@@ -176,6 +189,11 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
       onSaveSuccess();
     } catch (error) {
       console.error("Erro ao salvar lançamento:", error);
+      // Mostrar erro para o usuário
+      setErrors({ 
+        ...errors, 
+        categoria: "Erro ao salvar lançamento. Tente novamente." 
+      });
     } finally {
       setIsSubmitting(false);
     }

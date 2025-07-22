@@ -12,12 +12,15 @@ import type { Lancamento } from "@/hooks/useLancamentos";
 const LancamentosFinanceiros: React.FC = () => {
   const [activeTab, setActiveTab] = useState("lista");
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [selectedTipo, setSelectedTipo] = useState("todos");
   const [selectedCategoria, setSelectedCategoria] = useState("todos");
   const [selectedPeriodo, setSelectedPeriodo] = useState("todos");
   const [selectedItem, setSelectedItem] = useState<Lancamento | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Lancamento | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
 
   const {
     filteredLancamentos,
@@ -38,14 +41,46 @@ const LancamentosFinanceiros: React.FC = () => {
       const matchesSearch = item.observacoes
         ?.toLowerCase()
         .includes(searchTerm.toLowerCase()) || false;
+      
+      // Busca por valor - aceita números com ou sem formatação
+      const matchesValue = searchValue === "" || (() => {
+        const searchNum = parseFloat(searchValue.replace(/[^\d,.-]/g, '').replace(',', '.'));
+        if (isNaN(searchNum)) return false;
+        return item.valor === searchNum || 
+               item.valor.toString().includes(searchValue) ||
+               item.valor.toFixed(2).includes(searchValue);
+      })();
+      
       const matchesTipo =
         selectedTipo === "todos" || item.tipo === selectedTipo;
       const matchesCategoria =
         selectedCategoria === "todos" || item.categoria === selectedCategoria;
 
-      return matchesSearch && matchesTipo && matchesCategoria;
+      return matchesSearch && matchesValue && matchesTipo && matchesCategoria;
     });
-  }, [filteredLancamentos, searchTerm, selectedTipo, selectedCategoria]);
+  }, [filteredLancamentos, searchTerm, searchValue, selectedTipo, selectedCategoria]);
+
+  // Dados paginados
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredData.slice(startIndex, endIndex);
+  }, [filteredData, currentPage, itemsPerPage]);
+
+  // Resetar página quando filtros mudarem
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Resetar para primeira página
+  };
+
+  // Resetar página quando filtros mudarem
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [searchTerm, searchValue, selectedTipo, selectedCategoria, selectedPeriodo]);
 
   // Calcular estatísticas
   const stats = useMemo(() => {
@@ -143,6 +178,8 @@ const LancamentosFinanceiros: React.FC = () => {
           <LancamentosFilters
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
+            searchValue={searchValue}
+            onSearchValueChange={setSearchValue}
             selectedTipo={selectedTipo}
             onTipoChange={setSelectedTipo}
             selectedCategoria={selectedCategoria}
@@ -157,7 +194,12 @@ const LancamentosFinanceiros: React.FC = () => {
             </div>
           ) : (
             <LancamentosTable
-              data={filteredData}
+              data={paginatedData}
+              totalItems={filteredData.length}
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
               onView={handleView}
               onEdit={handleEditItem}
               onDelete={handleDeleteLancamento}
