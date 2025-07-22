@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
 import PWAInstallBanner from "./components/PWAInstallBanner";
-import DebugInfo from "./components/DebugInfo";
+
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -151,7 +151,6 @@ const App = () => (
     </Routes>
     <PWAInstallBanner />
     <Toaster />
-
   </>
 );
 
