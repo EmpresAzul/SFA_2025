@@ -42,18 +42,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Initialize auth with error handling
     const initializeAuth = async () => {
       try {
-        // Get initial session
-        const { data: { session }, error } = await supabase.auth.getSession();
+        console.log('AuthContext: Starting auth initialization...');
+        
+        // Check if we're online
+        if (!navigator.onLine) {
+          console.warn('AuthContext: Offline - skipping auth check');
+          clearTimeout(timeoutId);
+          setLoading(false);
+          return;
+        }
+
+        // Get initial session with timeout
+        const sessionPromise = supabase.auth.getSession();
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Session check timeout')), 2000)
+        );
+
+        const { data: { session }, error } = await Promise.race([
+          sessionPromise,
+          timeoutPromise
+        ]) as any;
         
         if (error) {
           console.error('AuthContext: Error getting initial session:', error);
         } else {
-          console.log('AuthContext: Initial session check:', { session: !!session });
+          console.log('AuthContext: Initial session check successful:', { session: !!session });
           setSession(session);
           setUser(session?.user ?? null);
         }
       } catch (error) {
         console.error('AuthContext: Failed to initialize auth:', error);
+        // In case of error, assume no session and continue
+        setSession(null);
+        setUser(null);
       } finally {
         clearTimeout(timeoutId);
         setLoading(false);

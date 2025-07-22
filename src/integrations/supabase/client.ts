@@ -2,9 +2,23 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
-const SUPABASE_URL = "https://ayhzvgeapkjpscmiukkp.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY =
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://ayhzvgeapkjpscmiukkp.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF5aHp2Z2VhcGtqcHNjbWl1a2twIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5NTE4MjYsImV4cCI6MjA2NTUyNzgyNn0.lZxtcYGD3AnV8AV_aSDVw72tD21PULYeEMUb1rhJuls";
+
+// Validate environment variables
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  console.error('Missing Supabase environment variables:', {
+    url: !!SUPABASE_URL,
+    key: !!SUPABASE_PUBLISHABLE_KEY,
+    env: import.meta.env.MODE
+  });
+} else {
+  console.log('Supabase client initialized successfully:', {
+    url: SUPABASE_URL,
+    env: import.meta.env.MODE
+  });
+}
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
@@ -12,4 +26,10 @@ const SUPABASE_PUBLISHABLE_KEY =
 export const supabase = createClient<Database>(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  }
 );

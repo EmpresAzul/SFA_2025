@@ -37,13 +37,32 @@ if ("serviceWorker" in navigator && import.meta.env.PROD) {
   });
 }
 
+// Debug information
+console.log('FluxoAzul: Application starting...', {
+  mode: import.meta.env.MODE,
+  prod: import.meta.env.PROD,
+  dev: import.meta.env.DEV,
+  base: import.meta.env.BASE_URL,
+  supabaseUrl: import.meta.env.VITE_SUPABASE_URL ? 'configured' : 'using fallback',
+  supabaseKey: import.meta.env.VITE_SUPABASE_ANON_KEY ? 'configured' : 'using fallback'
+});
+
 // Global error handler
 window.addEventListener('error', (event) => {
-  console.error('Global error:', event.error);
+  console.error('FluxoAzul Global error:', {
+    message: event.message,
+    filename: event.filename,
+    lineno: event.lineno,
+    colno: event.colno,
+    error: event.error
+  });
 });
 
 window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
+  console.error('FluxoAzul Unhandled promise rejection:', {
+    reason: event.reason,
+    promise: event.promise
+  });
 });
 
 createRoot(document.getElementById("root")!).render(
