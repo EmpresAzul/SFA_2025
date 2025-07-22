@@ -89,25 +89,32 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600">
-      <div className="relative z-10 w-full max-w-md px-4 sm:px-6">
-        <Card
-          className="bg-white/95 backdrop-blur-xl shadow-2xl border-0 overflow-hidden"
-          style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)" }}
-        >
-          {/* Header com logo */}
-          <div className="bg-transparent p-6 text-center">
-            <div className="flex justify-center mb-2">
-              <Logo size="lg" />
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform rotate-12 scale-150"></div>
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/3 to-transparent transform -rotate-12 scale-150"></div>
+      </div>
+      
+      <div className="relative z-10 w-full max-w-lg px-6">
+        <div className="bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl overflow-hidden rounded-2xl">
+          {/* Header moderno */}
+          <div className="bg-gradient-to-r from-blue-600/20 to-indigo-600/20 backdrop-blur-sm p-8 text-center border-b border-white/10">
+            <div className="mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-4">
+                <div className="text-2xl font-bold text-white">F</div>
+              </div>
             </div>
+            <h1 className="text-3xl font-bold text-white mb-2">FluxoAzul</h1>
+            <p className="text-blue-100/80 text-sm">Gestão Financeira Inteligente</p>
           </div>
 
-          <div className="p-6 sm:p-8">
-            <form onSubmit={handleLogin} className="space-y-5">
-              <div className="space-y-2">
+          <div className="p-8">
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-3">
                 <Label
                   htmlFor="email"
-                  className="text-gray-700 font-medium text-sm"
+                  className="text-white/90 font-medium text-sm block"
                 >
                   E-mail
                 </Label>
@@ -118,17 +125,22 @@ const LoginForm: React.FC = () => {
                   onChange={handleEmailChange}
                   placeholder="Digite seu e-mail"
                   required
-                  className={`h-11 border-2 ${errors.email ? "border-red-500" : "border-gray-200"} focus:border-blue-500 transition-all duration-200 rounded-xl`}
+                  className={`h-12 bg-white/10 backdrop-blur-sm border-2 ${
+                    errors.email ? "border-red-400" : "border-white/20"
+                  } focus:border-blue-400 focus:bg-white/15 text-white placeholder:text-white/60 transition-all duration-300 rounded-xl`}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email}</p>
+                  <p className="text-red-300 text-sm flex items-center gap-1">
+                    <span className="w-1 h-1 bg-red-300 rounded-full"></span>
+                    {errors.email}
+                  </p>
                 )}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <Label
                   htmlFor="password"
-                  className="text-gray-700 font-medium text-sm"
+                  className="text-white/90 font-medium text-sm block"
                 >
                   Senha
                 </Label>
@@ -140,41 +152,55 @@ const LoginForm: React.FC = () => {
                     onChange={handlePasswordChange}
                     placeholder="Digite sua senha"
                     required
-                    className={`h-11 border-2 ${errors.password ? "border-red-500" : "border-gray-200"} focus:border-blue-500 transition-all duration-200 rounded-xl pr-12`}
+                    className={`h-12 bg-white/10 backdrop-blur-sm border-2 ${
+                      errors.password ? "border-red-400" : "border-white/20"
+                    } focus:border-blue-400 focus:bg-white/15 text-white placeholder:text-white/60 transition-all duration-300 rounded-xl pr-12`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-600 transition-colors"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors duration-200"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm">{errors.password}</p>
+                  <p className="text-red-300 text-sm flex items-center gap-1">
+                    <span className="w-1 h-1 bg-red-300 rounded-full"></span>
+                    {errors.password}
+                  </p>
                 )}
               </div>
 
-              <Button
-                type="submit"
-                disabled={loading || !!errors.email || !!errors.password}
-                className="w-full h-12 bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600 hover:from-slate-800 hover:via-slate-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-              >
-                {loading ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    <span>Entrando...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center space-x-2">
-                    <LogIn size={18} />
-                    <span>Entrar no Sistema</span>
-                  </div>
-                )}
-              </Button>
+              <div className="pt-4">
+                <Button
+                  type="submit"
+                  disabled={loading || !!errors.email || !!errors.password}
+                  className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {loading ? (
+                    <div className="flex items-center justify-center space-x-3">
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
+                      <span>Entrando...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center space-x-3">
+                      <LogIn size={20} />
+                      <span>Entrar no Sistema</span>
+                    </div>
+                  )}
+                </Button>
+              </div>
             </form>
+
+            {/* Footer */}
+            <div className="mt-8 pt-6 border-t border-white/10 text-center">
+              <p className="text-white/60 text-xs">
+                © 2025 FluxoAzul. Todos os direitos reservados.
+              </p>
+            </div>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
