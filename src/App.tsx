@@ -151,7 +151,7 @@ const App = () => (
     </Routes>
     <PWAInstallBanner />
     <Toaster />
-    {import.meta.env.DEV && <DebugInfo />}
+
   </>
 );
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Deploy - FluxoAzul</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .timestamp {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Deploy Funcionando!</h1>
+        <p>FluxoAzul - Sistema atualizado com sucesso</p>
+        <p>Versão: 2.1.0-production-fix</p>
+        <div class="timestamp">
+            Atualizado em: <span id="timestamp"></span>
+        </div>
+        <script>
+            document.getElementById('timestamp').textContent = new Date().toLocaleString('pt-BR');
+        </script>
+    </div>
+</body>
+</html>
