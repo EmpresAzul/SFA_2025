@@ -33,40 +33,57 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     console.log('AuthContext: Initializing authentication...');
     
-    // Safety timeout - force loading to false after 5 seconds
+    // Safety timeout - force loading to false after 3 seconds
     const timeoutId = setTimeout(() => {
       console.log('AuthContext: Timeout reached, forcing loading to false');
       setLoading(false);
-    }, 5000);
+    }, 3000);
 
-    // Get initial session
-    supabase.auth.getSession()
-      .then(({ data: { session }, error }) => {
-        console.log('AuthContext: Initial session check:', { session: !!session, error });
+    // Initialize auth with error handling
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('AuthContext: Error getting initial session:', error);
+        } else {
+          console.log('AuthContext: Initial session check:', { session: !!session });
+          setSession(session);
+          setUser(session?.user ?? null);
+        }
+      } catch (error) {
+        console.error('AuthContext: Failed to initialize auth:', error);
+      } finally {
         clearTimeout(timeoutId);
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('AuthContext: Error getting initial session:', error);
-        clearTimeout(timeoutId);
-        setLoading(false);
-      });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('AuthContext: Auth state changed:', event, !!session);
-        setSession(session);
-        setUser(session?.user ?? null);
         setLoading(false);
       }
-    );
+    };
+
+    initializeAuth();
+
+    // Listen for auth changes with error handling
+    let subscription: any;
+    try {
+      const { data } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          console.log('AuthContext: Auth state changed:', event, !!session);
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+        }
+      );
+      subscription = data.subscription;
+    } catch (error) {
+      console.error('AuthContext: Error setting up auth listener:', error);
+      setLoading(false);
+    }
 
     return () => {
       clearTimeout(timeoutId);
-      subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     };
   }, []);
 
