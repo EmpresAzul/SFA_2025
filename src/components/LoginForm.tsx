@@ -101,7 +101,7 @@ const LoginForm: React.FC = () => {
           {/* Header com logo */}
           <div className="bg-white p-6 text-center">
             <div className="mb-4">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-black bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
                 FluxoAzul
               </h1>
             </div>

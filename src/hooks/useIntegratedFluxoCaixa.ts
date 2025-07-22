@@ -3,9 +3,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useFluxoCaixaData } from "./useFluxoCaixaData";
 import { useFluxoCaixaCalculations } from "./useFluxoCaixaCalculations";
 
-export const useIntegratedFluxoCaixa = (periodoFilter: string) => {
+export const useIntegratedFluxoCaixa = (periodoFilter: string, startDate?: string, endDate?: string) => {
   const queryClient = useQueryClient();
-  const { lancamentos, loading, refetch } = useFluxoCaixaData(periodoFilter);
+  const { lancamentos, loading, refetch } = useFluxoCaixaData(periodoFilter, startDate, endDate);
 
   const calculations = useFluxoCaixaCalculations(lancamentos);
 

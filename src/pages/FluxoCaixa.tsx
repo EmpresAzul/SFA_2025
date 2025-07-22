@@ -5,10 +5,25 @@ import { SummaryCards } from "@/components/fluxo-caixa/SummaryCards";
 import { DailyFlowChart } from "@/components/fluxo-caixa/DailyFlowChart";
 import { CategoryChart } from "@/components/fluxo-caixa/CategoryChart";
 import { PeriodSelector } from "@/components/fluxo-caixa/PeriodSelector";
+import { DateRangeFilter } from "@/components/fluxo-caixa/DateRangeFilter";
 
 const FluxoCaixa: React.FC = () => {
   const [periodoFilter, setPeriodoFilter] = useState("mes-atual");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const queryClient = useQueryClient();
+
+  // Definir datas padrão quando selecionar período personalizado
+  useEffect(() => {
+    if (periodoFilter === "personalizado" && !startDate && !endDate) {
+      const today = new Date();
+      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      
+      setStartDate(firstDayOfMonth.toISOString().split('T')[0]);
+      setEndDate(lastDayOfMonth.toISOString().split('T')[0]);
+    }
+  }, [periodoFilter, startDate, endDate]);
 
   const {
     lancamentos,
@@ -20,7 +35,11 @@ const FluxoCaixa: React.FC = () => {
     receitasPorCategoria,
     despesasPorCategoria,
     onLancamentosChange,
-  } = useIntegratedFluxoCaixa(periodoFilter);
+  } = useIntegratedFluxoCaixa(
+    periodoFilter,
+    periodoFilter === "personalizado" ? startDate : undefined,
+    periodoFilter === "personalizado" ? endDate : undefined
+  );
 
   // Escutar mudanças nos lançamentos para atualização automática
   useEffect(() => {
@@ -46,6 +65,13 @@ const FluxoCaixa: React.FC = () => {
         return "Últimos 3 Meses";
       case "ultimos-6-meses":
         return "Últimos 6 Meses";
+      case "personalizado":
+        if (startDate && endDate) {
+          const start = new Date(startDate).toLocaleDateString('pt-BR');
+          const end = new Date(endDate).toLocaleDateString('pt-BR');
+          return `${start} - ${end}`;
+        }
+        return "Período Personalizado";
       default:
         return "Mês Atual";
     }
@@ -77,6 +103,18 @@ const FluxoCaixa: React.FC = () => {
 
         <PeriodSelector value={periodoFilter} onChange={setPeriodoFilter} />
       </div>
+
+      {/* Filtro por período personalizado */}
+      {periodoFilter === "personalizado" && (
+        <div className="mb-6">
+          <DateRangeFilter
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={setStartDate}
+            onEndDateChange={setEndDate}
+          />
+        </div>
+      )}
 
       <SummaryCards
         totalReceitas={totalReceitas}

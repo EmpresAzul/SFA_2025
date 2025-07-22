@@ -22,7 +22,7 @@ export interface Lancamento {
   updated_at: string;
 }
 
-export const useFluxoCaixaData = (periodoFilter: string) => {
+export const useFluxoCaixaData = (periodoFilter: string, startDate?: string, endDate?: string) => {
   const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
@@ -31,7 +31,7 @@ export const useFluxoCaixaData = (periodoFilter: string) => {
     if (user) {
       fetchLancamentos();
     }
-  }, [user, periodoFilter]);
+  }, [user, periodoFilter, startDate, endDate]);
 
   const getDateRange = () => {
     const hoje = new Date();
@@ -50,6 +50,16 @@ export const useFluxoCaixaData = (periodoFilter: string) => {
       case "ultimos-6-meses":
         dataInicio = startOfMonth(subMonths(hoje, 5));
         dataFim = endOfMonth(hoje);
+        break;
+      case "personalizado":
+        if (startDate && endDate) {
+          dataInicio = new Date(startDate);
+          dataFim = new Date(endDate);
+        } else {
+          // Fallback para mês atual se as datas não estiverem definidas
+          dataInicio = startOfMonth(hoje);
+          dataFim = endOfMonth(hoje);
+        }
         break;
       default: // mes-atual
         dataInicio = startOfMonth(hoje);

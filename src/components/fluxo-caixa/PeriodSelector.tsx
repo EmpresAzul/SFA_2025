@@ -29,6 +29,7 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = ({
           <SelectItem value="mes-anterior">Mês Anterior</SelectItem>
           <SelectItem value="ultimos-3-meses">Últimos 3 Meses</SelectItem>
           <SelectItem value="ultimos-6-meses">Últimos 6 Meses</SelectItem>
+          <SelectItem value="personalizado">Período Personalizado</SelectItem>
         </SelectContent>
       </Select>
     </div>
