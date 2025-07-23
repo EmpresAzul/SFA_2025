@@ -21,6 +21,8 @@ const PrecificacaoPage: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<Precificacao | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Precificacao | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
 
   const { useQuery } = usePrecificacao();
   const { data: precificacaoData = [], isLoading } = useQuery();
@@ -39,6 +41,28 @@ const PrecificacaoPage: React.FC = () => {
       return matchesSearch && matchesTipo && matchesStatus;
     });
   }, [precificacaoData, searchTerm, selectedTipo, selectedStatus]);
+
+  // Dados paginados
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredData.slice(startIndex, endIndex);
+  }, [filteredData, currentPage, itemsPerPage]);
+
+  // Handlers de paginação
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Resetar para primeira página
+  };
+
+  // Resetar página quando filtros mudarem
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedTipo, selectedStatus]);
 
   // Calcular estatísticas
   const stats = useMemo(() => {
@@ -162,7 +186,12 @@ const PrecificacaoPage: React.FC = () => {
             </div>
           ) : (
             <PrecificacaoTable
-              data={filteredData}
+              data={paginatedData}
+              totalItems={filteredData.length}
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
               onView={handleView}
               onEdit={handleEdit}
             />
