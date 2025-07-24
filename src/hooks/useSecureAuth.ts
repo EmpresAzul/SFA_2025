@@ -9,16 +9,26 @@ export const useSecureAuth = () => {
   useEffect(() => {
     if (user && session) {
       // Log successful login
-      logSecurityEvent("login_success", {
-        login_time: new Date().toISOString(),
-        session_id: session.access_token.substring(0, 10) + "...",
-      });
+      logSecurityEvent(
+        "login_success",
+        "low", 
+        "Login realizado com sucesso",
+        {
+          login_time: new Date().toISOString(),
+          session_id: session.access_token.substring(0, 10) + "...",
+        }
+      );
 
       // Log data access
-      logSecurityEvent("data_access", {
-        page: window.location.pathname,
-        timestamp: new Date().toISOString(),
-      });
+      logSecurityEvent(
+        "data_access",
+        "low",
+        "Acesso à aplicação",
+        {
+          page: window.location.pathname,
+          timestamp: new Date().toISOString(),
+        }
+      );
     }
   }, [user, session, logSecurityEvent]);
 
@@ -26,20 +36,30 @@ export const useSecureAuth = () => {
     // Monitor for suspicious activity patterns
     const handleVisibilityChange = () => {
       if (document.hidden && user) {
-        logSecurityEvent("data_access", {
-          action: "tab_hidden",
-          timestamp: new Date().toISOString(),
-        });
+        logSecurityEvent(
+          "data_access",
+          "low",
+          "Usuário mudou de aba",
+          {
+            action: "tab_hidden",
+            timestamp: new Date().toISOString(),
+          }
+        );
       }
     };
 
     // Monitor for multiple tab usage
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "supabase.auth.token" && user) {
-        logSecurityEvent("suspicious_activity", {
-          action: "potential_multiple_sessions",
-          timestamp: new Date().toISOString(),
-        });
+        logSecurityEvent(
+          "suspicious_activity",
+          "medium",
+          "Possível uso de múltiplas sessões detectado",
+          {
+            action: "potential_multiple_sessions",
+            timestamp: new Date().toISOString(),
+          }
+        );
       }
     };
 

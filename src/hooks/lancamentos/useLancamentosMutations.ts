@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { createNotificationFromEvent, shouldNotify } from "@/utils/notificationHelpers";
 import { criarLancamentosRecorrentes } from "./lancamentosUtils";
+import { useSecurity } from "@/hooks/useSecurity";
 import type {
   LancamentoCreateData,
   LancamentoUpdateData,
@@ -16,6 +17,7 @@ export const useLancamentosMutations = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { addNotification } = useNotifications();
+  const { logDataModification } = useSecurity();
 
   const useCreate = () => {
     return useMutation({
@@ -96,10 +98,17 @@ export const useLancamentosMutations = () => {
 
         return data;
       },
-      onSuccess: () => {
+      onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         console.log("useLancamentosMutations: Queries invalidadas após criação");
+        
+        // Log security event for data creation
+        logDataModification("lancamentos", "INSERT", data.id, {
+          tipo: data.tipo,
+          categoria: data.categoria,
+          valor: data.valor,
+        });
       },
       onError: (error: unknown) => {
         console.error(
@@ -181,6 +190,11 @@ export const useLancamentosMutations = () => {
           "useLancamentosMutations: Queries invalidadas após atualização, dados:",
           data,
         );
+        // Log security event for data update
+        logDataModification("lancamentos", "UPDATE", data.id, {
+          updated_fields: Object.keys(data).filter(key => key !== 'id' && key !== 'created_at' && key !== 'updated_at'),
+        });
+        
         toast({
           title: "Sucesso",
           description: "Lançamento atualizado com sucesso!",
@@ -221,9 +235,15 @@ export const useLancamentosMutations = () => {
 
         console.log("useLancamentosMutations: Lançamento excluído com sucesso");
       },
-      onSuccess: () => {
+      onSuccess: (_data, id) => {
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
+        
+        // Log security event for data deletion
+        logDataModification("lancamentos", "DELETE", id, {
+          deleted_at: new Date().toISOString(),
+        });
+        
         toast({
           title: "Sucesso",
           description: "Lançamento excluído com sucesso!",
