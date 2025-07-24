@@ -7,6 +7,7 @@ import { useSecurityAlerts } from "@/hooks/useSecurityAlerts";
 import { useSessionSecurity } from "@/hooks/useSessionSecurity";
 import { useSecurity } from "@/hooks/useSecurity";
 import { useSecurityScore } from "@/hooks/useSecurityScore";
+import { useSecurityReports } from "@/hooks/useSecurityReports";
 import { 
   Shield, 
   AlertTriangle, 
@@ -35,6 +36,8 @@ export const SecurityMetricsDashboard: React.FC = () => {
   const { useActiveSessions } = useSessionSecurity();
   const { useSecurityEvents } = useSecurity();
   const { data: securityScore, isLoading: scoreLoading } = useSecurityScore();
+  const { useUserSecurityReport } = useSecurityReports();
+  const { data: userReport } = useUserSecurityReport();
   
   const { data: alerts = [] } = useAllSecurityAlerts();
   const { data: sessions = [] } = useActiveSessions();

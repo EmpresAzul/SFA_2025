@@ -998,6 +998,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      cleanup_old_security_alerts: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       create_security_alert: {
         Args: {
           alert_type_param: string
@@ -1016,6 +1020,10 @@ export type Database = {
       enforce_session_limit: {
         Args: { user_uuid: string }
         Returns: undefined
+      }
+      generate_security_report: {
+        Args: { target_user_id?: string }
+        Returns: Json
       }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
@@ -1044,6 +1052,17 @@ export type Database = {
       is_admin: {
         Args: { check_user_id: string }
         Returns: boolean
+      }
+      log_enhanced_security_event: {
+        Args: {
+          event_type_param: string
+          severity_param?: string
+          description_param?: string
+          user_id_param?: string
+          metadata_param?: Json
+          auto_create_alert?: boolean
+        }
+        Returns: string
       }
       revoke_user_role: {
         Args: {

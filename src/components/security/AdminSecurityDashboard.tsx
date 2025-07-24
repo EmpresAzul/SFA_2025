@@ -9,7 +9,8 @@ import { useSecurityAlerts } from "@/hooks/useSecurityAlerts";
 import { useSessionSecurity } from "@/hooks/useSessionSecurity";
 import { useSecurity } from "@/hooks/useSecurity";
 import { useSecurityNotifications } from "@/hooks/useSecurityNotifications";
-import { Shield, AlertTriangle, Users, Activity, Clock, CheckCircle, MapPin, Globe, Bell } from "lucide-react";
+import { Shield, AlertTriangle, Users, Activity, Clock, CheckCircle, MapPin, Globe, Bell, FileText, Download } from "lucide-react";
+import { useSecurityReports } from '@/hooks/useSecurityReports';
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -114,6 +115,10 @@ const AdminSecurityDashboard: React.FC = () => {
     useNotifications, 
     usePendingNotificationsCount 
   } = useSecurityNotifications();
+  const { 
+    useSystemSecurityReport, 
+    useCleanupSecurityAlerts 
+  } = useSecurityReports();
   
   const isAdmin = useIsAdmin();
   const { data: alerts = [], isLoading: alertsLoading } = useAllSecurityAlerts();
@@ -155,14 +160,43 @@ const AdminSecurityDashboard: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">Dashboard de Segurança</h1>
           <p className="text-gray-600">Monitoramento e gestão de segurança do sistema</p>
         </div>
-        <Button
-          onClick={() => cleanupSessions.mutate()}
-          variant="outline"
-          disabled={cleanupSessions.isPending}
-        >
-          <Activity className="h-4 w-4 mr-2" />
-          Limpar Sessões
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => cleanupSessions.mutate()}
+            variant="outline"
+            disabled={cleanupSessions.isPending}
+          >
+            <Activity className="h-4 w-4 mr-2" />
+            Limpar Sessões
+          </Button>
+          <Button
+            onClick={() => {
+              const { data } = useSystemSecurityReport();
+              if (data) {
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `security-report-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }
+            }}
+            variant="outline"
+            size="sm"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Relatório
+          </Button>
+          <Button
+            onClick={() => useCleanupSecurityAlerts().mutate()}
+            variant="outline"
+            size="sm"
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Limpar Alertas
+          </Button>
+        </div>
       </div>
 
       {/* Security Metrics */}
