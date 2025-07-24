@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => ({
       },
       external: (id) => {
         // Exclude problematic dependencies in production
-        if (mode === "production" && id.includes("lovable-tagger")) {
+        if (mode === "production" && id.includes("external-tagger")) {
           return true;
         }
         return false;

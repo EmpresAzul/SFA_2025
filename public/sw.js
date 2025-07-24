@@ -20,8 +20,7 @@ const urlsToCache = [
   "/manifest.json",
   "/favicon.ico",
   "/favicon.svg",
-  "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
-  "/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png",
+  "/icon-192x192.png",
 ];
 
 const OFFLINE_PAGE = "/";
@@ -162,8 +161,8 @@ self.addEventListener("push", (event) => {
   if (event.data) {
     const options = {
       body: event.data.text(),
-      icon: "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
-      badge: "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
+      icon: "/icon-192x192.png",
+      badge: "/icon-192x192.png",
       vibrate: [100, 50, 100],
       data: {
         dateOfArrival: Date.now(),

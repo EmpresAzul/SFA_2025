@@ -2,8 +2,8 @@
 <browserconfig>
     <msapplication>
         <tile>
-            <square150x150logo src="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png"/>
-            <square310x310logo src="/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png"/>
+            <square150x150logo src="/icon-192x192.png"/>
+            <square310x310logo src="/icon-192x192.png"/>
             <TileColor>#1e3a8a</TileColor>
         </tile>
     </msapplication>

@@ -18,27 +18,27 @@
       "type": "image/x-icon"
     },
     {
-      "src": "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
+      "src": "/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
+      "src": "/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png",
+      "src": "/favicon.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png",
+      "src": "/favicon.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable"
     }
   ],
@@ -50,7 +50,7 @@
       "url": "/dashboard",
       "icons": [
         {
-          "src": "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
+          "src": "/icon-192x192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -63,7 +63,7 @@
       "url": "/lancamentos",
       "icons": [
         {
-          "src": "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
+          "src": "/icon-192x192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -76,7 +76,7 @@
       "url": "/fluxo-caixa",
       "icons": [
         {
-          "src": "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
+          "src": "/icon-192x192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -89,7 +89,7 @@
       "url": "/estoque",
       "icons": [
         {
-          "src": "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
+          "src": "/icon-192x192.png",
           "sizes": "192x192",
           "type": "image/png"
         }

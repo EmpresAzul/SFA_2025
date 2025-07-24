@@ -1,74 +1,93 @@
-# FluxoAzul - Sistema de Gestão Financeira
+# FluxoAzul - Sistema de Gestão Financeira para PMEs
 
-## Project info
+## 📋 Sobre o Projeto
 
-**Repository**: https://github.com/EducAI25/FluxoAzul.git
-**Lovable Project URL**: https://lovable.dev/projects/74ae3fbe-e863-4b94-bcb5-73a57e53dcff
+Sistema completo de gestão financeira desenvolvido especificamente para Pequenas e Médias Empresas (PMEs), oferecendo controle total sobre finanças, estoque, pipeline de vendas e muito mais.
 
-## How can I edit this code?
+## 🚀 Funcionalidades Principais
 
-There are several ways of editing your application.
+- **💰 Gestão Financeira**: Controle completo de receitas, despesas e saldos bancários
+- **📊 Dashboard Inteligente**: Métricas em tempo real e gráficos interativos
+- **📦 Controle de Estoque**: Gestão completa de produtos e alertas de estoque baixo
+- **🔔 Notificações Inteligentes**: Sistema de notificações baseado em eventos reais
+- **📱 PWA**: Funciona offline e pode ser instalado como app nativo
+- **👥 Gestão de Cadastros**: Clientes, fornecedores e produtos unificados
+- **🎯 Pipeline de Vendas**: Acompanhamento de oportunidades e conversões
+- **💬 Sistema de Suporte**: Tickets e chat integrado
+- **👤 Perfil de Usuário**: Configurações personalizadas e assinatura
 
-**Use Lovable**
+## 🛠️ Como Executar o Projeto
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/74ae3fbe-e863-4b94-bcb5-73a57e53dcff) and start prompting.
+### Pré-requisitos
+- Node.js (versão 16 ou superior)
+- npm ou yarn
 
-Changes made via Lovable will be committed automatically to this repo.
+### Instalação
 
-**Use your preferred IDE**
+```bash
+# 1. Clone o repositório
+git clone https://github.com/EmpresAzul/fluxo-azul-financeiro-pme.git
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+# 2. Navegue até o diretório
+cd fluxo-azul-financeiro-pme
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+# 3. Instale as dependências
+npm install
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone https://github.com/EducAI25/FluxoAzul.git
-
-# Step 2: Navigate to the project directory.
-cd FluxoAzul
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4. Inicie o servidor de desenvolvimento
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Build para Produção
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+# Gerar build otimizado
+npm run build
 
-**Use GitHub Codespaces**
+# Visualizar build localmente
+npm run preview
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔧 Tecnologias Utilizadas
 
-## What technologies are used for this project?
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Estado**: Context API + Custom Hooks
+- **Persistência**: LocalStorage
+- **PWA**: Service Workers + Web App Manifest
+- **Gráficos**: Recharts
+- **Ícones**: Lucide React
 
-This project is built with:
+## 📱 Recursos PWA
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- ✅ Instalação como app nativo
+- ✅ Funcionamento offline
+- ✅ Notificações push
+- ✅ Atualizações automáticas
+- ✅ Ícones adaptativos
 
-## How can I deploy this project?
+## 🏗️ Estrutura do Projeto
 
-Simply open [Lovable](https://lovable.dev/projects/74ae3fbe-e863-4b94-bcb5-73a57e53dcff) and click on Share -> Publish.
+```
+src/
+├── components/          # Componentes reutilizáveis
+├── contexts/           # Contextos React (Auth, Notifications, Profile)
+├── hooks/              # Custom hooks
+├── pages/              # Páginas da aplicação
+├── types/              # Definições TypeScript
+├── utils/              # Utilitários e helpers
+└── index.css          # Estilos globais
+```
 
-## Can I connect a custom domain to my Lovable project?
+## 📄 Licença
 
-Yes, you can!
+Este projeto é propriedade da **EmpresAzul** e está protegido por direitos autorais.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🤝 Contribuição
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Para contribuir com o projeto, entre em contato com a equipe de desenvolvimento da EmpresAzul.
+
+---
+
+**Desenvolvido com ❤️ pela EmpresAzul**

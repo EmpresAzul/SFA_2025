@@ -53,7 +53,7 @@ export const usePWAInstall = () => {
       if ("Notification" in window && Notification.permission === "granted") {
         new Notification("FluxoAzul instalado!", {
           body: "O app está pronto para uso offline.",
-          icon: "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
+          icon: "/icon-192x192.png",
         });
       }
     };
