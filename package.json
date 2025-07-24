@@ -9,7 +9,9 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "sync:lovable": "echo 'Triggering Lovable sync...' && git push origin main",
+    "deploy:lovable": "npm run build && npm run sync:lovable"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

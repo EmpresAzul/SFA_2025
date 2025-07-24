@@ -1,0 +1,44 @@
+{
+  "name": "FluxoAzul - Sistema de Gestão Financeira PME",
+  "description": "Sistema completo de gestão financeira para pequenas e médias empresas",
+  "repository": "https://github.com/EmpresAzul/fluxo-azul-financeiro-pme.git",
+  "branch": "main",
+  "framework": "react",
+  "buildTool": "vite",
+  "packageManager": "npm",
+  "deploymentTarget": "static",
+  "features": [
+    "PWA",
+    "TypeScript",
+    "Tailwind CSS",
+    "Supabase",
+    "React Query",
+    "Security Enhanced"
+  ],
+  "hooks": {
+    "pre-build": "npm run lint",
+    "post-build": "echo 'Build completed for FluxoAzul'"
+  },
+  "environment": {
+    "development": {
+      "VITE_SUPABASE_URL": "${VITE_SUPABASE_URL}",
+      "VITE_SUPABASE_ANON_KEY": "${VITE_SUPABASE_ANON_KEY}"
+    },
+    "production": {
+      "VITE_SUPABASE_URL": "${VITE_SUPABASE_URL}",
+      "VITE_SUPABASE_ANON_KEY": "${VITE_SUPABASE_ANON_KEY}"
+    }
+  },
+  "sync": {
+    "enabled": true,
+    "autoSync": true,
+    "syncOnPush": true,
+    "watchFiles": [
+      "src/**/*",
+      "public/**/*",
+      "package.json",
+      "vite.config.ts",
+      "tailwind.config.ts"
+    ]
+  }
+}

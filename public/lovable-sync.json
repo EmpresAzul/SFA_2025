@@ -1,0 +1,32 @@
+{
+  "project": "FluxoAzul",
+  "repository": "https://github.com/EmpresAzul/fluxo-azul-financeiro-pme.git",
+  "branch": "main",
+  "lastSync": "2025-01-24T00:00:00.000Z",
+  "version": "3.0.0",
+  "status": "active",
+  "syncEnabled": true,
+  "autoDeployEnabled": true,
+  "buildCommand": "npm run build",
+  "framework": "react-vite",
+  "nodeVersion": "18",
+  "features": [
+    "PWA",
+    "TypeScript",
+    "Tailwind CSS",
+    "Supabase Integration",
+    "Security Enhanced",
+    "Real-time Notifications",
+    "Offline Support"
+  ],
+  "endpoints": {
+    "webhook": "https://api.lovable.dev/webhook/sync",
+    "status": "https://api.lovable.dev/project/status"
+  },
+  "metadata": {
+    "owner": "EmpresAzul",
+    "maintainer": "Leandro",
+    "environment": "production",
+    "domain": "custom-domain-ready"
+  }
+}
