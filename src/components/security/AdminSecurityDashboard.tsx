@@ -8,7 +8,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useSecurityAlerts } from "@/hooks/useSecurityAlerts";
 import { useSessionSecurity } from "@/hooks/useSessionSecurity";
 import { useSecurity } from "@/hooks/useSecurity";
-import { Shield, AlertTriangle, Users, Activity, Clock, CheckCircle, MapPin, Globe } from "lucide-react";
+import { useSecurityNotifications } from "@/hooks/useSecurityNotifications";
+import { Shield, AlertTriangle, Users, Activity, Clock, CheckCircle, MapPin, Globe, Bell } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -109,10 +110,16 @@ const AdminSecurityDashboard: React.FC = () => {
   const { useAllSecurityAlerts, useResolveSecurityAlert } = useSecurityAlerts();
   const { useActiveSessions, useCleanupSessions } = useSessionSecurity();
   const { useIsAdmin } = useSecurity();
+  const { 
+    useNotifications, 
+    usePendingNotificationsCount 
+  } = useSecurityNotifications();
   
   const isAdmin = useIsAdmin();
   const { data: alerts = [], isLoading: alertsLoading } = useAllSecurityAlerts();
   const { data: sessions = [], isLoading: sessionsLoading } = useActiveSessions();
+  const { data: notifications = [] } = useNotifications();
+  const { data: pendingCount = 0 } = usePendingNotificationsCount();
   const resolveAlert = useResolveSecurityAlert();
   const cleanupSessions = useCleanupSessions();
 
@@ -195,14 +202,12 @@ const AdminSecurityDashboard: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Alertas Resolvidos</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-500" />
+            <CardTitle className="text-sm font-medium">Notificações Pendentes</CardTitle>
+            <Bell className={`h-4 w-4 ${pendingCount > 0 ? 'text-yellow-500' : 'text-muted-foreground'}`} />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {alerts.filter(alert => alert.is_resolved).length}
-            </div>
-            <p className="text-xs text-gray-500">Últimas 24h</p>
+            <div className="text-2xl font-bold text-yellow-600">{pendingCount}</div>
+            <p className="text-xs text-gray-500">Aguardando envio</p>
           </CardContent>
         </Card>
       </div>
@@ -211,6 +216,7 @@ const AdminSecurityDashboard: React.FC = () => {
         <TabsList>
           <TabsTrigger value="alerts">Alertas de Segurança</TabsTrigger>
           <TabsTrigger value="sessions">Sessões Ativas</TabsTrigger>
+          <TabsTrigger value="notifications">Notificações</TabsTrigger>
           <TabsTrigger value="events">Eventos de Segurança</TabsTrigger>
         </TabsList>
 
@@ -332,6 +338,70 @@ const AdminSecurityDashboard: React.FC = () => {
                     ))}
                   </div>
                 )}
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="notifications" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Notificações de Segurança</CardTitle>
+              <CardDescription>
+                Gerenciar notificações automáticas de segurança
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[400px]">
+                <div className="space-y-4">
+                  {notifications.length === 0 ? (
+                    <p className="text-muted-foreground text-center py-8">
+                      Nenhuma notificação encontrada
+                    </p>
+                  ) : (
+                    notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className="flex items-center justify-between p-4 border rounded-lg"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Bell className="h-4 w-4" />
+                            <span className="font-medium capitalize">
+                              {notification.notification_type}
+                            </span>
+                            <Badge className={`text-xs ${
+                              notification.status === 'pending' 
+                                ? 'bg-yellow-500' 
+                                : notification.status === 'sent'
+                                ? 'bg-green-500'
+                                : 'bg-red-500'
+                            }`}>
+                              {notification.status.toUpperCase()}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {notification.metadata?.alert_type && (
+                              <>Alerta: {notification.metadata.alert_type}</>
+                            )}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Criado: {formatDistanceToNow(new Date(notification.created_at), { 
+                              addSuffix: true, 
+                              locale: ptBR 
+                            })}
+                            {notification.sent_at && (
+                              <> • Enviado: {formatDistanceToNow(new Date(notification.sent_at), { 
+                                addSuffix: true, 
+                                locale: ptBR 
+                              })}</>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </ScrollArea>
             </CardContent>
           </Card>

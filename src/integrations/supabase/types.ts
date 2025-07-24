@@ -724,6 +724,44 @@ export type Database = {
         }
         Relationships: []
       }
+      security_notifications: {
+        Row: {
+          alert_id: string | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          notification_type: string
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          alert_id?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          notification_type: string
+          sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          alert_id?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          notification_type?: string
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "security_notifications_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "security_alerts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       system_settings: {
         Row: {
           created_at: string | null
@@ -951,6 +989,10 @@ export type Database = {
           new_role: Database["public"]["Enums"]["app_role"]
         }
         Returns: boolean
+      }
+      calculate_user_security_score: {
+        Args: { user_uuid: string }
+        Returns: number
       }
       cleanup_expired_sessions: {
         Args: Record<PropertyKey, never>

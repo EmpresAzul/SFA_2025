@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSecurityAlerts } from "@/hooks/useSecurityAlerts";
 import { useSessionSecurity } from "@/hooks/useSessionSecurity";
 import { useSecurity } from "@/hooks/useSecurity";
+import { useSecurityScore } from "@/hooks/useSecurityScore";
 import { 
   Shield, 
   AlertTriangle, 
@@ -33,6 +34,7 @@ export const SecurityMetricsDashboard: React.FC = () => {
   const { useAllSecurityAlerts } = useSecurityAlerts();
   const { useActiveSessions } = useSessionSecurity();
   const { useSecurityEvents } = useSecurity();
+  const { data: securityScore, isLoading: scoreLoading } = useSecurityScore();
   
   const { data: alerts = [] } = useAllSecurityAlerts();
   const { data: sessions = [] } = useActiveSessions();
@@ -111,24 +113,8 @@ export const SecurityMetricsDashboard: React.FC = () => {
     }
   };
 
-  // Security score calculation (simplified)
-  const calculateSecurityScore = () => {
-    let score = 100;
-    
-    // Deduct points for critical issues
-    score -= criticalAlerts.length * 20;
-    score -= alerts.filter(a => a.severity === 'high' && !a.is_resolved).length * 10;
-    score -= alerts.filter(a => a.severity === 'medium' && !a.is_resolved).length * 5;
-    
-    // Deduct points for too many active sessions
-    if (activeSessions.length > 50) score -= 10;
-    
-    // Ensure score doesn't go below 0
-    return Math.max(0, score);
-  };
-
-  const securityScore = calculateSecurityScore();
-  const scoreColor = securityScore >= 80 ? 'text-green-600' : securityScore >= 60 ? 'text-yellow-600' : 'text-red-600';
+  const currentScore = securityScore || 0;
+  const scoreColor = currentScore >= 80 ? 'text-green-600' : currentScore >= 60 ? 'text-yellow-600' : 'text-red-600';
 
   return (
     <div className="space-y-6">
@@ -146,14 +132,20 @@ export const SecurityMetricsDashboard: React.FC = () => {
         <CardContent>
           <div className="flex items-center gap-4">
             <div className={`text-4xl font-bold ${scoreColor}`}>
-              {securityScore}
+              {scoreLoading ? '...' : currentScore}
             </div>
             <div className="flex-1">
-              <Progress value={securityScore} className="h-3" />
+              {scoreLoading ? (
+                <div className="animate-pulse h-3 bg-muted rounded"></div>
+              ) : (
+                <Progress value={currentScore} className="h-3" />
+              )}
               <p className="text-sm text-muted-foreground mt-1">
-                {securityScore >= 80 ? 'Excelente' : 
-                 securityScore >= 60 ? 'Bom' : 
-                 securityScore >= 40 ? 'Regular' : 'Crítico'}
+                {scoreLoading ? '...' : (
+                  currentScore >= 80 ? 'Excelente' : 
+                  currentScore >= 60 ? 'Bom' : 
+                  currentScore >= 40 ? 'Regular' : 'Crítico'
+                )}
               </p>
             </div>
           </div>
