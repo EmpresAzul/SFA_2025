@@ -1,12 +1,1 @@
-{
-  "status": "ok",
-  "timestamp": "2025-01-22T16:45:00Z",
-  "version": "2.1.1-final-fix",
-  "message": "FluxoAzul está funcionando corretamente - Deploy atualizado",
-  "fixes": [
-    "Removidas referências externas",
-    "Otimizado bundle",
-    "Corrigido erro createContent",
-    "Melhorado tratamento de erros"
-  ]
-}
+{"status": "ok", "timestamp": "auto-generated"}

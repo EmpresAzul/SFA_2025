@@ -75,34 +75,34 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Fetch event - advanced caching strategy
+// Fetch event - improved caching strategy for custom domains
 self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+  
+  // Skip cache for API requests and Supabase to avoid stale data
+  if (
+    url.pathname.includes("/api/") ||
+    url.hostname.includes("supabase") ||
+    event.request.method !== "GET"
+  ) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // Return cached version if available
-      if (response) {
-        // For API calls, try to fetch fresh data in background
-        if (
-          event.request.url.includes("/api/") ||
-          event.request.url.includes("supabase")
-        ) {
-          fetch(event.request)
-            .then((freshResponse) => {
-              if (freshResponse.ok) {
-                const responseClone = freshResponse.clone();
-                caches.open(CACHE_NAME).then((cache) => {
-                  cache.put(event.request, responseClone);
-                });
-              }
-            })
-            .catch(() => {
-              // Silently fail background updates
-            });
-        }
+      // Return cached version for static assets only
+      if (response && (
+        event.request.url.includes('.js') ||
+        event.request.url.includes('.css') ||
+        event.request.url.includes('.png') ||
+        event.request.url.includes('.jpg') ||
+        event.request.url.includes('.svg')
+      )) {
         return response;
       }
 
-      // Fetch from network
+      // For navigation requests, always try network first
       return fetch(event.request)
         .then((response) => {
           // Don't cache if not a valid response
@@ -114,24 +114,64 @@ self.addEventListener("fetch", (event) => {
             return response;
           }
 
-          // Clone the response
-          const responseToCache = response.clone();
-
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
+          // Only cache static assets
+          if (
+            event.request.url.includes('.js') ||
+            event.request.url.includes('.css') ||
+            event.request.url.includes('.png') ||
+            event.request.url.includes('.jpg') ||
+            event.request.url.includes('.svg')
+          ) {
+            const responseToCache = response.clone();
+            caches.open(STATIC_CACHE).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
 
           return response;
         })
         .catch(() => {
-          // Return offline page for navigation requests
-          if (event.request.mode === "navigate") {
-            return caches.match("/");
+          // Only return cached version if available, otherwise show network error
+          if (response) {
+            return response;
           }
-          // Return empty response for other requests
-          return new Response("", { status: 404 });
+          
+          // For navigation requests, return cached index if available
+          if (event.request.mode === "navigate") {
+            return caches.match("/").then(cachedResponse => {
+              if (cachedResponse) {
+                return cachedResponse;
+              }
+              // Return a simple error page instead of generic offline message
+              return new Response(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                  <title>FluxoAzul - Sem Conexão</title>
+                  <meta charset="utf-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1">
+                  <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                    .error { color: #e53e3e; }
+                    button { padding: 10px 20px; margin: 10px; background: #3182ce; color: white; border: none; border-radius: 5px; cursor: pointer; }
+                  </style>
+                </head>
+                <body>
+                  <h1>FluxoAzul</h1>
+                  <p class="error">Não foi possível conectar ao servidor.</p>
+                  <p>Verifique sua conexão com a internet e tente novamente.</p>
+                  <button onclick="window.location.reload()">Tentar Novamente</button>
+                </body>
+                </html>
+              `, {
+                headers: { 'Content-Type': 'text/html' }
+              });
+            });
+          }
+          
+          return new Response("Network Error", { status: 503 });
         });
-    }),
+    })
   );
 });
 

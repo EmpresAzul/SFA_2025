@@ -24,9 +24,33 @@ export const usePWA = () => {
       setPwaState(prev => ({ ...prev, isInstalled: isStandalone }));
     };
 
-    // Verificar status offline
-    const updateOnlineStatus = () => {
-      setPwaState(prev => ({ ...prev, isOffline: !navigator.onLine }));
+    // Verificar status offline com teste de conectividade real
+    const updateOnlineStatus = async () => {
+      const isOnline = navigator.onLine;
+      
+      if (!isOnline) {
+        setPwaState(prev => ({ ...prev, isOffline: true }));
+        return;
+      }
+
+      // Teste de conectividade real para evitar falsos positivos
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        
+        const response = await fetch('/health-check.json', {
+          method: 'HEAD',
+          cache: 'no-cache',
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        setPwaState(prev => ({ ...prev, isOffline: !response.ok }));
+      } catch (error) {
+        // Se o health check falhar, considerar como potencialmente offline
+        // mas não marcar definitivamente como offline se navigator.onLine é true
+        setPwaState(prev => ({ ...prev, isOffline: false }));
+      }
     };
 
     // Listener para beforeinstallprompt

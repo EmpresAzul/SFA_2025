@@ -75,11 +75,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     console.log('AuthContext: Initializing authentication...');
     
-    // Safety timeout - force loading to false after 10 seconds for better reliability
+    // Safety timeout - increased for custom domains and slower connections
     const timeoutId = setTimeout(() => {
       console.log('AuthContext: Timeout reached, forcing loading to false');
       setLoading(false);
-    }, 10000);
+    }, 20000); // Aumentado para 20 segundos para domínios customizados
 
     // Initialize auth with error handling
     const initializeAuth = async () => {

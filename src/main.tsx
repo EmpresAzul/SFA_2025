@@ -18,23 +18,33 @@ const queryClient = new QueryClient({
   },
 });
 
-// Register service worker for PWA functionality
+// Register service worker for PWA functionality - improved for custom domains
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then((registration) => {
-        console.log(
-          "FluxoAzul PWA: Service Worker registered successfully:",
-          registration.scope,
-        );
-      })
-      .catch((error) => {
-        console.log(
-          "FluxoAzul PWA: Service Worker registration failed:",
-          error,
-        );
-      });
+    // Add small delay to ensure DOM is fully loaded
+    setTimeout(() => {
+      navigator.serviceWorker
+        .register("/sw.js", { scope: "/" })
+        .then((registration) => {
+          console.log(
+            "FluxoAzul PWA: Service Worker registered successfully:",
+            registration.scope,
+            "- Domain:", window.location.hostname
+          );
+          
+          // Force update check for custom domains
+          if (!window.location.hostname.includes('lovable.app')) {
+            registration.update();
+          }
+        })
+        .catch((error) => {
+          console.log(
+            "FluxoAzul PWA: Service Worker registration failed:",
+            error,
+            "- Domain:", window.location.hostname
+          );
+        });
+    }, 1000);
   });
 }
 
