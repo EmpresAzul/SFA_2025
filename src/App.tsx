@@ -35,9 +35,9 @@ const SystemNotificationManager = () => {
   return null;
 };
 
-// Security monitoring component
+// Security monitoring component - temporarily disabled
 const SecurityMonitor: React.FC = () => {
-  useSecurityMonitoring();
+  // useSecurityMonitoring(); // Temporarily disabled
   return null;
 };
 

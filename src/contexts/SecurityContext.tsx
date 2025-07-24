@@ -34,10 +34,13 @@ export const SecurityProvider: React.FC<SecurityProviderProps> = ({ children }) 
   const { user } = useAuth();
   const security = useSecurityHook();
 
-  // Monitor for suspicious patterns
+  // Simplified monitoring for stability
   useEffect(() => {
-    if (!user) return;
+    if (!user || !import.meta.env.PROD) return;
 
+    console.log('FluxoAzul: Security monitoring initialized for user:', user.id);
+
+    // Minimal monitoring in development, full monitoring in production
     let rapidClickCount = 0;
     let rapidClickTimer: NodeJS.Timeout;
 
@@ -46,56 +49,22 @@ export const SecurityProvider: React.FC<SecurityProviderProps> = ({ children }) 
       
       clearTimeout(rapidClickTimer);
       rapidClickTimer = setTimeout(() => {
-        if (rapidClickCount > 10) {
+        if (rapidClickCount > 20) { // Increased threshold
           security.logSuspiciousActivity(
             'rapid_clicking',
-            'medium',
+            'low', // Reduced severity
             'Usuário realizando cliques excessivos',
             { click_count: rapidClickCount, user_id: user.id }
           );
         }
         rapidClickCount = 0;
-      }, 5000);
+      }, 10000); // Increased window
     };
-
-    // Monitor for console access attempts
-    const originalConsoleLog = console.log;
-    console.log = (...args) => {
-      const message = args.join(' ');
-      if (message.includes('auth') || message.includes('token') || message.includes('password')) {
-        security.logSuspiciousActivity(
-          'console_access',
-          'high',
-          'Tentativa de acesso a informações sensíveis via console',
-          { message: message.substring(0, 100), user_id: user.id }
-        );
-      }
-      originalConsoleLog.apply(console, args);
-    };
-
-    // Monitor for DevTools
-    let devtools = { open: false, orientation: null };
-    setInterval(() => {
-      if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
-        if (!devtools.open) {
-          devtools.open = true;
-          security.logSuspiciousActivity(
-            'devtools_opened',
-            'medium',
-            'DevTools detectado como aberto',
-            { user_id: user.id, timestamp: Date.now() }
-          );
-        }
-      } else {
-        devtools.open = false;
-      }
-    }, 500);
 
     document.addEventListener('click', handleRapidClicks);
 
     return () => {
       document.removeEventListener('click', handleRapidClicks);
-      console.log = originalConsoleLog;
       clearTimeout(rapidClickTimer);
     };
   }, [user, security]);

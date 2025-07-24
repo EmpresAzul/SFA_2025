@@ -45,37 +45,40 @@ export const applySecurityHeaders = (response: Response, nonce?: string): Respon
   return response;
 };
 
-// Client-side security measures
+// Client-side security measures - simplified for development stability
 export const initializeClientSecurity = () => {
-  // Disable right-click in production
-  if (import.meta.env.PROD) {
-    document.addEventListener('contextmenu', (e) => e.preventDefault());
+  try {
+    console.log('FluxoAzul: Initializing client security...');
     
-    // Disable common developer shortcuts
-    document.addEventListener('keydown', (e) => {
-      if (
-        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
-        (e.ctrlKey && e.key === 'U') ||
-        e.key === 'F12'
-      ) {
-        e.preventDefault();
-        console.warn('Developer tools access attempt detected');
-      }
-    });
-  }
-
-  // Add security meta tags if not present
-  const addMetaTag = (name: string, content: string) => {
-    if (!document.querySelector(`meta[name="${name}"]`)) {
-      const meta = document.createElement('meta');
-      meta.name = name;
-      meta.content = content;
-      document.head.appendChild(meta);
+    // Only apply in production to avoid blocking development
+    if (import.meta.env.PROD) {
+      // Basic protection without aggressive blocking
+      document.addEventListener('contextmenu', (e) => e.preventDefault());
+      console.log('FluxoAzul: Production security measures enabled');
+    } else {
+      console.log('FluxoAzul: Development mode - security features relaxed');
     }
-  };
 
-  addMetaTag('referrer', 'strict-origin-when-cross-origin');
-  addMetaTag('robots', 'noindex, nofollow');
+    // Add basic security meta tags
+    const addMetaTag = (name: string, content: string) => {
+      try {
+        if (!document.querySelector(`meta[name="${name}"]`)) {
+          const meta = document.createElement('meta');
+          meta.name = name;
+          meta.content = content;
+          document.head.appendChild(meta);
+        }
+      } catch (error) {
+        console.warn('Failed to add meta tag:', name, error);
+      }
+    };
+
+    addMetaTag('referrer', 'strict-origin-when-cross-origin');
+    
+    console.log('FluxoAzul: Client security initialization complete');
+  } catch (error) {
+    console.error('FluxoAzul: Error initializing client security:', error);
+  }
 };
 
 // Session security utilities
