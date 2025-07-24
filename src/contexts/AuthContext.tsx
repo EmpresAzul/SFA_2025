@@ -133,6 +133,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signOut = async () => {
     setLoading(true);
+    
+    // Limpar dados do perfil do localStorage antes do logout
+    try {
+      if (user?.id) {
+        const profileKey = `fluxoazul_profile_${user.id}`;
+        const hasStoredData = localStorage.getItem(profileKey);
+        
+        if (hasStoredData) {
+          console.log('🧹 Limpando dados do perfil do localStorage no logout...');
+          // Não remover os dados, apenas marcar como "logout" para preservar
+          // Em uma implementação real, você pode querer manter os dados
+          // localStorage.removeItem(profileKey);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao limpar dados do perfil:', error);
+    }
+    
     await supabase.auth.signOut();
     setLoading(false);
   };

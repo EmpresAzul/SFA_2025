@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNotificationSimulator } from "@/hooks/useNotificationSimulator";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import PWAStatusIndicator from "./PWAStatusIndicator";
@@ -13,6 +14,9 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { user, loading } = useAuth();
+  
+  // Ativar simulador de notificações (apenas para demonstração)
+  useNotificationSimulator();
 
   // Mostrar loading enquanto verifica autenticação
   if (loading) {

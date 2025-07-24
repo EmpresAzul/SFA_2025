@@ -1,16 +1,19 @@
 import { useQuery as useReactQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import type { LancamentoComRelacoes } from "@/types/lancamentos";
 
 export const useLancamentosQuery = () => {
+  const { session } = useAuth();
+
   return useReactQuery({
-    queryKey: ["lancamentos"],
+    queryKey: ["lancamentos", session?.user?.id],
     queryFn: async () => {
-      console.log("useLancamentosQuery: Iniciando busca de lançamentos");
-      console.log(
-        "useLancamentosQuery: Session atual:",
-        await supabase.auth.getSession(),
-      );
+      if (!session?.user?.id) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      console.log("useLancamentosQuery: Iniciando busca de lançamentos para usuário:", session.user.id);
 
       const { data, error } = await supabase
         .from("lancamentos")
@@ -21,6 +24,7 @@ export const useLancamentosQuery = () => {
           fornecedor:cadastros!fornecedor_id(nome)
         `,
         )
+        .eq("user_id", session.user.id)
         .order("data", { ascending: false });
 
       if (error) {
@@ -48,6 +52,7 @@ export const useLancamentosQuery = () => {
 
       return data as LancamentoComRelacoes[];
     },
+    enabled: !!session?.user?.id,
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });

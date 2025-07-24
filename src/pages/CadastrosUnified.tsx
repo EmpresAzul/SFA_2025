@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCadastrosUnified } from "@/hooks/useCadastrosUnified";
 import CadastroEditModal from "@/components/cadastro/CadastroEditModal";
@@ -8,6 +8,9 @@ import CadastrosTable from "@/components/cadastro/CadastrosTable";
 import { UnifiedCadastroForm } from "@/components/cadastro/UnifiedCadastroForm";
 
 const CadastrosUnified: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(25);
+
   const {
     searchTerm,
     setSearchTerm,
@@ -30,6 +33,28 @@ const CadastrosUnified: React.FC = () => {
     handleToggleStatus,
     handleDelete,
   } = useCadastrosUnified();
+
+  // Dados paginados
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredItems.slice(startIndex, endIndex);
+  }, [filteredItems, currentPage, itemsPerPage]);
+
+  // Handlers de paginação
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Resetar para primeira página
+  };
+
+  // Resetar página quando filtros mudarem
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [searchTerm, tipoFilter, statusFilter]);
 
   if (loading) {
     return (
@@ -83,23 +108,21 @@ const CadastrosUnified: React.FC = () => {
             setStatusFilter={setStatusFilter}
           />
 
-          <div className="mt-4">
-            {/* Simplified table view */}
-            <div className="space-y-2">
-              {filteredItems.map((item: any) => (
-                <div key={item.id} className="border p-4 rounded">
-                  <h3>{item.nome}</h3>
-                  <p>Tipo: {item.tipoDisplay}</p>
-                  <p>Status: {item.status}</p>
-                  <div className="flex gap-2 mt-2">
-                    <button onClick={() => handleEdit(item)}>Editar</button>
-                    <button onClick={() => handleToggleStatus(item)}>Toggle Status</button>
-                    <button onClick={() => handleDelete(item.id, item.nome)}>Excluir</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <CadastrosTable
+            cadastros={paginatedData}
+            totalItems={filteredItems.length}
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+            onEdit={handleEdit}
+            onView={(cadastro) => {
+              setEditingItem(cadastro);
+              setIsEditModalOpen(true);
+            }}
+            onToggleStatus={handleToggleStatus}
+            onDelete={handleDelete}
+          />
         </TabsContent>
 
         <TabsContent value="formulario" className="mt-4 sm:mt-6">

@@ -2,6 +2,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNotifications } from "@/contexts/NotificationContext";
+import { createNotificationFromEvent, shouldNotify } from "@/utils/notificationHelpers";
 import { criarLancamentosRecorrentes } from "./lancamentosUtils";
 import type {
   LancamentoCreateData,
@@ -11,6 +14,8 @@ import type {
 export const useLancamentosMutations = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { addNotification } = useNotifications();
 
   const useCreate = () => {
     return useMutation({
@@ -80,11 +85,21 @@ export const useLancamentosMutations = () => {
           "useLancamentosMutations: Lançamento criado com sucesso:",
           data,
         );
+
+        // Criar notificação para transações de alto valor
+        if (user?.id && shouldNotify('large_transaction', data, user.id)) {
+          const notification = createNotificationFromEvent('large_transaction', data, user.id);
+          if (notification) {
+            addNotification(notification);
+          }
+        }
+
         return data;
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
-        console.log("useLancamentosMutations: Query invalidada após criação");
+        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
+        console.log("useLancamentosMutations: Queries invalidadas após criação");
       },
       onError: (error: unknown) => {
         console.error(
@@ -161,8 +176,9 @@ export const useLancamentosMutations = () => {
       },
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         console.log(
-          "useLancamentosMutations: Query invalidada após atualização, dados:",
+          "useLancamentosMutations: Queries invalidadas após atualização, dados:",
           data,
         );
         toast({
@@ -207,6 +223,7 @@ export const useLancamentosMutations = () => {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         toast({
           title: "Sucesso",
           description: "Lançamento excluído com sucesso!",

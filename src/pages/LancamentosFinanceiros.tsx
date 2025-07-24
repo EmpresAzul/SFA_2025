@@ -9,6 +9,57 @@ import LancamentosViewModal from "@/components/lancamentos/LancamentosViewModal"
 import { List, Plus, DollarSign, TrendingUp, TrendingDown } from "lucide-react";
 import type { Lancamento } from "@/hooks/useLancamentos";
 
+// Função auxiliar para verificar se uma data está dentro do período selecionado
+const isDateInPeriod = (dateString: string, period: string): boolean => {
+  try {
+    const itemDate = new Date(dateString + 'T00:00:00');
+    if (isNaN(itemDate.getTime())) {
+      console.warn('Data inválida encontrada:', dateString);
+      return false;
+    }
+
+    const today = new Date();
+    
+    switch (period) {
+      case "hoje":
+        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+        return itemDate >= todayStart && itemDate <= todayEnd;
+        
+      case "semana":
+        const weekStart = new Date(today);
+        weekStart.setDate(today.getDate() - today.getDay());
+        weekStart.setHours(0, 0, 0, 0);
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+        weekEnd.setHours(23, 59, 59);
+        return itemDate >= weekStart && itemDate <= weekEnd;
+        
+      case "mes":
+        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59);
+        return itemDate >= monthStart && itemDate <= monthEnd;
+        
+      case "trimestre":
+        const currentQuarter = Math.floor(today.getMonth() / 3);
+        const quarterStart = new Date(today.getFullYear(), currentQuarter * 3, 1);
+        const quarterEnd = new Date(today.getFullYear(), currentQuarter * 3 + 3, 0, 23, 59, 59);
+        return itemDate >= quarterStart && itemDate <= quarterEnd;
+        
+      case "ano":
+        const yearStart = new Date(today.getFullYear(), 0, 1);
+        const yearEnd = new Date(today.getFullYear(), 11, 31, 23, 59, 59);
+        return itemDate >= yearStart && itemDate <= yearEnd;
+        
+      default:
+        return true;
+    }
+  } catch (error) {
+    console.error('Erro ao processar filtro de período:', error, 'Data:', dateString);
+    return false;
+  }
+};
+
 const LancamentosFinanceiros: React.FC = () => {
   const [activeTab, setActiveTab] = useState("lista");
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,10 +88,20 @@ const LancamentosFinanceiros: React.FC = () => {
 
   // Filtrar dados baseado nos filtros
   const filteredData = useMemo(() => {
-    return filteredLancamentos.filter((item) => {
-      const matchesSearch = item.observacoes
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) || false;
+    console.log('🔍 Aplicando filtros:', {
+      searchTerm,
+      searchValue,
+      selectedTipo,
+      selectedCategoria,
+      selectedPeriodo,
+      totalLancamentos: filteredLancamentos.length
+    });
+
+    const filtered = filteredLancamentos.filter((item) => {
+      // Busca por descrição/observações
+      const matchesSearch = searchTerm === "" || 
+        item.observacoes?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.categoria?.toLowerCase().includes(searchTerm.toLowerCase());
       
       // Busca por valor - aceita números com ou sem formatação
       const matchesValue = searchValue === "" || (() => {
@@ -51,14 +112,37 @@ const LancamentosFinanceiros: React.FC = () => {
                item.valor.toFixed(2).includes(searchValue);
       })();
       
-      const matchesTipo =
-        selectedTipo === "todos" || item.tipo === selectedTipo;
-      const matchesCategoria =
-        selectedCategoria === "todos" || item.categoria === selectedCategoria;
+      // Filtro por tipo
+      const matchesTipo = selectedTipo === "todos" || item.tipo === selectedTipo;
+      
+      // Filtro por categoria
+      const matchesCategoria = selectedCategoria === "todos" || item.categoria === selectedCategoria;
 
-      return matchesSearch && matchesValue && matchesTipo && matchesCategoria;
+      // Filtro por período
+      const matchesPeriodo = selectedPeriodo === "todos" || isDateInPeriod(item.data, selectedPeriodo);
+
+      const matches = matchesSearch && matchesValue && matchesTipo && matchesCategoria && matchesPeriodo;
+      
+      // Debug para período específico
+      if (selectedPeriodo !== "todos" && !matchesPeriodo) {
+        console.log('❌ Item filtrado por período:', {
+          data: item.data,
+          categoria: item.categoria,
+          valor: item.valor,
+          selectedPeriodo
+        });
+      }
+      
+      return matches;
     });
-  }, [filteredLancamentos, searchTerm, searchValue, selectedTipo, selectedCategoria]);
+
+    console.log('✅ Resultados após filtros:', {
+      filtrados: filtered.length,
+      periodo: selectedPeriodo
+    });
+
+    return filtered;
+  }, [filteredLancamentos, searchTerm, searchValue, selectedTipo, selectedCategoria, selectedPeriodo]);
 
   // Dados paginados
   const paginatedData = useMemo(() => {

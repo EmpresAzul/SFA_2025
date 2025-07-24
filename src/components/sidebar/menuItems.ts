@@ -12,6 +12,7 @@ import {
   Video,
   UserPlus,
   Target,
+  User,
 } from "lucide-react";
 import type { MenuItem } from "./types";
 
@@ -74,7 +75,7 @@ export const menuItems: MenuItem[] = [
   },
   {
     id: "pipeline",
-    label: "Pipeline",
+    label: "CRM",
     icon: Target,
     iconColor: "text-cyan-500",
     href: "/pipeline",
@@ -119,5 +120,13 @@ export const menuItems: MenuItem[] = [
     iconColor: "text-violet-500",
     href: "/suporte",
     description: "Agente inteligente e contatos",
+  },
+  {
+    id: "perfil",
+    label: "Perfil",
+    icon: User,
+    iconColor: "text-blue-600",
+    href: "/dashboard/perfil",
+    description: "Configurações da conta",
   },
 ];

@@ -92,6 +92,7 @@ export const usePrecificacao = () => {
       onSuccess: (data) => {
         console.log("🎉 Mutation CREATE bem-sucedida, invalidando queries...");
         queryClient.invalidateQueries({ queryKey: ["precificacao"] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         console.log("✅ Queries invalidadas após criação");
       },
       onError: (error) => {
@@ -127,6 +128,7 @@ export const usePrecificacao = () => {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["precificacao"] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         toast({
           title: "Sucesso!",
           description: "Item atualizado com êxito.",
@@ -159,6 +161,7 @@ export const usePrecificacao = () => {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["precificacao"] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         toast({
           title: "Sucesso!",
           description: "Item excluído com êxito.",

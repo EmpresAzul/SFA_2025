@@ -103,13 +103,15 @@ const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todas as Categorias</SelectItem>
-                <SelectItem value="vendas">Vendas</SelectItem>
-                <SelectItem value="servicos">Serviços</SelectItem>
-                <SelectItem value="investimentos">Investimentos</SelectItem>
-                <SelectItem value="fornecedores">Fornecedores</SelectItem>
-                <SelectItem value="funcionarios">Funcionários</SelectItem>
-                <SelectItem value="impostos">Impostos</SelectItem>
-                <SelectItem value="outros">Outros</SelectItem>
+                <SelectItem value="Vendas de Serviços">Vendas de Serviços</SelectItem>
+                <SelectItem value="Prestação de Serviços">Prestação de Serviços</SelectItem>
+                <SelectItem value="Custo dos Serviços Prestados">Custo dos Serviços Prestados</SelectItem>
+                <SelectItem value="Marketing e Publicidade">Marketing e Publicidade</SelectItem>
+                <SelectItem value="Investimento em Marketing">Investimento em Marketing</SelectItem>
+                <SelectItem value="Periodicidade mensal e anual">Periodicidade mensal e anual</SelectItem>
+                <SelectItem value="Manutenção programada mensal">Manutenção programada mensal</SelectItem>
+                <SelectItem value="Contrato de prestação de serviços">Contrato de prestação de serviços</SelectItem>
+                <SelectItem value="Contrato Prest Serv">Contrato Prest Serv</SelectItem>
               </SelectContent>
             </Select>
           </div>

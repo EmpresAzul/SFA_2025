@@ -16,12 +16,14 @@ interface SaldosBancariosListProps {
   saldos: SaldoBancarioData[];
   loading: boolean;
   onDelete: (id: string) => Promise<void>;
+  onEdit?: (saldo: SaldoBancarioData) => void;
 }
 
 const SaldosBancariosList: React.FC<SaldosBancariosListProps> = ({
   saldos,
   loading,
   onDelete,
+  onEdit,
 }) => {
   const { toast } = useToast();
 
@@ -104,6 +106,14 @@ const SaldosBancariosList: React.FC<SaldosBancariosListProps> = ({
                     className="hover:bg-red-50 hover:border-red-200 hover:text-red-600"
                   >
                     Excluir
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit && onEdit(saldo)}
+                    className="hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600"
+                  >
+                    Editar
                   </Button>
                 </div>
               </div>

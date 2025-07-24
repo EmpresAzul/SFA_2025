@@ -28,12 +28,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Eye, Pencil, ToggleLeft, ToggleRight, Trash2 } from "lucide-react";
+import { Eye, Pencil, ToggleLeft, ToggleRight, Trash2, Package } from "lucide-react";
 import { format } from "date-fns";
 import { Estoque } from "@/types/estoque";
+import EstoquePagination from "./EstoquePagination";
 
 interface EstoqueTableProps {
   filteredEstoques: Estoque[];
+  totalItems: number;
+  currentPage: number;
+  itemsPerPage: number;
+  onPageChange: (page: number) => void;
+  onItemsPerPageChange: (itemsPerPage: number) => void;
   selectedEstoque: Estoque | null;
   setSelectedEstoque: (estoque: Estoque | null) => void;
   handleEdit: (estoque: Estoque) => void;
@@ -43,6 +49,11 @@ interface EstoqueTableProps {
 
 export const EstoqueTable: React.FC<EstoqueTableProps> = ({
   filteredEstoques,
+  totalItems,
+  currentPage,
+  itemsPerPage,
+  onPageChange,
+  onItemsPerPageChange,
   selectedEstoque,
   setSelectedEstoque,
   handleEdit,
@@ -51,98 +62,120 @@ export const EstoqueTable: React.FC<EstoqueTableProps> = ({
 }) => {
   const getStatusBadge = (status: string) => {
     const colors = {
-      ativo: "bg-emerald-100 text-emerald-800",
-      inativo: "bg-red-100 text-red-800",
+      ativo: "default",
+      inativo: "secondary",
     };
-    return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return colors[status as keyof typeof colors] || "secondary";
   };
 
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
   return (
-    <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
-      <CardHeader className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-t-lg">
-        <CardTitle className="text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          📦 Itens do Estoque ({filteredEstoques.length})
+    <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-semibold text-gray-800">
+          Itens do Estoque ({totalItems})
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-gradient-to-r from-gray-50 to-blue-50 hover:bg-gray-100">
-                <TableHead className="font-semibold text-gray-700">
+              <TableRow className="bg-gray-50/50 h-10">
+                <TableHead className="font-semibold text-gray-700 text-xs py-2">
                   Data
                 </TableHead>
-                <TableHead className="font-semibold text-gray-700">
+                <TableHead className="font-semibold text-gray-700 text-xs py-2">
                   Produto
                 </TableHead>
-                <TableHead className="font-semibold text-gray-700">
+                <TableHead className="font-semibold text-gray-700 text-xs py-2">
                   Unidade
                 </TableHead>
-                <TableHead className="font-semibold text-gray-700">
+                <TableHead className="font-semibold text-gray-700 text-xs py-2 text-right">
                   Quantidade
                 </TableHead>
-                <TableHead className="font-semibold text-gray-700">
+                <TableHead className="font-semibold text-gray-700 text-xs py-2 text-right">
                   Valor Unitário
                 </TableHead>
-                <TableHead className="font-semibold text-gray-700">
+                <TableHead className="font-semibold text-gray-700 text-xs py-2 text-right">
                   Valor Total
                 </TableHead>
-                <TableHead className="font-semibold text-gray-700">
+                <TableHead className="font-semibold text-gray-700 text-xs py-2">
                   Status
                 </TableHead>
-                <TableHead className="font-semibold text-gray-700 text-center">
+                <TableHead className="font-semibold text-gray-700 text-xs py-2 text-center">
                   Ações
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredEstoques.map((estoque) => (
-                <TableRow
-                  key={estoque.id}
-                  className="hover:bg-blue-50 transition-colors duration-200"
-                >
-                  <TableCell className="font-medium">
-                    {format(new Date(estoque.data), "dd/MM/yyyy")}
+              {filteredEstoques.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-8">
+                    <div className="flex flex-col items-center gap-2 text-gray-500">
+                      <Package className="h-8 w-8" />
+                      <p>Nenhum item encontrado</p>
+                      <p className="text-sm">
+                        Cadastre seus primeiros itens de estoque
+                      </p>
+                    </div>
                   </TableCell>
-                  <TableCell className="font-semibold text-gray-800">
-                    {estoque.nome_produto}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className="bg-blue-50 text-blue-700 border-blue-200"
-                    >
-                      {estoque.unidade_medida}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    {estoque.quantidade}
-                  </TableCell>
-                  <TableCell className="text-green-600 font-semibold">
-                    R$ {estoque.valor_unitario.toFixed(2)}
-                  </TableCell>
-                  <TableCell className="text-green-700 font-bold">
-                    R$ {estoque.valor_total.toFixed(2)}
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={getStatusBadge(estoque.status)}>
-                      {estoque.status === "ativo" ? "✅ Ativo" : "❌ Inativo"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-center space-x-2">
-                      {/* Botão Visualizar */}
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-8 w-8 p-0 hover:bg-blue-50 hover:border-blue-300"
-                            onClick={() => setSelectedEstoque(estoque)}
-                          >
-                            <Eye className="h-4 w-4 text-blue-600" />
-                          </Button>
-                        </DialogTrigger>
+                </TableRow>
+              ) : (
+                filteredEstoques.map((estoque) => (
+                  <TableRow
+                    key={estoque.id}
+                    className="hover:bg-gray-50/50 transition-colors h-12"
+                  >
+                    <TableCell className="py-2 text-sm">
+                      {format(new Date(estoque.data), "dd/MM/yyyy")}
+                    </TableCell>
+                    <TableCell className="font-medium py-2 text-sm max-w-[200px] truncate">
+                      <div className="flex items-center gap-2">
+                        <Package className="h-4 w-4 text-gray-500" />
+                        {estoque.nome_produto}
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-2">
+                      <Badge
+                        variant="outline"
+                        className="text-xs px-2 py-0.5"
+                      >
+                        {estoque.unidade_medida}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="py-2 text-right text-sm font-medium">
+                      {estoque.quantidade}
+                    </TableCell>
+                    <TableCell className="py-2 text-right text-sm font-medium text-green-600">
+                      R$ {estoque.valor_unitario.toFixed(2)}
+                    </TableCell>
+                    <TableCell className="py-2 text-right text-sm font-semibold text-green-700">
+                      R$ {estoque.valor_total.toFixed(2)}
+                    </TableCell>
+                    <TableCell className="py-2">
+                      <Badge 
+                        variant={getStatusBadge(estoque.status)}
+                        className="text-xs px-2 py-0.5"
+                      >
+                        {estoque.status === "ativo" ? "A" : "I"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="py-2">
+                      <div className="flex items-center justify-center gap-1">
+                        {/* Botão Visualizar */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 w-7 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                              onClick={() => setSelectedEstoque(estoque)}
+                              title="Visualizar"
+                            >
+                              <Eye className="h-3.5 w-3.5" />
+                            </Button>
+                          </DialogTrigger>
                         <DialogContent className="max-w-md">
                           <DialogHeader>
                             <DialogTitle className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -215,77 +248,95 @@ export const EstoqueTable: React.FC<EstoqueTableProps> = ({
                         </DialogContent>
                       </Dialog>
 
-                      {/* Botão Editar */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 w-8 p-0 hover:bg-yellow-50 hover:border-yellow-300"
-                        onClick={() => {
-                          handleEdit(estoque);
-                          // Switch to form tab
-                          const tabTrigger = document.querySelector(
-                            '[value="formulario"]',
-                          ) as HTMLElement;
-                          if (tabTrigger) tabTrigger.click();
-                        }}
-                      >
-                        <Pencil className="h-4 w-4 text-yellow-600" />
-                      </Button>
+                        {/* Botão Editar */}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                          onClick={() => {
+                            handleEdit(estoque);
+                            // Switch to form tab
+                            const tabTrigger = document.querySelector(
+                              '[value="formulario"]',
+                            ) as HTMLElement;
+                            if (tabTrigger) tabTrigger.click();
+                          }}
+                          title="Editar"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
 
-                      {/* Botão Ativar/Desativar */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-8 w-8 p-0 hover:bg-purple-50 hover:border-purple-300"
-                        onClick={() => handleToggleStatus(estoque)}
-                      >
-                        {estoque.status === "ativo" ? (
-                          <ToggleRight className="h-4 w-4 text-green-600" />
-                        ) : (
-                          <ToggleLeft className="h-4 w-4 text-gray-400" />
-                        )}
-                      </Button>
+                        {/* Botão Ativar/Desativar */}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`h-7 w-7 p-0 ${
+                            estoque.status === "ativo"
+                              ? "text-green-600 hover:text-green-700 hover:bg-green-50"
+                              : "text-gray-400 hover:text-gray-500 hover:bg-gray-50"
+                          }`}
+                          onClick={() => handleToggleStatus(estoque)}
+                          title={estoque.status === "ativo" ? "Desativar" : "Ativar"}
+                        >
+                          {estoque.status === "ativo" ? (
+                            <ToggleRight className="h-3.5 w-3.5" />
+                          ) : (
+                            <ToggleLeft className="h-3.5 w-3.5" />
+                          )}
+                        </Button>
 
-                      {/* Botão Excluir */}
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-8 w-8 p-0 hover:bg-red-50 hover:border-red-300"
-                          >
-                            <Trash2 className="h-4 w-4 text-red-600" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              Confirmar Exclusão
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Tem certeza de que deseja excluir permanentemente
-                              o item "{estoque.nome_produto}"? Esta ação não
-                              pode ser desfeita.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDelete(estoque.id)}
-                              className="bg-red-600 hover:bg-red-700"
+                        {/* Botão Excluir */}
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 w-7 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                              title="Excluir"
                             >
-                              Excluir
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Confirmar Exclusão
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Tem certeza de que deseja excluir permanentemente
+                                o item "{estoque.nome_produto}"? Esta ação não
+                                pode ser desfeita.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDelete(estoque.id)}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                Excluir
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
+        
+        {/* Paginação */}
+        <EstoquePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          totalItems={totalItems}
+          onPageChange={onPageChange}
+          onItemsPerPageChange={onItemsPerPageChange}
+        />
       </CardContent>
     </Card>
   );

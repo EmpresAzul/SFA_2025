@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEstoqueData } from "@/hooks/useEstoqueData";
 import { useEstoqueForm } from "@/hooks/useEstoqueForm";
@@ -13,6 +13,8 @@ const EstoqueManagement: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState("todos");
   const [filteredEstoques, setFilteredEstoques] = useState<Estoque[]>([]);
   const [editingItem, setEditingItem] = useState<Estoque | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(25);
 
   const { estoques, loading, fetchEstoques, handleToggleStatus, handleDelete } =
     useEstoqueData();
@@ -28,25 +30,45 @@ const EstoqueManagement: React.FC = () => {
     resetForm,
   } = useEstoqueForm(fetchEstoques);
 
-  useEffect(() => {
-    filterEstoques();
+  // Filtrar dados baseado nos filtros
+  const filteredData = useMemo(() => {
+    return estoques.filter((estoque) => {
+      const matchesSearch = estoque.nome_produto
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        statusFilter === "todos" || estoque.status === statusFilter;
+      
+      return matchesSearch && matchesStatus;
+    });
   }, [estoques, searchTerm, statusFilter]);
 
-  const filterEstoques = () => {
-    let filtered = estoques;
+  // Dados paginados
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredData.slice(startIndex, endIndex);
+  }, [filteredData, currentPage, itemsPerPage]);
 
-    if (searchTerm) {
-      filtered = filtered.filter((estoque) =>
-        estoque.nome_produto.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
-    }
-
-    if (statusFilter !== "todos") {
-      filtered = filtered.filter((estoque) => estoque.status === statusFilter);
-    }
-
-    setFilteredEstoques(filtered);
+  // Handlers de paginação
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Resetar para primeira página
+  };
+
+  // Resetar página quando filtros mudarem
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter]);
+
+  // Manter compatibilidade com o código existente
+  useEffect(() => {
+    setFilteredEstoques(filteredData);
+  }, [filteredData]);
 
   return (
     <div className="p-6 space-y-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
@@ -61,7 +83,7 @@ const EstoqueManagement: React.FC = () => {
         </div>
       </div>
 
-      <EstoqueSummaryCards filteredEstoques={filteredEstoques} />
+      <EstoqueSummaryCards filteredEstoques={filteredData} />
 
       <Tabs defaultValue="lista" className="w-full">
         <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-14">
@@ -88,7 +110,12 @@ const EstoqueManagement: React.FC = () => {
           />
 
           <EstoqueTable
-            filteredEstoques={filteredEstoques}
+            filteredEstoques={paginatedData}
+            totalItems={filteredData.length}
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
             selectedEstoque={selectedEstoque}
             setSelectedEstoque={setSelectedEstoque}
             handleEdit={handleEdit}

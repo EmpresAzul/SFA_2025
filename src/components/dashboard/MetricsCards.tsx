@@ -1,8 +1,8 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  TrendingUp,
   Users,
+  UserCheck,
   Building,
   Package,
   Wrench,
@@ -31,76 +31,85 @@ const MetricsCards: React.FC = () => {
 
   const kpiCards = [
     {
-      title: "Ponto de Equilíbrio",
-      value: `R$ ${metrics.pontoEquilibrio.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
-      icon: TrendingUp,
-      gradient: "from-emerald-500 to-emerald-600",
+      title: "Qtde. Funcionários",
+      value: metrics.qtdeFuncionarios.toString(),
+      subtitle: "Funcionários cadastrados",
+      icon: UserCheck,
+      bgColor: "bg-emerald-500",
     },
     {
       title: "Qtde. Clientes",
       value: metrics.qtdeClientes.toString(),
+      subtitle: "Clientes cadastrados",
       icon: Users,
-      gradient: "from-blue-500 to-blue-600",
+      bgColor: "bg-blue-500",
     },
     {
       title: "Qtde. Fornecedores",
       value: metrics.qtdeFornecedores.toString(),
+      subtitle: "Fornecedores cadastrados",
       icon: Building,
-      gradient: "from-purple-500 to-purple-600",
+      bgColor: "bg-purple-500",
     },
     {
       title: "Qtde. Produtos",
       value: metrics.qtdeProdutos.toString(),
+      subtitle: "Produtos em estoque",
       icon: Package,
-      gradient: "from-orange-500 to-orange-600",
+      bgColor: "bg-orange-500",
     },
     {
       title: "Qtde. Serviços",
       value: metrics.qtdeServicos.toString(),
+      subtitle: "Serviços cadastrados",
       icon: Wrench,
-      gradient: "from-pink-500 to-pink-600",
+      bgColor: "bg-pink-500",
     },
     {
       title: "Total Receitas do Mês",
       value: `R$ ${metrics.totalReceitasMes.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+      subtitle: "Receitas do mês atual",
       icon: DollarSign,
-      gradient: "from-green-500 to-green-600",
+      bgColor: "bg-green-500",
     },
     {
       title: "Total Despesas do Mês",
       value: `R$ ${metrics.totalDespesasMes.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+      subtitle: "Despesas do mês atual",
       icon: CreditCard,
-      gradient: "from-red-500 to-red-600",
+      bgColor: "bg-red-500",
     },
     {
       title: "Saldo Bancário",
       value: `R$ ${metrics.saldoBancario.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+      subtitle: "Saldo consolidado",
       icon: Wallet,
-      gradient: "from-indigo-500 to-indigo-600",
+      bgColor: "bg-indigo-500",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
       {kpiCards.map((kpi, index) => (
         <Card
           key={index}
-          className="hover:shadow-colorful transition-all duration-300 border-0 shadow-lg bg-white/90 backdrop-blur-sm"
+          className={`${kpi.bgColor} hover:shadow-lg hover:scale-105 transition-all duration-300 border-0 shadow-md text-white`}
         >
-          <CardContent className="p-4 sm:p-6">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-white/90 mb-1 tracking-wide">
                   {kpi.title}
                 </p>
-                <p className="text-lg sm:text-xl font-bold text-gray-900">
+                <p className="text-xl font-bold text-white mb-1">
                   {kpi.value}
                 </p>
+                <p className="text-xs text-white/80">
+                  {kpi.subtitle}
+                </p>
               </div>
-              <div
-                className={`p-2 sm:p-3 rounded-full bg-gradient-to-r ${kpi.gradient}`}
-              >
-                <kpi.icon className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+              <div className="bg-white/20 p-2 rounded-lg">
+                <kpi.icon className="w-5 h-5 text-white" />
               </div>
             </div>
           </CardContent>

@@ -70,7 +70,7 @@ const Pipeline: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            🚀 Pipeline de Vendas
+            📊 CRM
           </h1>
           <p className="text-gray-600 mt-2 text-sm">
             Gerencie seus leads e acompanhe o progresso dos negócios

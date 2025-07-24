@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -66,6 +67,7 @@ export const useCadastros = (): UseCadastrosReturn => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const fetchCadastros = useCallback(async () => {
     try {
@@ -112,6 +114,9 @@ export const useCadastros = (): UseCadastrosReturn => {
         description: 'Cadastro criado com sucesso!',
       });
 
+      // Invalidar cache do dashboard para atualização em tempo real
+      queryClient.invalidateQueries({ queryKey: ['dashboard-metrics'] });
+
       await fetchCadastros();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao criar cadastro';
@@ -143,6 +148,9 @@ export const useCadastros = (): UseCadastrosReturn => {
         description: 'Cadastro atualizado com sucesso!',
       });
 
+      // Invalidar cache do dashboard para atualização em tempo real
+      queryClient.invalidateQueries({ queryKey: ['dashboard-metrics'] });
+
       await fetchCadastros();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao atualizar cadastro';
@@ -173,6 +181,9 @@ export const useCadastros = (): UseCadastrosReturn => {
         title: 'Sucesso',
         description: 'Cadastro excluído com sucesso!',
       });
+
+      // Invalidar cache do dashboard para atualização em tempo real
+      queryClient.invalidateQueries({ queryKey: ['dashboard-metrics'] });
 
       await fetchCadastros();
     } catch (err) {
@@ -211,6 +222,9 @@ export const useCadastros = (): UseCadastrosReturn => {
         title: 'Sucesso',
         description: `Status alterado para ${newStatus}!`,
       });
+
+      // Invalidar cache do dashboard para atualização em tempo real
+      queryClient.invalidateQueries({ queryKey: ['dashboard-metrics'] });
 
       await fetchCadastros();
     } catch (err) {

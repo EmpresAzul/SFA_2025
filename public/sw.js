@@ -1,4 +1,7 @@
-const CACHE_NAME = "fluxoazul-v2.0.0";
+const CACHE_NAME = "fluxoazul-v3.0.0";
+const STATIC_CACHE = "fluxoazul-static-v3.0.0";
+const DYNAMIC_CACHE = "fluxoazul-dynamic-v3.0.0";
+
 const urlsToCache = [
   "/",
   "/dashboard",
@@ -8,34 +11,45 @@ const urlsToCache = [
   "/precificacao",
   "/estoque",
   "/cadastros",
+  "/crm",
   "/saldos-bancarios",
   "/lembretes",
   "/ponto-equilibrio",
   "/suporte",
+  "/perfil",
   "/manifest.json",
+  "/favicon.ico",
+  "/favicon.svg",
   "/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png",
   "/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png",
 ];
+
+const OFFLINE_PAGE = "/";
+const MAX_CACHE_SIZE = 50;
 
 // Install event - cache resources
 self.addEventListener("install", (event) => {
   console.log("FluxoAzul PWA: Service Worker installing...");
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => {
-        console.log("FluxoAzul PWA: Cache opened successfully");
+    Promise.all([
+      caches.open(STATIC_CACHE).then((cache) => {
+        console.log("FluxoAzul PWA: Static cache opened");
         return cache.addAll(
-          urlsToCache.map((url) => new Request(url, { cache: "reload" })),
+          urlsToCache.map((url) => new Request(url, { cache: "reload" }))
         );
-      })
-      .then(() => {
-        console.log("FluxoAzul PWA: All resources cached");
-        return self.skipWaiting();
-      })
-      .catch((error) => {
-        console.error("FluxoAzul PWA: Cache installation failed:", error);
       }),
+      caches.open(DYNAMIC_CACHE).then((cache) => {
+        console.log("FluxoAzul PWA: Dynamic cache opened");
+        return cache.put(OFFLINE_PAGE, new Response("Offline"));
+      })
+    ])
+    .then(() => {
+      console.log("FluxoAzul PWA: All resources cached successfully");
+      return self.skipWaiting();
+    })
+    .catch((error) => {
+      console.error("FluxoAzul PWA: Cache installation failed:", error);
+    })
   );
 });
 
@@ -43,22 +57,22 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   console.log("FluxoAzul PWA: Service Worker activating...");
   event.waitUntil(
-    caches
-      .keys()
-      .then((cacheNames) => {
+    Promise.all([
+      caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
+            if (![STATIC_CACHE, DYNAMIC_CACHE].includes(cacheName)) {
               console.log("FluxoAzul PWA: Deleting old cache:", cacheName);
               return caches.delete(cacheName);
             }
-          }),
+          })
         );
-      })
-      .then(() => {
-        console.log("FluxoAzul PWA: Service Worker activated");
-        return self.clients.claim();
       }),
+      self.clients.claim()
+    ])
+    .then(() => {
+      console.log("FluxoAzul PWA: Service Worker activated and claimed clients");
+    })
   );
 });
 

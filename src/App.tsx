@@ -1,7 +1,13 @@
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
-import PWAInstallBanner from "./components/PWAInstallBanner";
+import PWAInstallPrompt from "./components/pwa/PWAInstallPrompt";
+import OfflineIndicator from "./components/pwa/OfflineIndicator";
+import UpdateNotification from "./components/pwa/UpdateNotification";
+import { ProfileProvider } from "./contexts/ProfileContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import { useSystemNotifications } from "./hooks/useSystemNotifications";
 
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -22,6 +28,24 @@ import NotFound from "./pages/NotFound";
 import AdminSettings from "./pages/AdminSettings";
 import Pipeline from "./pages/Pipeline";
 
+// Componente para inicializar notificações do sistema
+const SystemNotificationManager = () => {
+  useSystemNotifications();
+  return null;
+};
+
+// Componente wrapper para rotas autenticadas
+const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => (
+  <ProfileProvider>
+    <NotificationProvider>
+      <SystemNotificationManager />
+      <DashboardLayout>
+        {children}
+      </DashboardLayout>
+    </NotificationProvider>
+  </ProfileProvider>
+);
+
 const App = () => (
   <>
     <Routes>
@@ -30,127 +54,132 @@ const App = () => (
       <Route
         path="/dashboard"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <Dashboard />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/dashboard/perfil"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <Profile />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/lancamentos"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <LancamentosFinanceiros />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/fluxo-caixa"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <FluxoCaixa />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/dre"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <DRE />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/precificacao"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <Precificacao />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/estoque"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <EstoqueManagement />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/cadastros"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <CadastrosUnified />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/pipeline"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <Pipeline />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/saldos-bancarios"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <SaldosBancarios />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/lembretes"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <Lembretes />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/ponto-equilibrio"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <PontoEquilibrio />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/suporte"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <Suporte />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/videos-sistema"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <VideosSistema />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route
         path="/admin/settings"
         element={
-          <DashboardLayout>
+          <AuthenticatedRoute>
             <AdminSettings />
-          </DashboardLayout>
+          </AuthenticatedRoute>
         }
       />
       <Route path="*" element={<NotFound />} />
-    </Routes>
-    <PWAInstallBanner />
-    <Toaster />
+      </Routes>
+      
+      {/* PWA Components */}
+      <OfflineIndicator />
+      <PWAInstallPrompt />
+      <UpdateNotification />
+      
+      <Toaster />
   </>
 );
 

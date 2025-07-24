@@ -13,30 +13,40 @@
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#1e3a8a" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1e3a8a" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e40af" />
+    
+    <!-- Mobile App Configuration -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="FluxoAzul" />
     <meta name="mobile-web-app-capable" content="yes" />
-
-    <!-- iOS Splash Screens -->
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
+    <meta name="application-name" content="FluxoAzul" />
+    
+    <!-- Viewport for PWA -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
 
     <!-- Favicons and App Icons -->
-    <link
-      rel="icon"
-      href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png"
-      type="image/png"
-    />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link
       rel="apple-touch-icon"
       href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png"
+      sizes="192x192"
     />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
+      href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="120x120"
       href="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png"
     />
 
@@ -46,6 +56,24 @@
       content="/lovable-uploads/43485371-baca-4cf3-9711-e59f1d1dfe3c.png"
     />
     <meta name="msapplication-TileColor" content="#1e3a8a" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+
+    <!-- iOS Splash Screens -->
+    <link
+      rel="apple-touch-startup-image"
+      href="/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png"
+      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png"
+      media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)"
+    />
+
+    <!-- Security -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="address=no" />
 
     <meta property="og:title" content="FluxoAzul - Gestão Financeira PME" />
     <meta

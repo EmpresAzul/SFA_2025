@@ -10,7 +10,7 @@ export const useDashboardMetrics = () => {
     queryFn: async () => {
       if (!session?.user?.id) throw new Error("User not authenticated");
 
-      console.log("🔍 Buscando métricas do dashboard...");
+      console.log("🔍 Buscando métricas do dashboard para usuário:", session.user.id);
 
       // Buscar contagem de clientes
       const { data: clientes } = await supabase
@@ -28,15 +28,48 @@ export const useDashboardMetrics = () => {
         .eq("tipo", "Fornecedor")
         .eq("status", "ativo");
 
-      // Buscar contagem de produtos
-      const { data: produtos } = await supabase
-        .from("precificacao")
+      // Buscar contagem de funcionários
+      const { data: funcionarios } = await supabase
+        .from("cadastros")
         .select("id")
         .eq("user_id", session.user.id)
-        .eq("tipo", "Produto")
+        .eq("tipo", "Funcionário")
         .eq("status", "ativo");
 
-      // Buscar contagem de serviços
+      // Buscar contagem de produtos no estoque
+      console.log("🔍 Buscando produtos no estoque...");
+      
+      // Primeiro tentar com status "ativo"
+      let { data: produtos, error: estoqueError } = await supabase
+        .from("estoques")
+        .select("id")
+        .eq("user_id", session.user.id)
+        .eq("status", "ativo");
+
+      // Se não encontrar, tentar com status "A" (como mostrado na imagem)
+      if (!produtos || produtos.length === 0) {
+        console.log("🔄 Tentando com status 'A'...");
+        const { data: produtosA } = await supabase
+          .from("estoques")
+          .select("id")
+          .eq("user_id", session.user.id)
+          .eq("status", "A");
+        produtos = produtosA;
+      }
+
+      // Se ainda não encontrar, tentar tabela no singular
+      if (!produtos || produtos.length === 0) {
+        console.log("🔄 Tentando tabela 'estoque' (singular)...");
+        const { data: produtosSingular } = await supabase
+          .from("estoque")
+          .select("id")
+          .eq("user_id", session.user.id);
+        produtos = produtosSingular;
+      }
+
+      console.log("✅ Produtos finais encontrados:", produtos?.length || 0);
+
+      // Buscar contagem de serviços na precificação
       const { data: servicos } = await supabase
         .from("precificacao")
         .select("id")
@@ -87,16 +120,24 @@ export const useDashboardMetrics = () => {
           0,
         ) || 0;
 
-      // Calcular ponto de equilíbrio simples (usando despesas como base de custos fixos)
-      // Para um cálculo mais preciso, o usuário deve usar a página dedicada de Ponto de Equilíbrio
-      const margemContribuicaoEstimada = 0.4; // 40% de margem estimada
-      const pontoEquilibrio =
-        totalDespesas > 0 ? totalDespesas / margemContribuicaoEstimada : 0;
+      // Buscar dados de ponto de equilíbrio se existir
+      const { data: pontoEquilibrioData } = await supabase
+        .from("ponto_equilibrio")
+        .select("ponto_equilibrio_valor")
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
 
+      // Usar ponto de equilíbrio calculado ou estimar baseado nas despesas
+      const pontoEquilibrio = pontoEquilibrioData?.[0]?.ponto_equilibrio_valor || 
+        (totalDespesas > 0 ? totalDespesas / 0.4 : 0);
+
+      // Usar dados reais do sistema
       const metrics = {
         pontoEquilibrio,
         qtdeClientes: clientes?.length || 0,
         qtdeFornecedores: fornecedores?.length || 0,
+        qtdeFuncionarios: funcionarios?.length || 0,
         qtdeProdutos: produtos?.length || 0,
         qtdeServicos: servicos?.length || 0,
         totalReceitasMes: totalReceitas,
@@ -104,7 +145,32 @@ export const useDashboardMetrics = () => {
         saldoBancario,
       };
 
-      console.log("📊 Métricas calculadas:", metrics);
+      // Debug detalhado para produtos
+      console.log("🔍 Debug detalhado dos produtos:");
+      console.log("- Dados brutos produtos:", produtos);
+      console.log("- Erro estoque:", estoqueError);
+      
+      // Tentar buscar todos os produtos sem filtro de status para debug
+      const { data: todosProdutos } = await supabase
+        .from("estoques")
+        .select("*")
+        .eq("user_id", session.user.id);
+      
+      console.log("- Todos os produtos (sem filtro status):", todosProdutos);
+      console.log("- Total de produtos sem filtro:", todosProdutos?.length || 0);
+
+      console.log("📊 Dados brutos encontrados:");
+      console.log("- Clientes:", clientes?.length || 0);
+      console.log("- Fornecedores:", fornecedores?.length || 0);
+      console.log("- Funcionários:", funcionarios?.length || 0);
+      console.log("- Produtos (estoque):", produtos?.length || 0);
+      console.log("- Serviços:", servicos?.length || 0);
+      console.log("- Receitas do mês:", totalReceitas);
+      console.log("- Despesas do mês:", totalDespesas);
+      console.log("- Saldo bancário:", saldoBancario);
+      console.log("- Ponto de equilíbrio:", pontoEquilibrio);
+      
+      console.log("📊 Métricas finais:", metrics);
       return metrics;
     },
     enabled: !!session?.user?.id,

@@ -74,6 +74,7 @@ export const useEstoques = () => {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["estoques"] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         toast({
           title: "Sucesso",
           description: "Estoque criado com sucesso!",
@@ -106,6 +107,7 @@ export const useEstoques = () => {
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["estoques"] });
+        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         toast({
           title: "Sucesso",
           description: "Estoque excluído com sucesso!",

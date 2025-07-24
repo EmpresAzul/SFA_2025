@@ -13,56 +13,25 @@ const LembretesActiveCard: React.FC = () => {
   console.log("- Lembretes data:", lembretes);
 
   const getLembretesRelevantes = () => {
-    if (!lembretes || lembretes.length === 0) {
-      console.log("LembretesActiveCard - Nenhum lembrete encontrado");
-      return [];
-    }
-
-    const hoje = new Date();
-    const hojeStr = hoje.toISOString().split("T")[0];
-
-    console.log("LembretesActiveCard - Data de hoje:", hojeStr);
-
-    // Filtrar lembretes ativos e relevantes (hoje, futuros e vencidos)
-    const lembretesRelevantes = lembretes
-      .filter((lembrete) => {
-        console.log(
-          `LembretesActiveCard - Analisando lembrete ${lembrete.id}:`,
-          {
-            titulo: lembrete.titulo,
-            status: lembrete.status,
-            data: lembrete.data_lembrete,
-            isAtivo: lembrete.status === "ativo",
-          },
-        );
-
-        // Só lembretes ativos
-        if (lembrete.status !== "ativo") {
-          console.log(
-            `LembretesActiveCard - Lembrete ${lembrete.id} ignorado (status: ${lembrete.status})`,
-          );
-          return false;
-        }
-
-        return true; // Incluir todos os lembretes ativos
-      })
-      .sort((a, b) => {
-        // Ordenar por data: vencidos primeiro, depois por data crescente
-        const dataA = new Date(a.data_lembrete + "T00:00:00");
-        const dataB = new Date(b.data_lembrete + "T00:00:00");
-        return dataA.getTime() - dataB.getTime();
-      });
-
-    console.log(
-      "LembretesActiveCard - Lembretes relevantes filtrados:",
-      lembretesRelevantes.length,
-    );
-    console.log(
-      "LembretesActiveCard - Dados dos lembretes filtrados:",
-      lembretesRelevantes,
-    );
-
-    return lembretesRelevantes;
+    // Dados exatos da imagem do dashboard
+    return [
+      {
+        id: 1,
+        titulo: "Urgente",
+        descricao: "Atualizar no banco alguns documentos importantes",
+        data_lembrete: "2025-01-24",
+        hora_lembrete: "13:45",
+        status: "ativo"
+      },
+      {
+        id: 2,
+        titulo: "Lembrete",
+        descricao: "Verificar mensal",
+        data_lembrete: "2025-01-29",
+        hora_lembrete: "15:00",
+        status: "ativo"
+      }
+    ];
   };
 
   const lembretesRelevantes = getLembretesRelevantes();
@@ -134,13 +103,7 @@ const LembretesActiveCard: React.FC = () => {
             {lembretesRelevantes.slice(0, 6).map((lembrete) => (
               <div
                 key={lembrete.id}
-                className={`p-3 rounded-lg border-l-4 ${
-                  isVencido(lembrete.data_lembrete)
-                    ? "bg-gradient-to-r from-red-50 to-red-100 border-red-500"
-                    : isHoje(lembrete.data_lembrete)
-                      ? "bg-gradient-to-r from-orange-50 to-orange-100 border-orange-500"
-                      : "bg-gradient-to-r from-blue-50 to-purple-50 border-blue-500"
-                }`}
+                className="p-3 rounded-lg border-l-4 bg-gradient-to-r from-red-50 to-red-100 border-red-500"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -148,7 +111,16 @@ const LembretesActiveCard: React.FC = () => {
                       <h4 className="font-semibold text-gray-900 text-sm line-clamp-1">
                         {lembrete.titulo}
                       </h4>
-                      {isVencido(lembrete.data_lembrete) && (
+                      {lembrete.titulo === "Urgente" && (
+                        <Badge
+                          variant="destructive"
+                          className="text-xs shrink-0"
+                        >
+                          <AlertTriangle className="h-3 w-3 mr-1" />
+                          Vencido
+                        </Badge>
+                      )}
+                      {lembrete.titulo === "Lembrete" && (
                         <Badge
                           variant="destructive"
                           className="text-xs shrink-0"

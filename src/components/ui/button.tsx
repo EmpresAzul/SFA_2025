@@ -20,6 +20,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         fluxo:
           "bg-gradient-fluxo text-white shadow-md hover:brightness-110 focus:ring-2 focus:ring-blue-700",
+        'gradient-blue': 'bg-gradient-to-r from-blue-500 to-blue-700 text-white shadow-md hover:from-blue-600 hover:to-blue-800',
       },
       size: {
         default: "h-10 px-4 py-2",

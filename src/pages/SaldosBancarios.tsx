@@ -15,12 +15,15 @@ interface SaldoForm {
 const SaldosBancarios: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("lista");
+  const [selectedSaldo, setSelectedSaldo] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const {
     loading,
     saldos,
     fetchSaldos,
     createSaldo,
+    updateSaldo,
     deleteSaldo,
   } = useSaldosBancarios();
 
@@ -28,20 +31,57 @@ const SaldosBancarios: React.FC = () => {
     fetchSaldos();
   }, [fetchSaldos]);
 
-  const handleFormSubmit = async (formData: SaldoForm) => {
-    await createSaldo({
-      banco: formData.banco,
-      saldo: formData.saldo,
-      data: formData.data,
-      user_id: user?.id || "",
-      id: "",
-    });
-    
-    setActiveTab("lista");
+  const handleFormSubmit = async (formData) => {
+    try {
+      if (!user?.id) throw new Error('Usuário não autenticado');
+      if (isEditMode && selectedSaldo?.id) {
+        await updateSaldo(selectedSaldo.id, {
+          banco: formData.banco,
+          saldo: formData.saldo,
+          data: formData.data,
+          user_id: user.id
+        });
+      } else {
+        await createSaldo({
+          banco: formData.banco,
+          saldo: formData.saldo,
+          data: formData.data,
+          user_id: user.id
+        });
+      }
+      setActiveTab("lista");
+      setSelectedSaldo(null);
+      setIsEditMode(false);
+    } catch (error) {
+      let errorMsg = '';
+      if (error && typeof error === 'object') {
+        if ('message' in error) {
+          errorMsg = (error as any).message;
+        } else if ('error_description' in error) {
+          errorMsg = (error as any).error_description;
+        } else if ('statusText' in error) {
+          errorMsg = (error as any).statusText;
+        } else {
+          errorMsg = JSON.stringify(error);
+        }
+      } else {
+        errorMsg = String(error);
+      }
+      console.error('Erro ao salvar saldo bancário:', error);
+      alert('Erro ao salvar saldo bancário: ' + errorMsg);
+    }
+  };
+
+  const handleEditSaldo = (saldo) => {
+    setSelectedSaldo(saldo);
+    setIsEditMode(true);
+    setActiveTab("formulario");
   };
 
   const handleFormCancel = () => {
     setActiveTab("lista");
+    setSelectedSaldo(null);
+    setIsEditMode(false);
   };
 
   const totalSaldo = saldos.reduce((total, saldo) => total + saldo.saldo, 0);
@@ -70,6 +110,7 @@ const SaldosBancarios: React.FC = () => {
             saldos={saldos}
             loading={loading}
             onDelete={deleteSaldo}
+            onEdit={handleEditSaldo}
           />
         </TabsContent>
 
@@ -78,6 +119,8 @@ const SaldosBancarios: React.FC = () => {
             onSubmit={handleFormSubmit}
             onCancel={handleFormCancel}
             loading={loading}
+            initialData={selectedSaldo}
+            isEditMode={isEditMode}
           />
         </TabsContent>
       </Tabs>
