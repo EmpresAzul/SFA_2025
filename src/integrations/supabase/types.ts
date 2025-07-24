@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      active_sessions: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          ip_address: unknown | null
+          is_active: boolean
+          last_activity: string
+          session_token_hash: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean
+          last_activity?: string
+          session_token_hash: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean
+          last_activity?: string
+          session_token_hash?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           created_at: string
@@ -580,6 +616,48 @@ export type Database = {
         }
         Relationships: []
       }
+      security_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          description: string
+          id: string
+          is_resolved: boolean
+          metadata: Json | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          description: string
+          id?: string
+          is_resolved?: boolean
+          metadata?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity: string
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_resolved?: boolean
+          metadata?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       security_events: {
         Row: {
           created_at: string
@@ -867,9 +945,35 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_user_role: {
+        Args: {
+          target_user_id: string
+          new_role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
+      cleanup_expired_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      create_security_alert: {
+        Args: {
+          alert_type_param: string
+          severity_param: string
+          title_param: string
+          description_param: string
+          user_id_param?: string
+          metadata_param?: Json
+        }
+        Returns: string
+      }
       encrypt_sensitive_data: {
         Args: { data: string; key_id?: string }
         Returns: string
+      }
+      enforce_session_limit: {
+        Args: { user_uuid: string }
+        Returns: undefined
       }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
@@ -897,6 +1001,13 @@ export type Database = {
       }
       is_admin: {
         Args: { check_user_id: string }
+        Returns: boolean
+      }
+      revoke_user_role: {
+        Args: {
+          target_user_id: string
+          role_to_revoke: Database["public"]["Enums"]["app_role"]
+        }
         Returns: boolean
       }
       validate_cpf_cnpj: {

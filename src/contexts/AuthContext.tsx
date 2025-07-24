@@ -29,6 +29,48 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lastActivity, setLastActivity] = useState<Date>(new Date());
+
+  // Session timeout (30 minutes of inactivity)
+  useEffect(() => {
+    if (!user || !session) return;
+
+    const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+    let timeoutId: NodeJS.Timeout;
+
+    const resetTimeout = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        console.log('Session expired due to inactivity');
+        supabase.auth.signOut();
+      }, SESSION_TIMEOUT);
+    };
+
+    const handleActivity = () => {
+      setLastActivity(new Date());
+      resetTimeout();
+      
+      // Update session activity in database
+      if (user?.id) {
+        supabase.rpc('cleanup_expired_sessions').then(() => {}, console.error);
+      }
+    };
+
+    // Track user activity
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'click'];
+    events.forEach(event => {
+      document.addEventListener(event, handleActivity, true);
+    });
+
+    resetTimeout();
+
+    return () => {
+      clearTimeout(timeoutId);
+      events.forEach(event => {
+        document.removeEventListener(event, handleActivity, true);
+      });
+    };
+  }, [user, session]);
 
   useEffect(() => {
     console.log('AuthContext: Initializing authentication...');
@@ -110,12 +152,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signIn = async (email: string, password: string) => {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    setLoading(false);
-    return { error };
+    
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (!error && data.user) {
+        // Enforce session limits
+        supabase.rpc('enforce_session_limit', { 
+          user_uuid: data.user.id 
+        }).then(() => {}, console.error);
+        
+        // Track active session
+        if (data.session?.access_token) {
+          const sessionHash = btoa(data.session.access_token.substring(0, 20));
+          supabase.from('active_sessions').insert({
+            user_id: data.user.id,
+            session_token_hash: sessionHash,
+            user_agent: navigator.userAgent,
+            expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString()
+          }).then(() => {}, console.error);
+        }
+      }
+      
+      setLoading(false);
+      return { error };
+    } catch (err) {
+      setLoading(false);
+      return { error: err };
+    }
   };
 
   const signUp = async (email: string, password: string) => {
@@ -134,21 +201,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signOut = async () => {
     setLoading(true);
     
-    // Limpar dados do perfil do localStorage antes do logout
     try {
+      if (user?.id && session?.access_token) {
+        // Mark current session as inactive
+        const sessionHash = btoa(session.access_token.substring(0, 20));
+        supabase.from('active_sessions')
+          .update({ is_active: false })
+          .eq('user_id', user.id)
+          .eq('session_token_hash', sessionHash)
+          .then(() => {}, console.error);
+      }
+      
+      // Clear profile data
       if (user?.id) {
         const profileKey = `fluxoazul_profile_${user.id}`;
         const hasStoredData = localStorage.getItem(profileKey);
         
         if (hasStoredData) {
           console.log('🧹 Limpando dados do perfil do localStorage no logout...');
-          // Não remover os dados, apenas marcar como "logout" para preservar
-          // Em uma implementação real, você pode querer manter os dados
-          // localStorage.removeItem(profileKey);
         }
       }
     } catch (error) {
-      console.error('Erro ao limpar dados do perfil:', error);
+      console.error('Erro ao limpar sessão:', error);
     }
     
     await supabase.auth.signOut();

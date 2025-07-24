@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { useSecurity } from '@/hooks/useSecurity';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSecurityAlerts } from '@/hooks/useSecurityAlerts';
 
 interface SecurityEvent {
   type: string;
@@ -12,17 +13,32 @@ interface SecurityEvent {
 export const useSecurityMonitoring = () => {
   const { user } = useAuth();
   const { logSuspiciousActivity } = useSecurity();
+  const { createThreatAlert } = useSecurityAlerts();
 
-  // Monitor for suspicious patterns
-  const monitorSuspiciousActivity = useCallback((event: SecurityEvent) => {
-    logSuspiciousActivity(event.type, event.severity, event.description, {
+  // Monitor for suspicious patterns with enhanced threat detection
+  const monitorSuspiciousActivity = useCallback(async (event: SecurityEvent) => {
+    // Log traditional security event
+    await logSuspiciousActivity(event.type, event.severity, event.description, {
       ...event.metadata,
       user_id: user?.id,
       timestamp: Date.now(),
       user_agent: navigator.userAgent,
       page_url: window.location.href,
     });
-  }, [user?.id, logSuspiciousActivity]);
+    
+    // Create threat alert for high/critical severity events
+    if (event.severity === 'high' || event.severity === 'critical') {
+      await createThreatAlert(
+        event.type,
+        event.severity,
+        event.description,
+        {
+          ...event.metadata,
+          detection_method: 'automated_monitoring'
+        }
+      );
+    }
+  }, [user?.id, logSuspiciousActivity, createThreatAlert]);
 
   // Monitor for rapid navigation
   useEffect(() => {
