@@ -5,9 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { Eye, EyeOff, LogIn } from "lucide-react";
+import { Eye, EyeOff, LogIn, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useInputValidation, validateEmail } from "@/hooks/useInputValidation";
+import { loginRateLimiter } from "@/utils/inputSanitization";
+import { sanitizeSecurityInput } from "@/utils/securityHeaders";
+import { useSecurity } from "@/hooks/useSecurity";
 import Logo from "./Logo";
 
 const LoginForm: React.FC = () => {
@@ -15,8 +18,14 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [rateLimitInfo, setRateLimitInfo] = useState<{
+    isLimited: boolean;
+    remainingAttempts: number;
+    resetTime: number | null;
+  }>({ isLimited: false, remainingAttempts: 5, resetTime: null });
   const { signIn, user } = useAuth();
   const navigate = useNavigate();
+  const { logLoginAttempt, logSuspiciousActivity } = useSecurity();
   const {
     errors,
     clearFieldError,
@@ -33,8 +42,22 @@ const LoginForm: React.FC = () => {
     }
   }, [user, navigate]);
 
+  // Check rate limiting status
+  useEffect(() => {
+    const identifier = `login_${email || 'anonymous'}`;
+    const isLimited = loginRateLimiter.isRateLimited(identifier);
+    const remainingAttempts = loginRateLimiter.getRemainingAttempts(identifier);
+    const resetTime = loginRateLimiter.getResetTime(identifier);
+    
+    setRateLimitInfo({
+      isLimited,
+      remainingAttempts,
+      resetTime
+    });
+  }, [email]);
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitizedEmail = e.target.value.trim();
+    const sanitizedEmail = sanitizeSecurityInput(e.target.value.trim());
     setEmail(sanitizedEmail);
     clearFieldError("email");
   };
@@ -47,6 +70,28 @@ const LoginForm: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const identifier = `login_${email}`;
+    
+    // Check rate limiting
+    if (loginRateLimiter.isRateLimited(identifier)) {
+      const resetTime = loginRateLimiter.getResetTime(identifier);
+      const resetDate = resetTime ? new Date(resetTime) : new Date();
+      
+      await logSuspiciousActivity(
+        'rate_limit_exceeded',
+        'high',
+        'Usuário excedeu limite de tentativas de login',
+        { email, identifier, reset_time: resetTime }
+      );
+      
+      toast({
+        title: "Muitas tentativas",
+        description: `Aguarde até ${resetDate.toLocaleTimeString()} para tentar novamente.`,
+        variant: "destructive",
+      });
+      return;
+    }
 
     // Validate form data
     const isValid = validateForm({ email, password });
@@ -71,16 +116,42 @@ const LoginForm: React.FC = () => {
     setLoading(true);
 
     try {
-      await signIn(email, password);
+      const result = await signIn(email, password);
+      
+      if (result.error) {
+        // Log failed attempt
+        await logLoginAttempt(false, { 
+          email, 
+          error: result.error.message,
+          identifier 
+        });
+        
+        throw result.error;
+      }
+
+      // Log successful attempt
+      await logLoginAttempt(true, { email, identifier });
+      
       toast({
         title: "Login realizado com êxito!",
         description: "Bem-vindo ao FluxoAzul! Você foi autenticado com sucesso.",
       });
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
+      // Update rate limiting info
+      const isLimited = loginRateLimiter.isRateLimited(identifier);
+      const remainingAttempts = loginRateLimiter.getRemainingAttempts(identifier);
+      const resetTime = loginRateLimiter.getResetTime(identifier);
+      
+      setRateLimitInfo({
+        isLimited,
+        remainingAttempts,
+        resetTime
+      });
+
       toast({
         title: "Erro no login",
-        description: "E-mail ou senha incorretos. Verifique suas credenciais.",
+        description: `E-mail ou senha incorretos. ${remainingAttempts > 0 ? `${remainingAttempts} tentativas restantes.` : ''}`,
         variant: "destructive",
       });
     } finally {
@@ -164,10 +235,30 @@ const LoginForm: React.FC = () => {
                 )}
               </div>
 
+              {/* Rate limiting info */}
+              {rateLimitInfo.isLimited && (
+                <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <Shield className="h-4 w-4 text-red-500" />
+                  <p className="text-red-700 text-sm">
+                    Conta temporariamente bloqueada por segurança. 
+                    {rateLimitInfo.resetTime && ` Tente novamente após ${new Date(rateLimitInfo.resetTime).toLocaleTimeString()}.`}
+                  </p>
+                </div>
+              )}
+              
+              {!rateLimitInfo.isLimited && rateLimitInfo.remainingAttempts < 3 && (
+                <div className="flex items-center space-x-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <Shield className="h-4 w-4 text-yellow-500" />
+                  <p className="text-yellow-700 text-sm">
+                    Aviso: {rateLimitInfo.remainingAttempts} tentativas restantes antes do bloqueio temporário.
+                  </p>
+                </div>
+              )}
+
               <div className="pt-2">
                 <Button
                   type="submit"
-                  disabled={loading || !!errors.email || !!errors.password}
+                  disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
                   className="w-full h-11 bg-gradient-to-r from-slate-800 to-blue-600 hover:from-slate-900 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {loading ? (

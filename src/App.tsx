@@ -8,6 +8,7 @@ import UpdateNotification from "./components/pwa/UpdateNotification";
 import { ProfileProvider } from "./contexts/ProfileContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { useSystemNotifications } from "./hooks/useSystemNotifications";
+import { useSecurityMonitoring } from "./hooks/useSecurityMonitoring";
 
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -34,11 +35,18 @@ const SystemNotificationManager = () => {
   return null;
 };
 
+// Security monitoring component
+const SecurityMonitor: React.FC = () => {
+  useSecurityMonitoring();
+  return null;
+};
+
 // Componente wrapper para rotas autenticadas
 const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => (
   <ProfileProvider>
     <NotificationProvider>
       <SystemNotificationManager />
+      <SecurityMonitor />
       <DashboardLayout>
         {children}
       </DashboardLayout>

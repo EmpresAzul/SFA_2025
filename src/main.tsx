@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import App from "./App.tsx";
 import "./index.css";
+import { initializeClientSecurity } from "@/utils/securityHeaders";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +65,9 @@ window.addEventListener('unhandledrejection', (event) => {
     promise: event.promise
   });
 });
+
+// Initialize client-side security measures
+initializeClientSecurity();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
