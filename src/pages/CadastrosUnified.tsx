@@ -115,12 +115,12 @@ const CadastrosUnified: React.FC = () => {
             itemsPerPage={itemsPerPage}
             onPageChange={handlePageChange}
             onItemsPerPageChange={handleItemsPerPageChange}
-            onEdit={handleEdit}
+            onEdit={(item) => handleEdit(item as any)}
             onView={(cadastro) => {
-              setEditingItem(cadastro);
+              setEditingItem(cadastro as any);
               setIsEditModalOpen(true);
             }}
-            onToggleStatus={handleToggleStatus}
+            onToggleStatus={(item) => handleToggleStatus(item as any)}
             onDelete={handleDelete}
           />
         </TabsContent>

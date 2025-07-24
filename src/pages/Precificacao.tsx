@@ -9,9 +9,12 @@ import PrecificacaoTable from "@/components/precificacao/PrecificacaoTable";
 import PrecificacaoViewModal from "@/components/precificacao/PrecificacaoViewModal";
 import { usePrecificacao } from "@/hooks/usePrecificacao";
 import { List, Package, Wrench, Clock } from "lucide-react";
-import type { Database } from "@/integrations/supabase/types";
 
-type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
+
+interface Precificacao {
+  id: string;
+  [key: string]: any;
+}
 
 const PrecificacaoPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("lista");

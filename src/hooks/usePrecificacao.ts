@@ -1,13 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import type { Database } from "@/integrations/supabase/types";
 
-type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
-type PrecificacaoInsert =
-  Database["public"]["Tables"]["precificacao"]["Insert"];
-type PrecificacaoUpdate =
-  Database["public"]["Tables"]["precificacao"]["Update"];
+
+interface Precificacao {
+  id: string;
+  [key: string]: any;
+}
+interface PrecificacaoInsert {
+  [key: string]: any;
+}
+interface PrecificacaoUpdate {
+  [key: string]: any;
+}
 
 export const usePrecificacao = () => {
   const { toast } = useToast();

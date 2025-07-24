@@ -10,10 +10,13 @@ import { usePrecificacao } from "@/hooks/usePrecificacao";
 import { supabase } from "@/integrations/supabase/client";
 import TaxasAdicionaisManager from "./forms/TaxasAdicionaisManager";
 import ServicoCalculationsResults from "./forms/ServicoCalculationsResults";
-import type { Database } from "@/integrations/supabase/types";
+
 import type { TaxaAdicional } from "./forms/TaxasAdicionaisManager";
 
-type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
+interface Precificacao {
+  id: string;
+  [key: string]: any;
+}
 
 interface CustoServico {
   id: string;

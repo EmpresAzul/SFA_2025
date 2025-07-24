@@ -60,10 +60,10 @@ export const EstoqueTable: React.FC<EstoqueTableProps> = ({
   handleToggleStatus,
   handleDelete,
 }) => {
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: string): "default" | "destructive" | "outline" | "secondary" => {
     const colors = {
-      ativo: "default",
-      inativo: "secondary",
+      ativo: "default" as const,
+      inativo: "secondary" as const,
     };
     return colors[status as keyof typeof colors] || "secondary";
   };

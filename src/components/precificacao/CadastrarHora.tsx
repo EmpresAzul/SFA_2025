@@ -5,9 +5,10 @@ import { useHoraForm } from "@/hooks/useHoraForm";
 import HoraFormFields from "./forms/HoraFormFields";
 import DespesasFixasManager from "./forms/DespesasFixasManager";
 import HoraCalculationsResults from "./forms/HoraCalculationsResults";
-import type { Database } from "@/integrations/supabase/types";
-
-type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
+interface Precificacao {
+  id: string;
+  [key: string]: any;
+}
 
 interface CadastrarHoraProps {
   editingItem?: Precificacao | null;

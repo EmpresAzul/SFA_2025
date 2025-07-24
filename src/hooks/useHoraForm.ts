@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { usePrecificacao } from "@/hooks/usePrecificacao";
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
 
-type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
+
+interface Precificacao {
+  id: string;
+  [key: string]: any;
+}
 
 export interface DespesaFixa {
   id: string;

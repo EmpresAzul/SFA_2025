@@ -34,9 +34,12 @@ import {
 import { formatNumberToDisplay } from "@/utils/currency";
 import { usePrecificacao } from "@/hooks/usePrecificacao";
 import PrecificacaoPagination from "./PrecificacaoPagination";
-import type { Database } from "@/integrations/supabase/types";
 
-type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
+
+interface Precificacao {
+  id: string;
+  [key: string]: any;
+}
 
 interface PrecificacaoTableProps {
   data: Precificacao[];

@@ -1,8 +1,10 @@
 import React from "react";
 import ProdutoFormContainer from "./forms/ProdutoFormContainer";
-import type { Database } from "@/integrations/supabase/types";
 
-type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
+interface Precificacao {
+  id: string;
+  [key: string]: any;
+}
 
 interface CadastrarProdutoProps {
   editingItem?: Precificacao | null;

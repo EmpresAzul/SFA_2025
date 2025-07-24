@@ -118,7 +118,6 @@ const SaldosBancariosForm: React.FC<SaldosBancariosFormProps> = ({
               value={valor}
               onChange={setValor}
               placeholder="0,00"
-              required
             />
           </div>
 

@@ -1,8 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
 import { addMonths, format } from "date-fns";
-import type { Database } from "@/integrations/supabase/types";
 
-type Lancamento = Database["public"]["Tables"]["lancamentos"]["Row"];
+
+interface Lancamento {
+  id: string;
+  [key: string]: any;
+}
 
 export const criarLancamentosRecorrentes = async (
   lancamentoData: Lancamento,

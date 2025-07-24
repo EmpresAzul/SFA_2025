@@ -6,9 +6,12 @@ import CustosManager from "./CustosManager";
 import TaxasAdicionaisManager from "./TaxasAdicionaisManager";
 import ProdutoCalculationsResults from "./ProdutoCalculationsResults";
 import { useProdutoForm } from "@/hooks/useProdutoForm";
-import type { Database } from "@/integrations/supabase/types";
 
-type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
+
+interface Precificacao {
+  id: string;
+  [key: string]: any;
+}
 
 interface ProdutoFormContainerProps {
   editingItem?: Precificacao | null;

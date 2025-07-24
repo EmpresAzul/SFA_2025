@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { usePrecificacao } from "@/hooks/usePrecificacao";
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
+
 import type { TaxaAdicional } from "@/components/precificacao/forms/TaxasAdicionaisManager";
 
-type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
+interface Precificacao {
+  id: string;
+  [key: string]: any;
+}
 
 interface CustoProduto {
   id: string;

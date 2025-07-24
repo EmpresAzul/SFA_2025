@@ -1,6 +1,6 @@
 export interface Notification {
   id: string;
-  type: 'ticket_response' | 'system_message' | 'info' | 'warning' | 'success';
+  type: 'ticket_response' | 'system_message' | 'info' | 'warning' | 'success' | 'reminder';
   title: string;
   message: string;
   ticketId?: string; // Para notificações de chamados

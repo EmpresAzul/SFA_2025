@@ -17,9 +17,12 @@ import {
   Timer,
 } from "lucide-react";
 import { formatNumberToDisplay } from "@/utils/currency";
-import type { Database } from "@/integrations/supabase/types";
 
-type Precificacao = Database["public"]["Tables"]["precificacao"]["Row"];
+
+interface Precificacao {
+  id: string;
+  [key: string]: any;
+}
 
 interface PrecificacaoViewModalProps {
   item: Precificacao | null;
