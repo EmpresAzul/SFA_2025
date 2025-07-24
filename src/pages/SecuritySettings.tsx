@@ -2,12 +2,18 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSecurity } from "@/hooks/useSecurity";
+import { useAdvancedSecurity } from "@/hooks/useAdvancedSecurity";
 import { SecuritySettings } from '@/components/security/SecuritySettings';
 import AdminSecurityDashboard from '@/components/security/AdminSecurityDashboard';
+import { SecurityMetricsDashboard } from '@/components/security/SecurityMetricsDashboard';
+import { SecuritySetupGuide } from '@/components/security/SecuritySetupGuide';
 
 const SecuritySettingsPage: React.FC = () => {
   const { useIsAdmin } = useSecurity();
   const isAdmin = useIsAdmin();
+  
+  // Initialize advanced security monitoring
+  useAdvancedSecurity();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -19,11 +25,17 @@ const SecuritySettingsPage: React.FC = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="user" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+        <Tabs defaultValue="setup" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="setup">Configuração</TabsTrigger>
             <TabsTrigger value="user">Configurações do Usuário</TabsTrigger>
+            <TabsTrigger value="metrics">Métricas de Segurança</TabsTrigger>
             {isAdmin && <TabsTrigger value="admin">Painel Administrativo</TabsTrigger>}
           </TabsList>
+
+          <TabsContent value="setup" className="space-y-6">
+            <SecuritySetupGuide />
+          </TabsContent>
 
           <TabsContent value="user" className="space-y-6">
             <Card>
@@ -35,6 +47,20 @@ const SecuritySettingsPage: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <SecuritySettings />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="metrics" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Métricas e Monitoramento</CardTitle>
+                <CardDescription>
+                  Visão geral da segurança do sistema e atividades suspeitas
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <SecurityMetricsDashboard />
               </CardContent>
             </Card>
           </TabsContent>

@@ -8,9 +8,102 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useSecurityAlerts } from "@/hooks/useSecurityAlerts";
 import { useSessionSecurity } from "@/hooks/useSessionSecurity";
 import { useSecurity } from "@/hooks/useSecurity";
-import { Shield, AlertTriangle, Users, Activity, Clock, CheckCircle } from "lucide-react";
+import { Shield, AlertTriangle, Users, Activity, Clock, CheckCircle, MapPin, Globe } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+
+// Security Events Tab Component
+const SecurityEventsTab = () => {
+  const { useSecurityEvents } = useSecurity();
+  const { data: events = [], isLoading } = useSecurityEvents();
+
+  const getSeverityIcon = (severity: string) => {
+    switch (severity) {
+      case 'critical': return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      case 'high': return <AlertTriangle className="h-4 w-4 text-orange-500" />;
+      case 'medium': return <Activity className="h-4 w-4 text-yellow-500" />;
+      default: return <Shield className="h-4 w-4 text-blue-500" />;
+    }
+  };
+
+  const getEventTypeIcon = (eventType: string) => {
+    switch (eventType) {
+      case 'login_success': return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'login_failure': return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      case 'suspicious_activity': return <Shield className="h-4 w-4 text-orange-500" />;
+      case 'data_access': return <Activity className="h-4 w-4 text-blue-500" />;
+      case 'geographic_anomaly': return <MapPin className="h-4 w-4 text-purple-500" />;
+      case 'multiple_sessions': return <Users className="h-4 w-4 text-yellow-500" />;
+      default: return <Globe className="h-4 w-4 text-gray-500" />;
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-32">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  return (
+    <ScrollArea className="h-[400px]">
+      {events.length === 0 ? (
+        <div className="text-center text-gray-500 py-8">
+          Nenhum evento de segurança registrado.
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {events.map((event) => (
+            <div key={event.id} className="border rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex items-center gap-2 mt-1">
+                  {getSeverityIcon(event.severity)}
+                  {getEventTypeIcon(event.event_type)}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge variant="outline" className="text-xs">
+                      {event.event_type.replace('_', ' ').toUpperCase()}
+                    </Badge>
+                    <Badge className={`text-xs ${
+                      event.severity === 'critical' ? 'bg-red-500' :
+                      event.severity === 'high' ? 'bg-orange-500' :
+                      event.severity === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
+                    }`}>
+                      {event.severity.toUpperCase()}
+                    </Badge>
+                  </div>
+                  <p className="font-medium text-gray-900">{event.description}</p>
+                  <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {formatDistanceToNow(new Date(event.created_at), { 
+                        addSuffix: true, 
+                        locale: ptBR 
+                      })}
+                    </span>
+                    {event.metadata?.ip_address && (
+                      <span className="flex items-center gap-1">
+                        <Globe className="h-3 w-3" />
+                        {String(event.metadata.ip_address)}
+                      </span>
+                    )}
+                    {event.metadata?.user_agent && (
+                      <span className="text-xs text-gray-400 truncate max-w-xs">
+                        {String(event.metadata.user_agent).substring(0, 50)}...
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </ScrollArea>
+  );
+};
 
 const AdminSecurityDashboard: React.FC = () => {
   const { useAllSecurityAlerts, useResolveSecurityAlert } = useSecurityAlerts();
@@ -253,9 +346,7 @@ const AdminSecurityDashboard: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center text-gray-500 py-8">
-                Funcionalidade em desenvolvimento...
-              </div>
+              <SecurityEventsTab />
             </CardContent>
           </Card>
         </TabsContent>

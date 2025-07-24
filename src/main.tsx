@@ -7,7 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import App from "./App.tsx";
 import "./index.css";
-import { initializeClientSecurity } from "@/utils/securityHeaders";
+import { initializeSecurity } from "@/utils/securityEnforcement";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -79,8 +79,14 @@ window.addEventListener('unhandledrejection', (event) => {
   });
 });
 
-// Initialize client-side security measures
-initializeClientSecurity();
+// Initialize enhanced security measures
+initializeSecurity({
+  enforceCSP: true,
+  blockDevTools: import.meta.env.PROD,
+  preventRightClick: import.meta.env.PROD,
+  detectScreenRecording: import.meta.env.PROD,
+  rateLimitRequests: true
+});
 
 // App rendering with enhanced error handling
 try {
