@@ -1,12 +1,11 @@
-const CACHE_NAME = "fluxoazul-v2.0.1";
-const STATIC_CACHE = "fluxoazul-static-v2.0.1";
-const DYNAMIC_CACHE = "fluxoazul-dynamic-v2.0.1";
+const CACHE_NAME = "fluxoazul-v2.1.0";
+const STATIC_CACHE = "fluxoazul-static-v2.1.0";
+const DYNAMIC_CACHE = "fluxoazul-dynamic-v2.1.0";
 
 const urlsToCache = [
   "/",
   "/manifest.json",
-  "/favicon.svg",
-  "/icon-192x192.png"
+  "/favicon.svg"
 ];
 
 const OFFLINE_PAGE = "/";

@@ -27,15 +27,12 @@ export default defineConfig(({ mode }) => ({
     assetsInlineLimit: 4096,
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes("node_modules")) {
-            if (id.includes("react") || id.includes("react-dom")) return "vendor-react";
-            if (id.includes("@radix-ui")) return "vendor-radix";
-            if (id.includes("@supabase")) return "vendor-supabase";
-            if (id.includes("@tanstack")) return "vendor-query";
-            if (id.includes("lucide-react") || id.includes("chart")) return "vendor-ui";
-            return "vendor-other";
-          }
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-button', 'lucide-react'],
+          supabase: ['@supabase/supabase-js'],
+          query: ['@tanstack/react-query']
         },
       },
       onwarn: (warning, warn) => {

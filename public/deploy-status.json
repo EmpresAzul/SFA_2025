@@ -1,0 +1,12 @@
+{
+  "status": "active",
+  "version": "2.1.0",
+  "domain": "fluxoazul.com",
+  "lastDeploy": "2025-01-25T12:00:00Z",
+  "buildStatus": "success",
+  "features": {
+    "pwa": true,
+    "auth": true,
+    "customDomain": true
+  }
+}

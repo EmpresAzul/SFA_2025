@@ -6,15 +6,7 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/sw.js",
-      "destination": "/sw.js"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/((?!api).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
