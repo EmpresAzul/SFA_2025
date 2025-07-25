@@ -9,18 +9,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { initializeSecurity } from "@/utils/securityEnforcement";
 
-// Import Lovable Tagger for development tracking
-if (import.meta.env.DEV) {
-  try {
-    import("lovable-tagger").then((module) => {
-      console.log("FluxoAzul: Lovable tagger loaded for development");
-    }).catch((error) => {
-      console.log("FluxoAzul: Lovable tagger not available:", error.message);
-    });
-  } catch (error) {
-    console.log("FluxoAzul: Lovable tagger import failed:", error);
-  }
-}
+// Lovable tagger will be handled by vite.config.ts in development mode
 
 const queryClient = new QueryClient({
   defaultOptions: {
