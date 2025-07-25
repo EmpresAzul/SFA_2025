@@ -1,26 +1,12 @@
-const CACHE_NAME = "fluxoazul-v3.0.0";
-const STATIC_CACHE = "fluxoazul-static-v3.0.0";
-const DYNAMIC_CACHE = "fluxoazul-dynamic-v3.0.0";
+const CACHE_NAME = "fluxoazul-v2.0.1";
+const STATIC_CACHE = "fluxoazul-static-v2.0.1";
+const DYNAMIC_CACHE = "fluxoazul-dynamic-v2.0.1";
 
 const urlsToCache = [
   "/",
-  "/dashboard",
-  "/lancamentos",
-  "/fluxo-caixa",
-  "/dre",
-  "/precificacao",
-  "/estoque",
-  "/cadastros",
-  "/crm",
-  "/saldos-bancarios",
-  "/lembretes",
-  "/ponto-equilibrio",
-  "/suporte",
-  "/perfil",
   "/manifest.json",
-  "/favicon.ico",
   "/favicon.svg",
-  "/icon-192x192.png",
+  "/icon-192x192.png"
 ];
 
 const OFFLINE_PAGE = "/";
@@ -75,103 +61,143 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Fetch event - improved caching strategy for custom domains
+// Fetch event - optimized for custom domain
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   
-  // Skip cache for API requests and Supabase to avoid stale data
+  // Skip external requests, API calls, and non-GET requests
   if (
+    url.origin !== location.origin ||
     url.pathname.includes("/api/") ||
     url.hostname.includes("supabase") ||
+    url.hostname.includes("vercel") ||
     event.request.method !== "GET"
   ) {
-    event.respondWith(fetch(event.request));
     return;
   }
 
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Return cached version for static assets only
-      if (response && (
-        event.request.url.includes('.js') ||
-        event.request.url.includes('.css') ||
-        event.request.url.includes('.png') ||
-        event.request.url.includes('.jpg') ||
-        event.request.url.includes('.svg')
-      )) {
-        return response;
-      }
-
-      // For navigation requests, always try network first
-      return fetch(event.request)
-        .then((response) => {
-          // Don't cache if not a valid response
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== "basic"
-          ) {
-            return response;
+    (async () => {
+      try {
+        // For static assets: Cache-first strategy
+        if (url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$/)) {
+          const cachedResponse = await caches.match(event.request);
+          if (cachedResponse) {
+            return cachedResponse;
           }
-
-          // Only cache static assets
-          if (
-            event.request.url.includes('.js') ||
-            event.request.url.includes('.css') ||
-            event.request.url.includes('.png') ||
-            event.request.url.includes('.jpg') ||
-            event.request.url.includes('.svg')
-          ) {
-            const responseToCache = response.clone();
-            caches.open(STATIC_CACHE).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
+          
+          const response = await fetch(event.request);
+          if (response.ok && response.status < 400) {
+            const cache = await caches.open(STATIC_CACHE);
+            cache.put(event.request, response.clone());
           }
-
           return response;
-        })
-        .catch(() => {
-          // Only return cached version if available, otherwise show network error
-          if (response) {
-            return response;
-          }
-          
-          // For navigation requests, return cached index if available
-          if (event.request.mode === "navigate") {
-            return caches.match("/").then(cachedResponse => {
-              if (cachedResponse) {
-                return cachedResponse;
+        }
+        
+        // For navigation: Network-first with no-cache headers
+        if (event.request.mode === "navigate" || url.pathname === "/" || url.pathname.endsWith(".html")) {
+          try {
+            const response = await fetch(event.request, {
+              cache: 'no-cache',
+              headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
               }
-              // Return a simple error page instead of generic offline message
-              return new Response(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                  <title>FluxoAzul - Sem Conexão</title>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1">
-                  <style>
-                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-                    .error { color: #e53e3e; }
-                    button { padding: 10px 20px; margin: 10px; background: #3182ce; color: white; border: none; border-radius: 5px; cursor: pointer; }
-                  </style>
-                </head>
-                <body>
-                  <h1>FluxoAzul</h1>
-                  <p class="error">Não foi possível conectar ao servidor.</p>
-                  <p>Verifique sua conexão com a internet e tente novamente.</p>
+            });
+            
+            if (response.ok && response.status < 400) {
+              const cache = await caches.open(DYNAMIC_CACHE);
+              cache.put(event.request, response.clone());
+            }
+            
+            return response;
+          } catch (networkError) {
+            console.log('FluxoAzul PWA: Network failed, trying cache');
+            
+            const cachedResponse = await caches.match(event.request) || await caches.match("/index.html") || await caches.match("/");
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            
+            return new Response(`
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <title>FluxoAzul - Offline</title>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <style>
+                  body { 
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                    text-align: center; 
+                    padding: 50px 20px; 
+                    background: #f8fafc;
+                    color: #334155;
+                    margin: 0;
+                  }
+                  .container { 
+                    max-width: 400px; 
+                    margin: 0 auto;
+                    background: white;
+                    padding: 40px;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                  }
+                  h1 { color: #1e293b; margin-bottom: 16px; }
+                  p { margin-bottom: 24px; line-height: 1.6; }
+                  button {
+                    background: #3b82f6;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    margin: 5px;
+                  }
+                  button:hover { background: #2563eb; }
+                </style>
+              </head>
+              <body>
+                <div class="container">
+                  <h1>FluxoAzul Offline</h1>
+                  <p>Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.</p>
                   <button onclick="window.location.reload()">Tentar Novamente</button>
-                </body>
-                </html>
-              `, {
-                headers: { 'Content-Type': 'text/html' }
-              });
+                  <button onclick="window.location.href='/'">Ir para Início</button>
+                </div>
+              </body>
+              </html>
+            `, {
+              headers: { 'Content-Type': 'text/html' }
             });
           }
-          
-          return new Response("Network Error", { status: 503 });
-        });
-    })
+        }
+        
+        // For other requests: Network-first
+        const response = await fetch(event.request);
+        
+        if (response.ok && response.status < 400) {
+          const cache = await caches.open(DYNAMIC_CACHE);
+          cache.put(event.request, response.clone());
+        }
+        
+        return response;
+        
+      } catch (error) {
+        console.error('FluxoAzul PWA: Fetch error:', error);
+        
+        const cachedResponse = await caches.match(event.request);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        
+        if (event.request.mode === "navigate") {
+          return new Response("Erro de Rede", { status: 503 });
+        }
+        
+        throw error;
+      }
+    })()
   );
 });
 

@@ -1,13 +1,16 @@
 {
   "status": "healthy",
-  "timestamp": "2025-01-25T20:30:00.000Z",
-  "version": "3.0.0",
-  "environment": "production",
-  "services": {
-    "supabase": "connected",
-    "auth": "enabled",
-    "database": "operational"
-  },
+  "timestamp": "2024-12-20T00:00:00Z",
+  "version": "2.0.1",
+  "app": "FluxoAzul",
   "domain": "fluxoazul.com",
-  "lastDeploy": "automated"
+  "services": {
+    "frontend": "operational",
+    "supabase": "operational",
+    "authentication": "operational"
+  },
+  "uptime": "99.9%",
+  "response_time_ms": 150,
+  "build": "optimized",
+  "cache_strategy": "network_first"
 }

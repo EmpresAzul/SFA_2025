@@ -79,7 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const timeoutId = setTimeout(() => {
       console.log('AuthContext: Timeout reached, forcing loading to false');
       setLoading(false);
-    }, 5000); // Otimizado para 5 segundos para melhor UX em produção
+    }, 8000); // Otimizado para 8 segundos para domínio customizado
 
     // Initialize auth with error handling
     const initializeAuth = async () => {
@@ -97,7 +97,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Get initial session with timeout
         const sessionPromise = supabase.auth.getSession();
         const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session check timeout')), 2000)
+          setTimeout(() => reject(new Error('Session check timeout')), 3000)
         );
 
         const { data: { session }, error } = await Promise.race([
