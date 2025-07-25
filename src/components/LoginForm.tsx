@@ -23,7 +23,9 @@ const LoginForm: React.FC = () => {
     remainingAttempts: number;
     resetTime: number | null;
   }>({ isLimited: false, remainingAttempts: 5, resetTime: null });
+  console.log('LoginForm: About to call useAuth...');
   const { signIn, user } = useAuth();
+  console.log('LoginForm: useAuth called successfully', { user: !!user });
   const navigate = useNavigate();
   const { logLoginAttempt, logSuspiciousActivity } = useSecurity();
   const {

@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => ({
         manualChunks: {
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-button', 'lucide-react'],
+          ui: ['lucide-react'],
           supabase: ['@supabase/supabase-js'],
           query: ['@tanstack/react-query']
         },

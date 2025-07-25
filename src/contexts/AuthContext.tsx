@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -12,11 +11,22 @@ interface AuthContextType {
   signOut: () => Promise<void>;
 }
 
+// Create context with proper error handling
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Debug log para verificar se o contexto está sendo criado
+console.log('AuthContext: Context created successfully', { 
+  AuthContext: !!AuthContext,
+  createContext: !!createContext 
+});
+
 export const useAuth = () => {
+  console.log('useAuth: Hook called');
   const context = useContext(AuthContext);
+  console.log('useAuth: Context value:', { context: !!context });
+  
   if (context === undefined) {
+    console.error('useAuth: Context is undefined! AuthProvider not found in component tree');
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
@@ -27,6 +37,8 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  console.log('AuthProvider: Component rendering...');
+  
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
