@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import * as React from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -12,17 +12,17 @@ interface AuthContextType {
 }
 
 // Create context with proper error handling
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
 // Debug log para verificar se o contexto está sendo criado
 console.log('AuthContext: Context created successfully', { 
   AuthContext: !!AuthContext,
-  createContext: !!createContext 
+  createContext: !!React.createContext 
 });
 
 export const useAuth = () => {
   console.log('useAuth: Hook called');
-  const context = useContext(AuthContext);
+  const context = React.useContext(AuthContext);
   console.log('useAuth: Context value:', { context: !!context });
   
   if (context === undefined) {
@@ -33,19 +33,19 @@ export const useAuth = () => {
 };
 
 interface AuthProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   console.log('AuthProvider: Component rendering...');
   
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [lastActivity, setLastActivity] = useState<Date>(new Date());
+  const [user, setUser] = React.useState<User | null>(null);
+  const [session, setSession] = React.useState<Session | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [lastActivity, setLastActivity] = React.useState<Date>(new Date());
 
   // Session timeout (30 minutes of inactivity)
-  useEffect(() => {
+  React.useEffect(() => {
     if (!user || !session) return;
 
     const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
@@ -85,7 +85,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
   }, [user, session]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     console.log('AuthContext: Initializing authentication...');
     
     // Production optimized timeout - faster for better UX
