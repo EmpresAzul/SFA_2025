@@ -7,16 +7,16 @@ const Index = () => {
 
   console.log('Index: Current state -', { user: !!user, loading });
 
-  // Mostrar loading enquanto verifica autenticação (máximo 10 segundos)
+  // Loading otimizado para produção
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600">
-        <div className="flex flex-col items-center space-y-4 text-white">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary via-primary/80 to-secondary">
+        <div className="flex flex-col items-center space-y-4 text-primary-foreground">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-foreground"></div>
           <span>Verificando autenticação...</span>
           <button 
             onClick={() => window.location.href = '/login'}
-            className="mt-4 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+            className="mt-4 px-4 py-2 bg-primary-foreground/20 hover:bg-primary-foreground/30 rounded-lg transition-colors"
           >
             Ir para Login
           </button>
