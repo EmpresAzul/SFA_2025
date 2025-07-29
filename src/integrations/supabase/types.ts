@@ -74,6 +74,54 @@ export type Database = {
         }
         Relationships: []
       }
+      estoques: {
+        Row: {
+          created_at: string | null
+          data: string
+          id: string
+          nome_produto: string
+          quantidade: number
+          quantidade_bruta: number
+          quantidade_liquida: number
+          status: string | null
+          unidade_medida: string
+          updated_at: string | null
+          user_id: string
+          valor_total: number
+          valor_unitario: number
+        }
+        Insert: {
+          created_at?: string | null
+          data?: string
+          id?: string
+          nome_produto: string
+          quantidade?: number
+          quantidade_bruta?: number
+          quantidade_liquida?: number
+          status?: string | null
+          unidade_medida: string
+          updated_at?: string | null
+          user_id: string
+          valor_total?: number
+          valor_unitario?: number
+        }
+        Update: {
+          created_at?: string | null
+          data?: string
+          id?: string
+          nome_produto?: string
+          quantidade?: number
+          quantidade_bruta?: number
+          quantidade_liquida?: number
+          status?: string | null
+          unidade_medida?: string
+          updated_at?: string | null
+          user_id?: string
+          valor_total?: number
+          valor_unitario?: number
+        }
+        Relationships: []
+      }
       lancamentos: {
         Row: {
           categoria: string | null
@@ -164,7 +212,7 @@ export type Database = {
           categoria: string | null
           created_at: string
           data_lembrete: string
-          data_vencimento: string
+          data_vencimento: string | null
           descricao: string | null
           hora_lembrete: string | null
           id: string
@@ -178,7 +226,7 @@ export type Database = {
           categoria?: string | null
           created_at?: string
           data_lembrete: string
-          data_vencimento: string
+          data_vencimento?: string | null
           descricao?: string | null
           hora_lembrete?: string | null
           id?: string
@@ -192,7 +240,7 @@ export type Database = {
           categoria?: string | null
           created_at?: string
           data_lembrete?: string
-          data_vencimento?: string
+          data_vencimento?: string | null
           descricao?: string | null
           hora_lembrete?: string | null
           id?: string
@@ -200,6 +248,99 @@ export type Database = {
           status?: string | null
           titulo?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ponto_equilibrio: {
+        Row: {
+          created_at: string | null
+          custos_variaveis: number
+          faturamento_estimado: number
+          gastos_fixos: number
+          id: string
+          margem_contribuicao: number | null
+          nome_projecao: string
+          ponto_equilibrio_calculado: number | null
+          pro_labore: number | null
+          saidas_nao_operacionais: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          custos_variaveis?: number
+          faturamento_estimado?: number
+          gastos_fixos?: number
+          id?: string
+          margem_contribuicao?: number | null
+          nome_projecao: string
+          ponto_equilibrio_calculado?: number | null
+          pro_labore?: number | null
+          saidas_nao_operacionais?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          custos_variaveis?: number
+          faturamento_estimado?: number
+          gastos_fixos?: number
+          id?: string
+          margem_contribuicao?: number | null
+          nome_projecao?: string
+          ponto_equilibrio_calculado?: number | null
+          pro_labore?: number | null
+          saidas_nao_operacionais?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      precificacao: {
+        Row: {
+          created_at: string | null
+          custo_mao_obra: number | null
+          custo_materia_prima: number | null
+          despesas_fixas: number | null
+          id: string
+          margem_lucro: number | null
+          nome: string
+          observacoes: string | null
+          preco_venda: number
+          status: string | null
+          tipo: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          custo_mao_obra?: number | null
+          custo_materia_prima?: number | null
+          despesas_fixas?: number | null
+          id?: string
+          margem_lucro?: number | null
+          nome: string
+          observacoes?: string | null
+          preco_venda: number
+          status?: string | null
+          tipo: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          custo_mao_obra?: number | null
+          custo_materia_prima?: number | null
+          despesas_fixas?: number | null
+          id?: string
+          margem_lucro?: number | null
+          nome?: string
+          observacoes?: string | null
+          preco_venda?: number
+          status?: string | null
+          tipo?: string
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -248,6 +389,7 @@ export type Database = {
           created_at: string
           data_atualizacao: string
           id: string
+          saldo: number | null
           saldo_anterior: number | null
           saldo_atual: number
           updated_at: string
@@ -260,6 +402,7 @@ export type Database = {
           created_at?: string
           data_atualizacao?: string
           id?: string
+          saldo?: number | null
           saldo_anterior?: number | null
           saldo_atual?: number
           updated_at?: string
@@ -272,6 +415,7 @@ export type Database = {
           created_at?: string
           data_atualizacao?: string
           id?: string
+          saldo?: number | null
           saldo_anterior?: number | null
           saldo_atual?: number
           updated_at?: string
