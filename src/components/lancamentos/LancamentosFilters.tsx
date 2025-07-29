@@ -103,15 +103,65 @@ const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todas as Categorias</SelectItem>
-                <SelectItem value="Vendas de Serviços">Vendas de Serviços</SelectItem>
+                
+                {/* RECEITAS */}
+                <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
+                  RECEITA BRUTA DE VENDAS
+                </div>
+                <SelectItem value="Venda de Produtos">Venda de Produtos</SelectItem>
+                <SelectItem value="Venda de Mercadorias">Venda de Mercadorias</SelectItem>
                 <SelectItem value="Prestação de Serviços">Prestação de Serviços</SelectItem>
-                <SelectItem value="Custo dos Serviços Prestados">Custo dos Serviços Prestados</SelectItem>
-                <SelectItem value="Marketing e Publicidade">Marketing e Publicidade</SelectItem>
-                <SelectItem value="Investimento em Marketing">Investimento em Marketing</SelectItem>
-                <SelectItem value="Periodicidade mensal e anual">Periodicidade mensal e anual</SelectItem>
-                <SelectItem value="Manutenção programada mensal">Manutenção programada mensal</SelectItem>
-                <SelectItem value="Contrato de prestação de serviços">Contrato de prestação de serviços</SelectItem>
-                <SelectItem value="Contrato Prest Serv">Contrato Prest Serv</SelectItem>
+                
+                <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
+                  RESULTADO FINANCEIRO
+                </div>
+                <SelectItem value="Receitas Financeiras">Receitas Financeiras</SelectItem>
+                
+                <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
+                  OUTRAS RECEITAS NÃO OPERACIONAIS
+                </div>
+                <SelectItem value="Outras Receitas Não Operacionais">Outras Receitas Não Operacionais</SelectItem>
+                
+                {/* DESPESAS */}
+                <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
+                  DEDUÇÕES DA RECEITA BRUTA
+                </div>
+                <SelectItem value="Devoluções e Abatimentos">Devoluções e Abatimentos</SelectItem>
+                <SelectItem value="Vendas Canceladas">Vendas Canceladas</SelectItem>
+                <SelectItem value="Descontos Incondicionais Concedidos">Descontos Incondicionais Concedidos</SelectItem>
+                <SelectItem value="Impostos sobre Vendas (ICMS, PIS, COFINS)">Impostos sobre Vendas (ICMS, PIS, COFINS)</SelectItem>
+                
+                <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
+                  CUSTOS
+                </div>
+                <SelectItem value="Custo da Matéria-Prima / Mercadoria">Custo da Matéria-Prima / Mercadoria</SelectItem>
+                <SelectItem value="Custo da Mão de Obra Direta">Custo da Mão de Obra Direta</SelectItem>
+                <SelectItem value="Custos Indiretos de Fabricação/Prestação (CIF/CIP)">Custos Indiretos de Fabricação/Prestação (CIF/CIP)</SelectItem>
+                <SelectItem value="Quebras e Perdas">Quebras e Perdas</SelectItem>
+                
+                <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
+                  DESPESAS OPERACIONAIS
+                </div>
+                <SelectItem value="Despesas com Vendas">Despesas com Vendas</SelectItem>
+                <SelectItem value="Despesas Administrativas">Despesas Administrativas</SelectItem>
+                <SelectItem value="Outras Despesas Operacionais">Outras Despesas Operacionais</SelectItem>
+                
+                <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
+                  DESPESAS FINANCEIRAS
+                </div>
+                <SelectItem value="Despesas Financeiras">Despesas Financeiras</SelectItem>
+                
+                <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
+                  OUTRAS DESPESAS NÃO OPERACIONAIS
+                </div>
+                <SelectItem value="Outras Despesas Não Operacionais">Outras Despesas Não Operacionais</SelectItem>
+                
+                <div className="text-xs font-semibold text-gray-500 px-2 py-1 bg-gray-100">
+                  IMPOSTOS E PARTICIPAÇÕES
+                </div>
+                <SelectItem value="Imposto de Renda Pessoa Jurídica (IRPJ)">Imposto de Renda Pessoa Jurídica (IRPJ)</SelectItem>
+                <SelectItem value="Contribuição Social sobre o Lucro Líquido (CSLL)">Contribuição Social sobre o Lucro Líquido (CSLL)</SelectItem>
+                <SelectItem value="Participações de Empregados, Administradores, etc.">Participações de Empregados, Administradores, etc.</SelectItem>
               </SelectContent>
             </Select>
           </div>

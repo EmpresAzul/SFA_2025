@@ -16,64 +16,120 @@ const DREReport: React.FC<DREReportProps> = ({
 }) => {
   return (
     <Card>
-      <CardHeader className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 text-white">
+      <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white">
         <CardTitle className="text-xl flex items-center gap-2">
           <FileText className="w-6 h-6" />
-          DRE - {periodoLabel}
+          Demonstração do Resultado do Exercício (DRE) - {periodoLabel}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         <div className="space-y-0">
-          {/* RECEITA OPERACIONAL BRUTA */}
+          {/* RECEITA BRUTA DE VENDAS */}
           <div className="bg-gradient-to-r from-emerald-100 to-green-100 border-b border-emerald-200 py-2 px-4">
             <h3 className="font-bold text-emerald-800 text-sm">
-              RECEITA OPERACIONAL BRUTA
+              RECEITA BRUTA DE VENDAS
             </h3>
           </div>
           <DRELineItem
-            label="Receitas Operacionais"
-            value={dreData.receitaOperacionalBruta}
-            detalhes={dreData.detalhamento.receitasOperacionais}
+            label="Venda de Produtos"
+            value={dreData.vendaProdutos}
+            detalhes={dreData.detalhamento.vendaProdutos}
+            level={1}
+          />
+          <DRELineItem
+            label="Venda de Mercadorias"
+            value={dreData.vendaMercadorias}
+            detalhes={dreData.detalhamento.vendaMercadorias}
+            level={1}
+          />
+          <DRELineItem
+            label="Prestação de Serviços"
+            value={dreData.prestacaoServicos}
+            detalhes={dreData.detalhamento.prestacaoServicos}
             level={1}
           />
 
-          {/* DEDUÇÕES */}
+          {/* DEDUÇÕES DA RECEITA BRUTA */}
           <div className="bg-gradient-to-r from-red-100 to-rose-100 border-b border-red-200 py-2 px-4">
             <h3 className="font-bold text-red-800 text-sm">
               (-) DEDUÇÕES DA RECEITA BRUTA
             </h3>
           </div>
           <DRELineItem
-            label="Deduções e Impostos"
-            value={dreData.deducoesReceitaBruta}
+            label="(-) Devoluções e Abatimentos"
+            value={dreData.devolucoes}
             isNegative
-            detalhes={dreData.detalhamento.deducoes}
+            detalhes={dreData.detalhamento.devolucoes}
+            level={1}
+          />
+          <DRELineItem
+            label="(-) Vendas Canceladas"
+            value={dreData.vendasCanceladas}
+            isNegative
+            detalhes={dreData.detalhamento.vendasCanceladas}
+            level={1}
+          />
+          <DRELineItem
+            label="(-) Descontos Incondicionais Concedidos"
+            value={dreData.descontosIncondicionais}
+            isNegative
+            detalhes={dreData.detalhamento.descontosIncondicionais}
+            level={1}
+          />
+          <DRELineItem
+            label="(-) Impostos sobre Vendas (ICMS, PIS, COFINS)"
+            value={dreData.impostosVendas}
+            isNegative
+            detalhes={dreData.detalhamento.impostosVendas}
             level={1}
           />
 
-          {/* RECEITA LÍQUIDA */}
+          {/* RECEITA LÍQUIDA DE VENDAS */}
           <DRELineItem
-            label="= RECEITA OPERACIONAL LÍQUIDA"
-            value={dreData.receitaOperacionalLiquida}
+            label="= RECEITA LÍQUIDA DE VENDAS"
+            value={dreData.receitaLiquidaVendas}
             isSubtotal
           />
 
-          {/* CUSTOS */}
+          {/* CUSTO DOS PRODUTOS/SERVIÇOS/MERCADORIAS VENDIDAS */}
           <div className="bg-gradient-to-r from-orange-100 to-amber-100 border-b border-orange-200 py-2 px-4">
-            <h3 className="font-bold text-orange-800 text-sm">(-) CUSTOS DAS VENDAS</h3>
+            <h3 className="font-bold text-orange-800 text-sm">
+              (-) CUSTO DOS PRODUTOS/SERVIÇOS/MERCADORIAS VENDIDAS (CPV/CSP/CMV)
+            </h3>
           </div>
           <DRELineItem
-            label="Custos Diretos"
-            value={dreData.custosVendas}
+            label="(-) Custo da Matéria-Prima / Mercadoria"
+            value={dreData.custoMateriaPrima}
             isNegative
-            detalhes={dreData.detalhamento.custos}
+            detalhes={dreData.detalhamento.custoMateriaPrima}
+            level={1}
+          />
+          <DRELineItem
+            label="(-) Custo da Mão de Obra Direta"
+            value={dreData.custoMaoObraDireta}
+            isNegative
+            detalhes={dreData.detalhamento.custoMaoObraDireta}
+            level={1}
+          />
+          <DRELineItem
+            label="(-) Custos Indiretos de Fabricação/Prestação (CIF/CIP)"
+            value={dreData.custosIndiretosFabricacao}
+            isNegative
+            detalhes={dreData.detalhamento.custosIndiretosFabricacao}
+            level={1}
+          />
+          <DRELineItem
+            label="(-) Quebras e Perdas"
+            value={dreData.quebrasEPerdas}
+            isNegative
+            detalhes={dreData.detalhamento.quebrasEPerdas}
             level={1}
           />
 
-          {/* RESULTADO BRUTO */}
+          {/* LUCRO BRUTO */}
           <DRELineItem
-            label="= RESULTADO OPERACIONAL BRUTO"
-            value={dreData.resultadoOperacionalBruto}
+            label="= LUCRO BRUTO"
+            value={dreData.lucroBruto}
             isSubtotal
           />
 
@@ -84,86 +140,126 @@ const DREReport: React.FC<DREReportProps> = ({
             </h3>
           </div>
           <DRELineItem
-            label="Despesas Operacionais"
-            value={dreData.despesasOperacionais}
+            label="(-) Despesas com Vendas"
+            value={dreData.despesasVendas}
             isNegative
-            detalhes={dreData.detalhamento.despesasOperacionais}
+            detalhes={dreData.detalhamento.despesasVendas}
+            level={1}
+          />
+          <DRELineItem
+            label="(-) Despesas Administrativas"
+            value={dreData.despesasAdministrativas}
+            isNegative
+            detalhes={dreData.detalhamento.despesasAdministrativas}
+            level={1}
+          />
+          <DRELineItem
+            label="(-) Outras Despesas Operacionais (ex: Depreciação/Amortização não produtiva, PCLD)"
+            value={dreData.outrasDespesasOperacionais}
+            isNegative
+            detalhes={dreData.detalhamento.outrasDespesasOperacionais}
             level={1}
           />
 
-          {/* DESPESAS FINANCEIRAS */}
+          {/* EBIT */}
+          <DRELineItem
+            label="= RESULTADO OPERACIONAL ANTES DAS DESPESAS FINANCEIRAS E IMPOSTOS (EBIT)"
+            value={dreData.resultadoOperacionalEBIT}
+            isSubtotal
+          />
+
+          {/* RESULTADO FINANCEIRO */}
           <div className="bg-gradient-to-r from-purple-100 to-violet-100 border-b border-purple-200 py-2 px-4">
             <h3 className="font-bold text-purple-800 text-sm">
-              (-) DESPESAS FINANCEIRAS
+              (+/-) RESULTADO FINANCEIRO
             </h3>
           </div>
           <DRELineItem
-            label="Despesas Financeiras"
+            label="Receitas Financeiras"
+            value={dreData.receitasFinanceiras}
+            detalhes={dreData.detalhamento.receitasFinanceiras}
+            level={1}
+          />
+          <DRELineItem
+            label="(-) Despesas Financeiras"
             value={dreData.despesasFinanceiras}
             isNegative
             detalhes={dreData.detalhamento.despesasFinanceiras}
             level={1}
           />
 
-          {/* RESULTADO OPERACIONAL */}
+          {/* LAIR */}
           <DRELineItem
-            label="= RESULTADO OPERACIONAL"
-            value={dreData.resultadoOperacional}
+            label="= RESULTADO ANTES DOS IMPOSTOS SOBRE O LUCRO (LAIR)"
+            value={dreData.resultadoAntesImpostosLAIR}
             isSubtotal
           />
 
-          {/* OUTRAS RECEITAS */}
+          {/* OUTRAS RECEITAS E DESPESAS NÃO OPERACIONAIS */}
           <div className="bg-gradient-to-r from-slate-100 to-gray-100 border-b border-slate-200 py-2 px-4">
             <h3 className="font-bold text-slate-800 text-sm">
-              OUTRAS RECEITAS E DESPESAS
+              (+/-) OUTRAS RECEITAS E DESPESAS (NÃO OPERACIONAIS)
             </h3>
           </div>
           <DRELineItem
-            label="Outras Receitas"
-            value={Object.values(dreData.detalhamento.outrasReceitas).reduce(
-              (a, b) => a + b,
-              0,
-            )}
-            detalhes={dreData.detalhamento.outrasReceitas}
+            label="Outras Receitas Não Operacionais (ex: Ganhos com venda de Imobilizado)"
+            value={dreData.outrasReceitasNaoOperacionais}
+            detalhes={dreData.detalhamento.outrasReceitasNaoOperacionais}
             level={1}
           />
           <DRELineItem
-            label="(-) Outras Despesas"
-            value={Object.values(dreData.detalhamento.outrasDespesas).reduce(
-              (a, b) => a + b,
-              0,
-            )}
+            label="(-) Outras Despesas Não Operacionais (ex: Perdas com venda de Imobilizado)"
+            value={dreData.outrasDespesasNaoOperacionais}
             isNegative
-            detalhes={dreData.detalhamento.outrasDespesas}
+            detalhes={dreData.detalhamento.outrasDespesasNaoOperacionais}
             level={1}
           />
 
-          {/* RESULTADO ANTES IR */}
+          {/* RESULTADO AJUSTADO */}
           <DRELineItem
-            label="= RESULTADO ANTES DO IR E CSLL"
-            value={dreData.resultadoAntesIR}
+            label="= RESULTADO AJUSTADO ANTES DO IRPJ/CSLL"
+            value={dreData.resultadoAjustadoAntesIRPJ}
             isSubtotal
           />
 
-          {/* PROVISÕES */}
+          {/* IRPJ E CSLL */}
           <div className="bg-gradient-to-r from-yellow-100 to-amber-100 border-b border-yellow-200 py-2 px-4">
             <h3 className="font-bold text-yellow-800 text-sm">
-              (-) Provisão para IR e CSLL
+              (-) IMPOSTO DE RENDA PESSOA JURÍDICA (IRPJ) E CONTRIBUIÇÃO SOCIAL SOBRE O LUCRO LÍQUIDO (CSLL)
             </h3>
           </div>
           <DRELineItem
-            label="(-) Provisão IR/CSLL (15%)"
-            value={dreData.provisaoIR}
+            label="(-) Imposto de Renda Pessoa Jurídica (IRPJ)"
+            value={dreData.impostoRenda}
+            isNegative
+            level={1}
+          />
+          <DRELineItem
+            label="(-) Contribuição Social sobre o Lucro Líquido (CSLL)"
+            value={dreData.contribuicaoSocial}
             isNegative
             level={1}
           />
 
-          {/* LUCRO LÍQUIDO */}
+          {/* PARTICIPAÇÕES */}
+          <div className="bg-gradient-to-r from-indigo-100 to-purple-100 border-b border-indigo-200 py-2 px-4">
+            <h3 className="font-bold text-indigo-800 text-sm">
+              (-) PARTICIPAÇÕES
+            </h3>
+          </div>
           <DRELineItem
-            label="= RESULTADO LÍQUIDO DO EXERCÍCIO"
-            value={dreData.lucroLiquido}
+            label="(-) Participações de Empregados, Administradores, etc."
+            value={dreData.participacoes}
+            isNegative
+            detalhes={dreData.detalhamento.participacoes}
+            level={1}
+          />
+
+          {/* LUCRO LÍQUIDO DO EXERCÍCIO */}
+          <DRELineItem
+            label="= LUCRO LÍQUIDO DO EXERCÍCIO"
+            value={dreData.lucroLiquidoExercicio}
             isTotal
-            
           />
         </div>
       </CardContent>

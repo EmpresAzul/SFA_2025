@@ -19,6 +19,7 @@ import { ArrowLeft, Save, Plus, AlertCircle, AlertTriangle } from "lucide-react"
 import type { Lancamento } from "@/hooks/useLancamentos";
 import type { Cadastro } from "@/hooks/useCadastros";
 import { useAuth } from "@/contexts/AuthContext";
+import LancamentosFormCategories from "./form/LancamentosFormCategories";
 
 interface LancamentosFormProps {
   editingLancamento: Lancamento | null;
@@ -170,11 +171,11 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
         categoria: formData.categoria,
         cliente_id: formData.cliente_id || null,
         fornecedor_id: formData.fornecedor_id || null,
-        observacoes: formData.observacoes,
+        observacoes: formData.observacoes || `${formData.tipo === 'receita' ? 'Receita' : 'Despesa'} - ${formData.categoria}`,
         recorrente: formData.recorrente,
         meses_recorrencia: formData.meses_recorrencia,
         status: "ativo",
-        user_id: user.id, // Adicionar o user_id
+        user_id: user.id,
       };
 
       if (editingLancamento) {
@@ -199,29 +200,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
     }
   };
 
-  const categoriasReceita = [
-    "Vendas de Produtos",
-    "Vendas de Serviços",
-    "Receita Financeira",
-    "Receita Não Operacional",
-    "Outras Receitas"
-  ];
 
-  const categoriasDespesa = [
-    "Custo dos Produtos Vendidos",
-    "Custo dos Serviços Prestados",
-    "Despesas Administrativas",
-    "Despesas de Vendas",
-    "Despesas Financeiras",
-    "Impostos",
-    "Salários e Encargos",
-    "Aluguel",
-    "Energia Elétrica",
-    "Água e Esgoto",
-    "Telefone e Internet",
-    "Manutenção",
-    "Outras Despesas"
-  ];
 
   // Fallback para erro
   if (hasError) {
@@ -354,11 +333,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
                 <SelectValue placeholder="Selecione uma categoria" />
               </SelectTrigger>
               <SelectContent>
-                {(formData.tipo === "receita" ? categoriasReceita : categoriasDespesa).map((categoria) => (
-                  <SelectItem key={categoria} value={categoria}>
-                    {categoria}
-                  </SelectItem>
-                ))}
+                <LancamentosFormCategories tipo={formData.tipo} />
               </SelectContent>
             </Select>
             {errors.categoria && (

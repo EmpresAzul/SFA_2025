@@ -1,48 +1,45 @@
 import React from "react";
 import { SelectItem } from "@/components/ui/select";
 
-// Categorias específicas do DRE organizadas por tipo
+// Categorias do DRE organizadas conforme estrutura oficial
 const categoriasReceita = {
-  "Receitas Operacionais": [
-    "Vendas de Produtos",
-    "Vendas de Mercadorias",
+  "RECEITA BRUTA DE VENDAS": [
+    "Venda de Produtos",
+    "Venda de Mercadorias",
     "Prestação de Serviços",
-    "Outras Receitas Operacionais",
   ],
-  "Receitas Financeiras": [
-    "Juros Recebidos",
-    "Aplicações Financeiras",
-    "Descontos Obtidos",
-    "Variações Monetárias Ativas",
+  "RESULTADO FINANCEIRO": [
+    "Receitas Financeiras",
   ],
-  "Outras Receitas": ["Receitas Extraordinárias", "Venda de Ativos"],
+  "OUTRAS RECEITAS E DESPESAS (NÃO OPERACIONAIS)": [
+    "Outras Receitas Não Operacionais",
+  ],
 };
 
 const categoriasDespesa = {
-  "Deduções da Receita": [
-    "Devoluções de Vendas",
-    "Abatimentos sobre Vendas",
-    "ICMS sobre Vendas",
-    "PIS/COFINS",
-    "ISS",
-    "Outros Impostos sobre Vendas",
+  "DEDUÇÕES DA RECEITA BRUTA": [
+    "Devoluções e Abatimentos",
+    "Vendas Canceladas", 
+    "Descontos Incondicionais Concedidos",
+    "Impostos sobre Vendas (ICMS, PIS, COFINS)",
   ],
-  Custos: [
-    "Custo dos Produtos Vendidos (CPV)",
-    "Custo das Mercadorias Vendidas (CMV)",
-    "Custo dos Serviços Prestados (CSP)",
-    "Matéria-Prima",
-    "Mão de Obra Direta",
-    "Custos Indiretos de Fabricação",
+  "CUSTO DOS PRODUTOS/SERVIÇOS/MERCADORIAS VENDIDAS": [
+    "Custo da Matéria-Prima / Mercadoria",
+    "Custo da Mão de Obra Direta",
+    "Custos Indiretos de Fabricação/Prestação (CIF/CIP)",
+    "Quebras e Perdas",
   ],
-  "Despesas Operacionais": [
-    "Despesas com Vendas",
-    "Comissões sobre Vendas",
+  "DESPESAS COM VENDAS": [
+    "Comissões de Vendas",
     "Marketing e Publicidade",
     "Fretes e Entregas",
-    "Despesas Administrativas",
-    "Salários e Encargos",
-    "Aluguel e Condomínio",
+    "Promoções e Eventos",
+    "Material de Vendas",
+  ],
+  "DESPESAS ADMINISTRATIVAS": [
+    "Salários Administrativos",
+    "Encargos Sociais",
+    "Aluguel",
     "Energia Elétrica",
     "Telefone e Internet",
     "Material de Escritório",
@@ -50,18 +47,35 @@ const categoriasDespesa = {
     "Honorários Profissionais",
     "Seguros",
     "Manutenção e Conservação",
-    "Depreciação",
+    "Limpeza e Conservação",
+    "Viagens e Hospedagem",
   ],
-  "Despesas Financeiras": [
+  "OUTRAS DESPESAS OPERACIONAIS": [
+    "Depreciação",
+    "Amortização",
+    "PCLD (Provisão para Créditos de Liquidação Duvidosa)",
+    "Provisões Diversas",
+  ],
+  "DESPESAS FINANCEIRAS": [
     "Juros Pagos",
     "Taxas Bancárias",
     "IOF",
     "Descontos Concedidos",
     "Variações Monetárias Passivas",
   ],
-  "Outras Despesas": [
+  "OUTRAS DESPESAS NÃO OPERACIONAIS": [
+    "Perdas com Venda de Imobilizado",
+    "Multas e Penalidades",
     "Despesas Extraordinárias",
-    "Provisões para Contingências",
+  ],
+  "IMPOSTO DE RENDA E CONTRIBUIÇÃO SOCIAL": [
+    "Imposto de Renda Pessoa Jurídica (IRPJ)",
+    "Contribuição Social sobre o Lucro Líquido (CSLL)",
+  ],
+  "PARTICIPAÇÕES": [
+    "Participações de Empregados",
+    "Participações de Administradores",
+    "Participações Estatutárias",
   ],
 };
 

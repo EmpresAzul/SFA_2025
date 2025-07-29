@@ -20,7 +20,7 @@ const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
             <div className="flex-1">
               <p className="text-xs font-medium text-white/90 mb-1">Receita Bruta</p>
               <p className="text-lg font-bold text-white">
-                {formatCurrency(dreData.receitaOperacionalBruta)}
+                {formatCurrency(dreData.receitaBrutaVendas)}
               </p>
             </div>
             <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
@@ -37,7 +37,7 @@ const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
             <div className="flex-1">
               <p className="text-xs font-medium text-white/90 mb-1">Receita Líquida</p>
               <p className="text-lg font-bold text-white">
-                {formatCurrency(dreData.receitaOperacionalLiquida)}
+                {formatCurrency(dreData.receitaLiquidaVendas)}
               </p>
             </div>
             <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
@@ -49,7 +49,7 @@ const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
 
       {/* Card Resultado Operacional */}
       <Card className={`bg-gradient-to-br ${
-        dreData.resultadoOperacional >= 0 
+        dreData.resultadoOperacionalEBIT >= 0 
           ? "from-amber-400 via-orange-500 to-yellow-600" 
           : "from-red-400 via-red-500 to-rose-600"
       } border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105`}>
@@ -58,7 +58,7 @@ const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
             <div className="flex-1">
               <p className="text-xs font-medium text-white/90 mb-1">Resultado Operacional</p>
               <p className="text-lg font-bold text-white">
-                {formatCurrency(dreData.resultadoOperacional)}
+                {formatCurrency(dreData.resultadoOperacionalEBIT)}
               </p>
             </div>
             <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
@@ -70,7 +70,7 @@ const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
 
       {/* Card Lucro Líquido */}
       <Card className={`bg-gradient-to-br ${
-        dreData.lucroLiquido >= 0 
+        dreData.lucroLiquidoExercicio >= 0 
           ? "from-purple-400 via-purple-500 to-violet-600" 
           : "from-red-500 via-red-600 to-rose-700"
       } border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105`}>
@@ -79,7 +79,7 @@ const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
             <div className="flex-1">
               <p className="text-xs font-medium text-white/90 mb-1">Lucro Líquido</p>
               <p className="text-lg font-bold text-white">
-                {formatCurrency(dreData.lucroLiquido)}
+                {formatCurrency(dreData.lucroLiquidoExercicio)}
               </p>
             </div>
             <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
