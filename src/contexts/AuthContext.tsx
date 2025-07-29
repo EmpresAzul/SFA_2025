@@ -45,29 +45,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
   const [lastActivity, setLastActivity] = useState<Date>(new Date());
 
-  // Session timeout (30 minutes of inactivity)
+  // Session management without aggressive timeout
   useEffect(() => {
     if (!user || !session) return;
 
-    const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
-    let timeoutId: NodeJS.Timeout;
-
-    const resetTimeout = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        console.log('Session expired due to inactivity');
-        supabase.auth.signOut();
-      }, SESSION_TIMEOUT);
-    };
-
     const handleActivity = () => {
       setLastActivity(new Date());
-      resetTimeout();
-      
-      // Update session activity in database
-      if (user?.id) {
-        supabase.rpc('cleanup_expired_sessions').then(() => {}, console.error);
-      }
     };
 
     // Track user activity
@@ -76,10 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       document.addEventListener(event, handleActivity, true);
     });
 
-    resetTimeout();
-
     return () => {
-      clearTimeout(timeoutId);
       events.forEach(event => {
         document.removeEventListener(event, handleActivity, true);
       });
@@ -89,12 +69,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     console.log('AuthContext: Initializing authentication...');
     
-    // Production optimized timeout - faster for better UX
-    const timeoutId = setTimeout(() => {
-      console.log('AuthContext: Timeout reached, forcing loading to false');
-      setLoading(false);
-    }, 8000); // Otimizado para 8 segundos para domínio customizado
-
     // Initialize auth with error handling
     const initializeAuth = async () => {
       try {
@@ -103,21 +77,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // Check if we're online
         if (!navigator.onLine) {
           console.warn('AuthContext: Offline - skipping auth check');
-          clearTimeout(timeoutId);
           setLoading(false);
           return;
         }
 
-        // Get initial session with timeout
-        const sessionPromise = supabase.auth.getSession();
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session check timeout')), 3000)
-        );
-
-        const { data: { session }, error } = await Promise.race([
-          sessionPromise,
-          timeoutPromise
-        ]) as any;
+        // Get initial session without aggressive timeout
+        const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error('AuthContext: Error getting initial session:', error);
@@ -132,7 +97,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setSession(null);
         setUser(null);
       } finally {
-        clearTimeout(timeoutId);
         setLoading(false);
       }
     };
@@ -157,7 +121,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     return () => {
-      clearTimeout(timeoutId);
       if (subscription) {
         subscription.unsubscribe();
       }
@@ -174,21 +137,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
       
       if (!error && data.user) {
-        // Enforce session limits
-        supabase.rpc('enforce_session_limit', { 
-          user_uuid: data.user.id 
-        }).then(() => {}, console.error);
-        
-        // Track active session
-        if (data.session?.access_token) {
-          const sessionHash = btoa(data.session.access_token.substring(0, 20));
-          supabase.from('active_sessions').insert({
-            user_id: data.user.id,
-            session_token_hash: sessionHash,
-            user_agent: navigator.userAgent,
-            expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString()
-          }).then(() => {}, console.error);
-        }
+        console.log('AuthContext: User signed in successfully:', data.user.email);
       }
       
       setLoading(false);
@@ -216,25 +165,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setLoading(true);
     
     try {
-      if (user?.id && session?.access_token) {
-        // Mark current session as inactive
-        const sessionHash = btoa(session.access_token.substring(0, 20));
-        supabase.from('active_sessions')
-          .update({ is_active: false })
-          .eq('user_id', user.id)
-          .eq('session_token_hash', sessionHash)
-          .then(() => {}, console.error);
-      }
-      
-      // Clear profile data
-      if (user?.id) {
-        const profileKey = `fluxoazul_profile_${user.id}`;
-        const hasStoredData = localStorage.getItem(profileKey);
-        
-        if (hasStoredData) {
-          console.log('🧹 Limpando dados do perfil do localStorage no logout...');
-        }
-      }
+      console.log('AuthContext: User signing out...');
     } catch (error) {
       console.error('Erro ao limpar sessão:', error);
     }
