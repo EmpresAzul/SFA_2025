@@ -104,3 +104,9 @@ CREATE POLICY "Authenticated users can update their own saldos_bancarios" ON pub
 
 CREATE POLICY "Authenticated users can delete their own saldos_bancarios" ON public.saldos_bancarios
   FOR DELETE TO authenticated USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own lancamentos"
+  ON public.lancamentos
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+ALTER TABLE public.lancamentos ENABLE ROW LEVEL SECURITY;
