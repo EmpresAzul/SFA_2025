@@ -198,7 +198,11 @@ CREATE TRIGGER update_saldos_bancarios_updated_at
 
 -- Função para criar perfil automaticamente quando usuário se cadastra
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = 'public'
+AS $$
 BEGIN
   INSERT INTO public.profiles (user_id, email, nome)
   VALUES (
@@ -208,7 +212,7 @@ BEGIN
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
 -- Trigger para criar perfil automaticamente
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;

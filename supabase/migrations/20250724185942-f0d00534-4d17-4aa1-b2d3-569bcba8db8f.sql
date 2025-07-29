@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION public.generate_security_report(target_user_id uuid D
 RETURNS jsonb
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path TO ''
+SET search_path = 'public'
 AS $$
 DECLARE
   report jsonb := '{}';
@@ -85,7 +85,7 @@ CREATE OR REPLACE FUNCTION public.cleanup_old_security_alerts()
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path TO ''
+SET search_path = 'public'
 AS $$
 BEGIN
   -- Auto-resolve low severity alerts older than 90 days
@@ -124,7 +124,7 @@ CREATE OR REPLACE FUNCTION public.log_enhanced_security_event(
 RETURNS uuid
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path TO ''
+SET search_path = 'public'
 AS $$
 DECLARE
   event_id uuid;

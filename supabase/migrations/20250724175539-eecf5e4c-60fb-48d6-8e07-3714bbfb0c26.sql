@@ -17,7 +17,7 @@ CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = ''
+SET search_path = 'public'
 AS $$
 BEGIN
   INSERT INTO public.user_profiles (user_id, full_name, is_admin)
@@ -247,7 +247,8 @@ WHERE u.email = 'admin@fluxoazul.com'
 ON CONFLICT (user_id, role) DO NOTHING;
 
 -- 5. Add security monitoring tables
-CREATE TABLE public.security_events (
+-- Tabela de eventos de segurança
+CREATE TABLE IF NOT EXISTS public.security_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id),
   event_type TEXT NOT NULL,
@@ -258,52 +259,50 @@ CREATE TABLE public.security_events (
   user_agent TEXT,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
-
 ALTER TABLE public.security_events ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admins can view all security events" ON public.security_events FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "System can insert security events" ON public.security_events FOR INSERT TO authenticated WITH CHECK (true);
+CREATE INDEX IF NOT EXISTS idx_security_events_user_id ON public.security_events(user_id);
 
-CREATE POLICY "Admins can view all security events" 
-  ON public.security_events 
-  FOR SELECT 
-  TO authenticated
-  USING (public.has_role(auth.uid(), 'admin'));
-
-CREATE POLICY "System can insert security events" 
-  ON public.security_events 
-  FOR INSERT 
-  TO authenticated
-  WITH CHECK (true);
-
--- 6. Add session management table
-CREATE TABLE public.user_sessions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  session_token TEXT NOT NULL,
-  ip_address INET,
-  user_agent TEXT,
-  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
-  is_active BOOLEAN NOT NULL DEFAULT true,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  last_activity TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+-- Tabela de alertas de segurança
+CREATE TABLE IF NOT EXISTS public.security_alerts (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  alert_type text NOT NULL,
+  severity text NOT NULL CHECK (severity IN ('low', 'medium', 'high', 'critical')),
+  title text NOT NULL,
+  description text NOT NULL,
+  user_id uuid,
+  metadata jsonb DEFAULT '{}',
+  is_resolved boolean NOT NULL DEFAULT false,
+  resolved_by uuid,
+  resolved_at timestamp with time zone,
+  created_at timestamp with time zone NOT NULL DEFAULT now()
 );
+ALTER TABLE public.security_alerts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admins can view all security alerts" ON public.security_alerts FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'));
+CREATE INDEX IF NOT EXISTS idx_security_alerts_user_id ON public.security_alerts(user_id);
 
-ALTER TABLE public.user_sessions ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can view their own sessions" 
-  ON public.user_sessions 
-  FOR SELECT 
-  TO authenticated
-  USING (user_id = auth.uid());
-
-CREATE POLICY "Users can update their own sessions" 
-  ON public.user_sessions 
-  FOR UPDATE 
-  TO authenticated
-  USING (user_id = auth.uid())
-  WITH CHECK (user_id = auth.uid());
+-- Tabela de sessões ativas
+CREATE TABLE IF NOT EXISTS public.active_sessions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  session_token_hash text NOT NULL,
+  ip_address inet,
+  user_agent text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  last_activity timestamp with time zone NOT NULL DEFAULT now(),
+  expires_at timestamp with time zone NOT NULL DEFAULT (now() + interval '30 minutes'),
+  is_active boolean NOT NULL DEFAULT true
+);
+ALTER TABLE public.active_sessions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view their own sessions" ON public.active_sessions FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can manage their own sessions" ON public.active_sessions FOR ALL USING (auth.uid() = user_id);
+CREATE INDEX IF NOT EXISTS idx_active_sessions_user_id ON public.active_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_active_sessions_token_hash ON public.active_sessions(session_token_hash);
+CREATE INDEX IF NOT EXISTS idx_active_sessions_activity ON public.active_sessions(last_activity);
 
 -- Create indexes for performance
 CREATE INDEX idx_user_roles_user_id ON public.user_roles(user_id);
-CREATE INDEX idx_security_events_user_id ON public.security_events(user_id);
 CREATE INDEX idx_security_events_created_at ON public.security_events(created_at);
 CREATE INDEX idx_user_sessions_user_id ON public.user_sessions(user_id);
 CREATE INDEX idx_user_sessions_expires_at ON public.user_sessions(expires_at);

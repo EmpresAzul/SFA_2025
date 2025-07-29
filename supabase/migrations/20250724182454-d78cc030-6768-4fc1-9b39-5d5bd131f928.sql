@@ -9,7 +9,7 @@ CREATE OR REPLACE FUNCTION public.is_admin(check_user_id uuid)
 RETURNS boolean
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = ''
+SET search_path = 'public'
 AS $$
 BEGIN
   -- Check if user has admin role in user_roles table
@@ -49,7 +49,7 @@ CREATE OR REPLACE FUNCTION public.assign_user_role(
 RETURNS boolean
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = ''
+SET search_path = 'public'
 AS $$
 BEGIN
   -- Only admins can assign roles
@@ -74,7 +74,7 @@ CREATE OR REPLACE FUNCTION public.revoke_user_role(
 RETURNS boolean
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = ''
+SET search_path = 'public'
 AS $$
 BEGIN
   -- Only admins can revoke roles
@@ -135,7 +135,7 @@ CREATE OR REPLACE FUNCTION public.cleanup_expired_sessions()
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = ''
+SET search_path = 'public'
 AS $$
 BEGIN
   -- Mark expired sessions as inactive
@@ -154,7 +154,7 @@ CREATE OR REPLACE FUNCTION public.enforce_session_limit(user_uuid uuid)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = ''
+SET search_path = 'public'
 AS $$
 DECLARE
   session_count integer;
@@ -224,7 +224,7 @@ CREATE OR REPLACE FUNCTION public.create_security_alert(
 RETURNS uuid
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = ''
+SET search_path = 'public'
 AS $$
 DECLARE
   alert_id uuid;

@@ -1,6 +1,10 @@
 -- Corrigir problema de search_path na função
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = 'public'
+AS $$
 BEGIN
   INSERT INTO public.profiles (user_id, email, nome)
   VALUES (
@@ -10,7 +14,7 @@ BEGIN
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
+$$;
 
 -- Recriar todas as políticas RLS para restringir apenas usuários autenticados
 -- Remover políticas existentes

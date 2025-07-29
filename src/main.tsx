@@ -124,15 +124,35 @@ try {
   // Fallback error display
   const rootElement = document.getElementById("root");
   if (rootElement) {
-    rootElement.innerHTML = `
-      <div style="padding: 20px; color: red; font-family: Arial, sans-serif;">
-        <h1>FluxoAzul - Erro de Inicialização</h1>
-        <p>Erro ao carregar a aplicação: ${error instanceof Error ? error.message : 'Erro desconhecido'}</p>
-        <p>Por favor, recarregue a página ou contate o suporte.</p>
-        <button onclick="window.location.reload()" style="padding: 10px 20px; margin-top: 10px;">
-          Recarregar Página
-        </button>
-      </div>
-    `;
+    // Limpa o conteúdo anterior
+    while (rootElement.firstChild) {
+      rootElement.removeChild(rootElement.firstChild);
+    }
+    // Cria container
+    const container = document.createElement('div');
+    container.style.padding = '20px';
+    container.style.color = 'red';
+    container.style.fontFamily = 'Arial, sans-serif';
+
+    const h1 = document.createElement('h1');
+    h1.textContent = 'FluxoAzul - Erro de Inicialização';
+    container.appendChild(h1);
+
+    const p1 = document.createElement('p');
+    p1.textContent = `Erro ao carregar a aplicação: ${error instanceof Error ? error.message : 'Erro desconhecido'}`;
+    container.appendChild(p1);
+
+    const p2 = document.createElement('p');
+    p2.textContent = 'Por favor, recarregue a página ou contate o suporte.';
+    container.appendChild(p2);
+
+    const button = document.createElement('button');
+    button.textContent = 'Recarregar Página';
+    button.style.padding = '10px 20px';
+    button.style.marginTop = '10px';
+    button.onclick = () => window.location.reload();
+    container.appendChild(button);
+
+    rootElement.appendChild(container);
   }
 }
