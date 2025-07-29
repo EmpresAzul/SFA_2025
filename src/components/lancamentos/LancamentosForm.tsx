@@ -156,6 +156,7 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
         data: formData.data,
         valor: valorNumerico,
         categoria: formData.categoria,
+        descricao: formData.observacoes || `${formData.tipo === 'receita' ? 'Receita' : 'Despesa'} - ${formData.categoria}`,
         cliente_id: formData.cliente_id || null,
         fornecedor_id: formData.fornecedor_id || null,
         observacoes: formData.observacoes || `${formData.tipo === 'receita' ? 'Receita' : 'Despesa'} - ${formData.categoria}`,

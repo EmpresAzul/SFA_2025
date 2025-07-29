@@ -60,9 +60,10 @@ export const useLancamentosFormSubmit = ({
           tipo: formData.tipo,
           categoria: formData.categoria,
           valor: valorNumerico,
+          descricao: formData.observacoes?.trim() || `${formData.tipo} - ${formData.categoria}`,
           cliente_id: formData.cliente_id || null,
           fornecedor_id: formData.fornecedor_id || null,
-          observacoes: formData.observacoes.trim() || null,
+          observacoes: formData.observacoes?.trim() || null,
           user_id: user.id,
           status: "ativo",
         };

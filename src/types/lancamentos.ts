@@ -5,6 +5,7 @@ export interface Lancamento {
   tipo: "receita" | "despesa";
   categoria: string;
   valor: number;
+  descricao: string;
   cliente_id?: string;
   fornecedor_id?: string;
   observacoes?: string;

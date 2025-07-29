@@ -47,6 +47,7 @@ export const useLancamentosMutations = () => {
           tipo: lancamentoData.tipo,
           categoria: lancamentoData.categoria,
           valor: lancamentoData.valor,
+          descricao: lancamentoData.observacoes || `${lancamentoData.tipo} - ${lancamentoData.categoria}`,
           cliente_id: lancamentoData.cliente_id,
           fornecedor_id: lancamentoData.fornecedor_id,
           observacoes: lancamentoData.observacoes,
