@@ -152,7 +152,6 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
         data: formData.data,
         nome: formData.nome.trim(),
         tipo: formData.tipo as "Cliente" | "Fornecedor" | "Funcionário",
-        pessoa: "Física" as const,
         endereco: formData.endereco.trim() || undefined,
         numero: formData.numero.trim() || undefined,
         cidade: formData.cidade.trim() || undefined,
@@ -162,7 +161,6 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
         email: formData.email.trim() || undefined,
         cpf_cnpj: formData.cpf_cnpj.trim() || undefined,
         user_id: user!.id,
-        status: "ativo",
       };
 
       await createCadastro.mutateAsync(cadastroData);

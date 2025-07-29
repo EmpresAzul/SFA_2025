@@ -53,8 +53,34 @@ CREATE POLICY "Users can delete their own lancamentos"
   FOR DELETE
   USING (auth.uid() = user_id);
 
--- 3. HABILITAR RLS NA TABELA lancamentos
+-- 3. ADICIONAR POLICY DE RLS PARA CADASTROS (PERMITE SALVAR)
+DROP POLICY IF EXISTS "Users can insert their own cadastros" ON public.cadastros;
+CREATE POLICY "Users can insert their own cadastros"
+  ON public.cadastros
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can view their own cadastros" ON public.cadastros;
+CREATE POLICY "Users can view their own cadastros"
+  ON public.cadastros
+  FOR SELECT
+  USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can update their own cadastros" ON public.cadastros;
+CREATE POLICY "Users can update their own cadastros"
+  ON public.cadastros
+  FOR UPDATE
+  USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete their own cadastros" ON public.cadastros;
+CREATE POLICY "Users can delete their own cadastros"
+  ON public.cadastros
+  FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- 4. HABILITAR RLS NAS TABELAS
 ALTER TABLE public.lancamentos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.cadastros ENABLE ROW LEVEL SECURITY;
 `;
 
 async function aplicarCorrecoes() {
@@ -110,6 +136,30 @@ async function aplicarCorrecoesAlternativo() {
       {
         table: 'lancamentos',
         name: 'Users can delete their own lancamentos',
+        operation: 'DELETE', 
+        definition: 'auth.uid() = user_id'
+      },
+      {
+        table: 'cadastros',
+        name: 'Users can insert their own cadastros',
+        operation: 'INSERT',
+        definition: 'auth.uid() = user_id'
+      },
+      {
+        table: 'cadastros', 
+        name: 'Users can view their own cadastros',
+        operation: 'SELECT',
+        definition: 'auth.uid() = user_id'
+      },
+      {
+        table: 'cadastros',
+        name: 'Users can update their own cadastros', 
+        operation: 'UPDATE',
+        definition: 'auth.uid() = user_id'
+      },
+      {
+        table: 'cadastros',
+        name: 'Users can delete their own cadastros',
         operation: 'DELETE', 
         definition: 'auth.uid() = user_id'
       }

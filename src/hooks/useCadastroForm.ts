@@ -5,7 +5,6 @@ import { useAuth } from "@/contexts/AuthContext";
 
 interface FormData {
   nome: string;
-  pessoa: "Física" | "Jurídica";
   telefone?: string;
   email?: string;
   endereco?: string;
@@ -37,7 +36,6 @@ export const useCadastroForm = (
   const getInitialFormData = (): FormData => {
     const baseForm: FormData = {
       nome: "",
-      pessoa: "Física",
       cpf_cnpj: "",
       telefone: "",
       email: "",
@@ -56,7 +54,6 @@ export const useCadastroForm = (
       case "Fornecedor":
         return {
           ...baseForm,
-          pessoa: "Jurídica",
           razao_social: "",
           tipo_fornecedor: "",
         };
@@ -145,7 +142,6 @@ export const useCadastroForm = (
       const cadastroData = {
         nome: formData.razao_social?.trim() || formData.nome.trim(),
         tipo,
-        pessoa: formData.pessoa,
         cpf_cnpj: formData.cpf_cnpj?.trim() || undefined,
         telefone: formData.telefone?.trim() || undefined,
         email: formData.email?.trim() || undefined,
@@ -157,7 +153,6 @@ export const useCadastroForm = (
         cep: formData.cep?.trim() || undefined,
         observacoes: formData.observacoes?.trim() || undefined,
         user_id: user!.id,
-        status: "ativo",
         data: new Date().toISOString().split("T")[0],
       };
 
@@ -205,7 +200,6 @@ export const useCadastroForm = (
     // Mapeamento base comum para todos os tipos
     const editData: FormData = {
       nome: cadastro.nome,
-      pessoa: cadastro.pessoa as "Física" | "Jurídica",
       cpf_cnpj: cadastro.cpf_cnpj || "",
       telefone: cadastro.telefone || "",
       email: cadastro.email || "",

@@ -9,7 +9,6 @@ export interface Cadastro {
   user_id: string;
   nome: string;
   tipo: string;
-  pessoa: string;
   cpf_cnpj?: string;
   telefone?: string;
   email?: string;
@@ -21,7 +20,6 @@ export interface Cadastro {
   cep?: string;
   observacoes?: string;
   salario?: number;
-  status: string;
   data: string;
   created_at: string;
   updated_at: string;
@@ -30,7 +28,6 @@ export interface Cadastro {
 export interface CadastroFormData {
   nome: string;
   tipo: string;
-  pessoa: string;
   cpf_cnpj?: string;
   telefone?: string;
   email?: string;
@@ -42,7 +39,6 @@ export interface CadastroFormData {
   cep?: string;
   observacoes?: string;
   salario?: number;
-  status: string;
   data: string;
   user_id: string;
 }
