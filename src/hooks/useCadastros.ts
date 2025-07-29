@@ -9,6 +9,8 @@ export interface Cadastro {
   user_id: string;
   nome: string;
   tipo: string;
+  pessoa: 'Física' | 'Jurídica';
+  status: 'ativo' | 'inativo';
   cpf_cnpj?: string;
   telefone?: string;
   email?: string;
@@ -28,6 +30,8 @@ export interface Cadastro {
 export interface CadastroFormData {
   nome: string;
   tipo: string;
+  pessoa?: 'Física' | 'Jurídica';
+  status?: 'ativo' | 'inativo';
   cpf_cnpj?: string;
   telefone?: string;
   email?: string;

@@ -10,6 +10,9 @@ export interface Lancamento {
   fornecedor_id?: string;
   observacoes?: string;
   status: string;
+  recorrente?: boolean;
+  meses_recorrencia?: number | null;
+  lancamento_pai_id?: string | null;
   created_at: string;
   updated_at: string;
 }

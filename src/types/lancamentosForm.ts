@@ -15,6 +15,8 @@ export interface LancamentoFormData {
   cliente_id?: string;
   fornecedor_id?: string;
   observacoes?: string;
+  recorrente?: boolean;
+  meses_recorrencia?: number | null;
 }
 
 // Alias para compatibilidade com código existente

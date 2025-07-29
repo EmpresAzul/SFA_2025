@@ -5,6 +5,7 @@ export interface CadastroData {
   telefone: string;
   tipo: 'cliente' | 'fornecedor' | 'funcionario';
   status: 'ativo' | 'inativo';
+  pessoa: 'Física' | 'Jurídica';
   endereco?: {
     rua: string;
     numero: string;
@@ -43,4 +44,7 @@ export interface FuncionarioData extends Omit<CadastroData, 'tipo'> {
   data_demissao?: string;
 }
 
-export type CadastroFormData = Omit<CadastroData, 'id' | 'created_at' | 'updated_at'>; 
+export type CadastroFormData = Omit<CadastroData, 'id' | 'created_at' | 'updated_at'>;
+
+// Alias para compatibilidade
+export type Cadastro = CadastroData;

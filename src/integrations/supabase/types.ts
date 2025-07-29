@@ -27,6 +27,8 @@ export type Database = {
           id: string
           nome: string
           observacoes: string | null
+          pessoa: string | null
+          status: string | null
           telefone: string | null
           tipo: string
           updated_at: string
@@ -44,6 +46,8 @@ export type Database = {
           id?: string
           nome: string
           observacoes?: string | null
+          pessoa?: string | null
+          status?: string | null
           telefone?: string | null
           tipo: string
           updated_at?: string
@@ -61,6 +65,8 @@ export type Database = {
           id?: string
           nome?: string
           observacoes?: string | null
+          pessoa?: string | null
+          status?: string | null
           telefone?: string | null
           tipo?: string
           updated_at?: string
@@ -77,8 +83,11 @@ export type Database = {
           descricao: string
           fornecedor_id: string | null
           id: string
+          lancamento_pai_id: string | null
+          meses_recorrencia: number | null
           metodo_pagamento: string | null
           observacoes: string | null
+          recorrente: boolean | null
           status: string | null
           subcategoria: string | null
           tipo: string
@@ -94,8 +103,11 @@ export type Database = {
           descricao: string
           fornecedor_id?: string | null
           id?: string
+          lancamento_pai_id?: string | null
+          meses_recorrencia?: number | null
           metodo_pagamento?: string | null
           observacoes?: string | null
+          recorrente?: boolean | null
           status?: string | null
           subcategoria?: string | null
           tipo: string
@@ -111,8 +123,11 @@ export type Database = {
           descricao?: string
           fornecedor_id?: string | null
           id?: string
+          lancamento_pai_id?: string | null
+          meses_recorrencia?: number | null
           metodo_pagamento?: string | null
           observacoes?: string | null
+          recorrente?: boolean | null
           status?: string | null
           subcategoria?: string | null
           tipo?: string
@@ -135,14 +150,23 @@ export type Database = {
             referencedRelation: "cadastros"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "lancamentos_lancamento_pai_id_fkey"
+            columns: ["lancamento_pai_id"]
+            isOneToOne: false
+            referencedRelation: "lancamentos"
+            referencedColumns: ["id"]
+          },
         ]
       }
       lembretes: {
         Row: {
           categoria: string | null
           created_at: string
+          data_lembrete: string
           data_vencimento: string
           descricao: string | null
+          hora_lembrete: string | null
           id: string
           prioridade: string | null
           status: string | null
@@ -153,8 +177,10 @@ export type Database = {
         Insert: {
           categoria?: string | null
           created_at?: string
+          data_lembrete: string
           data_vencimento: string
           descricao?: string | null
+          hora_lembrete?: string | null
           id?: string
           prioridade?: string | null
           status?: string | null
@@ -165,8 +191,10 @@ export type Database = {
         Update: {
           categoria?: string | null
           created_at?: string
+          data_lembrete?: string
           data_vencimento?: string
           descricao?: string | null
+          hora_lembrete?: string | null
           id?: string
           prioridade?: string | null
           status?: string | null
@@ -248,6 +276,39 @@ export type Database = {
           saldo_atual?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      system_videos: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          order_position: number | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          youtube_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          order_position?: number | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          youtube_url: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          order_position?: number | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          youtube_url?: string
         }
         Relationships: []
       }

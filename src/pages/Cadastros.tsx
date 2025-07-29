@@ -58,6 +58,13 @@ const Cadastros: React.FC = () => {
       estado: cadastro.estado,
       cep: cadastro.cep,
       observacoes: cadastro.observacoes,
+      tipo: cadastro.tipo,
+      status: cadastro.status,
+      created_at: cadastro.created_at,
+      updated_at: cadastro.updated_at,
+      id: cadastro.id,
+      user_id: cadastro.user_id,
+      data: cadastro.data,
     };
   };
 
