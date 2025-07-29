@@ -41,18 +41,6 @@ export const useLancamentosMutations = () => {
           throw new Error("User ID é obrigatório");
         }
 
-        // Se for recorrente, usar função especial
-        if (
-          lancamentoData.recorrente &&
-          lancamentoData.meses_recorrencia &&
-          lancamentoData.meses_recorrencia > 0
-        ) {
-        return await criarLancamentosRecorrentes(
-          lancamentoData as any,
-          lancamentoData.meses_recorrencia,
-        );
-        }
-
         // Lançamento simples - preparar dados corretamente
         const insertData = {
           data: lancamentoData.data,
@@ -64,9 +52,6 @@ export const useLancamentosMutations = () => {
           observacoes: lancamentoData.observacoes,
           user_id: lancamentoData.user_id,
           status: lancamentoData.status,
-          recorrente: false,
-          meses_recorrencia: null,
-          lancamento_pai_id: null,
         };
 
         const { data, error } = await supabase

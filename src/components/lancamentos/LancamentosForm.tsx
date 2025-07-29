@@ -39,8 +39,6 @@ interface FormData {
   cliente_id: string;
   fornecedor_id: string;
   observacoes: string;
-  recorrente: boolean;
-  meses_recorrencia: number | null;
 }
 
 interface FormErrors {
@@ -51,8 +49,6 @@ interface FormErrors {
   cliente_id?: string;
   fornecedor_id?: string;
   observacoes?: string;
-  recorrente?: string;
-  meses_recorrencia?: string;
 }
 
 const LancamentosForm: React.FC<LancamentosFormProps> = ({
@@ -73,8 +69,6 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
     cliente_id: "",
     fornecedor_id: "",
     observacoes: "",
-    recorrente: false,
-    meses_recorrencia: null,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -93,8 +87,6 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
           cliente_id: editingLancamento.cliente_id || "",
           fornecedor_id: editingLancamento.fornecedor_id || "",
           observacoes: editingLancamento.observacoes || "",
-          recorrente: !!editingLancamento.recorrente,
-          meses_recorrencia: editingLancamento.meses_recorrencia || null,
         });
       } else {
         setFormData({
@@ -105,8 +97,6 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
           cliente_id: "",
           fornecedor_id: "",
           observacoes: "",
-          recorrente: false,
-          meses_recorrencia: null,
         });
       }
       setHasError(false);
@@ -136,9 +126,6 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
       newErrors.valor = "Valor deve ser maior que zero";
     }
     if (!formData.categoria) newErrors.categoria = "Categoria é obrigatória";
-    if (formData.recorrente && (!formData.meses_recorrencia || formData.meses_recorrencia <= 0)) {
-      newErrors.meses_recorrencia = "Quantidade de meses é obrigatória para lançamentos recorrentes";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -172,8 +159,6 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
         cliente_id: formData.cliente_id || null,
         fornecedor_id: formData.fornecedor_id || null,
         observacoes: formData.observacoes || `${formData.tipo === 'receita' ? 'Receita' : 'Despesa'} - ${formData.categoria}`,
-        recorrente: formData.recorrente,
-        meses_recorrencia: formData.meses_recorrencia,
         status: "ativo",
         user_id: user.id,
       };
@@ -386,49 +371,6 @@ const LancamentosForm: React.FC<LancamentosFormProps> = ({
               </Select>
             </div>
           )}
-
-          {/* Recorrência */}
-          <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="recorrente"
-                checked={formData.recorrente}
-                onCheckedChange={(checked) => handleInputChange("recorrente", checked)}
-              />
-              <Label htmlFor="recorrente" className="text-sm font-medium text-gray-700">
-                Lançamento Recorrente
-              </Label>
-            </div>
-
-            {formData.recorrente && (
-              <div className="space-y-2">
-                <Label htmlFor="meses_recorrencia" className="text-sm font-medium text-gray-700">
-                  Quantidade de Meses *
-                </Label>
-                <Input
-                  id="meses_recorrencia"
-                  type="number"
-                  min="1"
-                  max="60"
-                  value={formData.meses_recorrencia || ""}
-                  onChange={(e) => handleInputChange("meses_recorrencia", parseInt(e.target.value) || null)}
-                  placeholder="Ex: 12 (para 12 meses)"
-                  className={`border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${
-                    errors.meses_recorrencia ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
-                  }`}
-                />
-                {errors.meses_recorrencia && (
-                  <p className="text-sm text-red-600 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
-                    {errors.meses_recorrencia}
-                  </p>
-                )}
-                <p className="text-xs text-gray-600">
-                  Este lançamento será repetido automaticamente pelos próximos {formData.meses_recorrencia || 0} meses
-                </p>
-              </div>
-            )}
-          </div>
 
           {/* Observações */}
           <div className="space-y-2">

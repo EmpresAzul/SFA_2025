@@ -15,9 +15,6 @@ export interface LancamentoFormData {
   cliente_id?: string;
   fornecedor_id?: string;
   observacoes?: string;
-  recorrente: boolean;
-  meses_recorrencia?: number;
-  lancamento_pai_id?: string;
 }
 
 // Alias para compatibilidade com código existente
@@ -32,9 +29,6 @@ export interface LancamentoFormErrors {
   cliente_id?: string;
   fornecedor_id?: string;
   observacoes?: string;
-  recorrente?: string;
-  meses_recorrencia?: string;
-  lancamento_pai_id?: string;
 }
 
 export interface LancamentoFormParams {
