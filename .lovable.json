@@ -1,7 +1,7 @@
 {
-  "name": "FluxoAzul - Sistema de Gestão Financeira PME",
+  "name": "SFA 2025 - Sistema de Gestão Financeira PME",
   "description": "Sistema completo de gestão financeira para pequenas e médias empresas",
-  "repository": "https://github.com/EmpresAzul/fluxo-azul-financeiro-pme.git",
+  "repository": "https://github.com/EmpresAzul/SFA_2025.git",
   "branch": "main",
   "framework": "react",
   "buildTool": "vite",

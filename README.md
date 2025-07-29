@@ -1,4 +1,4 @@
-# FluxoAzul - Sistema de Gestão Financeira para PMEs
+# SFA 2025 - Sistema de Gestão Financeira para PMEs
 
 ## 📋 Sobre o Projeto
 
@@ -26,10 +26,10 @@ Sistema completo de gestão financeira desenvolvido especificamente para Pequena
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/EmpresAzul/fluxo-azul-financeiro-pme.git
+git clone https://github.com/EmpresAzul/SFA_2025.git
 
 # 2. Navegue até o diretório
-cd fluxo-azul-financeiro-pme
+cd SFA_2025
 
 # 3. Instale as dependências
 npm install

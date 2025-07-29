@@ -2,9 +2,9 @@
 export default {
   // Configurações do projeto
   project: {
-    name: "FluxoAzul",
+    name: "SFA_2025",
     description: "Sistema de Gestão Financeira PME",
-    repository: "https://github.com/EmpresAzul/fluxo-azul-financeiro-pme.git",
+    repository: "https://github.com/EmpresAzul/SFA_2025.git",
     branch: "main"
   },
 
