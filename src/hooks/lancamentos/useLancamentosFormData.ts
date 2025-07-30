@@ -26,7 +26,7 @@ export const useLancamentosFormData = (
     const valorFormatado = formatNumberToInput(lancamento.valor);
 
     const loadedData: LancamentoFormData = {
-      descricao: "",
+      descricao: lancamento.descricao || "",
       data: lancamento.data,
       tipo: lancamento.tipo,
       categoria: lancamento.categoria,
