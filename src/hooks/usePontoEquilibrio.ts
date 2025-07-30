@@ -104,62 +104,87 @@ export const usePontoEquilibrio = () => {
     saidasNaoOperacionais,
   ]);
 
-  // Query para buscar projeções
-  const { data: projecoes = [], isLoading: isLoadingProjecoes } = useQuery({
-    queryKey: ["projecoes-ponto-equilibrio"],
+  // Query para buscar projeções salvas
+  const {
+    data: projecoes = [],
+    isLoading: isLoadingProjecoes,
+    error: projecoesError,
+  } = useQuery({
+    queryKey: ["ponto-equilibrio"],
     queryFn: async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error("Usuário não autenticado");
+
       const { data, error } = await supabase
-        .from("projecoes_ponto_equilibrio")
+        .from("ponto_equilibrio")
         .select("*")
+        .eq("user_id", userData.user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-
-      // Converter os dados do Supabase para nosso tipo customizado
-      return (data || []).map((item) => ({
-        ...item,
-        dados_projecao: item.dados_projecao as unknown as ProjecaoData,
-      })) as Projecao[];
+      return data.map(
+        (item) =>
+          ({
+            id: item.id,
+            nome_projecao: item.nome_projecao,
+            dados_projecao: {
+              faturamento: item.faturamento_estimado || 0,
+              custosVariaveis: {
+                fornecedores: 25,
+                impostos: 8.5,
+                comissoes: 5,
+                taxaCartao: 3,
+                outros: 2,
+                lucratividade: 15,
+              },
+              gastosFixos: {
+                gastosFixosMensais: item.gastos_fixos || 0,
+                proLabore: item.pro_labore || 0,
+              },
+              saidasNaoOperacionais: item.saidas_nao_operacionais || 0,
+              resultados: {
+                pontoEquilibrio: item.ponto_equilibrio_calculado || 0,
+                percentualPE: 0,
+                margemContribuicao: item.margem_contribuicao || 0,
+                proLaboreMaximo: 0,
+              },
+            },
+            created_at: item.created_at,
+            updated_at: item.updated_at,
+          }) as Projecao,
+      );
     },
   });
 
-  // Mutation para salvar projeção
+  // Mutation para salvar nova projeção
   const salvarProjecaoMutation = useMutation({
     mutationFn: async (nomeProjecao: string) => {
-      const dadosProjecao: ProjecaoData = {
-        faturamento,
-        custosVariaveis,
-        gastosFixos,
-        saidasNaoOperacionais,
-        resultados: {
-          pontoEquilibrio,
-          percentualPE,
-          margemContribuicao: margemContribuicao * 100,
-          proLaboreMaximo,
-        },
-      };
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) throw new Error("Usuário não autenticado");
 
       const { data, error } = await supabase
-        .from("projecoes_ponto_equilibrio")
+        .from("ponto_equilibrio")
         .insert({
+          user_id: userData.user.id,
           nome_projecao: nomeProjecao,
-          dados_projecao: dadosProjecao as any, // Conversão para Json
-          user_id: (await supabase.auth.getUser()).data.user?.id,
+          gastos_fixos: gastosFixos.gastosFixosMensais,
+          custos_variaveis: totalCustosVariaveisPercentual,
+          faturamento_estimado: faturamento,
+          pro_labore: gastosFixos.proLabore,
+          saidas_nao_operacionais: saidasNaoOperacionais,
+          ponto_equilibrio_calculado: pontoEquilibrio,
+          margem_contribuicao: margemContribuicao,
         })
         .select()
         .single();
 
       if (error) throw error;
-      return {
-        ...data,
-        dados_projecao: data.dados_projecao as unknown as ProjecaoData,
-      } as Projecao;
+      return data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["projecoes-ponto-equilibrio"],
+        queryKey: ["ponto-equilibrio"],
       });
-      setProjecaoAtual(data.id);
       toast.success("Projeção salva com sucesso!");
     },
     onError: (error) => {
@@ -177,38 +202,30 @@ export const usePontoEquilibrio = () => {
       id: string;
       nomeProjecao?: string;
     }) => {
-      const dadosProjecao: ProjecaoData = {
-        faturamento,
-        custosVariaveis,
-        gastosFixos,
-        saidasNaoOperacionais,
-        resultados: {
-          pontoEquilibrio,
-          percentualPE,
-          margemContribuicao: margemContribuicao * 100,
-          proLaboreMaximo,
-        },
+      const updateData: Record<string, unknown> = {
+        gastos_fixos: gastosFixos.gastosFixosMensais,
+        custos_variaveis: totalCustosVariaveisPercentual,
+        faturamento_estimado: faturamento,
+        pro_labore: gastosFixos.proLabore,
+        saidas_nao_operacionais: saidasNaoOperacionais,
+        ponto_equilibrio_calculado: pontoEquilibrio,
+        margem_contribuicao: margemContribuicao,
       };
-
-      const updateData: Record<string, unknown> = { dados_projecao: dadosProjecao as any };
       if (nomeProjecao) updateData.nome_projecao = nomeProjecao;
 
       const { data, error } = await supabase
-        .from("projecoes_ponto_equilibrio")
+        .from("ponto_equilibrio")
         .update(updateData)
         .eq("id", id)
         .select()
         .single();
 
       if (error) throw error;
-      return {
-        ...data,
-        dados_projecao: data.dados_projecao as unknown as ProjecaoData,
-      } as Projecao;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["projecoes-ponto-equilibrio"],
+        queryKey: ["ponto-equilibrio"],
       });
       toast.success("Projeção atualizada com sucesso!");
     },
@@ -222,7 +239,7 @@ export const usePontoEquilibrio = () => {
   const deletarProjecaoMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from("projecoes_ponto_equilibrio")
+        .from("ponto_equilibrio")
         .delete()
         .eq("id", id);
 
@@ -230,7 +247,7 @@ export const usePontoEquilibrio = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["projecoes-ponto-equilibrio"],
+        queryKey: ["ponto-equilibrio"],
       });
       setProjecaoAtual(null);
       toast.success("Projeção excluída com sucesso!");

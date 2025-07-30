@@ -302,11 +302,13 @@ export type Database = {
           created_at: string | null
           custo_mao_obra: number | null
           custo_materia_prima: number | null
+          dados_json: Json | null
           despesas_fixas: number | null
           id: string
           margem_lucro: number | null
           nome: string
           observacoes: string | null
+          preco_final: number | null
           preco_venda: number
           status: string | null
           tipo: string
@@ -317,11 +319,13 @@ export type Database = {
           created_at?: string | null
           custo_mao_obra?: number | null
           custo_materia_prima?: number | null
+          dados_json?: Json | null
           despesas_fixas?: number | null
           id?: string
           margem_lucro?: number | null
           nome: string
           observacoes?: string | null
+          preco_final?: number | null
           preco_venda: number
           status?: string | null
           tipo: string
@@ -332,11 +336,13 @@ export type Database = {
           created_at?: string | null
           custo_mao_obra?: number | null
           custo_materia_prima?: number | null
+          dados_json?: Json | null
           despesas_fixas?: number | null
           id?: string
           margem_lucro?: number | null
           nome?: string
           observacoes?: string | null
+          preco_final?: number | null
           preco_venda?: number
           status?: string | null
           tipo?: string

@@ -164,10 +164,11 @@ export const useProdutoForm = (
         categoria: produtoData.categoria,
         tipo: "Produto" as const,
         preco_final: precoFinal,
+        preco_venda: precoFinal, // Manter compatibilidade
         margem_lucro: produtoData.margemLucro,
         dados_json: JSON.parse(
           JSON.stringify({
-            custos: custosSerializados,
+            custos_materiais: custosSerializados,
             taxas_adicionais: taxasSerializadas,
             custo_total: custoTotal,
             total_taxas_percentual: totalTaxasPercentual,

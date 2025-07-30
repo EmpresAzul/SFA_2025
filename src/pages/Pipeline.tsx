@@ -77,7 +77,10 @@ const Pipeline: React.FC = () => {
           </p>
         </div>
         <Button
-          onClick={() => setEditingNegocio(null)}
+          onClick={() => {
+            setEditingNegocio(null);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
           className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
         >
           <Plus className="h-4 w-4 mr-2" />

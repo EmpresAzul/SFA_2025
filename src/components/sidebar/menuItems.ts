@@ -106,14 +106,6 @@ export const menuItems: MenuItem[] = [
     description: "Análise de viabilidade",
   },
   {
-    id: "videos-sistema",
-    label: "Vídeos do Sistema",
-    icon: Video,
-    iconColor: "text-rose-500",
-    href: "/videos-sistema",
-    description: "Tutoriais e guias em vídeo",
-  },
-  {
     id: "suporte",
     label: "Suporte",
     icon: HelpCircle,

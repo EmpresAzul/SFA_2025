@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CpfCnpjInput } from "@/components/ui/cpf-cnpj-input";
+import { PhoneMaskInput } from "@/components/ui/phone-mask-input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -238,21 +240,17 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
 
             <div className="space-y-2">
               <Label htmlFor="cpf_cnpj">CPF/CNPJ</Label>
-              <Input
-                id="cpf_cnpj"
+              <CpfCnpjInput
                 value={formData.cpf_cnpj}
-                onChange={(e) => handleInputChange("cpf_cnpj", e.target.value)}
-                placeholder="Digite o CPF ou CNPJ"
+                onChange={(value) => handleInputChange("cpf_cnpj", value)}
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="telefone">Telefone</Label>
-              <Input
-                id="telefone"
+              <PhoneMaskInput
                 value={formData.telefone}
-                onChange={(e) => handleInputChange("telefone", e.target.value)}
-                placeholder="Digite o telefone"
+                onChange={(value) => handleInputChange("telefone", value)}
               />
             </div>
 

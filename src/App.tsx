@@ -23,7 +23,7 @@ import SaldosBancarios from "./pages/SaldosBancarios";
 import Lembretes from "./pages/Lembretes";
 import PontoEquilibrio from "./pages/PontoEquilibrio";
 import Suporte from "./pages/Suporte";
-import VideosSistema from "./pages/VideosSistema";
+
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import AdminSettings from "./pages/AdminSettings";
@@ -160,14 +160,6 @@ const App = () => (
         element={
           <AuthenticatedRoute>
             <Suporte />
-          </AuthenticatedRoute>
-        }
-      />
-      <Route
-        path="/videos-sistema"
-        element={
-          <AuthenticatedRoute>
-            <VideosSistema />
           </AuthenticatedRoute>
         }
       />

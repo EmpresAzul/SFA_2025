@@ -146,7 +146,7 @@ export const useProfile = () => {
       console.log("Perfil atual:", profile);
 
       // Simular delay de rede
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       // Criar o perfil atualizado
       const updatedProfile: UserProfile = {
@@ -169,13 +169,13 @@ export const useProfile = () => {
 
       console.log("Perfil que será salvo:", updatedProfile);
       
-      // Salvar dados completos no localStorage
+      // IMPORTANTE: Salvar PRIMEIRO no localStorage
       const saved = saveProfile(data);
-      if (saved) {
-        console.log("💾 Dados salvos com sucesso no localStorage");
-      } else {
+      if (!saved) {
         console.error("❌ Falha ao salvar dados no localStorage");
+        throw new Error("Erro ao salvar dados localmente");
       }
+      console.log("💾 Dados salvos com sucesso no localStorage");
 
       // Atualizar o estado local
       setProfile(updatedProfile);
@@ -189,6 +189,12 @@ export const useProfile = () => {
         telefone: data.telefone,
         cargo: data.cargo,
       });
+      
+      // Forçar recarregamento dos dados salvos para confirmação
+      const verificacao = loadProfile();
+      if (verificacao) {
+        console.log("✅ Verificação - dados estão persistidos:", verificacao);
+      }
       
       // Mostrar toast de sucesso
       toast({
