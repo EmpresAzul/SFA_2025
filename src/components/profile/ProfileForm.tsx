@@ -344,7 +344,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               <div className="flex justify-end pt-3">
                 <Button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !formData.nome.trim()}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 disabled:opacity-50 h-9"
                 >
                   {loading ? (

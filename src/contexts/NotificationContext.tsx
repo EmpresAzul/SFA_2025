@@ -17,23 +17,16 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       if (stored) {
         try {
           const parsedNotifications = JSON.parse(stored);
-          // Filtrar apenas notificações válidas (não fictícias)
+          // Só carregar notificações do sistema/administração
           const validNotifications = parsedNotifications.filter((notification: Notification) => {
-            // Remover notificações fictícias/de exemplo
-            const isFakeNotification = 
-              notification.message.includes("exemplo") || 
-              notification.message.includes("teste") ||
-              notification.message.includes("Chamado Respondido") ||
-              notification.message.includes("Nova versão do FluxoAzul disponível") ||
-              notification.message.includes("Backup automático dos seus dados foi realizado") ||
-              notification.id === "1" || 
-              notification.id === "2" || 
-              notification.id === "3" ||
-              notification.title === "Chamado Respondido" ||
-              notification.title === "Atualização do Sistema" ||
-              notification.title === "Backup Realizado";
-            
-            return !isFakeNotification;
+            // Só permitir notificações do sistema
+            return notification.type === 'system_message' && 
+                   !notification.message.includes("exemplo") && 
+                   !notification.message.includes("teste") &&
+                   !notification.message.includes("Chamado Respondido") &&
+                   notification.id !== "1" && 
+                   notification.id !== "2" && 
+                   notification.id !== "3";
           });
           
           setNotifications(validNotifications);
@@ -62,18 +55,23 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const addNotification = (notificationData: Omit<Notification, 'id' | 'isRead' | 'createdAt'>) => {
-    const newNotification: Notification = {
-      ...notificationData,
-      id: Date.now().toString(),
-      isRead: false,
-      createdAt: new Date().toISOString(),
-    };
+    // Só permitir notificações do sistema/administração
+    if (notificationData.type === 'system_message') {
+      const newNotification: Notification = {
+        ...notificationData,
+        id: Date.now().toString(),
+        isRead: false,
+        createdAt: new Date().toISOString(),
+      };
 
-    const updatedNotifications = [newNotification, ...notifications];
-    setNotifications(updatedNotifications);
-    saveNotifications(updatedNotifications);
-    
-    console.log("🔔 Nova notificação adicionada:", newNotification.title);
+      const updatedNotifications = [newNotification, ...notifications];
+      setNotifications(updatedNotifications);
+      saveNotifications(updatedNotifications);
+      
+      console.log("🔔 Nova notificação do sistema adicionada:", newNotification.title);
+    } else {
+      console.log("🚫 Notificação rejeitada - apenas notificações do sistema são permitidas");
+    }
   };
 
   const markAsRead = (notificationId: string) => {

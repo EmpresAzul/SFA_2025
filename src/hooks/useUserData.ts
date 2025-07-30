@@ -1,4 +1,4 @@
-import { useProfileContext } from "@/contexts/ProfileContext";
+import { useProfile } from "@/hooks/useProfile";
 
 interface UserData {
   name: string;
@@ -7,11 +7,11 @@ interface UserData {
 }
 
 export const useUserData = (): UserData => {
-  const { profileData } = useProfileContext();
+  const { profile } = useProfile();
 
   return {
-    name: profileData.nome,
-    company: profileData.empresa,
-    email: profileData.email,
+    name: profile?.nome || "Usuário",
+    company: profile?.empresa || "Empresa",
+    email: profile?.email || "",
   };
 };
