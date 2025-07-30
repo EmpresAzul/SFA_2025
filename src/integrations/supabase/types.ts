@@ -354,9 +354,17 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          cargo: string | null
           created_at: string
           email: string | null
           empresa: string | null
+          endereco_bairro: string | null
+          endereco_cep: string | null
+          endereco_cidade: string | null
+          endereco_complemento: string | null
+          endereco_estado: string | null
+          endereco_numero: string | null
+          endereco_rua: string | null
           id: string
           nome: string | null
           telefone: string | null
@@ -365,9 +373,17 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          cargo?: string | null
           created_at?: string
           email?: string | null
           empresa?: string | null
+          endereco_bairro?: string | null
+          endereco_cep?: string | null
+          endereco_cidade?: string | null
+          endereco_complemento?: string | null
+          endereco_estado?: string | null
+          endereco_numero?: string | null
+          endereco_rua?: string | null
           id?: string
           nome?: string | null
           telefone?: string | null
@@ -376,9 +392,17 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          cargo?: string | null
           created_at?: string
           email?: string | null
           empresa?: string | null
+          endereco_bairro?: string | null
+          endereco_cep?: string | null
+          endereco_cidade?: string | null
+          endereco_complemento?: string | null
+          endereco_estado?: string | null
+          endereco_numero?: string | null
+          endereco_rua?: string | null
           id?: string
           nome?: string | null
           telefone?: string | null
