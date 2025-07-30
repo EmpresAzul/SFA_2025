@@ -18,21 +18,41 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   onUpdate, 
   loading = false 
 }) => {
+  // Inicializar o formulário com dados do perfil
   const [formData, setFormData] = useState<ProfileFormData>({
-    nome: '',
-    telefone: '',
-    empresa: '',
-    cargo: '',
+    nome: profile.nome || '',
+    telefone: profile.telefone || '',
+    empresa: profile.empresa || '',
+    cargo: profile.cargo || '',
     endereco: {
-      rua: '',
-      numero: '',
-      complemento: '',
-      bairro: '',
-      cidade: '',
-      estado: '',
-      cep: '',
+      rua: profile.endereco?.rua || '',
+      numero: profile.endereco?.numero || '',
+      complemento: profile.endereco?.complemento || '',
+      bairro: profile.endereco?.bairro || '',
+      cidade: profile.endereco?.cidade || '',
+      estado: profile.endereco?.estado || '',
+      cep: profile.endereco?.cep || '',
     },
   });
+
+  // Atualizar formulário quando o perfil mudar
+  React.useEffect(() => {
+    setFormData({
+      nome: profile.nome || '',
+      telefone: profile.telefone || '',
+      empresa: profile.empresa || '',
+      cargo: profile.cargo || '',
+      endereco: {
+        rua: profile.endereco?.rua || '',
+        numero: profile.endereco?.numero || '',
+        complemento: profile.endereco?.complemento || '',
+        bairro: profile.endereco?.bairro || '',
+        cidade: profile.endereco?.cidade || '',
+        estado: profile.endereco?.estado || '',
+        cep: profile.endereco?.cep || '',
+      },
+    });
+  }, [profile]);
 
 
 
@@ -62,22 +82,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
 
     try {
       await onUpdate(formData);
-      // Limpar formulário após salvar
-      setFormData({
-        nome: '',
-        telefone: '',
-        empresa: '',
-        cargo: '',
-        endereco: {
-          rua: '',
-          numero: '',
-          complemento: '',
-          bairro: '',
-          cidade: '',
-          estado: '',
-          cep: '',
-        },
-      });
+      // Não limpar o formulário após salvar para manter os dados visíveis
     } catch (error) {
       toast({
         title: "Erro ao salvar",
@@ -158,9 +163,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
 
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-      {/* Informações Básicas - 40% */}
-      <div className="lg:col-span-2">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
+      {/* Informações Básicas - 50% */}
+      <div>
         <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -360,8 +365,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
         </Card>
       </div>
 
-      {/* Sidebar com Email e Informações - 60% */}
-      <div className="lg:col-span-3 space-y-6">
+      {/* Sidebar com Email e Informações - 50% */}
+      <div className="space-y-6">
         <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
