@@ -3,14 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatNumberToDisplay } from "@/utils/currency";
 import { useToast } from "@/hooks/use-toast";
-
-interface SaldoBancarioData {
-  id?: string;
-  banco: string;
-  saldo: number;
-  data: string;
-  user_id: string;
-}
+import { SaldoBancarioData } from "@/types/saldosBancarios";
 
 interface SaldosBancariosListProps {
   saldos: SaldoBancarioData[];
@@ -82,22 +75,23 @@ const SaldosBancariosList: React.FC<SaldosBancariosListProps> = ({
           <div className="space-y-2">
             {saldos.map((saldo) => (
               <div
-                key={saldo.id || `${saldo.banco}-${saldo.data}`}
+                key={saldo.id || `${saldo.banco}-${saldo.data_atualizacao}`}
                 className="flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <div>
                   <h3 className="font-medium text-gray-900">{saldo.banco}</h3>
+                  <p className="text-sm text-gray-500">Conta: {saldo.conta}</p>
                   <p className="text-sm text-gray-500">
-                    Data: {new Date(saldo.data).toLocaleDateString('pt-BR')}
+                    Data: {new Date(saldo.data_atualizacao).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
                   <span
                     className={`font-semibold text-lg ${
-                      saldo.saldo >= 0 ? "text-green-600" : "text-red-600"
+                      saldo.saldo_atual >= 0 ? "text-green-600" : "text-red-600"
                     }`}
                   >
-                    {formatNumberToDisplay(saldo.saldo)}
+                    {formatNumberToDisplay(saldo.saldo_atual)}
                   </span>
                   <Button
                     variant="outline"

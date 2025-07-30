@@ -74,9 +74,13 @@ export const useCadastros = (): UseCadastrosReturn => {
       setLoading(true);
       setError(null);
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado');
+
       const { data, error: fetchError } = await supabase
         .from('cadastros')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (fetchError) {
@@ -101,9 +105,17 @@ export const useCadastros = (): UseCadastrosReturn => {
     try {
       setError(null);
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado');
+
+      const cadastroData = {
+        ...data,
+        user_id: user.id
+      };
+
       const { error: insertError } = await supabase
         .from('cadastros')
-        .insert([data]);
+        .insert([cadastroData]);
 
       if (insertError) {
         throw insertError;
@@ -134,10 +146,14 @@ export const useCadastros = (): UseCadastrosReturn => {
     try {
       setError(null);
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado');
+
       const { error: updateError } = await supabase
         .from('cadastros')
         .update(data)
-        .eq('id', id);
+        .eq('id', id)
+        .eq('user_id', user.id);
 
       if (updateError) {
         throw updateError;
@@ -168,10 +184,14 @@ export const useCadastros = (): UseCadastrosReturn => {
     try {
       setError(null);
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado');
+
       const { error: deleteError } = await supabase
         .from('cadastros')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .eq('user_id', user.id);
 
       if (deleteError) {
         throw deleteError;
@@ -209,10 +229,14 @@ export const useCadastros = (): UseCadastrosReturn => {
 
       const newStatus = cadastro.status === 'ativo' ? 'inativo' : 'ativo';
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Usuário não autenticado');
+
       const { error: updateError } = await supabase
         .from('cadastros')
         .update({ status: newStatus })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('user_id', user.id);
 
       if (updateError) {
         throw updateError;

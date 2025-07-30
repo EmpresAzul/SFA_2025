@@ -141,9 +141,13 @@ export const useCadastroForm = (
     setLoading(true);
 
     try {
+      if (!user?.id) {
+        throw new Error('Usuário não autenticado');
+      }
+
       const cadastroData = {
         nome: formData.razao_social?.trim() || formData.nome.trim(),
-        tipo,
+        tipo: tipo === 'Funcionário' ? 'funcionario' : tipo.toLowerCase() as 'cliente' | 'fornecedor' | 'funcionario',
         pessoa: formData.pessoa,
         status: 'ativo' as const,
         cpf_cnpj: formData.cpf_cnpj?.trim() || undefined,
@@ -156,7 +160,7 @@ export const useCadastroForm = (
         estado: formData.estado?.trim() || undefined,
         cep: formData.cep?.trim() || undefined,
         observacoes: formData.observacoes?.trim() || undefined,
-        user_id: user!.id,
+        user_id: user.id,
         data: new Date().toISOString().split("T")[0],
       };
 

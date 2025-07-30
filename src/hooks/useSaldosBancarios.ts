@@ -5,16 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { createNotificationFromEvent, shouldNotify } from "@/utils/notificationHelpers";
 import { useCallback, useState } from "react";
-
-interface SaldoBancarioData {
-  id?: string;
-  data: string;
-  banco: string;
-  saldo: number;
-  user_id: string;
-  created_at?: string;
-  updated_at?: string;
-}
+import { SaldoBancarioData } from "@/types/saldosBancarios";
 
 export const useSaldosBancarios = () => {
   const { user } = useAuth();
@@ -34,7 +25,7 @@ export const useSaldosBancarios = () => {
           .from('saldos_bancarios')
           .select('*')
           .eq('user_id', user.id)
-          .order('data', { ascending: false });
+          .order('data_atualizacao', { ascending: false });
 
         if (error) throw error;
         return data || [];
@@ -51,7 +42,7 @@ export const useSaldosBancarios = () => {
         .from('saldos_bancarios')
         .select('*')
         .eq('user_id', user.id)
-        .order('data', { ascending: false });
+        .order('data_atualizacao', { ascending: false });
 
       if (error) throw error;
       setSaldos(data || []);

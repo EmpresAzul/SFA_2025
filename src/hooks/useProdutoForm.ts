@@ -181,9 +181,14 @@ export const useProdutoForm = (
 
       if (editingItem) {
         // Atualizar item existente
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          throw new Error("Usuário não autenticado");
+        }
+        
         await updatePrecificacao.mutateAsync({
           id: editingItem.id,
-          data: dadosPrecificacao,
+          data: { ...dadosPrecificacao, user_id: user.id },
         });
         toast({
           title: "Sucesso!",
@@ -197,6 +202,11 @@ export const useProdutoForm = (
         if (!user) {
           throw new Error("Usuário não autenticado");
         }
+
+        console.log("🔄 Dados que serão enviados para precificação:", {
+          ...dadosPrecificacao,
+          user_id: user.id,
+        });
 
         await createPrecificacao.mutateAsync({
           ...dadosPrecificacao,

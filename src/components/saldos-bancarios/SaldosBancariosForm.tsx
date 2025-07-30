@@ -9,8 +9,9 @@ import { parseStringToNumber } from "@/utils/currency";
 
 interface SaldoForm {
   banco: string;
-  saldo: number;
-  data: string;
+  conta: string;
+  saldo_atual: number;
+  data_atualizacao: string;
 }
 
 interface SaldosBancariosFormProps {
@@ -31,8 +32,9 @@ const SaldosBancariosForm: React.FC<SaldosBancariosFormProps> = ({
   const { toast } = useToast();
   const [formData, setFormData] = useState<SaldoForm>({
     banco: "",
-    saldo: 0,
-    data: new Date().toISOString().split("T")[0],
+    conta: "",
+    saldo_atual: 0,
+    data_atualizacao: new Date().toISOString().split("T")[0],
   });
   const [valor, setValor] = useState("");
 
@@ -42,12 +44,13 @@ const SaldosBancariosForm: React.FC<SaldosBancariosFormProps> = ({
       console.log("🔄 Preenchendo formulário com dados iniciais:", initialData);
       setFormData({
         banco: initialData.banco || "",
-        saldo: initialData.saldo || 0,
-        data: initialData.data || new Date().toISOString().split("T")[0],
+        conta: initialData.conta || "",
+        saldo_atual: initialData.saldo_atual || 0,
+        data_atualizacao: initialData.data_atualizacao || new Date().toISOString().split("T")[0],
       });
       
       // Formatar valor para o CurrencyInput
-      const valorFormatado = initialData.saldo ? initialData.saldo.toLocaleString("pt-BR", {
+      const valorFormatado = initialData.saldo_atual ? initialData.saldo_atual.toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }) : "";
@@ -56,8 +59,9 @@ const SaldosBancariosForm: React.FC<SaldosBancariosFormProps> = ({
       // Resetar formulário para modo criação
       setFormData({
         banco: "",
-        saldo: 0,
-        data: new Date().toISOString().split("T")[0],
+        conta: "",
+        saldo_atual: 0,
+        data_atualizacao: new Date().toISOString().split("T")[0],
       });
       setValor("");
     }
@@ -69,14 +73,15 @@ const SaldosBancariosForm: React.FC<SaldosBancariosFormProps> = ({
     try {
       await onSubmit({
         ...formData,
-        saldo: parseStringToNumber(valor),
+        saldo_atual: parseStringToNumber(valor),
       });
       
       // Reset form after successful submission
       setFormData({
         banco: "",
-        saldo: 0,
-        data: new Date().toISOString().split("T")[0],
+        conta: "",
+        saldo_atual: 0,
+        data_atualizacao: new Date().toISOString().split("T")[0],
       });
       setValor("");
       
@@ -112,7 +117,20 @@ const SaldosBancariosForm: React.FC<SaldosBancariosFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="valor">Valor R$</Label>
+            <Label htmlFor="conta">Conta</Label>
+            <Input
+              id="conta"
+              value={formData.conta}
+              onChange={(e) =>
+                setFormData({ ...formData, conta: e.target.value })
+              }
+              placeholder="Número da conta"
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="valor">Saldo Atual R$</Label>
             <CurrencyInput
               id="valor"
               value={valor}
@@ -122,13 +140,13 @@ const SaldosBancariosForm: React.FC<SaldosBancariosFormProps> = ({
           </div>
 
           <div>
-            <Label htmlFor="data">Data</Label>
+            <Label htmlFor="data">Data de Atualização</Label>
             <Input
               id="data"
               type="date"
-              value={formData.data}
+              value={formData.data_atualizacao}
               onChange={(e) =>
-                setFormData({ ...formData, data: e.target.value })
+                setFormData({ ...formData, data_atualizacao: e.target.value })
               }
               required
             />

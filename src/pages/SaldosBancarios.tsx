@@ -2,20 +2,22 @@ import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSaldosBancarios } from "@/hooks/useSaldosBancarios";
 import { useAuth } from "@/contexts/AuthContext";
+import { SaldoBancarioData } from "@/types/saldosBancarios";
 import SaldosBancariosSummary from "@/components/saldos-bancarios/SaldosBancariosSummary";
 import SaldosBancariosForm from "@/components/saldos-bancarios/SaldosBancariosForm";
 import SaldosBancariosList from "@/components/saldos-bancarios/SaldosBancariosList";
 
 interface SaldoForm {
   banco: string;
-  saldo: number;
-  data: string;
+  conta: string;
+  saldo_atual: number;
+  data_atualizacao: string;
 }
 
 const SaldosBancarios: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("lista");
-  const [selectedSaldo, setSelectedSaldo] = useState(null);
+  const [selectedSaldo, setSelectedSaldo] = useState<SaldoBancarioData | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
 
   const {
@@ -31,21 +33,23 @@ const SaldosBancarios: React.FC = () => {
     fetchSaldos();
   }, [fetchSaldos]);
 
-  const handleFormSubmit = async (formData) => {
+  const handleFormSubmit = async (formData: SaldoForm) => {
     try {
       if (!user?.id) throw new Error('Usuário não autenticado');
       if (isEditMode && selectedSaldo?.id) {
         await updateSaldo(selectedSaldo.id, {
           banco: formData.banco,
-          saldo: formData.saldo,
-          data: formData.data,
+          conta: formData.conta,
+          saldo_atual: formData.saldo_atual,
+          data_atualizacao: formData.data_atualizacao,
           user_id: user.id
         });
       } else {
         await createSaldo({
           banco: formData.banco,
-          saldo: formData.saldo,
-          data: formData.data,
+          conta: formData.conta,
+          saldo_atual: formData.saldo_atual,
+          data_atualizacao: formData.data_atualizacao,
           user_id: user.id
         });
       }
@@ -72,7 +76,7 @@ const SaldosBancarios: React.FC = () => {
     }
   };
 
-  const handleEditSaldo = (saldo) => {
+  const handleEditSaldo = (saldo: SaldoBancarioData) => {
     setSelectedSaldo(saldo);
     setIsEditMode(true);
     setActiveTab("formulario");
@@ -84,7 +88,7 @@ const SaldosBancarios: React.FC = () => {
     setIsEditMode(false);
   };
 
-  const totalSaldo = saldos.reduce((total, saldo) => total + saldo.saldo, 0);
+  const totalSaldo = saldos.reduce((total, saldo) => total + saldo.saldo_atual, 0);
 
   return (
     <div className="p-6 space-y-6">
