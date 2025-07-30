@@ -49,7 +49,7 @@ const ESTADOS = [
 
 interface FormData {
   data: string;
-  tipo: "Cliente" | "Fornecedor" | "Funcionário" | "";
+  tipo: "cliente" | "fornecedor" | "funcionario" | "";
   nome: string;
   endereco: string;
   numero: string;
@@ -153,7 +153,9 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
       const cadastroData: CadastroFormData = {
         data: formData.data,
         nome: formData.nome.trim(),
-        tipo: formData.tipo as "Cliente" | "Fornecedor" | "Funcionário",
+        tipo: formData.tipo.toLowerCase(),
+        pessoa: formData.cpf_cnpj?.replace(/\D/g, '').length === 11 ? 'Física' : 'Jurídica',
+        status: 'ativo',
         endereco: formData.endereco.trim() || undefined,
         numero: formData.numero.trim() || undefined,
         cidade: formData.cidade.trim() || undefined,
@@ -220,9 +222,9 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Cliente">Cliente</SelectItem>
-                  <SelectItem value="Fornecedor">Fornecedor</SelectItem>
-                  <SelectItem value="Funcionário">Funcionário</SelectItem>
+                  <SelectItem value="cliente">Cliente</SelectItem>
+                  <SelectItem value="fornecedor">Fornecedor</SelectItem>
+                  <SelectItem value="funcionario">Funcionário</SelectItem>
                 </SelectContent>
               </Select>
             </div>

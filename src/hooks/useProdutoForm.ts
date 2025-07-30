@@ -54,11 +54,11 @@ export const useProdutoForm = (
   // Preencher formulário quando estiver editando
   useEffect(() => {
     if (editingItem) {
-              setProdutoData({
-          nome: editingItem.nome,
-          categoria: editingItem.categoria,
-          margemLucro: editingItem.margem_lucro || 20,
-        });
+      setProdutoData({
+        nome: editingItem.nome || "",
+        categoria: editingItem.categoria || "",
+        margemLucro: editingItem.margem_lucro || 30,
+      });
 
       // Carregar custos se existirem
       if (editingItem.dados_json) {
@@ -243,6 +243,7 @@ export const useProdutoForm = (
     });
     setCustos([{ id: "1", descricao: "", valor: 0 }]);
     setTaxasAdicionais([{ id: "1", descricao: "", percentual: 0 }]);
+    setDespesasFixas([{ id: "1", descricao: "", valor: 0 }]);
   };
 
   const handleCancel = () => {
