@@ -1,6 +1,7 @@
 
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { criarLancamentosRecorrentes } from "./lancamentosUtils";
 import type {
   LancamentoFormData,
   LancamentoComRelacoes,
@@ -66,14 +67,24 @@ export const useLancamentosFormSubmit = ({
           observacoes: formData.observacoes?.trim() || null,
           user_id: user.id,
           status: "ativo",
+          recorrente: formData.recorrente || false,
+          meses_recorrencia: formData.meses_recorrencia || null,
         };
 
-        await createLancamento.mutateAsync(lancamentoData);
-
-        toast({
-          title: "Sucesso!",
-          description: "Lançamento criado com sucesso.",
-        });
+        // Se for recorrente, usar função especial
+        if (formData.recorrente && formData.meses_recorrencia && formData.meses_recorrencia > 0) {
+          await criarLancamentosRecorrentes(lancamentoData, formData.meses_recorrencia);
+          toast({
+            title: "Sucesso!",
+            description: `Lançamento recorrente criado com sucesso! Serão criados ${formData.meses_recorrencia} lançamentos mensais.`,
+          });
+        } else {
+          await createLancamento.mutateAsync(lancamentoData);
+          toast({
+            title: "Sucesso!",
+            description: "Lançamento criado com sucesso.",
+          });
+        }
       }
 
       resetForm();

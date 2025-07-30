@@ -128,53 +128,6 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
         </div>
       </div>
 
-      {/* Campo Recorrente */}
-      <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="recorrente"
-            checked={formData.recorrente}
-            onCheckedChange={handleRecorrenteChange}
-          />
-          <Label
-            htmlFor="recorrente"
-            className="text-sm font-medium text-gray-700"
-          >
-            Lançamento Recorrente
-          </Label>
-        </div>
-
-        {formData.recorrente && (
-          <div className="space-y-2">
-            <Label
-              htmlFor="meses_recorrencia"
-              className="text-sm font-medium text-gray-700"
-            >
-              Quantidade de Meses *
-            </Label>
-            <Input
-              id="meses_recorrencia"
-              type="number"
-              min="1"
-              max="60"
-              value={formData.meses_recorrencia || ""}
-              onChange={(e) =>
-                handleInputChange(
-                  "meses_recorrencia",
-                  parseInt(e.target.value) || null,
-                )
-              }
-              placeholder="Ex: 12 (para 12 meses)"
-              className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <p className="text-xs text-gray-600">
-              Este lançamento será repetido automaticamente pelos próximos{" "}
-              {formData.meses_recorrencia || 0} meses
-            </p>
-          </div>
-        )}
-      </div>
-
       {/* Cliente/Fornecedor baseado no tipo */}
       {formData.tipo === "receita" ? (
         <div className="space-y-2">
@@ -247,6 +200,53 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
           As categorias são organizadas conforme a estrutura do DRE
           (Demonstração do Resultado do Exercício)
         </p>
+      </div>
+
+      {/* Campo Recorrente - Posicionado logo após Categoria */}
+      <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="recorrente"
+            checked={formData.recorrente}
+            onCheckedChange={handleRecorrenteChange}
+          />
+          <Label
+            htmlFor="recorrente"
+            className="text-sm font-medium text-gray-700"
+          >
+            Lançamento Recorrente
+          </Label>
+        </div>
+
+        {formData.recorrente && (
+          <div className="space-y-2">
+            <Label
+              htmlFor="meses_recorrencia"
+              className="text-sm font-medium text-gray-700"
+            >
+              Quantidade de Meses *
+            </Label>
+            <Input
+              id="meses_recorrencia"
+              type="number"
+              min="1"
+              max="60"
+              value={formData.meses_recorrencia || ""}
+              onChange={(e) =>
+                handleInputChange(
+                  "meses_recorrencia",
+                  parseInt(e.target.value) || null,
+                )
+              }
+              placeholder="Ex: 12 (para 12 meses)"
+              className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-600">
+              Este lançamento será repetido automaticamente pelos próximos{" "}
+              {formData.meses_recorrencia || 0} meses
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Observações */}

@@ -2,13 +2,28 @@ import { supabase } from "@/integrations/supabase/client";
 import { addMonths, format } from "date-fns";
 
 
+interface LancamentoRecorrenteData {
+  data: string;
+  tipo: "receita" | "despesa";
+  categoria: string;
+  valor: number;
+  descricao: string;
+  cliente_id?: string | null;
+  fornecedor_id?: string | null;
+  observacoes?: string | null;
+  user_id: string;
+  status: string;
+  recorrente?: boolean;
+  meses_recorrencia?: number | null;
+}
+
 interface Lancamento {
   id: string;
   [key: string]: any;
 }
 
 export const criarLancamentosRecorrentes = async (
-  lancamentoData: Lancamento,
+  lancamentoData: LancamentoRecorrenteData,
   mesesRecorrencia: number,
 ) => {
   const lancamentosParaCriar = [];

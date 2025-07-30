@@ -53,6 +53,8 @@ export const useLancamentosMutations = () => {
           observacoes: lancamentoData.observacoes,
           user_id: lancamentoData.user_id,
           status: lancamentoData.status,
+          recorrente: lancamentoData.recorrente || false,
+          meses_recorrencia: lancamentoData.meses_recorrencia || null,
         };
 
         const { data, error } = await supabase
