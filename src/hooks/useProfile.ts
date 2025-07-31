@@ -21,11 +21,13 @@ export const useProfile = () => {
       setLoading(true);
       
       if (!user?.id) {
-        console.log("Usuário não autenticado, aguardando...");
+        console.log("⏳ Usuário não autenticado, aguardando...");
         return;
       }
 
-      // Buscar dados do banco de dados Supabase PRIMEIRO
+      console.log("🔍 Buscando perfil do usuário:", user.id);
+
+      // 1. BUSCAR DADOS DO BANCO DE DADOS SUPABASE PRIMEIRO (PRIORIDADE MÁXIMA)
       const { data: profileFromDB, error } = await supabase
         .from('profiles')
         .select('*')
@@ -33,14 +35,15 @@ export const useProfile = () => {
         .single();
 
       if (error && error.code !== 'PGRST116') {
-        console.error("Erro ao carregar perfil do banco:", error);
+        console.error("❌ Erro ao carregar perfil do banco:", error);
         throw error;
       }
 
-      let profileName = profileData.nome;
-      let profileTelefone = profileData.telefone || "(11) 99999-9999";
-      let profileEmpresa = profileData.empresa;
-      let profileCargo = profileData.cargo || "Diretor Financeiro";
+      // Dados padrão como fallback
+      let profileName = "Suporte EmpresaZul";
+      let profileTelefone = "(11) 99999-9999";
+      let profileEmpresa = "EmpresaZul";
+      let profileCargo = "Diretor Financeiro";
       let enderecoData = {
         rua: "Rua das Flores",
         numero: "123",
@@ -51,14 +54,15 @@ export const useProfile = () => {
         cep: "01234-567",
       };
 
-      // Se existem dados no banco, usar eles
+      // 2. Se existem dados no banco, usar eles (PRIORIDADE MÁXIMA)
       if (profileFromDB) {
-        console.log("📦 Dados encontrados no banco de dados, carregando...");
+        console.log("✅ Dados encontrados no banco de dados:", profileFromDB);
         profileName = profileFromDB.nome || profileName;
         profileTelefone = profileFromDB.telefone || profileTelefone;
         profileEmpresa = profileFromDB.empresa || profileEmpresa;
         profileCargo = profileFromDB.cargo || profileCargo;
         
+        // Montar endereço do banco
         if (profileFromDB.endereco_rua) {
           enderecoData = {
             rua: profileFromDB.endereco_rua || enderecoData.rua,
@@ -71,42 +75,48 @@ export const useProfile = () => {
           };
         }
         
-        // Atualizar contexto com dados do banco
-        updateProfileData({
-          nome: profileName,
-          empresa: profileEmpresa,
-          telefone: profileTelefone,
-          cargo: profileCargo,
-          email: profileData.email,
-        });
+        console.log("🔄 Atualizando contexto com dados do banco...");
       } else {
-        // Se não há dados no banco, verificar localStorage como fallback
-        const savedProfile = loadProfile();
-        if (savedProfile) {
-          console.log("📦 Dados encontrados no localStorage, carregando como fallback...");
-          profileName = savedProfile.nome || profileName;
-          profileTelefone = savedProfile.telefone || profileTelefone;
-          profileEmpresa = savedProfile.empresa || profileEmpresa;
-          profileCargo = savedProfile.cargo || profileCargo;
-          enderecoData = savedProfile.endereco || enderecoData;
-          
-          // Atualizar contexto com dados salvos
-          updateProfileData({
+        console.log("⚠️ Nenhum dado encontrado no banco, usando dados padrão");
+        
+        // 3. Se não há dados no banco, criar perfil padrão
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            user_id: user.id,
             nome: profileName,
-            empresa: profileEmpresa,
             telefone: profileTelefone,
+            empresa: profileEmpresa,
             cargo: profileCargo,
-            email: profileData.email,
+            endereco_rua: enderecoData.rua,
+            endereco_numero: enderecoData.numero,
+            endereco_complemento: enderecoData.complemento,
+            endereco_bairro: enderecoData.bairro,
+            endereco_cidade: enderecoData.cidade,
+            endereco_estado: enderecoData.estado,
+            endereco_cep: enderecoData.cep,
           });
+
+        if (insertError) {
+          console.error("❌ Erro ao criar perfil padrão:", insertError);
         } else {
-          console.log("📝 Nenhum dado salvo encontrado, usando dados padrão");
+          console.log("✅ Perfil padrão criado no banco de dados");
         }
       }
 
-      // Dados do perfil do usuário baseados nos dados encontrados
-      const mockProfile: UserProfile = {
-        id: user?.id || "user_001",
-        email: profileData.email,
+      // 4. Atualizar contexto global com dados confirmados
+      updateProfileData({
+        nome: profileName,
+        empresa: profileEmpresa,
+        telefone: profileTelefone,
+        cargo: profileCargo,
+        email: user.email || "suporte@empresazul.com",
+      });
+
+      // 5. Criar objeto do perfil final
+      const finalProfile: UserProfile = {
+        id: user.id,
+        email: user.email || "suporte@empresazul.com",
         nome: profileName,
         telefone: profileTelefone,
         empresa: profileEmpresa,
@@ -116,10 +126,10 @@ export const useProfile = () => {
         updated_at: profileFromDB?.updated_at || new Date().toISOString(),
       };
 
-      // Dados simulados da assinatura
-      const mockSubscription: SubscriptionInfo = {
+      // 6. Dados da assinatura (simulados)
+      const subscriptionData: SubscriptionInfo = {
         id: "sub_001",
-        user_id: user?.id || "user_001",
+        user_id: user.id,
         plano: "profissional",
         status: "ativo",
         data_ativacao: new Date(Date.now() - 86400000 * 30).toISOString(),
@@ -129,11 +139,13 @@ export const useProfile = () => {
         updated_at: new Date().toISOString(),
       };
 
-      setProfile(mockProfile);
-      setSubscription(mockSubscription);
+      setProfile(finalProfile);
+      setSubscription(subscriptionData);
+
+      console.log("🎉 Perfil carregado com sucesso:", finalProfile);
 
     } catch (error) {
-      console.error("Erro ao carregar perfil:", error);
+      console.error("❌ Erro ao carregar perfil:", error);
       toast({
         title: "Erro ao carregar perfil",
         description: "Tente novamente mais tarde.",
@@ -145,10 +157,10 @@ export const useProfile = () => {
   };
 
   const updateProfile = async (data: ProfileFormData): Promise<void> => {
-    console.log("updateProfile chamado com:", data);
+    console.log("🔄 updateProfile chamado com:", data);
     
     if (!user?.id) {
-      console.error("Usuário não autenticado");
+      console.error("❌ Usuário não autenticado");
       toast({
         title: "Erro de autenticação",
         description: "Usuário não autenticado.",
@@ -158,7 +170,7 @@ export const useProfile = () => {
     }
 
     if (!profile) {
-      console.error("Perfil não carregado");
+      console.error("❌ Perfil não carregado");
       toast({
         title: "Erro",
         description: "Perfil não carregado.",
@@ -169,15 +181,10 @@ export const useProfile = () => {
 
     try {
       setUpdating(true);
-      console.log("Iniciando atualização do perfil com dados:", data);
-      console.log("Perfil atual:", profile);
+      console.log("🚀 Iniciando atualização do perfil...");
 
-      if (!user?.id) {
-        throw new Error("Usuário não autenticado");
-      }
-
-      // SALVAR NO BANCO DE DADOS SUPABASE PRIMEIRO
-      const { error } = await supabase
+      // 1. SALVAR NO BANCO DE DADOS SUPABASE (PRIORIDADE MÁXIMA)
+      const { data: savedData, error } = await supabase
         .from('profiles')
         .upsert({
           user_id: user.id,
@@ -194,74 +201,79 @@ export const useProfile = () => {
           endereco_cep: data.endereco.cep,
           updated_at: new Date().toISOString(),
         })
-        .select();
+        .select()
+        .single();
 
       if (error) {
-        console.error("Erro ao salvar no banco:", error);
+        console.error("❌ Erro ao salvar no banco:", error);
         throw error;
       }
 
-      console.log("✅ Dados salvos com sucesso no banco de dados!");
+      console.log("✅ Dados salvos com sucesso no banco de dados:", savedData);
 
-      // Criar o perfil atualizado
+      // 2. Criar o perfil atualizado com dados confirmados do banco
       const updatedProfile: UserProfile = {
         ...profile,
-        nome: data.nome,
-        telefone: data.telefone,
-        empresa: data.empresa,
-        cargo: data.cargo,
+        nome: savedData.nome,
+        telefone: savedData.telefone,
+        empresa: savedData.empresa,
+        cargo: savedData.cargo,
         endereco: {
-          rua: data.endereco.rua,
-          numero: data.endereco.numero,
-          complemento: data.endereco.complemento,
-          bairro: data.endereco.bairro,
-          cidade: data.endereco.cidade,
-          estado: data.endereco.estado,
-          cep: data.endereco.cep,
+          rua: savedData.endereco_rua || '',
+          numero: savedData.endereco_numero || '',
+          complemento: savedData.endereco_complemento || '',
+          bairro: savedData.endereco_bairro || '',
+          cidade: savedData.endereco_cidade || '',
+          estado: savedData.endereco_estado || '',
+          cep: savedData.endereco_cep || '',
         },
-        updated_at: new Date().toISOString(),
+        updated_at: savedData.updated_at,
       };
 
-      console.log("Perfil que será atualizado no estado:", updatedProfile);
+      // 3. Atualizar o estado local
+      setProfile(updatedProfile);
+      console.log("✅ Estado do perfil atualizado localmente");
       
-      // Salvar TAMBÉM no localStorage como backup
+      // 4. Atualizar o contexto global para sincronizar com Header e outros componentes
+      updateProfileData({
+        nome: savedData.nome,
+        empresa: savedData.empresa,
+        email: updatedProfile.email,
+        telefone: savedData.telefone,
+        cargo: savedData.cargo,
+      });
+      console.log("✅ Contexto global atualizado");
+
+      // 5. Salvar no localStorage como backup (opcional)
       const saved = saveProfile(data);
       if (saved) {
-        console.log("💾 Dados salvos também no localStorage como backup");
+        console.log("💾 Backup salvo no localStorage");
       }
-
-      // Atualizar o estado local
-      setProfile(updatedProfile);
-      console.log("Estado do perfil atualizado");
       
-      // Atualizar o contexto global para sincronizar com outros componentes
-      updateProfileData({
-        nome: data.nome,
-        empresa: data.empresa,
-        email: updatedProfile.email,
-        telefone: data.telefone,
-        cargo: data.cargo,
-      });
-      
-      // Mostrar toast de sucesso
+      // 6. Mostrar toast de sucesso
       toast({
-        title: "✅ Perfil atualizado!",
-        description: "Suas informações foram salvas definitivamente no sistema.",
+        title: "✅ Perfil salvo com sucesso!",
+        description: "Suas informações foram salvas definitivamente e permanecerão após logout/login.",
+        duration: 4000,
       });
 
-      console.log("✅ Atualização do perfil concluída com sucesso");
+      console.log("🎉 Atualização do perfil concluída com sucesso!");
+
+      // 2. Atualizar estado local e contexto global
+      await fetchProfile(); // <-- Força recarregar do banco
 
     } catch (error) {
-      console.error("Erro ao atualizar perfil:", error);
+      console.error("❌ Erro ao atualizar perfil:", error);
       toast({
-        title: "❌ Erro ao atualizar",
-        description: "Tente novamente mais tarde.",
+        title: "❌ Erro ao salvar perfil",
+        description: error instanceof Error ? error.message : "Tente novamente mais tarde.",
         variant: "destructive",
+        duration: 5000,
       });
       throw error;
     } finally {
       setUpdating(false);
-      console.log("setUpdating(false) executado");
+      console.log("🔄 setUpdating(false) executado");
     }
   };
 

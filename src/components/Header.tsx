@@ -76,6 +76,9 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
               <p className="text-xs leading-none text-muted-foreground">
                 {userData.company}
               </p>
+              <p className="text-xs leading-none text-muted-foreground opacity-70">
+                {userData.email}
+              </p>
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem

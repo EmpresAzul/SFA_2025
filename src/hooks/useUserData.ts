@@ -1,4 +1,5 @@
 import { useProfile } from "@/hooks/useProfile";
+import { useProfileContext } from "@/contexts/ProfileContext";
 
 interface UserData {
   name: string;
@@ -8,10 +9,12 @@ interface UserData {
 
 export const useUserData = (): UserData => {
   const { profile } = useProfile();
+  const { profileData } = useProfileContext();
 
+  // Priorizar dados do perfil completo, depois do contexto, depois fallback
   return {
-    name: profile?.nome || "Usuário",
-    company: profile?.empresa || "Empresa",
-    email: profile?.email || "",
+    name: profile?.nome || profileData.nome || "Suporte EmpresaZul",
+    company: profile?.empresa || profileData.empresa || "EmpresaZul",
+    email: profile?.email || profileData.email || "suporte@empresazul.com",
   };
 };

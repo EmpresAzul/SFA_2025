@@ -81,9 +81,12 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
     }
 
     try {
+      console.log("🚀 ProfileForm: Enviando dados para atualização:", formData);
       await onUpdate(formData);
+      console.log("✅ ProfileForm: Dados atualizados com sucesso!");
       // Não limpar o formulário após salvar para manter os dados visíveis
     } catch (error) {
+      console.error("❌ ProfileForm: Erro ao salvar:", error);
       toast({
         title: "Erro ao salvar",
         description: "Ocorreu um erro ao salvar as informações. Tente novamente.",
