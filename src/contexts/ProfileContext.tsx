@@ -6,8 +6,8 @@ interface ProfileData {
   nome: string;
   empresa: string;
   email: string;
-  telefone?: string;
-  cargo?: string;
+  telefone: string;
+  cargo: string;
 }
 
 interface ProfileContextType {
@@ -47,16 +47,22 @@ const loadProfileFromStorage = (userId: string): ProfileData | null => {
 
 // Função para carregar dados do banco Supabase
 const fetchProfileFromDB = async (userId: string) => {
+  console.log("🔍 fetchProfileFromDB: Buscando perfil para userId:", userId);
   try {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('user_id', userId)
       .single();
-    if (error) throw error;
+    if (error) {
+      console.error("❌ fetchProfileFromDB: Erro ao buscar perfil do banco:", error);
+      console.error("❌ Detalhes do erro:", { message: error.message, details: error.details, hint: error.hint, code: error.code });
+      throw error;
+    }
+    console.log("✅ fetchProfileFromDB: Perfil encontrado:", data);
     return data;
   } catch (error) {
-    console.error('Erro ao buscar perfil do banco:', error);
+    console.error("❌ fetchProfileFromDB: Erro ao buscar perfil:", error);
     return null;
   }
 };
@@ -76,18 +82,33 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const fetchProfileData = async () => {
       if (user) {
         setLoading(true);
+        console.log("🔄 ProfileContext: Iniciando fetchProfileData para usuário:", user.id);
         // Buscar do banco de dados
-        const dbProfile = await fetchProfileFromDB(user.id);
-        if (dbProfile) {
-          setProfileData({
-            nome: dbProfile.nome || "Suporte EmpresaZul",
-            empresa: dbProfile.empresa || "EmpresaZul",
-            email: user.email || dbProfile.email || "suporte@empresazul.com",
-            telefone: dbProfile.telefone || "(11) 99999-9999",
-            cargo: dbProfile.cargo || "Diretor Financeiro",
-          });
-        } else {
-          // Se não há dados, usar padrão
+        try {
+          const dbProfile = await fetchProfileFromDB(user.id);
+          if (dbProfile) {
+            console.log("✅ ProfileContext: Dados do banco carregados:", dbProfile);
+            setProfileData({
+              nome: dbProfile.nome || "Suporte EmpresaZul",
+              empresa: dbProfile.empresa || "EmpresaZul",
+              email: user.email || dbProfile.email || "suporte@empresazul.com",
+              telefone: dbProfile.telefone || "(11) 99999-9999",
+              cargo: dbProfile.cargo || "Diretor Financeiro",
+            });
+          } else {
+            console.log("⚠️ ProfileContext: Nenhum perfil encontrado no banco, definindo dados padrão.");
+            // Se não há dados, usar padrão
+            setProfileData({
+              nome: "Suporte EmpresaZul",
+              empresa: "EmpresaZul",
+              email: user.email || "suporte@empresazul.com",
+              telefone: "(11) 99999-9999",
+              cargo: "Diretor Financeiro",
+            });
+          }
+        } catch (error) {
+          console.error("❌ ProfileContext: Erro ao carregar perfil do Supabase:", error);
+          // Fallback para dados padrão em caso de erro
           setProfileData({
             nome: "Suporte EmpresaZul",
             empresa: "EmpresaZul",
@@ -97,6 +118,17 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
           });
         }
         setLoading(false);
+      } else {
+        console.log("⏳ ProfileContext: Usuário não autenticado, aguardando ou resetando perfil.");
+        // Opcional: resetar profileData para valores padrão quando não há usuário logado
+        setProfileData({
+          nome: "Leandro Souza",
+          empresa: "Empresa Azul Ltda",
+          email: "suporte@empresazul.com",
+          telefone: "(11) 99999-9999",
+          cargo: "Diretor Financeiro",
+        });
+        setLoading(false);
       }
     };
     fetchProfileData();
@@ -104,6 +136,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const updateProfileData = (data: Partial<ProfileData>) => {
     setProfileData((prev) => ({ ...prev, ...data }));
+    console.log("🔄 ProfileContext: Contexto global atualizado com:", data);
   };
 
   return (

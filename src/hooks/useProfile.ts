@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfileContext } from "@/contexts/ProfileContext";
-import { useProfilePersistence } from "@/hooks/useProfilePersistence";
 import { UserProfile, SubscriptionInfo, ProfileFormData } from "@/types/profile";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +8,6 @@ import { supabase } from "@/integrations/supabase/client";
 export const useProfile = () => {
   const { user } = useAuth();
   const { profileData, updateProfileData } = useProfileContext();
-  const { saveProfile, loadProfile, hasStoredProfile } = useProfilePersistence();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -22,6 +20,7 @@ export const useProfile = () => {
       
       if (!user?.id) {
         console.log("⏳ Usuário não autenticado, aguardando...");
+        setLoading(false); // Garantir que o loading seja setado para false
         return;
       }
 
@@ -34,12 +33,16 @@ export const useProfile = () => {
         .eq('user_id', user.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error && error.code !== 'PGRST116') { // PGRST116 = No rows found
         console.error("❌ Erro ao carregar perfil do banco:", error);
+        toast({
+          title: "Erro ao carregar perfil",
+          description: "Não foi possível carregar seu perfil. Tente novamente mais tarde.",
+          variant: "destructive",
+        });
         throw error;
       }
 
-      // Dados padrão como fallback
       let profileName = "Suporte EmpresaZul";
       let profileTelefone = "(11) 99999-9999";
       let profileEmpresa = "EmpresaZul";
@@ -54,7 +57,6 @@ export const useProfile = () => {
         cep: "01234-567",
       };
 
-      // 2. Se existem dados no banco, usar eles (PRIORIDADE MÁXIMA)
       if (profileFromDB) {
         console.log("✅ Dados encontrados no banco de dados:", profileFromDB);
         profileName = profileFromDB.nome || profileName;
@@ -62,7 +64,6 @@ export const useProfile = () => {
         profileEmpresa = profileFromDB.empresa || profileEmpresa;
         profileCargo = profileFromDB.cargo || profileCargo;
         
-        // Montar endereço do banco
         if (profileFromDB.endereco_rua) {
           enderecoData = {
             rua: profileFromDB.endereco_rua || enderecoData.rua,
@@ -74,12 +75,9 @@ export const useProfile = () => {
             cep: profileFromDB.endereco_cep || enderecoData.cep,
           };
         }
-        
         console.log("🔄 Atualizando contexto com dados do banco...");
       } else {
-        console.log("⚠️ Nenhum dado encontrado no banco, usando dados padrão");
-        
-        // 3. Se não há dados no banco, criar perfil padrão
+        console.log("⚠️ Nenhum dado encontrado no banco, criando perfil padrão...");
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
@@ -96,7 +94,6 @@ export const useProfile = () => {
             endereco_estado: enderecoData.estado,
             endereco_cep: enderecoData.cep,
           });
-
         if (insertError) {
           console.error("❌ Erro ao criar perfil padrão:", insertError);
         } else {
@@ -104,7 +101,6 @@ export const useProfile = () => {
         }
       }
 
-      // 4. Atualizar contexto global com dados confirmados
       updateProfileData({
         nome: profileName,
         empresa: profileEmpresa,
@@ -113,7 +109,6 @@ export const useProfile = () => {
         email: user.email || "suporte@empresazul.com",
       });
 
-      // 5. Criar objeto do perfil final
       const finalProfile: UserProfile = {
         id: user.id,
         email: user.email || "suporte@empresazul.com",
@@ -126,7 +121,6 @@ export const useProfile = () => {
         updated_at: profileFromDB?.updated_at || new Date().toISOString(),
       };
 
-      // 6. Dados da assinatura (simulados)
       const subscriptionData: SubscriptionInfo = {
         id: "sub_001",
         user_id: user.id,
@@ -145,7 +139,7 @@ export const useProfile = () => {
       console.log("🎉 Perfil carregado com sucesso:", finalProfile);
 
     } catch (error) {
-      console.error("❌ Erro ao carregar perfil:", error);
+      console.error("❌ Erro geral ao carregar perfil:", error);
       toast({
         title: "Erro ao carregar perfil",
         description: "Tente novamente mais tarde.",
@@ -175,20 +169,20 @@ export const useProfile = () => {
     });
     
     if (!user?.id) {
-      console.error("❌ Usuário não autenticado");
+      console.error("❌ Usuário não autenticado. Não é possível atualizar o perfil.");
       toast({
         title: "Erro de autenticação",
-        description: "Usuário não autenticado.",
+        description: "Usuário não autenticado. Faça login para atualizar seu perfil.",
         variant: "destructive",
       });
       throw new Error("Usuário não autenticado");
     }
 
     if (!profile) {
-      console.error("❌ Perfil não carregado");
+      console.error("❌ Perfil não carregado. Não é possível atualizar.");
       toast({
         title: "Erro",
-        description: "Perfil não carregado.",
+        description: "Perfil não carregado. Tente recarregar a página.",
         variant: "destructive",
       });
       throw new Error("Perfil não carregado");
@@ -198,7 +192,6 @@ export const useProfile = () => {
       setUpdating(true);
       console.log("🚀 Iniciando atualização do perfil...");
 
-      // 1. SALVAR NO BANCO DE DADOS SUPABASE (PRIORIDADE MÁXIMA)
       const { data: savedData, error } = await supabase
         .from('profiles')
         .upsert({
@@ -221,7 +214,7 @@ export const useProfile = () => {
 
       if (error) {
         console.error("❌ Erro ao salvar no banco:", error);
-        console.error("❌ Detalhes completos do erro:", {
+        console.error("❌ Detalhes completos do erro Supabase:", {
           message: error.message,
           details: error.details,
           hint: error.hint,
@@ -232,11 +225,9 @@ export const useProfile = () => {
 
       console.log("✅ Dados salvos com sucesso no banco de dados:", savedData);
 
-      // 2. Forçar recarregamento do perfil do banco para garantir sincronização completa
-      console.log("🔄 Recarregando perfil do banco para sincronização...");
+      console.log("🔄 Recarregando perfil do banco para sincronização completa...");
       await fetchProfile();
 
-      // 3. Mostrar toast de sucesso
       toast({
         title: "✅ Perfil salvo com sucesso!",
         description: "Suas informações foram salvas definitivamente e permanecerão após logout/login.",
@@ -249,7 +240,7 @@ export const useProfile = () => {
       console.error("❌ Erro ao atualizar perfil:", error);
       toast({
         title: "❌ Erro ao salvar perfil",
-        description: error instanceof Error ? error.message : "Tente novamente mais tarde.",
+        description: error instanceof Error ? error.message : "Ocorreu um erro inesperado ao salvar. Tente novamente.",
         variant: "destructive",
         duration: 5000,
       });
@@ -263,6 +254,12 @@ export const useProfile = () => {
   useEffect(() => {
     if (user) {
       fetchProfile();
+    } else {
+      // Se não há usuário, limpar perfil localmente para evitar dados de sessões anteriores
+      setProfile(null);
+      setSubscription(null);
+      setLoading(false);
+      console.log("ℹ️ useProfile: Usuário deslogado, perfil local limpo.");
     }
   }, [user]);
 

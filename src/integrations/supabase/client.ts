@@ -4,20 +4,18 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+console.log("🌍 Supabase URL:", supabaseUrl);
+console.log("🔑 Supabase Anon Key:", supabaseAnonKey ? "*****" : "Não configurada"); // Evitar mostrar a chave completa
+
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Supabase credentials are missing. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your environment.');
+  console.error(
+    "❌ Erro: Variáveis de ambiente SUPABASE_URL ou SUPABASE_ANON_KEY não configuradas."
+  );
+  // Você pode lançar um erro ou retornar um cliente mock/nulo aqui
+  throw new Error("Supabase URL e Anon Key são obrigatórias!");
 }
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient(
-  supabaseUrl,
-  supabaseAnonKey,
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-    },
-  }
-);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
