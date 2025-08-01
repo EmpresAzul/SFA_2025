@@ -61,8 +61,12 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log("🚀 ProfileForm: Iniciando submissão do formulário");
+    console.log("📝 ProfileForm: Dados do formulário:", formData);
+    
     // Validações
     if (!formData.nome.trim()) {
+      console.log("❌ ProfileForm: Nome não preenchido");
       toast({
         title: "Campo obrigatório",
         description: "O nome é obrigatório.",
@@ -72,6 +76,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
     }
 
     if (formData.telefone && !validateTelefone(formData.telefone)) {
+      console.log("❌ ProfileForm: Telefone inválido");
       toast({
         title: "Telefone inválido",
         description: "Digite um telefone válido com DDD (10 ou 11 dígitos).",
@@ -82,9 +87,17 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
 
     try {
       console.log("🚀 ProfileForm: Enviando dados para atualização:", formData);
+      console.log("🔄 ProfileForm: Chamando onUpdate...");
       await onUpdate(formData);
       console.log("✅ ProfileForm: Dados atualizados com sucesso!");
-      // Não limpar o formulário após salvar para manter os dados visíveis
+      
+      // Mostrar toast de sucesso adicional
+      toast({
+        title: "✅ Formulário enviado com sucesso!",
+        description: "Aguarde a confirmação do salvamento...",
+        duration: 2000,
+      });
+      
     } catch (error) {
       console.error("❌ ProfileForm: Erro ao salvar:", error);
       toast({

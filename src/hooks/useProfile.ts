@@ -158,6 +158,21 @@ export const useProfile = () => {
 
   const updateProfile = async (data: ProfileFormData): Promise<void> => {
     console.log("🔄 updateProfile chamado com:", data);
+    console.log("👤 User ID:", user?.id);
+    console.log("📝 Dados completos a serem salvos:", {
+      user_id: user?.id,
+      nome: data.nome,
+      telefone: data.telefone,
+      empresa: data.empresa,
+      cargo: data.cargo,
+      endereco_rua: data.endereco.rua,
+      endereco_numero: data.endereco.numero,
+      endereco_complemento: data.endereco.complemento,
+      endereco_bairro: data.endereco.bairro,
+      endereco_cidade: data.endereco.cidade,
+      endereco_estado: data.endereco.estado,
+      endereco_cep: data.endereco.cep,
+    });
     
     if (!user?.id) {
       console.error("❌ Usuário não autenticado");
@@ -206,51 +221,22 @@ export const useProfile = () => {
 
       if (error) {
         console.error("❌ Erro ao salvar no banco:", error);
+        console.error("❌ Detalhes completos do erro:", {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
         throw error;
       }
 
       console.log("✅ Dados salvos com sucesso no banco de dados:", savedData);
 
-      // 2. Criar o perfil atualizado com dados confirmados do banco
-      const updatedProfile: UserProfile = {
-        ...profile,
-        nome: savedData.nome,
-        telefone: savedData.telefone,
-        empresa: savedData.empresa,
-        cargo: savedData.cargo,
-        endereco: {
-          rua: savedData.endereco_rua || '',
-          numero: savedData.endereco_numero || '',
-          complemento: savedData.endereco_complemento || '',
-          bairro: savedData.endereco_bairro || '',
-          cidade: savedData.endereco_cidade || '',
-          estado: savedData.endereco_estado || '',
-          cep: savedData.endereco_cep || '',
-        },
-        updated_at: savedData.updated_at,
-      };
+      // 2. Forçar recarregamento do perfil do banco para garantir sincronização completa
+      console.log("🔄 Recarregando perfil do banco para sincronização...");
+      await fetchProfile();
 
-      // 3. Atualizar o estado local
-      setProfile(updatedProfile);
-      console.log("✅ Estado do perfil atualizado localmente");
-      
-      // 4. Atualizar o contexto global para sincronizar com Header e outros componentes
-      updateProfileData({
-        nome: savedData.nome,
-        empresa: savedData.empresa,
-        email: updatedProfile.email,
-        telefone: savedData.telefone,
-        cargo: savedData.cargo,
-      });
-      console.log("✅ Contexto global atualizado");
-
-      // 5. Salvar no localStorage como backup (opcional)
-      const saved = saveProfile(data);
-      if (saved) {
-        console.log("💾 Backup salvo no localStorage");
-      }
-      
-      // 6. Mostrar toast de sucesso
+      // 3. Mostrar toast de sucesso
       toast({
         title: "✅ Perfil salvo com sucesso!",
         description: "Suas informações foram salvas definitivamente e permanecerão após logout/login.",
@@ -258,9 +244,6 @@ export const useProfile = () => {
       });
 
       console.log("🎉 Atualização do perfil concluída com sucesso!");
-
-      // 2. Atualizar estado local e contexto global
-      await fetchProfile(); // <-- Força recarregar do banco
 
     } catch (error) {
       console.error("❌ Erro ao atualizar perfil:", error);
