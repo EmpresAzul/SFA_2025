@@ -45,11 +45,11 @@ const LancamentosTableRow: React.FC<LancamentosTableRowProps> = ({
   };
 
   return (
-    <TableRow className="hover:bg-gray-50 h-12">
-      <TableCell className="py-2">
+    <TableRow className="hover:bg-gray-50 h-10">
+      <TableCell className="py-1">
         <div className="flex items-center gap-1">
           {getTipoIcon(lancamento.tipo)}
-          <Badge className={`text-xs px-2 py-0.5 ${
+          <Badge className={`text-xs px-1.5 py-0.5 ${
             lancamento.tipo === 'receita' 
               ? 'bg-green-100 text-green-800 hover:bg-green-200' 
               : 'bg-red-100 text-red-800 hover:bg-red-200'
@@ -58,39 +58,39 @@ const LancamentosTableRow: React.FC<LancamentosTableRowProps> = ({
           </Badge>
         </div>
       </TableCell>
-      <TableCell className="font-medium py-2 text-sm max-w-[200px] truncate">
+      <TableCell className="py-1 text-xs max-w-[200px] truncate">
         {lancamento.observacoes || 'Sem observações'}
       </TableCell>
-      <TableCell className="py-2">
-        <Badge variant="outline" className="text-xs px-2 py-0.5">
+      <TableCell className="py-1">
+        <Badge variant="outline" className="text-xs px-1.5 py-0.5">
           {lancamento.categoria?.substring(0, 20) || 'Sem categoria'}
         </Badge>
       </TableCell>
-      <TableCell className={`font-semibold py-2 text-right text-sm ${
+      <TableCell className={`py-1 text-right text-xs ${
         lancamento.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
       }`}>
         {formatCurrency(lancamento.valor)}
       </TableCell>
-      <TableCell className="text-gray-600 py-2 text-sm">
+      <TableCell className="text-gray-600 py-1 text-xs">
         {formatDate(lancamento.data)}
       </TableCell>
-      <TableCell className="py-2">
-        <div className="flex items-center justify-end gap-1">
+      <TableCell className="py-1">
+        <div className="flex items-center justify-end gap-0.5">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onView(lancamento)}
-            className="h-7 w-7 p-0 hover:bg-blue-100"
+            className="h-6 w-6 p-0 hover:bg-blue-100"
           >
-            <Eye className="h-3.5 w-3.5 text-blue-600" />
+            <Eye className="h-3 w-3 text-blue-600" />
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onEdit(lancamento)}
-            className="h-7 w-7 p-0 hover:bg-green-100"
+            className="h-6 w-6 p-0 hover:bg-green-100"
           >
-            <Edit className="h-3.5 w-3.5 text-green-600" />
+            <Edit className="h-3 w-3 text-green-600" />
           </Button>
           
           <LancamentosDeleteDialog 

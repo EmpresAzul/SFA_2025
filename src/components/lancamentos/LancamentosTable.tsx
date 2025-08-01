@@ -53,12 +53,12 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-50 h-10">
-                <TableHead className="font-semibold text-gray-700 text-xs py-2">Tipo</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-xs py-2">Descrição</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-xs py-2">Categoria</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-xs py-2 text-right">Valor</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-xs py-2">Data</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-xs py-2 text-right">Ações</TableHead>
+                <TableHead className="text-gray-700 text-xs py-1">Tipo</TableHead>
+                <TableHead className="text-gray-700 text-xs py-1">Descrição</TableHead>
+                <TableHead className="text-gray-700 text-xs py-1">Categoria</TableHead>
+                <TableHead className="text-gray-700 text-xs py-1 text-right">Valor</TableHead>
+                <TableHead className="text-gray-700 text-xs py-1">Data</TableHead>
+                <TableHead className="text-gray-700 text-xs py-1 text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
