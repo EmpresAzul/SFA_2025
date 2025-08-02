@@ -312,12 +312,21 @@ export const useProfile = () => {
       console.error("❌ useProfile.updateProfile: Error message:", error instanceof Error ? error.message : 'Mensagem não disponível');
       console.error("❌ useProfile.updateProfile: Error stack:", error instanceof Error ? error.stack : 'Stack não disponível');
       
-      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+      let errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+      if (error && typeof error === 'object' && 'code' in error) {
+        errorMessage += ` | Código: ${(error as any).code}`;
+      }
+      if (error && typeof error === 'object' && 'details' in error) {
+        errorMessage += ` | Detalhes: ${(error as any).details}`;
+      }
+      if (error && typeof error === 'object' && 'hint' in error) {
+        errorMessage += ` | Dica: ${(error as any).hint}`;
+      }
       toast({
         title: "❌ Erro ao salvar perfil",
-        description: `Falha crítica: ${errorMessage}. Consulte os logs do console.`,
+        description: `Falha crítica: ${errorMessage}. Consulte os logs do console e envie para o suporte se necessário.`,
         variant: "destructive",
-        duration: 8000,
+        duration: 10000,
       });
       throw error;
     } finally {

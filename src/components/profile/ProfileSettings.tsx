@@ -107,12 +107,21 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
       console.error("❌ ProfileSettings: Stack trace:", error instanceof Error ? error.stack : 'Sem stack trace');
       
       // Toast de erro mais específico
-      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+      let errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
+      if (error && typeof error === 'object' && 'code' in error) {
+        errorMessage += ` | Código: ${(error as any).code}`;
+      }
+      if (error && typeof error === 'object' && 'details' in error) {
+        errorMessage += ` | Detalhes: ${(error as any).details}`;
+      }
+      if (error && typeof error === 'object' && 'hint' in error) {
+        errorMessage += ` | Dica: ${(error as any).hint}`;
+      }
       toast({
         title: "❌ Erro ao salvar",
-        description: `Falha: ${errorMessage}. Verifique os logs do console.`,
+        description: `Falha: ${errorMessage}. Verifique os logs do console e envie para o suporte se necessário.`,
         variant: "destructive",
-        duration: 6000,
+        duration: 10000,
       });
     }
   };

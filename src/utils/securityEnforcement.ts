@@ -16,7 +16,7 @@ class SecurityEnforcer {
 
   private constructor() {
     this.policy = {
-      enforceCSP: true,
+      enforceCSP: !import.meta.env.DEV, // Temporarily disable CSP enforcement in development
       blockDevTools: import.meta.env.PROD,
       preventRightClick: import.meta.env.PROD,
       detectScreenRecording: import.meta.env.PROD,

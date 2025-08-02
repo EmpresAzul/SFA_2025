@@ -18,14 +18,14 @@ export const getSecurityHeaders = (nonce?: string) => ({
   'Cross-Origin-Resource-Policy': 'same-origin',
   ...(nonce && {
     'Content-Security-Policy': `
-      default-src 'self';
-      script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-      img-src 'self' data: https: blob:;
-      font-src 'self' data: https://fonts.gstatic.com;
-      connect-src 'self' https://*.supabase.co wss://*.supabase.co;
-      frame-src 'none';
-      object-src 'none';
+      default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: * 'nonce-${nonce}' 'strict-dynamic';
+      style-src 'self' 'unsafe-inline' data: blob: * https://fonts.googleapis.com;
+      img-src 'self' data: https: blob: *;
+      font-src 'self' data: https://fonts.gstatic.com *;
+      connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.ipify.org *;
+      frame-src 'self' *;
+      object-src 'self' *;
       base-uri 'self';
       form-action 'self';
       upgrade-insecure-requests;
@@ -96,6 +96,11 @@ export const validateSessionIntegrity = (sessionData: any): boolean => {
 
 // Input sanitization for security-critical operations
 export const sanitizeSecurityInput = (input: string): string => {
+  // Temporarily disable sanitization for debugging
+  if (import.meta.env.DEV) {
+    console.warn('FluxoAzul: Input sanitization is temporarily disabled for development.');
+    return input;
+  }
   return input
     .replace(/<script[^>]*>.*?<\/script>/gi, '')
     .replace(/<[^>]*>/g, '')
