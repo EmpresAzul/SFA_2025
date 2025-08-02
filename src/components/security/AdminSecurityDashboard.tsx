@@ -121,7 +121,7 @@ const AdminSecurityDashboard: React.FC = () => {
   } = useSecurityReports();
   
   const isAdmin = useIsAdmin();
-  const { data: alerts = [], isLoading: alertsLoading } = useAllSecurityAlerts();
+  const { data: alerts = [], loading: alertsLoading } = useAllSecurityAlerts();
   const { data: sessions = [], isLoading: sessionsLoading } = useActiveSessions();
   const { data: notifications = [] } = useNotifications();
   const { data: pendingCount = 0 } = usePendingNotificationsCount();
@@ -304,7 +304,7 @@ const AdminSecurityDashboard: React.FC = () => {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => resolveAlert.mutate(alert.id)}
+                              onClick={() => resolveAlert.mutateAsync(alert.id)}
                               disabled={resolveAlert.isPending}
                             >
                               Resolver

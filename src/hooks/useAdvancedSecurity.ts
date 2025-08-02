@@ -62,12 +62,12 @@ export const useAdvancedSecurity = () => {
             }
           );
 
-          createAlert.mutate({
-            alertType: 'geographic_anomaly',
+          createAlert.mutateAsync({
+            alert_type: 'geographic_anomaly',
             severity: 'medium',
             title: 'Mudança de Localização Detectada',
             description: `Login detectado de timezone diferente: ${currentTimezone} (anterior: ${storedTimezone})`,
-            userId: user.id,
+            user_id: user.id,
             metadata: {
               previous_timezone: storedTimezone,
               current_timezone: currentTimezone,
@@ -115,12 +115,12 @@ export const useAdvancedSecurity = () => {
             }
           );
 
-          createAlert.mutate({
-            alertType: 'device_change',
+          createAlert.mutateAsync({
+            alert_type: 'device_change',
             severity: 'high',
             title: 'Dispositivo Diferente Detectado',
             description: 'Login de dispositivo com características diferentes do habitual',
-            userId: user.id,
+            user_id: user.id,
             metadata: {
               previous_fingerprint: stored,
               current_fingerprint: currentFingerprint,

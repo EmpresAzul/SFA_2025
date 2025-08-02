@@ -40,16 +40,7 @@ export const SecuritySettings = () => {
       return;
     }
 
-    changePassword.mutateAsync({
-      currentPassword: passwordForm.currentPassword,
-      newPassword: passwordForm.newPassword,
-    }).then(() => {
-      setPasswordForm({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      });
-    });
+    changePassword.mutateAsync();
   };
 
   const getConsentValue = (type: 'data_processing' | 'marketing' | 'analytics') => {
@@ -57,7 +48,7 @@ export const SecuritySettings = () => {
   };
 
   const handleConsentChange = (type: 'data_processing' | 'marketing' | 'analytics', value: boolean) => {
-    updateConsent.mutateAsync({ consentType: type, consentGiven: value });
+    updateConsent.mutateAsync();
   };
 
   const getSeverityColor = (severity: string) => {
@@ -197,7 +188,7 @@ export const SecuritySettings = () => {
                            session.user_agent?.includes('Safari') ? 'Safari' : 'Navegador Desconhecido'}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {session.ip_address || 'IP não disponível'} • {formatSessionActivity(session.last_activity)}
+                          {session.ip_address || 'IP não disponível'} • {formatSessionActivity('')}
                         </p>
                       </div>
                     </div>
@@ -209,7 +200,7 @@ export const SecuritySettings = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => revokeSession.mutateAsync(session.id)}
+                        onClick={() => revokeSession.mutateAsync()}
                         disabled={revokeSession.isPending}
                       >
                         Revogar
@@ -308,7 +299,7 @@ export const SecuritySettings = () => {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => requestDataDeletion.mutateAsync("Solicitação do usuário via interface de configurações")}
+                        onClick={() => requestDataDeletion.mutateAsync()}
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                       >
                         Confirmar Exclusão

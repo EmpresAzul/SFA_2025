@@ -40,10 +40,18 @@ export const useSecurityAlerts = () => ({
   loading: false,
   markAsRead: async () => {},
   dismissAlert: async () => {},
-  useUserSecurityAlerts: () => ({ data: [], loading: false, error: null }),
-  useAllSecurityAlerts: () => ({ data: [], loading: false, error: null }),
-  useCreateSecurityAlert: () => ({ mutateAsync: async () => {}, isPending: false }),
-  useResolveSecurityAlert: () => ({ mutateAsync: async () => {}, isPending: false }),
+  useUserSecurityAlerts: () => ({ data: [], loading: false, error: null, isLoading: false }),
+  useAllSecurityAlerts: () => ({ data: [], loading: false, error: null, isLoading: false }),
+  useCreateSecurityAlert: () => ({ 
+    mutateAsync: async () => {}, 
+    mutate: () => {}, 
+    isPending: false 
+  }),
+  useResolveSecurityAlert: () => ({ 
+    mutateAsync: async () => {}, 
+    mutate: () => {}, 
+    isPending: false 
+  }),
   useUnresolvedAlertsCount: () => ({ data: 0, loading: false }),
 });
 
