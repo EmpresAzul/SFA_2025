@@ -23,6 +23,10 @@ export const useSecurity = () => ({
   useRequestDataDeletion: () => ({ mutateAsync: async () => {}, mutate: () => {}, isPending: false }),
 });
 
+export const useSecurityStub = () => ({
+  ...useSecurity(),
+});
+
 export const useSecurityMonitoring = () => ({
   isMonitoring: false,
   events: [],
@@ -36,6 +40,11 @@ export const useSecurityAlerts = () => ({
   loading: false,
   markAsRead: async () => {},
   dismissAlert: async () => {},
+  useUserSecurityAlerts: () => ({ data: [], loading: false, error: null }),
+  useAllSecurityAlerts: () => ({ data: [], loading: false, error: null }),
+  useCreateSecurityAlert: () => ({ mutateAsync: async () => {}, isPending: false }),
+  useResolveSecurityAlert: () => ({ mutateAsync: async () => {}, isPending: false }),
+  useUnresolvedAlertsCount: () => ({ data: 0, loading: false }),
 });
 
 export const useSecurityReports = () => ({

@@ -44,6 +44,9 @@ export interface CadastroFormData {
   cep?: string;
   observacoes?: string;
   data?: string;
+  numero?: string;
+  bairro?: string;
+  salario?: number;
   user_id: string;
 }
 

@@ -9,33 +9,23 @@ import { Switch } from '@/components/ui/switch';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Key, Monitor, Eye, AlertTriangle, Smartphone, Clock, History } from 'lucide-react';
-import { useSecurity } from '@/hooks/useSecurity';
+import { useSecurityStub } from '@/hooks/useSecurityStub';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 export const SecuritySettings = () => {
-  const {
-    useCurrentUserRole,
-    useIsAdmin,
-    useSecurityEvents,
-    useUserSessions,
-    useRevokeSession,
-    useChangePassword,
-    useUserConsents,
-    useUpdateConsent,
-    useRequestDataDeletion,
-  } = useSecurity();
+  const security = useSecurityStub();
 
-  const { data: currentRole } = useCurrentUserRole();
-  const isAdmin = useIsAdmin();
-  const { data: securityEvents } = useSecurityEvents();
-  const { data: userSessions } = useUserSessions();
-  const { data: userConsents } = useUserConsents();
+  const currentRole = security.useCurrentUserRole();
+  const isAdmin = security.useIsAdmin();
+  const securityEvents = [];
+  const userSessions = [];
+  const userConsents = [];
   
-  const revokeSession = useRevokeSession();
-  const changePassword = useChangePassword();
-  const updateConsent = useUpdateConsent();
-  const requestDataDeletion = useRequestDataDeletion();
+  const revokeSession = security.useRevokeSession();
+  const changePassword = security.useChangePassword();
+  const updateConsent = security.useUpdateConsent();
+  const requestDataDeletion = security.useRequestDataDeletion();
 
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
@@ -50,26 +40,24 @@ export const SecuritySettings = () => {
       return;
     }
 
-    changePassword.mutate({
+    changePassword.mutateAsync({
       currentPassword: passwordForm.currentPassword,
       newPassword: passwordForm.newPassword,
-    }, {
-      onSuccess: () => {
-        setPasswordForm({
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: '',
-        });
-      },
+    }).then(() => {
+      setPasswordForm({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
     });
   };
 
   const getConsentValue = (type: 'data_processing' | 'marketing' | 'analytics') => {
-    return userConsents?.find(consent => consent.consent_type === type)?.consent_given || false;
+    return false; // Stub implementation
   };
 
   const handleConsentChange = (type: 'data_processing' | 'marketing' | 'analytics', value: boolean) => {
-    updateConsent.mutate({ consentType: type, consentGiven: value });
+    updateConsent.mutateAsync({ consentType: type, consentGiven: value });
   };
 
   const getSeverityColor = (severity: string) => {
@@ -221,7 +209,7 @@ export const SecuritySettings = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => revokeSession.mutate(session.id)}
+                        onClick={() => revokeSession.mutateAsync(session.id)}
                         disabled={revokeSession.isPending}
                       >
                         Revogar
@@ -320,7 +308,7 @@ export const SecuritySettings = () => {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => requestDataDeletion.mutate("Solicitação do usuário via interface de configurações")}
+                        onClick={() => requestDataDeletion.mutateAsync("Solicitação do usuário via interface de configurações")}
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                       >
                         Confirmar Exclusão

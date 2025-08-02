@@ -5,11 +5,21 @@ import { useToast } from "@/hooks/use-toast";
 
 interface Precificacao {
   id: string;
+  user_id: string;
+  nome: string;
+  tipo: string;
+  preco_venda: number;
   [key: string]: any;
 }
+
 interface PrecificacaoInsert {
+  user_id: string;
+  nome: string;
+  tipo: string;
+  preco_venda?: number;
   [key: string]: any;
 }
+
 interface PrecificacaoUpdate {
   [key: string]: any;
 }
@@ -76,7 +86,7 @@ export const usePrecificacao = () => {
 
         const { data: result, error } = await supabase
           .from("precificacao")
-          .insert(data)
+          .insert(data as any)
           .select()
           .single();
 

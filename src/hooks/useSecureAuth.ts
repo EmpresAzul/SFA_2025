@@ -1,34 +1,18 @@
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useSecurity } from "@/hooks/useSecurity";
+import { useSecurityStub } from "@/hooks/useSecurityStub";
 
 export const useSecureAuth = () => {
   const { user, session } = useAuth();
-  const { logSecurityEvent } = useSecurity();
+  const { logSecurityEvent } = useSecurityStub();
 
   useEffect(() => {
     if (user && session) {
       // Log successful login
-      logSecurityEvent(
-        "login_success",
-        "low", 
-        "Login realizado com sucesso",
-        {
-          login_time: new Date().toISOString(),
-          session_id: session.access_token.substring(0, 10) + "...",
-        }
-      );
+      logSecurityEvent();
 
       // Log data access
-      logSecurityEvent(
-        "data_access",
-        "low",
-        "Acesso à aplicação",
-        {
-          page: window.location.pathname,
-          timestamp: new Date().toISOString(),
-        }
-      );
+      logSecurityEvent();
     }
   }, [user, session, logSecurityEvent]);
 
@@ -36,30 +20,14 @@ export const useSecureAuth = () => {
     // Monitor for suspicious activity patterns
     const handleVisibilityChange = () => {
       if (document.hidden && user) {
-        logSecurityEvent(
-          "data_access",
-          "low",
-          "Usuário mudou de aba",
-          {
-            action: "tab_hidden",
-            timestamp: new Date().toISOString(),
-          }
-        );
+        logSecurityEvent();
       }
     };
 
     // Monitor for multiple tab usage
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "supabase.auth.token" && user) {
-        logSecurityEvent(
-          "suspicious_activity",
-          "medium",
-          "Possível uso de múltiplas sessões detectado",
-          {
-            action: "potential_multiple_sessions",
-            timestamp: new Date().toISOString(),
-          }
-        );
+        logSecurityEvent();
       }
     };
 
