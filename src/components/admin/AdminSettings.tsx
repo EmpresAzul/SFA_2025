@@ -37,7 +37,7 @@ const AdminSettings: React.FC = () => {
     try {
       console.log("Carregando configurações...");
       const { data, error } = await supabase
-        .from("system_settings")
+        .from("system_settings" as any)
         .select("key, value")
         .in("key", [
           "openai_api_key",
@@ -52,7 +52,7 @@ const AdminSettings: React.FC = () => {
 
       console.log("Configurações carregadas:", data);
 
-      data?.forEach((setting) => {
+      (data as any[])?.forEach((setting: any) => {
         switch (setting.key) {
           case "openai_api_key":
             setOpenaiApiKey(setting.value || "");
@@ -84,7 +84,7 @@ const AdminSettings: React.FC = () => {
       );
 
       const { data, error } = await supabase
-        .from("system_settings")
+        .from("system_settings" as any)
         .upsert(
           {
             key,

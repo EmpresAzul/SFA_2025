@@ -61,7 +61,7 @@ export const useDashboardMetrics = () => {
       if (!produtos || produtos.length === 0) {
         console.log("🔄 Tentando tabela 'estoque' (singular)...");
         const { data: produtosSingular } = await supabase
-          .from("estoque")
+          .from("estoques")
           .select("id")
           .eq("user_id", session.user.id);
         produtos = produtosSingular;
@@ -121,15 +121,15 @@ export const useDashboardMetrics = () => {
         ) || 0;
 
       // Buscar dados de ponto de equilíbrio se existir
-      const { data: pontoEquilibrioData } = await supabase
-        .from("ponto_equilibrio")
-        .select("ponto_equilibrio_valor")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false })
-        .limit(1);
+        const { data: pontoEquilibrioData } = await supabase
+          .from("ponto_equilibrio")
+          .select("ponto_equilibrio_calculado")
+          .eq("user_id", session.user.id)
+          .order("created_at", { ascending: false })
+          .limit(1);
 
       // Usar ponto de equilíbrio calculado ou estimar baseado nas despesas
-      const pontoEquilibrio = pontoEquilibrioData?.[0]?.ponto_equilibrio_valor || 
+      const pontoEquilibrio = pontoEquilibrioData?.[0]?.ponto_equilibrio_calculado || 
         (totalDespesas > 0 ? totalDespesas / 0.4 : 0);
 
       // Usar dados reais do sistema

@@ -9,20 +9,17 @@ export interface Cadastro {
   user_id: string;
   nome: string;
   tipo: string;
-  pessoa: 'Física' | 'Jurídica';
-  status: 'ativo' | 'inativo';
+  pessoa?: string;
+  status: string;
+  ativo: boolean;
   cpf_cnpj?: string;
   telefone?: string;
   email?: string;
   endereco?: string;
-  numero?: string;
-  bairro?: string;
   cidade?: string;
   estado?: string;
   cep?: string;
   observacoes?: string;
-  salario?: number;
-  data: string;
   created_at: string;
   updated_at: string;
 }
@@ -30,20 +27,17 @@ export interface Cadastro {
 export interface CadastroFormData {
   nome: string;
   tipo: string;
-  pessoa?: 'Física' | 'Jurídica';
-  status?: 'ativo' | 'inativo';
+  pessoa?: string;
+  status?: string;
+  ativo?: boolean;
   cpf_cnpj?: string;
   telefone?: string;
   email?: string;
   endereco?: string;
-  numero?: string;
-  bairro?: string;
   cidade?: string;
   estado?: string;
   cep?: string;
   observacoes?: string;
-  salario?: number;
-  data: string;
   user_id: string;
 }
 
