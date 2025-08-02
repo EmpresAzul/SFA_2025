@@ -4,8 +4,8 @@ import { useProfile } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SubscriptionStatus } from "@/components/profile/SubscriptionStatus";
-import { ProfileForm } from "@/components/profile/ProfileForm";
-import { LogOut, User, Settings } from "lucide-react";
+import { LogOut, User, Settings, Calendar, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,15 +20,7 @@ import {
 
 const Profile: React.FC = () => {
   const { signOut } = useAuth();
-  const { profile, subscription, loading, updating, updateProfile } = useProfile();
-
-  const handleUpdateProfile = async (data: any) => {
-    try {
-      await updateProfile(data);
-    } catch (error) {
-      console.error("Erro no handleUpdateProfile:", error);
-    }
-  };
+  const { profile, subscription, loading } = useProfile();
   const [signOutLoading, setSignOutLoading] = useState(false);
 
   const handleSignOut = async () => {
@@ -78,11 +70,21 @@ const Profile: React.FC = () => {
             👤 Meu Perfil
           </h1>
           <p className="text-gray-600 mt-2">
-            Gerencie suas informações pessoais e configurações da conta
+            Visualize suas informações pessoais e configurações da conta
           </p>
         </div>
         
         <div className="flex items-center gap-3">
+          <Link to="/dashboard/configuracoes">
+            <Button
+              variant="outline"
+              className="text-blue-600 border-blue-200 hover:bg-blue-50"
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Configurações
+            </Button>
+          </Link>
+          
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
@@ -118,12 +120,126 @@ const Profile: React.FC = () => {
       {/* Status da Assinatura */}
       <SubscriptionStatus subscription={subscription} />
 
-      {/* Formulário de Perfil */}
-      <ProfileForm
-        profile={profile}
-        onUpdate={handleUpdateProfile}
-        loading={updating}
-      />
+      {/* Cards de Informações */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        {/* Resumo do Perfil */}
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5 text-blue-600" />
+              Resumo do Perfil
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
+              <span className="text-sm text-gray-600">Nome:</span>
+              <span className="text-sm font-medium text-right">{profile.nome || 'Não informado'}</span>
+            </div>
+            <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
+              <span className="text-sm text-gray-600">Empresa:</span>
+              <span className="text-sm font-medium text-right">{profile.empresa || 'Não informado'}</span>
+            </div>
+            <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
+              <span className="text-sm text-gray-600">Cargo:</span>
+              <span className="text-sm font-medium text-right">{profile.cargo || 'Não informado'}</span>
+            </div>
+            <div className="flex items-start justify-between py-1.5">
+              <span className="text-sm text-gray-600">Telefone:</span>
+              <span className="text-sm font-medium text-right">{profile.telefone || 'Não informado'}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Email */}
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Mail className="h-5 w-5 text-blue-600" />
+              Email
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="p-3 bg-gray-50 rounded-lg border">
+              <p className="text-sm font-medium text-gray-800">{profile.email}</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Email vinculado à conta
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Configurações da Conta */}
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-blue-600" />
+              Configurações da Conta
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
+              <span className="text-sm text-gray-600">Criado em:</span>
+              <span className="text-sm font-medium text-right">
+                {new Date(profile.created_at).toLocaleDateString('pt-BR')}
+              </span>
+            </div>
+            <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
+              <span className="text-sm text-gray-600">Última atualização:</span>
+              <span className="text-sm font-medium text-right">
+                {new Date(profile.updated_at).toLocaleDateString('pt-BR')}
+              </span>
+            </div>
+            <div className="flex items-start justify-between py-1.5">
+              <span className="text-sm text-gray-600">ID do usuário:</span>
+              <span className="text-xs font-mono text-right text-gray-500 break-all">
+                {profile.id}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Endereço */}
+      {(profile.endereco?.rua || profile.endereco?.cidade) && (
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg max-w-7xl mx-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-blue-600" />
+              Endereço
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <div className="flex items-start justify-between py-1 border-b border-gray-100">
+                <span className="text-sm text-gray-600">Endereço:</span>
+                <span className="text-sm font-medium text-right max-w-[60%]">
+                  {profile.endereco?.rua && profile.endereco?.numero 
+                    ? `${profile.endereco.rua}, ${profile.endereco.numero}${profile.endereco?.complemento ? `, ${profile.endereco.complemento}` : ''}` 
+                    : 'Não informado'}
+                </span>
+              </div>
+              <div className="flex items-start justify-between py-1 border-b border-gray-100">
+                <span className="text-sm text-gray-600">Bairro:</span>
+                <span className="text-sm font-medium text-right">{profile.endereco?.bairro || 'Não informado'}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-start justify-between py-1 border-b border-gray-100">
+                <span className="text-sm text-gray-600">Cidade/UF:</span>
+                <span className="text-sm font-medium text-right">
+                  {profile.endereco?.cidade && profile.endereco?.estado 
+                    ? `${profile.endereco.cidade}/${profile.endereco.estado}` 
+                    : 'Não informado'}
+                </span>
+              </div>
+              <div className="flex items-start justify-between py-1">
+                <span className="text-sm text-gray-600">CEP:</span>
+                <span className="text-sm font-medium text-right">{profile.endereco?.cep || 'Não informado'}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

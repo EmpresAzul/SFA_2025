@@ -25,6 +25,7 @@ import PontoEquilibrio from "./pages/PontoEquilibrio";
 import Suporte from "./pages/Suporte";
 
 import Profile from "./pages/Profile";
+import Configuracoes from "./pages/Configuracoes";
 import NotFound from "./pages/NotFound";
 import AdminSettings from "./pages/AdminSettings";
 import Pipeline from "./pages/Pipeline";
@@ -72,6 +73,14 @@ const App = () => (
         element={
           <AuthenticatedRoute>
             <Profile />
+          </AuthenticatedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/configuracoes"
+        element={
+          <AuthenticatedRoute>
+            <Configuracoes />
           </AuthenticatedRoute>
         }
       />

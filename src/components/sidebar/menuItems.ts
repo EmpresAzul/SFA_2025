@@ -13,6 +13,7 @@ import {
   UserPlus,
   Target,
   User,
+  Settings,
 } from "lucide-react";
 import type { MenuItem } from "./types";
 
@@ -119,6 +120,14 @@ export const menuItems: MenuItem[] = [
     icon: User,
     iconColor: "text-blue-600",
     href: "/dashboard/perfil",
-    description: "Configurações da conta",
+    description: "Informações da conta",
+  },
+  {
+    id: "configuracoes",
+    label: "Configurações",
+    icon: Settings,
+    iconColor: "text-gray-600",
+    href: "/dashboard/configuracoes",
+    description: "Configurar perfil e preferências",
   },
 ];
