@@ -225,6 +225,28 @@ export const useProfile = () => {
 
       console.log("✅ Dados salvos com sucesso no banco de dados:", savedData);
 
+      // Atualizar o contexto imediatamente com os dados salvos
+      updateProfileData({
+        nome: data.nome,
+        empresa: data.empresa,
+        telefone: data.telefone,
+        cargo: data.cargo,
+        email: user.email || "suporte@empresazul.com",
+      });
+
+      // Atualizar o estado local do perfil
+      setProfile({
+        id: user.id,
+        email: user.email || "suporte@empresazul.com",
+        nome: data.nome,
+        telefone: data.telefone,
+        empresa: data.empresa,
+        cargo: data.cargo,
+        endereco: data.endereco,
+        created_at: profile.created_at,
+        updated_at: new Date().toISOString(),
+      });
+
       console.log("🔄 Recarregando perfil do banco para sincronização completa...");
       await fetchProfile();
 
