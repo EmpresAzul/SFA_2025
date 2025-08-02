@@ -22,6 +22,11 @@ export interface Cadastro {
   observacoes?: string;
   created_at: string;
   updated_at: string;
+  // Legacy properties for compatibility
+  data?: string;
+  numero?: string;
+  bairro?: string;
+  salario?: number;
 }
 
 export interface CadastroFormData {
@@ -38,6 +43,7 @@ export interface CadastroFormData {
   estado?: string;
   cep?: string;
   observacoes?: string;
+  data?: string;
   user_id: string;
 }
 
