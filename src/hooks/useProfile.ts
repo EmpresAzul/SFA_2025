@@ -4,6 +4,7 @@ import { useProfileContext } from "@/contexts/ProfileContext";
 import { UserProfile, SubscriptionInfo, ProfileFormData } from "@/types/profile";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { emitProfileSync, subscribeToProfileSync, forceProfileRefresh } from "@/utils/profileSync";
 
 export const useProfile = () => {
   const { user } = useAuth();
@@ -151,25 +152,23 @@ export const useProfile = () => {
   };
 
   const updateProfile = async (data: ProfileFormData): Promise<void> => {
-    console.log("🔄 updateProfile chamado com:", data);
-    console.log("👤 User ID:", user?.id);
-    console.log("📝 Dados completos a serem salvos:", {
-      user_id: user?.id,
-      nome: data.nome,
-      telefone: data.telefone,
-      empresa: data.empresa,
-      cargo: data.cargo,
-      endereco_rua: data.endereco.rua,
-      endereco_numero: data.endereco.numero,
-      endereco_complemento: data.endereco.complemento,
-      endereco_bairro: data.endereco.bairro,
-      endereco_cidade: data.endereco.cidade,
-      endereco_estado: data.endereco.estado,
-      endereco_cep: data.endereco.cep,
-    });
+    console.log("🔄 useProfile.updateProfile: INÍCIO DA FUNÇÃO");
+    console.log("📝 useProfile.updateProfile: Dados recebidos:", data);
+    console.log("👤 useProfile.updateProfile: User atual:", { id: user?.id, email: user?.email });
+    console.log("🔍 useProfile.updateProfile: Profile atual:", profile);
+    console.log("🔍 useProfile.updateProfile: Estado loading/updating:", { loading, updating });
+    
+    // Logs de validação de dados de entrada
+    console.log("📊 useProfile.updateProfile: Validação de dados:");
+    console.log("  - Nome válido:", !!data.nome?.trim());
+    console.log("  - Endereço válido:", !!data.endereco);
+    console.log("  - Telefone:", data.telefone || 'não informado');
+    console.log("  - Empresa:", data.empresa || 'não informado');
+    console.log("  - Cargo:", data.cargo || 'não informado');
     
     if (!user?.id) {
-      console.error("❌ Usuário não autenticado. Não é possível atualizar o perfil.");
+      console.error("❌ useProfile.updateProfile: Usuário não autenticado");
+      console.error("❌ useProfile.updateProfile: user object:", user);
       toast({
         title: "Erro de autenticação",
         description: "Usuário não autenticado. Faça login para atualizar seu perfil.",
@@ -179,7 +178,8 @@ export const useProfile = () => {
     }
 
     if (!profile) {
-      console.error("❌ Perfil não carregado. Não é possível atualizar.");
+      console.error("❌ useProfile.updateProfile: Perfil não carregado");
+      console.error("❌ useProfile.updateProfile: profile object:", profile);
       toast({
         title: "Erro",
         description: "Perfil não carregado. Tente recarregar a página.",
@@ -189,87 +189,142 @@ export const useProfile = () => {
     }
 
     try {
+      console.log("🚀 useProfile.updateProfile: Iniciando processo de atualização...");
       setUpdating(true);
-      console.log("🚀 Iniciando atualização do perfil...");
+      console.log("🔄 useProfile.updateProfile: setUpdating(true) executado");
+
+      // Preparar dados para o Supabase
+      const supabaseData = {
+        user_id: user.id,
+        nome: data.nome.trim(),
+        telefone: data.telefone?.trim() || null,
+        empresa: data.empresa?.trim() || null,
+        cargo: data.cargo?.trim() || null,
+        endereco_rua: data.endereco.rua?.trim() || null,
+        endereco_numero: data.endereco.numero?.trim() || null,
+        endereco_complemento: data.endereco.complemento?.trim() || null,
+        endereco_bairro: data.endereco.bairro?.trim() || null,
+        endereco_cidade: data.endereco.cidade?.trim() || null,
+        endereco_estado: data.endereco.estado?.trim() || null,
+        endereco_cep: data.endereco.cep?.trim() || null,
+        updated_at: new Date().toISOString(),
+      };
+
+      console.log("📤 useProfile.updateProfile: Dados preparados para Supabase:", supabaseData);
+      console.log("⏰ useProfile.updateProfile: Timestamp antes da operação no banco:", new Date().toISOString());
 
       const { data: savedData, error } = await supabase
         .from('profiles')
-        .upsert({
-          user_id: user.id,
-          nome: data.nome,
-          telefone: data.telefone,
-          empresa: data.empresa,
-          cargo: data.cargo,
-          endereco_rua: data.endereco.rua,
-          endereco_numero: data.endereco.numero,
-          endereco_complemento: data.endereco.complemento,
-          endereco_bairro: data.endereco.bairro,
-          endereco_cidade: data.endereco.cidade,
-          endereco_estado: data.endereco.estado,
-          endereco_cep: data.endereco.cep,
-          updated_at: new Date().toISOString(),
-        })
+        .upsert(supabaseData)
         .select()
         .single();
 
+      console.log("⏰ useProfile.updateProfile: Timestamp após operação no banco:", new Date().toISOString());
+
       if (error) {
-        console.error("❌ Erro ao salvar no banco:", error);
-        console.error("❌ Detalhes completos do erro Supabase:", {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
+        console.error("❌ useProfile.updateProfile: Erro completo do Supabase:", error);
+        console.error("❌ useProfile.updateProfile: Error message:", error.message);
+        console.error("❌ useProfile.updateProfile: Error details:", error.details);
+        console.error("❌ useProfile.updateProfile: Error hint:", error.hint);
+        console.error("❌ useProfile.updateProfile: Error code:", error.code);
+        
+        toast({
+          title: "❌ Erro ao salvar no banco",
+          description: `Erro ${error.code}: ${error.message}`,
+          variant: "destructive",
+          duration: 6000,
         });
         throw error;
       }
 
-      console.log("✅ Dados salvos com sucesso no banco de dados:", savedData);
+      console.log("✅ useProfile.updateProfile: Dados salvos com sucesso no banco:", savedData);
 
-      // Atualizar o contexto imediatamente com os dados salvos
-      updateProfileData({
+      // SINCRONIZAÇÃO IMEDIATA E FORÇADA
+      console.log("🔄 useProfile.updateProfile: Iniciando sincronização imediata...");
+
+      // 1. Atualizar contexto global PRIMEIRO
+      const contextData = {
         nome: data.nome,
-        empresa: data.empresa,
-        telefone: data.telefone,
-        cargo: data.cargo,
+        empresa: data.empresa || "EmpresaZul",
+        telefone: data.telefone || "(11) 99999-9999",
+        cargo: data.cargo || "Diretor Financeiro",
         email: user.email || "suporte@empresazul.com",
-      });
+      };
+      
+      console.log("🔄 useProfile.updateProfile: Atualizando contexto global com:", contextData);
+      updateProfileData(contextData);
+      console.log("✅ useProfile.updateProfile: Contexto global atualizado");
 
-      // Atualizar o estado local do perfil
-      setProfile({
+      // 2. Atualizar estado local do perfil IMEDIATAMENTE
+      const newProfile: UserProfile = {
         id: user.id,
         email: user.email || "suporte@empresazul.com",
         nome: data.nome,
-        telefone: data.telefone,
-        empresa: data.empresa,
-        cargo: data.cargo,
+        telefone: data.telefone || "",
+        empresa: data.empresa || "",
+        cargo: data.cargo || "",
         endereco: data.endereco,
         created_at: profile.created_at,
         updated_at: new Date().toISOString(),
+      };
+
+      console.log("🔄 useProfile.updateProfile: Atualizando estado local com:", newProfile);
+      setProfile(newProfile);
+      console.log("✅ useProfile.updateProfile: Estado local atualizado");
+
+      // 3. Emitir evento de sincronização global
+      console.log("🔄 useProfile.updateProfile: Emitindo evento de sincronização global...");
+      emitProfileSync({
+        nome: data.nome,
+        empresa: data.empresa || "EmpresaZul",
+        telefone: data.telefone || "(11) 99999-9999",
+        cargo: data.cargo || "Diretor Financeiro",
+        endereco: data.endereco,
+        timestamp: new Date().toISOString(),
       });
+      console.log("✅ useProfile.updateProfile: Evento de sincronização emitido");
 
-      console.log("🔄 Recarregando perfil do banco para sincronização completa...");
-      await fetchProfile();
+      // 4. Forçar re-fetch do banco para garantir sincronização total
+      console.log("🔄 useProfile.updateProfile: Iniciando re-fetch do banco...");
+      setTimeout(async () => {
+        console.log("🔄 useProfile.updateProfile: Executando fetchProfile para sincronização final...");
+        await fetchProfile();
+        console.log("✅ useProfile.updateProfile: Re-fetch do banco concluído");
+        
+        // Forçar refresh completo de todos os componentes
+        forceProfileRefresh();
+        console.log("🔄 useProfile.updateProfile: Refresh forçado emitido");
+      }, 100);
 
+      // Toast de sucesso
       toast({
         title: "✅ Perfil salvo com sucesso!",
-        description: "Suas informações foram salvas definitivamente e permanecerão após logout/login.",
-        duration: 4000,
+        description: `${data.nome} - ${data.empresa || 'EmpresaZul'} - Dados sincronizados em todas as abas!`,
+        duration: 5000,
       });
 
-      console.log("🎉 Atualização do perfil concluída com sucesso!");
+      console.log("🎉 useProfile.updateProfile: ATUALIZAÇÃO CONCLUÍDA COM SUCESSO!");
+      console.log("🎯 useProfile.updateProfile: Profile final:", newProfile);
 
     } catch (error) {
-      console.error("❌ Erro ao atualizar perfil:", error);
+      console.error("❌ useProfile.updateProfile: ERRO CRÍTICO:", error);
+      console.error("❌ useProfile.updateProfile: Error name:", error instanceof Error ? error.name : 'Não é um Error');
+      console.error("❌ useProfile.updateProfile: Error message:", error instanceof Error ? error.message : 'Mensagem não disponível');
+      console.error("❌ useProfile.updateProfile: Error stack:", error instanceof Error ? error.stack : 'Stack não disponível');
+      
+      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
       toast({
         title: "❌ Erro ao salvar perfil",
-        description: error instanceof Error ? error.message : "Ocorreu um erro inesperado ao salvar. Tente novamente.",
+        description: `Falha crítica: ${errorMessage}. Consulte os logs do console.`,
         variant: "destructive",
-        duration: 5000,
+        duration: 8000,
       });
       throw error;
     } finally {
+      console.log("🔄 useProfile.updateProfile: Executando bloco finally...");
       setUpdating(false);
-      console.log("🔄 setUpdating(false) executado");
+      console.log("🔄 useProfile.updateProfile: setUpdating(false) executado - finally");
+      console.log("🏁 useProfile.updateProfile: FIM DA FUNÇÃO");
     }
   };
 

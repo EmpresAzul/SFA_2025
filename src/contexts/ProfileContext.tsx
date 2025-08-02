@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { subscribeToProfileSync } from "@/utils/profileSync";
 
 interface ProfileData {
   nome: string;
@@ -78,6 +79,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     cargo: "Diretor Financeiro",
   });
 
+  // Effect para carregar dados do perfil quando usuário muda
   useEffect(() => {
     const fetchProfileData = async () => {
       if (user) {
@@ -132,6 +134,54 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     };
     fetchProfileData();
+  }, [user]);
+
+  // Effect para escutar eventos de sincronização entre abas
+  useEffect(() => {
+    console.log("🔔 ProfileContext: Configurando listener de sincronização");
+    
+    const unsubscribe = subscribeToProfileSync((syncData) => {
+      console.log("🔔 ProfileContext: Recebendo dados de sincronização:", syncData);
+      
+      // Atualizar o contexto imediatamente com os dados sincronizados
+      setProfileData({
+        nome: syncData.nome,
+        empresa: syncData.empresa,
+        email: user?.email || "suporte@empresazul.com",
+        telefone: syncData.telefone,
+        cargo: syncData.cargo,
+      });
+      
+      console.log("✅ ProfileContext: Contexto atualizado via sincronização");
+    });
+
+    // Listener para refresh forçado
+    const handleForceRefresh = () => {
+      console.log("🔄 ProfileContext: Refresh forçado recebido, recarregando...");
+      if (user) {
+        fetchProfileFromDB(user.id).then(dbProfile => {
+          if (dbProfile) {
+            setProfileData({
+              nome: dbProfile.nome || "Suporte EmpresaZul",
+              empresa: dbProfile.empresa || "EmpresaZul",
+              email: user.email || dbProfile.email || "suporte@empresazul.com",
+              telefone: dbProfile.telefone || "(11) 99999-9999",
+              cargo: dbProfile.cargo || "Diretor Financeiro",
+            });
+            console.log("✅ ProfileContext: Refresh forçado concluído");
+          }
+        });
+      }
+    };
+
+    window.addEventListener("forceProfileRefresh", handleForceRefresh);
+
+    // Cleanup
+    return () => {
+      console.log("🧹 ProfileContext: Limpando listeners");
+      unsubscribe();
+      window.removeEventListener("forceProfileRefresh", handleForceRefresh);
+    };
   }, [user]);
 
   const updateProfileData = (data: Partial<ProfileData>) => {

@@ -61,6 +61,8 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
     
     console.log("🚀 ProfileSettings: Iniciando submissão do formulário");
     console.log("📝 ProfileSettings: Dados do formulário:", formData);
+    console.log("🔍 ProfileSettings: Estado do loading:", loading);
+    console.log("👤 ProfileSettings: Profile atual:", profile);
     
     // Validações
     if (!formData.nome.trim()) {
@@ -86,22 +88,31 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = ({
     try {
       console.log("🚀 ProfileSettings: Enviando dados para atualização:", formData);
       console.log("🔄 ProfileSettings: Chamando onUpdate...");
-      await onUpdate(formData);
-      console.log("✅ ProfileSettings: Dados atualizados com sucesso!");
+      console.log("⏰ ProfileSettings: Timestamp antes da chamada:", new Date().toISOString());
       
-      // Mostrar toast de sucesso adicional
+      await onUpdate(formData);
+      
+      console.log("✅ ProfileSettings: onUpdate concluído!");
+      console.log("⏰ ProfileSettings: Timestamp após a chamada:", new Date().toISOString());
+      
+      // Mostrar toast de sucesso com mais detalhes
       toast({
-        title: "✅ Configurações salvas com sucesso!",
-        description: "Suas informações foram atualizadas.",
-        duration: 3000,
+        title: "✅ Configurações salvas!",
+        description: `Nome: ${formData.nome} | Empresa: ${formData.empresa}`,
+        duration: 4000,
       });
       
     } catch (error) {
-      console.error("❌ ProfileSettings: Erro ao salvar:", error);
+      console.error("❌ ProfileSettings: Erro completo ao salvar:", error);
+      console.error("❌ ProfileSettings: Stack trace:", error instanceof Error ? error.stack : 'Sem stack trace');
+      
+      // Toast de erro mais específico
+      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
       toast({
-        title: "Erro ao salvar",
-        description: "Ocorreu um erro ao salvar as informações. Tente novamente.",
+        title: "❌ Erro ao salvar",
+        description: `Falha: ${errorMessage}. Verifique os logs do console.`,
         variant: "destructive",
+        duration: 6000,
       });
     }
   };
