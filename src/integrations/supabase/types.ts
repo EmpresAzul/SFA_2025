@@ -14,7 +14,434 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cadastros: {
+        Row: {
+          ativo: boolean | null
+          cargo: string | null
+          cep: string | null
+          cidade: string | null
+          cpf_cnpj: string | null
+          created_at: string | null
+          data_nascimento: string | null
+          email: string | null
+          endereco: string | null
+          estado: string | null
+          id: string
+          nome: string
+          numero: string | null
+          observacoes: string | null
+          pessoa: string | null
+          status: string | null
+          telefone: string | null
+          tipo: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          ativo?: boolean | null
+          cargo?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cpf_cnpj?: string | null
+          created_at?: string | null
+          data_nascimento?: string | null
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome: string
+          numero?: string | null
+          observacoes?: string | null
+          pessoa?: string | null
+          status?: string | null
+          telefone?: string | null
+          tipo: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          ativo?: boolean | null
+          cargo?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cpf_cnpj?: string | null
+          created_at?: string | null
+          data_nascimento?: string | null
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome?: string
+          numero?: string | null
+          observacoes?: string | null
+          pessoa?: string | null
+          status?: string | null
+          telefone?: string | null
+          tipo?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      estoques: {
+        Row: {
+          created_at: string | null
+          data: string
+          id: string
+          nome_produto: string
+          quantidade: number
+          quantidade_bruta: number
+          quantidade_liquida: number
+          status: string | null
+          unidade_medida: string
+          updated_at: string | null
+          user_id: string
+          valor_total: number
+          valor_unitario: number
+        }
+        Insert: {
+          created_at?: string | null
+          data: string
+          id?: string
+          nome_produto: string
+          quantidade?: number
+          quantidade_bruta?: number
+          quantidade_liquida?: number
+          status?: string | null
+          unidade_medida?: string
+          updated_at?: string | null
+          user_id: string
+          valor_total?: number
+          valor_unitario?: number
+        }
+        Update: {
+          created_at?: string | null
+          data?: string
+          id?: string
+          nome_produto?: string
+          quantidade?: number
+          quantidade_bruta?: number
+          quantidade_liquida?: number
+          status?: string | null
+          unidade_medida?: string
+          updated_at?: string | null
+          user_id?: string
+          valor_total?: number
+          valor_unitario?: number
+        }
+        Relationships: []
+      }
+      lancamentos: {
+        Row: {
+          categoria: string
+          cliente_id: string | null
+          created_at: string | null
+          data: string
+          descricao: string
+          fornecedor_id: string | null
+          id: string
+          lancamento_pai_id: string | null
+          meses_recorrencia: number | null
+          observacoes: string | null
+          recorrente: boolean | null
+          status: string | null
+          tipo: string
+          updated_at: string | null
+          user_id: string
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          cliente_id?: string | null
+          created_at?: string | null
+          data: string
+          descricao: string
+          fornecedor_id?: string | null
+          id?: string
+          lancamento_pai_id?: string | null
+          meses_recorrencia?: number | null
+          observacoes?: string | null
+          recorrente?: boolean | null
+          status?: string | null
+          tipo: string
+          updated_at?: string | null
+          user_id: string
+          valor: number
+        }
+        Update: {
+          categoria?: string
+          cliente_id?: string | null
+          created_at?: string | null
+          data?: string
+          descricao?: string
+          fornecedor_id?: string | null
+          id?: string
+          lancamento_pai_id?: string | null
+          meses_recorrencia?: number | null
+          observacoes?: string | null
+          recorrente?: boolean | null
+          status?: string | null
+          tipo?: string
+          updated_at?: string | null
+          user_id?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lancamentos_lancamento_pai_id_fkey"
+            columns: ["lancamento_pai_id"]
+            isOneToOne: false
+            referencedRelation: "lancamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lembretes: {
+        Row: {
+          created_at: string | null
+          data_vencimento: string
+          descricao: string | null
+          id: string
+          prioridade: string | null
+          status: string | null
+          titulo: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data_vencimento: string
+          descricao?: string | null
+          id?: string
+          prioridade?: string | null
+          status?: string | null
+          titulo: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data_vencimento?: string
+          descricao?: string | null
+          id?: string
+          prioridade?: string | null
+          status?: string | null
+          titulo?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ponto_equilibrio: {
+        Row: {
+          created_at: string | null
+          custos_variaveis: number
+          dados_json: Json | null
+          faturamento_estimado: number
+          gastos_fixos: number
+          id: string
+          nome: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          custos_variaveis?: number
+          dados_json?: Json | null
+          faturamento_estimado?: number
+          gastos_fixos?: number
+          id?: string
+          nome: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          custos_variaveis?: number
+          dados_json?: Json | null
+          faturamento_estimado?: number
+          gastos_fixos?: number
+          id?: string
+          nome?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      precificacao: {
+        Row: {
+          created_at: string | null
+          custo_mao_obra: number | null
+          custo_materia_prima: number | null
+          dados_json: Json | null
+          despesas_fixas: number | null
+          id: string
+          margem_lucro: number | null
+          nome: string
+          observacoes: string | null
+          preco_venda: number
+          tipo: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          custo_mao_obra?: number | null
+          custo_materia_prima?: number | null
+          dados_json?: Json | null
+          despesas_fixas?: number | null
+          id?: string
+          margem_lucro?: number | null
+          nome: string
+          observacoes?: string | null
+          preco_venda?: number
+          tipo: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          custo_mao_obra?: number | null
+          custo_materia_prima?: number | null
+          dados_json?: Json | null
+          despesas_fixas?: number | null
+          id?: string
+          margem_lucro?: number | null
+          nome?: string
+          observacoes?: string | null
+          preco_venda?: number
+          tipo?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          cargo: string | null
+          created_at: string | null
+          email: string | null
+          empresa: string | null
+          id: string
+          nome: string | null
+          telefone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          cargo?: string | null
+          created_at?: string | null
+          email?: string | null
+          empresa?: string | null
+          id: string
+          nome?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          cargo?: string | null
+          created_at?: string | null
+          email?: string | null
+          empresa?: string | null
+          id?: string
+          nome?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      saldos_bancarios: {
+        Row: {
+          banco: string
+          created_at: string | null
+          data: string
+          id: string
+          saldo: number
+          tipo: string | null
+          updated_at: string | null
+          user_id: string
+          valor: number
+        }
+        Insert: {
+          banco: string
+          created_at?: string | null
+          data: string
+          id?: string
+          saldo?: number
+          tipo?: string | null
+          updated_at?: string | null
+          user_id: string
+          valor?: number
+        }
+        Update: {
+          banco?: string
+          created_at?: string | null
+          data?: string
+          id?: string
+          saldo?: number
+          tipo?: string | null
+          updated_at?: string | null
+          user_id?: string
+          valor?: number
+        }
+        Relationships: []
+      }
+      system_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          key: string
+          updated_at: string | null
+          value: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          key: string
+          updated_at?: string | null
+          value?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          key?: string
+          updated_at?: string | null
+          value?: Json | null
+        }
+        Relationships: []
+      }
+      system_videos: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          order_position: number | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          youtube_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          order_position?: number | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          youtube_url: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          order_position?: number | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          youtube_url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
