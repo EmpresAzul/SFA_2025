@@ -30,12 +30,9 @@ export const useSecurityMonitoring = () => {
     if (event.severity === 'high' || event.severity === 'critical') {
       await createThreatAlert(
         event.type,
-        event.severity,
         event.description,
-        {
-          ...event.metadata,
-          detection_method: 'automated_monitoring'
-        }
+        event.severity,
+        user?.id
       );
     }
   }, [user?.id, logSuspiciousActivity, createThreatAlert]);

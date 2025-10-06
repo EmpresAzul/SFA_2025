@@ -35,7 +35,7 @@ export const SecurityMetricsDashboard: React.FC = () => {
   const { useAllSecurityAlerts } = useSecurityAlerts();
   const { useActiveSessions } = useSessionSecurity();
   const { useSecurityEvents } = useSecurity();
-  const { data: securityScore, isLoading: scoreLoading } = useSecurityScore();
+  const { data: securityScore, loading: scoreLoading } = useSecurityScore();
   const { useUserSecurityReport } = useSecurityReports();
   const { data: userReport } = useUserSecurityReport();
   

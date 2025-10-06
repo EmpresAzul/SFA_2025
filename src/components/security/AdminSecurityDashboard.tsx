@@ -122,7 +122,7 @@ const AdminSecurityDashboard: React.FC = () => {
   
   const isAdmin = useIsAdmin();
   const { data: alerts = [], loading: alertsLoading } = useAllSecurityAlerts();
-  const { data: sessions = [], isLoading: sessionsLoading } = useActiveSessions();
+  const { data: sessions = [], loading: sessionsLoading } = useActiveSessions();
   const { data: notifications = [] } = useNotifications();
   const { data: pendingCount = 0 } = usePendingNotificationsCount();
   const resolveAlert = useResolveSecurityAlert();
@@ -162,9 +162,8 @@ const AdminSecurityDashboard: React.FC = () => {
         </div>
         <div className="flex gap-2">
           <Button
-            onClick={() => cleanupSessions.mutate()}
+            onClick={cleanupSessions}
             variant="outline"
-            disabled={cleanupSessions.isPending}
           >
             <Activity className="h-4 w-4 mr-2" />
             Limpar Sessões
@@ -189,7 +188,7 @@ const AdminSecurityDashboard: React.FC = () => {
             Relatório
           </Button>
           <Button
-            onClick={() => useCleanupSecurityAlerts().mutate()}
+            onClick={async () => await useCleanupSecurityAlerts().mutateAsync()}
             variant="outline"
             size="sm"
           >
