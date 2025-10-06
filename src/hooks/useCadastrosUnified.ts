@@ -41,11 +41,10 @@ export const useCadastrosUnified = () => {
   };
 
   // Combinar todos os dados
-  const allItems = [
-    ...clientes.map((item) => ({ ...item, tipoDisplay: "Cliente" })),
-    ...fornecedores.map((item) => ({ ...item, tipoDisplay: "Fornecedor" })),
-    ...funcionarios.map((item) => ({ ...item, tipoDisplay: "Funcionário" })),
-  ];
+  const allItems = allData.map((item: Cadastro) => ({
+    ...item,
+    tipoDisplay: item.tipo || "Não definido"
+  }));
 
   // Filtrar dados
   const filteredItems = allItems.filter((item) => {
@@ -63,9 +62,9 @@ export const useCadastrosUnified = () => {
   // Estatísticas
   const stats = {
     total: allItems.length,
-    clientes: clientes.length,
-    fornecedores: fornecedores.length,
-    funcionarios: funcionarios.length,
+    clientes: allItems.filter(item => item.tipo === "Cliente").length,
+    fornecedores: allItems.filter(item => item.tipo === "Fornecedor").length,
+    funcionarios: allItems.filter(item => item.tipo === "Funcionário").length,
     ativos: allItems.filter((item) => item.status === "ativo").length,
   };
 

@@ -6,12 +6,16 @@ interface SidebarNavigationProps {
   collapsed: boolean;
   expandedItems: string[];
   onToggleExpanded: (itemId: string) => void;
+  isMobile?: boolean;
+  onMobileClose?: () => void;
 }
 
 const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   collapsed,
   expandedItems,
   onToggleExpanded,
+  isMobile = false,
+  onMobileClose,
 }) => {
   return (
     <nav className="flex-1 p-3 overflow-y-auto">
@@ -20,9 +24,11 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
           <SidebarMenuItem
             key={item.id}
             item={item}
-            collapsed={collapsed}
+            collapsed={collapsed && !isMobile}
             expandedItems={expandedItems}
             onToggleExpanded={onToggleExpanded}
+            isMobile={isMobile}
+            onMobileClose={onMobileClose}
           />
         ))}
       </div>

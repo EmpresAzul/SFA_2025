@@ -144,6 +144,16 @@ export const useHoraForm = (
       return;
     }
 
+    if (horaData.proLabore <= 0) {
+      console.log("❌ VALIDAÇÃO FALHOU: Pro-labore deve ser maior que zero");
+      toast({
+        title: "Erro",
+        description: "Pro-labore deve ser maior que zero.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (diasTrabalhadosNumerico <= 0 || horasPorDiaNumerico <= 0) {
       console.log("❌ VALIDAÇÃO FALHOU: Dias ou horas inválidos");
       toast({
@@ -173,11 +183,14 @@ export const useHoraForm = (
 
       const dadosPrecificacao = {
         nome: horaData.nome,
-        categoria: "Hora Trabalhada",
+        categoria: "Hora Trabalhada", // Será movido para dados_json no hook usePrecificacao
         tipo: "Hora" as const,
+        preco_venda: valorHoraTrabalhada,
         preco_final: valorHoraTrabalhada,
+        despesas_fixas: totalCustosFixos,
         dados_json: JSON.parse(
           JSON.stringify({
+            categoria: "Hora Trabalhada",
             pro_labore: horaData.proLabore,
             dias_trabalhados: diasTrabalhadosNumerico,
             horas_por_dia: horasPorDiaNumerico,
@@ -201,8 +214,9 @@ export const useHoraForm = (
         });
         console.log("✅ Atualização bem-sucedida!");
         toast({
-          title: "Sucesso!",
-          description: "Precificação de hora atualizada com êxito.",
+          title: "✅ Hora Atualizada!",
+          description: `A precificação "${horaData.nome}" foi atualizada com sucesso.`,
+          duration: 4000,
         });
       } else {
         console.log("➕ Modo CRIAÇÃO - criando novo item");
@@ -218,8 +232,9 @@ export const useHoraForm = (
         console.log("✅ Criação bem-sucedida! Resultado:", resultado);
 
         toast({
-          title: "Sucesso!",
-          description: "Precificação de hora cadastrada com êxito.",
+          title: "✅ Hora Salva com Sucesso!",
+          description: `A precificação "${horaData.nome}" foi cadastrada com sucesso no sistema.`,
+          duration: 4000,
         });
       }
 

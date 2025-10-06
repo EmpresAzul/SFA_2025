@@ -166,19 +166,28 @@ const LancamentosFinanceiros: React.FC = () => {
     setCurrentPage(1);
   }, [searchTerm, searchValue, selectedTipo, selectedCategoria, selectedPeriodo]);
 
-  // Calcular estatísticas
+  // Calcular estatísticas baseadas em TODOS os lançamentos, não apenas os filtrados
   const stats = useMemo(() => {
-    const total = filteredData.length;
-    const receitas = filteredData
+    console.log("📊 Calculando estatísticas dos lançamentos:", filteredLancamentos.length);
+    
+    const total = filteredLancamentos.length;
+    const receitas = filteredLancamentos
       .filter((item) => item.tipo === "receita")
-      .reduce((sum, item) => sum + item.valor, 0);
-    const despesas = filteredData
+      .reduce((sum, item) => {
+        console.log("💰 Receita:", item.categoria, item.valor);
+        return sum + item.valor;
+      }, 0);
+    const despesas = filteredLancamentos
       .filter((item) => item.tipo === "despesa")
-      .reduce((sum, item) => sum + item.valor, 0);
+      .reduce((sum, item) => {
+        console.log("💸 Despesa:", item.categoria, item.valor);
+        return sum + item.valor;
+      }, 0);
     const saldo = receitas - despesas;
 
+    console.log("📈 Estatísticas calculadas:", { total, receitas, despesas, saldo });
     return { total, receitas, despesas, saldo };
-  }, [filteredData]);
+  }, [filteredLancamentos]);
 
   const handleView = (item: Lancamento) => {
     setSelectedItem(item);
@@ -201,6 +210,7 @@ const LancamentosFinanceiros: React.FC = () => {
   };
 
   const handleNewLancamentoClick = () => {
+    console.log("🆕 Criando novo lançamento");
     setEditingItem(null);
     setActiveTab("formulario");
   };
@@ -275,19 +285,28 @@ const LancamentosFinanceiros: React.FC = () => {
           {isLoading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <span className="ml-2 text-gray-600">Carregando lançamentos...</span>
             </div>
           ) : (
-            <LancamentosTable
-              data={paginatedData}
-              totalItems={filteredData.length}
-              currentPage={currentPage}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-              onView={handleView}
-              onEdit={handleEditItem}
-              onDelete={handleDeleteLancamento}
-            />
+            <>
+              {console.log("🔍 Renderizando tabela com:", {
+                paginatedData: paginatedData.length,
+                filteredData: filteredData.length,
+                filteredLancamentos: filteredLancamentos.length,
+                isLoading
+              })}
+              <LancamentosTable
+                data={paginatedData}
+                totalItems={filteredData.length}
+                currentPage={currentPage}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+                onView={handleView}
+                onEdit={handleEditItem}
+                onDelete={handleDeleteLancamento}
+              />
+            </>
           )}
         </TabsContent>
 

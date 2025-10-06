@@ -150,28 +150,40 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
     setLoading(true);
 
     try {
+      // Mapear tipos corretamente
+      const tipoMap = {
+        cliente: "Cliente",
+        fornecedor: "Fornecedor", 
+        funcionario: "Funcionário"
+      };
+
       const cadastroData: CadastroFormData = {
-        data: formData.data,
         nome: formData.nome.trim(),
-        tipo: formData.tipo.toLowerCase(),
+        tipo: tipoMap[formData.tipo as keyof typeof tipoMap] || formData.tipo,
         pessoa: formData.cpf_cnpj?.replace(/\D/g, '').length === 11 ? 'Física' : 'Jurídica',
         status: 'ativo',
+        ativo: true,
+        cpf_cnpj: formData.cpf_cnpj.trim() || undefined,
+        telefone: formData.telefone.trim() || undefined,
+        email: formData.email.trim() || undefined,
         endereco: formData.endereco.trim() || undefined,
         numero: formData.numero.trim() || undefined,
         cidade: formData.cidade.trim() || undefined,
         estado: formData.estado || undefined,
         observacoes: formData.observacoes.trim() || undefined,
-        telefone: formData.telefone.trim() || undefined,
-        email: formData.email.trim() || undefined,
-        cpf_cnpj: formData.cpf_cnpj.trim() || undefined,
         user_id: user!.id,
       };
 
+      console.log("📝 Dados do cadastro a serem salvos:", cadastroData);
+
       await createCadastro.mutateAsync(cadastroData);
 
+      // Mensagem de sucesso personalizada por tipo
+      const tipoTexto = tipoMap[formData.tipo as keyof typeof tipoMap];
       toast({
-        title: "Sucesso",
-        description: "Cadastro salvo com sucesso!",
+        title: "✅ Cadastro Confirmado!",
+        description: `${tipoTexto} "${formData.nome}" foi cadastrado com sucesso no sistema.`,
+        duration: 4000,
       });
 
       resetForm();
@@ -179,12 +191,13 @@ export const UnifiedCadastroForm: React.FC<UnifiedCadastroFormProps> = ({
         onSuccess();
       }
     } catch (error: unknown) {
-      console.error("Erro ao salvar cadastro:", error);
+      console.error("❌ Erro ao salvar cadastro:", error);
       toast({
-        title: "Erro",
+        title: "❌ Erro no Cadastro",
         description:
           error instanceof Error ? error.message : "Erro ao salvar cadastro. Tente novamente.",
         variant: "destructive",
+        duration: 5000,
       });
     } finally {
       setLoading(false);

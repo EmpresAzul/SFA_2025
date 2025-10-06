@@ -5,10 +5,8 @@ import { RefreshCw, X } from 'lucide-react';
 import { usePWA } from '@/hooks/usePWA';
 
 const UpdateNotification: React.FC = () => {
-  const { isUpdateAvailable, updateApp } = usePWA();
-  const [dismissed, setDismissed] = React.useState(false);
-
-  if (!isUpdateAvailable || dismissed) return null;
+  // Componente desabilitado conforme solicitação do usuário
+  return null;
 
   const handleUpdate = () => {
     updateApp();

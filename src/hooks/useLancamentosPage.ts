@@ -24,6 +24,13 @@ export const useLancamentosPage = () => {
   } = useLancamentos();
   
   const { data: lancamentos, isLoading, error } = useLancamentosQuery();
+  
+  console.log("🔍 useLancamentosPage: Estado atual:", {
+    lancamentos: lancamentos?.length || 0,
+    isLoading,
+    error: error?.message,
+    user: user?.id
+  });
 
   const createLancamento = useCreate();
   const updateLancamento = useUpdate();
@@ -36,20 +43,28 @@ export const useLancamentosPage = () => {
   const fornecedores = allCadastros.filter((item: any) => item.tipo === "Fornecedor");
 
   useEffect(() => {
+    console.log("🔄 useLancamentosPage: Atualizando lançamentos filtrados");
     if (lancamentos) {
+      console.log("📋 useLancamentosPage: Lançamentos recebidos:", lancamentos.length);
+      setFilteredLancamentos(lancamentos); // Mostrar todos os lançamentos inicialmente
       filterLancamentos();
+    } else {
+      console.log("⚠️ useLancamentosPage: Nenhum lançamento encontrado");
+      setFilteredLancamentos([]);
     }
   }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
 
   const filterLancamentos = () => {
-    if (!lancamentos) {
+    if (!lancamentos || lancamentos.length === 0) {
+      console.log("⚠️ filterLancamentos: Nenhum lançamento para filtrar");
       setFilteredLancamentos([]);
       return;
     }
 
+    console.log("🔍 filterLancamentos: Aplicando filtros aos", lancamentos.length, "lançamentos");
     let filtered: Lancamento[] = [...lancamentos];
 
-    if (searchTerm) {
+    if (searchTerm && searchTerm.trim()) {
       filtered = filtered.filter(
         (lancamento) =>
           lancamento.categoria
@@ -57,6 +72,10 @@ export const useLancamentosPage = () => {
             .includes(searchTerm.toLowerCase()) ||
           (lancamento.observacoes &&
             lancamento.observacoes
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())) ||
+          (lancamento.descricao &&
+            lancamento.descricao
               .toLowerCase()
               .includes(searchTerm.toLowerCase())),
       );
@@ -74,6 +93,7 @@ export const useLancamentosPage = () => {
       );
     }
 
+    console.log("✅ filterLancamentos: Resultado filtrado:", filtered.length, "lançamentos");
     setFilteredLancamentos(filtered);
   };
 

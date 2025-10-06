@@ -10,6 +10,8 @@ interface SidebarMenuItemProps {
   collapsed: boolean;
   expandedItems: string[];
   onToggleExpanded: (itemId: string) => void;
+  isMobile?: boolean;
+  onMobileClose?: () => void;
 }
 
 const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
@@ -18,6 +20,8 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   collapsed,
   expandedItems,
   onToggleExpanded,
+  isMobile = false,
+  onMobileClose,
 }) => {
   const location = useLocation();
 
@@ -43,9 +47,9 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
           className={cn(
             "w-full flex items-center px-3 py-2 text-left rounded-lg transition-all duration-300 group backdrop-blur-md border border-white/10",
             parentActive
-              ? "bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600 text-white shadow-lg shadow-blue-500/25 border-blue-300/30"
-              : "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-br hover:from-slate-700 hover:via-slate-600 hover:to-blue-500 hover:text-white hover:shadow-md hover:shadow-blue-200/30",
-            collapsed && "justify-center px-2",
+              ? "bg-gradient-to-br from-white/20 via-white/15 to-white/10 text-white shadow-lg border-white/20"
+              : "text-white/80 hover:bg-gradient-to-br hover:from-white/15 hover:via-white/10 hover:to-white/5 hover:text-white hover:shadow-md",
+            collapsed && !isMobile && "justify-center px-2",
           )}
         >
           <item.icon
@@ -55,7 +59,7 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
               item.iconColor || "text-current",
             )}
           />
-          {!collapsed && (
+          {(!collapsed || isMobile) && (
             <>
               <span className="flex-1 font-medium text-sm">{item.label}</span>
               {isExpanded ? (
@@ -67,7 +71,7 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
           )}
         </button>
 
-        {!collapsed && isExpanded && (
+        {(!collapsed || isMobile) && isExpanded && (
           <div className="ml-3 mt-1 space-y-0.5 animate-fade-in">
             {item.children?.map((child) => (
               <SidebarMenuItem
@@ -77,6 +81,8 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
                 collapsed={collapsed}
                 expandedItems={expandedItems}
                 onToggleExpanded={onToggleExpanded}
+                isMobile={isMobile}
+                onMobileClose={onMobileClose}
               />
             ))}
           </div>
@@ -89,23 +95,28 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     return (
       <NavLink
         to={item.href}
+        onClick={() => {
+          if (isMobile && onMobileClose) {
+            onMobileClose();
+          }
+        }}
         className={cn(
           "flex items-center px-3 py-2 rounded-lg transition-all duration-300 group mb-1 backdrop-blur-md border border-white/10",
           level > 0 && "ml-3",
           isActive(item.href)
-            ? "bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600 text-white shadow-lg shadow-blue-500/25 border-blue-300/30"
-            : "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-br hover:from-slate-700 hover:via-slate-600 hover:to-blue-500 hover:text-white hover:shadow-md hover:shadow-blue-200/30",
-          collapsed && "justify-center px-2",
+            ? "bg-gradient-to-br from-white/20 via-white/15 to-white/10 text-white shadow-lg border-white/20"
+            : "text-white/80 hover:bg-gradient-to-br hover:from-white/15 hover:via-white/10 hover:to-white/5 hover:text-white hover:shadow-md",
+          collapsed && !isMobile && "justify-center px-2",
         )}
       >
         <item.icon
           className={cn(
             "flex-shrink-0",
-            collapsed ? "w-4 h-4" : "w-4 h-4 mr-2",
-            item.iconColor || "text-current",
+            collapsed && !isMobile ? "w-4 h-4" : "w-4 h-4 mr-2",
+            "text-current",
           )}
         />
-        {!collapsed && (
+        {(!collapsed || isMobile) && (
           <span className="font-medium text-sm">{item.label}</span>
         )}
       </NavLink>
@@ -117,18 +128,18 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
       className={cn(
         "flex items-center px-3 py-2 rounded-lg transition-all duration-300 group mb-1 backdrop-blur-md border border-white/10",
         level > 0 && "ml-3",
-        "bg-gradient-to-r from-white/10 to-white/5 text-fluxo-black-700 hover:bg-gradient-to-br hover:from-slate-700 hover:via-slate-600 hover:to-blue-500 hover:text-white hover:shadow-md hover:shadow-blue-200/30",
-        collapsed && "justify-center px-2",
+        "text-white/80 hover:bg-gradient-to-br hover:from-white/15 hover:via-white/10 hover:to-white/5 hover:text-white hover:shadow-md",
+        collapsed && !isMobile && "justify-center px-2",
       )}
     >
       <item.icon
         className={cn(
           "flex-shrink-0",
-          collapsed ? "w-4 h-4" : "w-4 h-4 mr-2",
-          item.iconColor || "text-current",
+          collapsed && !isMobile ? "w-4 h-4" : "w-4 h-4 mr-2",
+          "text-current",
         )}
       />
-      {!collapsed && <span className="font-medium text-sm">{item.label}</span>}
+      {(!collapsed || isMobile) && <span className="font-medium text-sm">{item.label}</span>}
     </div>
   );
 };

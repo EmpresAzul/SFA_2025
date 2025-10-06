@@ -47,15 +47,17 @@ export const useLancamentosMutations = () => {
           tipo: lancamentoData.tipo,
           categoria: lancamentoData.categoria,
           valor: lancamentoData.valor,
-          descricao: lancamentoData.observacoes || `${lancamentoData.tipo} - ${lancamentoData.categoria}`,
-          cliente_id: lancamentoData.cliente_id,
-          fornecedor_id: lancamentoData.fornecedor_id,
-          observacoes: lancamentoData.observacoes,
+          descricao: lancamentoData.descricao || lancamentoData.observacoes || `${lancamentoData.tipo} - ${lancamentoData.categoria}`,
+          cliente_id: lancamentoData.cliente_id || null,
+          fornecedor_id: lancamentoData.fornecedor_id || null,
+          observacoes: lancamentoData.observacoes || null,
           user_id: lancamentoData.user_id,
-          status: lancamentoData.status,
+          status: lancamentoData.status || 'ativo',
           recorrente: lancamentoData.recorrente || false,
           meses_recorrencia: lancamentoData.meses_recorrencia || null,
         };
+
+        console.log("📦 Dados preparados para inserção:", insertData);
 
         const { data, error } = await supabase
           .from("lancamentos")
@@ -89,7 +91,7 @@ export const useLancamentosMutations = () => {
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
-        console.log("useLancamentosMutations: Queries invalidadas após criação");
+        console.log("✅ useLancamentosMutations: Lançamento criado e queries invalidadas");
         
         // Log security event for data creation
         logDataModification("lancamentos", "INSERT", data.id, {
@@ -174,18 +176,11 @@ export const useLancamentosMutations = () => {
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
-        console.log(
-          "useLancamentosMutations: Queries invalidadas após atualização, dados:",
-          data,
-        );
+        console.log("✅ useLancamentosMutations: Lançamento atualizado e queries invalidadas");
+        
         // Log security event for data update
         logDataModification("lancamentos", "UPDATE", data.id, {
           updated_fields: Object.keys(data).filter(key => key !== 'id' && key !== 'created_at' && key !== 'updated_at'),
-        });
-        
-        toast({
-          title: "Sucesso",
-          description: "Lançamento atualizado com sucesso!",
         });
       },
       onError: (error: unknown) => {
@@ -233,8 +228,9 @@ export const useLancamentosMutations = () => {
         });
         
         toast({
-          title: "Sucesso",
-          description: "Lançamento excluído com sucesso!",
+          title: "✅ Lançamento Excluído!",
+          description: "O lançamento foi removido com sucesso do sistema.",
+          duration: 3000,
         });
       },
       onError: (error: unknown) => {

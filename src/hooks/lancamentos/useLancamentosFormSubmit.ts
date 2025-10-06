@@ -52,8 +52,9 @@ export const useLancamentosFormSubmit = ({
         await updateLancamento.mutateAsync(updateData);
 
         toast({
-          title: "Sucesso!",
-          description: "Lançamento atualizado com sucesso.",
+          title: "✅ Lançamento Atualizado!",
+          description: `${formData.tipo === 'receita' ? 'Receita' : 'Despesa'} de ${formData.categoria} foi atualizada com sucesso.`,
+          duration: 4000,
         });
       } else {
         const lancamentoData = {
@@ -71,6 +72,8 @@ export const useLancamentosFormSubmit = ({
           meses_recorrencia: formData.meses_recorrencia || null,
         };
 
+        console.log("🚀 Criando novo lançamento com dados:", lancamentoData);
+
         // Se for recorrente, usar função especial
         if (formData.recorrente && formData.meses_recorrencia && formData.meses_recorrencia > 0) {
           await criarLancamentosRecorrentes(lancamentoData, formData.meses_recorrencia);
@@ -79,10 +82,14 @@ export const useLancamentosFormSubmit = ({
             description: `Lançamento recorrente criado com sucesso! Serão criados ${formData.meses_recorrencia} lançamentos mensais.`,
           });
         } else {
+          console.log("🚀 Enviando lançamento para criação:", lancamentoData);
           await createLancamento.mutateAsync(lancamentoData);
+          console.log("✅ Lançamento criado com sucesso!");
+          
           toast({
-            title: "Sucesso!",
-            description: "Lançamento criado com sucesso.",
+            title: "✅ Lançamento Salvo com Sucesso!",
+            description: `${formData.tipo === 'receita' ? 'Receita' : 'Despesa'} de ${formData.categoria} no valor de R$ ${valorNumerico.toFixed(2).replace('.', ',')} foi registrada com sucesso.`,
+            duration: 5000,
           });
         }
       }

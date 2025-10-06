@@ -176,19 +176,19 @@ const PrecificacaoTable: React.FC<PrecificacaoTableProps> = ({
                       {item.nome}
                     </TableCell>
                     <TableCell className="py-2 text-sm max-w-[150px] truncate">
-                      {item.categoria}
+                      {item.dados_json?.categoria || item.categoria || '-'}
                     </TableCell>
                     <TableCell className="font-semibold text-green-600 py-2 text-right text-sm">
-                      {formatNumberToDisplay(item.preco_final)}
+                      {formatNumberToDisplay(item.preco_venda || item.preco_final || 0)}
                     </TableCell>
                     <TableCell className="py-2">
                       <Badge
                         variant={
-                          item.status === "ativo" ? "default" : "secondary"
+                          (item.status || "ativo") === "ativo" ? "default" : "secondary"
                         }
                         className="text-xs px-2 py-0.5"
                       >
-                        {item.status === "ativo" ? "A" : "I"}
+                        {(item.status || "ativo") === "ativo" ? "A" : "I"}
                       </Badge>
                     </TableCell>
                     <TableCell className="py-2">

@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import type { LancamentoFormData, LancamentoComRelacoes } from "@/types/lancamentosForm";
 import { formatNumberToInput } from "@/utils/currency";
 
@@ -19,7 +19,24 @@ const getInitialFormData = (): LancamentoFormData => ({
 export const useLancamentosFormData = (
   editingLancamento: LancamentoComRelacoes | null,
 ) => {
-  const [formData, setFormData] = useState<LancamentoFormData>(getInitialFormData);
+  const [formData, setFormData] = useState<LancamentoFormData>(() => {
+    if (editingLancamento) {
+      const valorFormatado = formatNumberToInput(editingLancamento.valor);
+      return {
+        descricao: editingLancamento.descricao || "",
+        data: editingLancamento.data,
+        tipo: editingLancamento.tipo,
+        categoria: editingLancamento.categoria,
+        valor: valorFormatado,
+        cliente_id: editingLancamento.cliente_id || "",
+        fornecedor_id: editingLancamento.fornecedor_id || "",
+        observacoes: editingLancamento.observacoes || "",
+        recorrente: editingLancamento.recorrente || false,
+        meses_recorrencia: editingLancamento.meses_recorrencia || null,
+      };
+    }
+    return getInitialFormData();
+  });
 
   const loadFormData = useCallback((lancamento: LancamentoComRelacoes) => {
     // Garantir que o valor seja formatado corretamente
@@ -38,6 +55,7 @@ export const useLancamentosFormData = (
       meses_recorrencia: lancamento.meses_recorrencia || null,
     };
 
+    console.log("📝 Carregando dados do lançamento para edição:", loadedData);
     setFormData(loadedData);
   }, []);
 
@@ -52,6 +70,17 @@ export const useLancamentosFormData = (
     },
     [],
   );
+
+  // Efeito para carregar dados quando editingLancamento mudar
+  React.useEffect(() => {
+    if (editingLancamento) {
+      console.log("📝 Carregando dados para edição:", editingLancamento);
+      loadFormData(editingLancamento);
+    } else {
+      console.log("🆕 Resetando formulário para novo lançamento");
+      resetForm();
+    }
+  }, [editingLancamento, loadFormData, resetForm]);
 
   return {
     formData,

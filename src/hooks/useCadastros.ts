@@ -107,27 +107,46 @@ export const useCadastros = (): UseCadastrosReturn => {
   const createCadastro = useCallback(async (data: CadastroFormData) => {
     try {
       setError(null);
+      console.log("🚀 useCadastros: Iniciando criação de cadastro:", data);
 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
+      // Limpar dados undefined e preparar para inserção
       const cadastroData = {
-        ...data,
-        user_id: user.id
+        user_id: user.id,
+        nome: data.nome,
+        tipo: data.tipo,
+        pessoa: data.pessoa || 'Física',
+        status: data.status || 'ativo',
+        ativo: data.ativo !== false,
+        ...(data.cpf_cnpj && { cpf_cnpj: data.cpf_cnpj }),
+        ...(data.telefone && { telefone: data.telefone }),
+        ...(data.email && { email: data.email }),
+        ...(data.endereco && { endereco: data.endereco }),
+        ...(data.numero && { numero: data.numero }),
+        ...(data.bairro && { bairro: data.bairro }),
+        ...(data.cidade && { cidade: data.cidade }),
+        ...(data.estado && { estado: data.estado }),
+        ...(data.cep && { cep: data.cep }),
+        ...(data.observacoes && { observacoes: data.observacoes }),
+        ...(data.salario && { salario: data.salario }),
       };
 
-      const { error: insertError } = await supabase
+      console.log("📦 useCadastros: Dados preparados para inserção:", cadastroData);
+
+      const { data: insertedData, error: insertError } = await supabase
         .from('cadastros')
-        .insert([cadastroData]);
+        .insert([cadastroData])
+        .select()
+        .single();
 
       if (insertError) {
+        console.error("❌ useCadastros: Erro na inserção:", insertError);
         throw insertError;
       }
 
-      toast({
-        title: 'Sucesso',
-        description: 'Cadastro criado com sucesso!',
-      });
+      console.log("✅ useCadastros: Cadastro inserido com sucesso:", insertedData);
 
       // Invalidar cache do dashboard para atualização em tempo real
       queryClient.invalidateQueries({ queryKey: ['dashboard-metrics'] });
@@ -135,15 +154,11 @@ export const useCadastros = (): UseCadastrosReturn => {
       await fetchCadastros();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao criar cadastro';
+      console.error("❌ useCadastros: Erro geral:", err);
       setError(errorMessage);
-      toast({
-        title: 'Erro',
-        description: errorMessage,
-        variant: 'destructive',
-      });
       throw err;
     }
-  }, [fetchCadastros, toast]);
+  }, [fetchCadastros, queryClient]);
 
   const updateCadastro = useCallback(async (id: string, data: Partial<CadastroFormData>) => {
     try {

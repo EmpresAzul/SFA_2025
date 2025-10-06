@@ -35,7 +35,10 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
   onEdit,
   onDelete,
 }) => {
-  if (totalItems === 0) {
+  console.log("📊 LancamentosTable: Renderizando com", data.length, "itens de", totalItems, "total");
+  
+  if (!data || data.length === 0) {
+    console.log("⚠️ LancamentosTable: Exibindo estado vazio");
     return <LancamentosTableEmptyState />;
   }
 

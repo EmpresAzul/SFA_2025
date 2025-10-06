@@ -131,14 +131,15 @@ export const useProdutoForm = (
       return;
     }
 
-    if (custoTotal <= 0) {
-      toast({
-        title: "Erro",
-        description: "Pelo menos um custo deve ser informado.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Remover validação de custo total para permitir produtos sem custos
+    // if (custoTotal <= 0) {
+    //   toast({
+    //     title: "Erro",
+    //     description: "Pelo menos um custo deve ser informado.",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
 
     setLoading(true);
 
@@ -161,13 +162,15 @@ export const useProdutoForm = (
 
       const dadosPrecificacao = {
         nome: produtoData.nome,
-        categoria: produtoData.categoria,
+        categoria: produtoData.categoria, // Será movido para dados_json no hook usePrecificacao
         tipo: "Produto" as const,
+        preco_venda: precoFinal,
         preco_final: precoFinal,
-        preco_venda: precoFinal, // Manter compatibilidade
         margem_lucro: produtoData.margemLucro,
+        custo_materia_prima: custoTotal,
         dados_json: JSON.parse(
           JSON.stringify({
+            categoria: produtoData.categoria,
             custos_materiais: custosSerializados,
             taxas_adicionais: taxasSerializadas,
             custo_total: custoTotal,
@@ -191,8 +194,9 @@ export const useProdutoForm = (
           data: { ...dadosPrecificacao, user_id: user.id },
         });
         toast({
-          title: "Sucesso!",
-          description: "Produto atualizado com êxito.",
+          title: "✅ Produto Atualizado!",
+          description: `O produto "${produtoData.nome}" foi atualizado com sucesso.`,
+          duration: 4000,
         });
       } else {
         // Criar novo item
@@ -213,8 +217,9 @@ export const useProdutoForm = (
           user_id: user.id,
         });
         toast({
-          title: "Sucesso!",
-          description: "Produto cadastrado com êxito.",
+          title: "✅ Produto Salvo com Sucesso!",
+          description: `O produto "${produtoData.nome}" foi cadastrado com sucesso no sistema.`,
+          duration: 4000,
         });
       }
 

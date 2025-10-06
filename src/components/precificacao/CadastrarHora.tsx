@@ -109,7 +109,7 @@ const CadastrarHora: React.FC<CadastrarHoraProps> = ({
         <Button
           type="submit"
           disabled={loading}
-          className="bg-gradient-to-r from-fluxo-blue-600 to-fluxo-blue-500 hover:from-fluxo-blue-700 hover:to-fluxo-blue-600"
+          className="bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600"
           onClick={() => console.log("🖱️ Botão de submit clicado!")}
         >
           {editingItem ? (

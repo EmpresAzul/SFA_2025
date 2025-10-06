@@ -198,12 +198,16 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
 
       const dadosPrecificacao = {
         nome: servicoData.nome,
-        categoria: servicoData.categoria,
+        categoria: servicoData.categoria, // Será movido para dados_json no hook usePrecificacao
         tipo: "Serviço" as const,
+        preco_venda: precoFinal,
         preco_final: precoFinal,
         margem_lucro: servicoData.margemLucro,
+        custo_materia_prima: custoMateriais,
+        custo_mao_obra: custoMaoObra,
         dados_json: JSON.parse(
           JSON.stringify({
+            categoria: servicoData.categoria,
             tempo_estimado: horasNumerico,
             valor_hora: servicoData.valorHora,
             custo_mao_obra: custoMaoObra,
@@ -226,8 +230,9 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
           data: dadosPrecificacao,
         });
         toast({
-          title: "Sucesso!",
-          description: "Serviço atualizado com êxito.",
+          title: "✅ Serviço Atualizado!",
+          description: `O serviço "${servicoData.nome}" foi atualizado com sucesso.`,
+          duration: 4000,
         });
       } else {
         // Criar novo item
@@ -243,8 +248,9 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
           user_id: user.id,
         });
         toast({
-          title: "Sucesso!",
-          description: "Serviço cadastrado com êxito.",
+          title: "✅ Serviço Salvo com Sucesso!",
+          description: `O serviço "${servicoData.nome}" foi cadastrado com sucesso no sistema.`,
+          duration: 4000,
         });
       }
 

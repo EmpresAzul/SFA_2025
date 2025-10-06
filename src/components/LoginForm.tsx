@@ -196,7 +196,7 @@ const LoginForm: React.FC = () => {
                   onChange={handleEmailChange}
                   placeholder="Digite seu e-mail"
                   required
-                  className={`h-11 border-2 ${
+                  className={`h-11 border-2 bg-white text-gray-900 placeholder:text-gray-500 ${
                     errors.email ? "border-red-500" : "border-gray-200"
                   } focus:border-blue-500 transition-all duration-200 rounded-lg`}
                 />
@@ -220,7 +220,7 @@ const LoginForm: React.FC = () => {
                     onChange={handlePasswordChange}
                     placeholder="Digite sua senha"
                     required
-                    className={`h-11 border-2 ${
+                    className={`h-11 border-2 bg-white text-gray-900 placeholder:text-gray-500 ${
                       errors.password ? "border-red-500" : "border-gray-200"
                     } focus:border-blue-500 transition-all duration-200 rounded-lg pr-12`}
                   />

@@ -69,6 +69,8 @@ const PrecificacaoPage: React.FC = () => {
 
   // Calcular estatísticas
   const stats = useMemo(() => {
+    console.log("📊 Calculando estatísticas de precificação:", precificacaoData.length, "itens");
+    
     const total = precificacaoData.length;
     const produtos = precificacaoData.filter(
       (item) => item.tipo === "Produto",
@@ -80,6 +82,7 @@ const PrecificacaoPage: React.FC = () => {
       (item) => item.tipo === "Hora",
     ).length;
 
+    console.log("📈 Estatísticas:", { total, produtos, servicos, horas });
     return { total, produtos, servicos, horas };
   }, [precificacaoData]);
 
@@ -186,18 +189,27 @@ const PrecificacaoPage: React.FC = () => {
           {isLoading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <span className="ml-2 text-gray-600">Carregando itens...</span>
             </div>
           ) : (
-            <PrecificacaoTable
-              data={paginatedData}
-              totalItems={filteredData.length}
-              currentPage={currentPage}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-              onView={handleView}
-              onEdit={handleEdit}
-            />
+            <>
+              {console.log("🔍 Renderizando tabela de precificação com:", {
+                paginatedData: paginatedData.length,
+                filteredData: filteredData.length,
+                precificacaoData: precificacaoData.length,
+                isLoading
+              })}
+              <PrecificacaoTable
+                data={paginatedData}
+                totalItems={filteredData.length}
+                currentPage={currentPage}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+                onView={handleView}
+                onEdit={handleEdit}
+              />
+            </>
           )}
         </TabsContent>
 

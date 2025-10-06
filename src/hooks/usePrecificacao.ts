@@ -54,10 +54,19 @@ export const usePrecificacao = () => {
 
         if (error) {
           console.error("❌ Erro ao buscar precificação:", error);
+          console.error("❌ Detalhes do erro:", {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code,
+          });
           throw error;
         }
 
-        console.log("✅ Dados de precificação carregados:", data);
+        console.log("✅ Dados de precificação carregados:", data?.length || 0, "itens");
+        if (data && data.length > 0) {
+          console.log("📋 Primeiros itens:", data.slice(0, 3));
+        }
         return data as Precificacao[];
       },
     });
@@ -82,11 +91,40 @@ export const usePrecificacao = () => {
           console.log("✅ user_id definido:", user.id);
         }
 
-        console.log("📦 Dados finais para inserir:", data);
+        // Garantir que preco_venda seja definido
+        if (!data.preco_venda && data.preco_final) {
+          data.preco_venda = data.preco_final;
+        } else if (!data.preco_venda) {
+          data.preco_venda = 0;
+        }
+
+        // Garantir que campos obrigatórios estejam presentes
+        const dadosLimpos = {
+          user_id: data.user_id,
+          nome: data.nome,
+          tipo: data.tipo,
+          preco_venda: data.preco_venda,
+          custo_materia_prima: data.custo_materia_prima || 0,
+          custo_mao_obra: data.custo_mao_obra || 0,
+          despesas_fixas: data.despesas_fixas || 0,
+          margem_lucro: data.margem_lucro || 0,
+          dados_json: data.dados_json || {},
+          observacoes: data.observacoes || null,
+        };
+
+        // Adicionar categoria aos dados_json se fornecida
+        if (data.categoria) {
+          dadosLimpos.dados_json = {
+            ...dadosLimpos.dados_json,
+            categoria: data.categoria,
+          };
+        }
+
+        console.log("📦 Dados limpos para inserir:", dadosLimpos);
 
         const { data: result, error } = await supabase
           .from("precificacao")
-          .insert(data as any)
+          .insert(dadosLimpos)
           .select()
           .single();
 
@@ -109,6 +147,8 @@ export const usePrecificacao = () => {
         queryClient.invalidateQueries({ queryKey: ["precificacao"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         console.log("✅ Queries invalidadas após criação");
+        
+        // Não mostrar toast aqui pois já é mostrado nos componentes específicos
       },
       onError: (error) => {
         console.error("💥 Erro na mutation de criação:", error);
