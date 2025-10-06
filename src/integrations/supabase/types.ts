@@ -322,30 +322,54 @@ export type Database = {
           created_at: string | null
           email: string | null
           empresa: string | null
+          endereco_bairro: string | null
+          endereco_cep: string | null
+          endereco_cidade: string | null
+          endereco_complemento: string | null
+          endereco_estado: string | null
+          endereco_numero: string | null
+          endereco_rua: string | null
           id: string
           nome: string | null
           telefone: string | null
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           cargo?: string | null
           created_at?: string | null
           email?: string | null
           empresa?: string | null
+          endereco_bairro?: string | null
+          endereco_cep?: string | null
+          endereco_cidade?: string | null
+          endereco_complemento?: string | null
+          endereco_estado?: string | null
+          endereco_numero?: string | null
+          endereco_rua?: string | null
           id: string
           nome?: string | null
           telefone?: string | null
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           cargo?: string | null
           created_at?: string | null
           email?: string | null
           empresa?: string | null
+          endereco_bairro?: string | null
+          endereco_cep?: string | null
+          endereco_cidade?: string | null
+          endereco_complemento?: string | null
+          endereco_estado?: string | null
+          endereco_numero?: string | null
+          endereco_rua?: string | null
           id?: string
           nome?: string | null
           telefone?: string | null
           updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
