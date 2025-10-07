@@ -138,7 +138,7 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div className="p-2 sm:p-4 md:p-6 space-y-4 sm:space-y-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen container-responsive">
+    <div className="p-2 sm:p-4 md:p-6 space-y-4 sm:space-y-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -156,9 +156,9 @@ const Profile: React.FC = () => {
 
 
       {/* Cards de Informações */}
-      <div className="responsive-grid-2 max-w-7xl mx-auto responsive-padding">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 max-w-7xl mx-auto px-2 sm:px-0">
         {/* Resumo do Perfil */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mobile-card-fix responsive-card">
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mobile-card-fix">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -176,12 +176,12 @@ const Profile: React.FC = () => {
                   Editar
                 </Button>
               ) : (
-                <div className="flex flex-col sm:flex-row gap-2 responsive-form-actions">
+                <div className="flex gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleCancel}
-                    className="text-gray-600 mobile-touch w-full sm:w-auto"
+                    className="text-gray-600"
                   >
                     <X className="h-4 w-4 mr-1" />
                     Cancelar
@@ -190,7 +190,7 @@ const Profile: React.FC = () => {
                     size="sm"
                     onClick={handleSave}
                     disabled={saving}
-                    className="bg-blue-600 hover:bg-blue-700 mobile-button-fix mobile-touch w-full sm:w-auto"
+                    className="bg-blue-600 hover:bg-blue-700 mobile-button-fix"
                   >
                     <Save className="h-4 w-4 mr-1" />
                     {saving ? 'Salvando...' : 'Salvar'}
@@ -229,7 +229,7 @@ const Profile: React.FC = () => {
                     value={editData.nome}
                     onChange={(e) => setEditData({ ...editData, nome: e.target.value })}
                     placeholder="Digite seu nome"
-                    className="mobile-input-fix responsive-input"
+                    className="mobile-input-fix"
                   />
                 </div>
                 <div className="space-y-2">
@@ -238,7 +238,7 @@ const Profile: React.FC = () => {
                     value={editData.empresa}
                     onChange={(e) => setEditData({ ...editData, empresa: e.target.value })}
                     placeholder="Digite o nome da empresa"
-                    className="mobile-input-fix responsive-input"
+                    className="mobile-input-fix"
                   />
                 </div>
                 <div className="space-y-2">
@@ -247,7 +247,7 @@ const Profile: React.FC = () => {
                     value={editData.cargo}
                     onChange={(e) => setEditData({ ...editData, cargo: e.target.value })}
                     placeholder="Digite seu cargo"
-                    className="mobile-input-fix responsive-input"
+                    className="mobile-input-fix"
                   />
                 </div>
                 <div className="space-y-2">
@@ -257,7 +257,7 @@ const Profile: React.FC = () => {
                     onChange={(e) => handlePhoneChange(e.target.value)}
                     placeholder="(11) 99999-9999"
                     maxLength={15}
-                    className="mobile-input-fix responsive-input"
+                    className="mobile-input-fix"
                   />
                 </div>
               </>
@@ -266,7 +266,7 @@ const Profile: React.FC = () => {
         </Card>
 
         {/* Email */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mobile-card-fix responsive-card">
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mobile-card-fix">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Mail className="h-5 w-5 text-blue-600" />

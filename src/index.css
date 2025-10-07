@@ -303,15 +303,8 @@
     0 10px 10px -5px rgba(59, 130, 246, 0.04);
 }
 
-/* Mobile optimizations - SISTEMA COMPLETO RESPONSIVO */
+/* Mobile optimizations */
 @media (max-width: 640px) {
-  /* Performance otimizada para mobile */
-  * {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
   .mobile-stack {
     @apply flex-col space-y-2 space-x-0;
   }
@@ -385,93 +378,77 @@
     border: none !important;
   }
 
-  /* Remover TODOS os fundos pretos em mobile - CONFIRMADO */
-  .bg-black, .bg-gray-900, .bg-gray-800, .bg-slate-900, .bg-slate-800,
-  [class*="bg-black"], [class*="bg-gray-9"], [class*="bg-slate-9"] {
+  .mobile-stack {
+    @apply flex-col space-y-2 space-x-0;
+  }
+
+  .mobile-full {
+    @apply w-full;
+  }
+
+  .mobile-hidden {
+    @apply hidden;
+  }
+
+  /* Melhor experiência de toque em mobile */
+  .mobile-touch {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Textos otimizados para mobile */
+  .mobile-text-sm {
+    @apply text-xs;
+  }
+
+  .mobile-text-base {
+    @apply text-sm;
+  }
+
+  /* Padding reduzido em mobile */
+  .mobile-padding-sm {
+    @apply p-2;
+  }
+
+  /* Formulários otimizados para mobile */
+  .mobile-form-stack {
+    @apply flex-col space-y-3;
+  }
+
+  /* CORREÇÃO: Remover fundos pretos dos campos em mobile */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  textarea,
+  select {
     background-color: white !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
   }
 
-  /* Sistema responsivo fluido */
-  .container, .max-w-7xl, .max-w-6xl, .max-w-5xl, .max-w-4xl {
-    max-width: 100% !important;
-    padding-left: 8px !important;
-    padding-right: 8px !important;
+  /* Campos de formulário com fundo branco forçado */
+  .mobile-input-fix {
+    background-color: white !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
   }
 
-  /* Grid system otimizado para mobile */
-  .grid {
-    grid-template-columns: 1fr !important;
-    gap: 8px !important;
+  /* Cards com fundo branco em mobile */
+  .mobile-card-fix {
+    background-color: white !important;
+    color: #1f2937 !important;
   }
 
-  /* Flexbox otimizado */
-  .flex {
-    flex-direction: column !important;
-    gap: 8px !important;
-  }
-
-  .flex-row {
-    flex-direction: row !important;
-  }
-
-  /* Espaçamentos otimizados */
-  .space-y-6 > * + *, .space-y-4 > * + *, .space-y-8 > * + * {
-    margin-top: 12px !important;
-  }
-
-  .gap-6, .gap-4, .gap-8 {
-    gap: 8px !important;
-  }
-
-  /* Padding responsivo */
-  .p-6, .p-8, .p-4 {
-    padding: 12px !important;
-  }
-
-  .px-6, .px-8, .px-4 {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-  }
-
-  .py-6, .py-8, .py-4 {
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
-  }
-
-  /* Exceções para elementos que precisam de cor */
-  .bg-blue-600, .bg-blue-500, .bg-blue-700 {
+  /* Botões com cores corretas em mobile - SEM PRETO */
+  .mobile-button-fix {
     background-color: #3b82f6 !important;
-  }
-
-  .bg-green-600, .bg-green-500, .bg-green-700 {
-    background-color: #10b981 !important;
-  }
-
-  .bg-red-600, .bg-red-500, .bg-red-700 {
-    background-color: #ef4444 !important;
-  }
-
-  .bg-gray-50, .bg-gray-100 {
-    background-color: #f9fafb !important;
-  }
-
-  .bg-gradient-to-br, .bg-gradient-to-r {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e0f2fe 100%) !important;
-  }
-
-  /* Sidebar em mobile - fundo azul claro */
-  .sidebar, [data-sidebar] {
-    background-color: #3b82f6 !important;
-  }
-
-  /* Headers e navegação */
-  .header, .nav, .navigation {
-    background-color: #3b82f6 !important;
-  }
-
-  /* Modais e overlays */
-  .modal, .overlay, .backdrop {
-    background-color: rgba(255, 255, 255, 0.95) !important;
+    color: white !important;
+    border: none !important;
   }
 
   /* Sidebar responsiva em mobile */
@@ -540,166 +517,76 @@
     color: #1f2937 !important;
     border: 1px solid #d1d5db !important;
   }
+}
 
-  /* OTIMIZAÇÕES DE PERFORMANCE MOBILE */
-  
-  /* Scroll suave e otimizado */
-  html, body {
-    scroll-behavior: smooth !important;
-    -webkit-overflow-scrolling: touch !important;
-    overscroll-behavior: contain !important;
-  }
-
-  /* Transições otimizadas */
-  * {
-    transition: all 0.2s ease !important;
-    will-change: auto !important;
-  }
-
-  /* Botões otimizados para toque */
-  button, .btn, [role="button"] {
-    min-height: 44px !important;
-    min-width: 44px !important;
-    padding: 12px 16px !important;
-    font-size: 16px !important;
-    border-radius: 8px !important;
-    touch-action: manipulation !important;
-  }
-
-  /* Inputs otimizados */
-  input, textarea, select {
-    min-height: 44px !important;
-    font-size: 16px !important;
-    padding: 12px !important;
-    border-radius: 8px !important;
-    -webkit-appearance: none !important;
-    appearance: none !important;
-  }
-
-  /* Cards responsivos */
-  .card, [class*="Card"] {
-    margin: 8px !important;
-    padding: 16px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  }
-
-  /* Tabelas responsivas */
-  table {
-    width: 100% !important;
-    font-size: 14px !important;
-  }
-
-  th, td {
-    padding: 8px 4px !important;
-    text-align: left !important;
-  }
-
-  /* Modais responsivos */
-  .modal, [role="dialog"] {
-    width: calc(100vw - 16px) !important;
-    max-width: calc(100vw - 16px) !important;
-    margin: 8px !important;
-    max-height: calc(100vh - 32px) !important;
-    overflow-y: auto !important;
-  }
-
-  /* Navegação mobile */
-  .sidebar, .nav, .navigation {
+  /* Sidebar responsiva em mobile */
+  .mobile-sidebar {
     width: 100% !important;
     height: auto !important;
     position: relative !important;
   }
 
-  /* Textos responsivos */
-  h1 {
-    font-size: 24px !important;
-    line-height: 1.2 !important;
-  }
-
-  h2 {
-    font-size: 20px !important;
-    line-height: 1.3 !important;
-  }
-
-  h3 {
-    font-size: 18px !important;
-    line-height: 1.4 !important;
-  }
-
-  p, span, div {
+  /* Menu mobile otimizado */
+  .mobile-menu-item {
+    padding: 12px 16px !important;
     font-size: 14px !important;
-    line-height: 1.5 !important;
+    min-height: 48px !important;
   }
 
-  /* Imagens responsivas */
-  img {
-    max-width: 100% !important;
-    height: auto !important;
-  }
-
-  /* Formulários em stack */
-  .form-group, .form-field {
-    width: 100% !important;
-    margin-bottom: 16px !important;
-  }
-
-  /* Botões em linha */
-  .button-group {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px !important;
-    width: 100% !important;
-  }
-
-  .button-group button {
-    width: 100% !important;
-  }
-
-  /* OTIMIZAÇÕES FINAIS DE PERFORMANCE */
-  
-  /* Prevenção de zoom em inputs */
-  input[type="text"], input[type="email"], input[type="password"], 
-  input[type="number"], input[type="tel"], textarea, select {
-    font-size: 16px !important;
-    -webkit-text-size-adjust: 100% !important;
-  }
-
-  /* Otimização de animações */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-
-  /* Otimização de GPU */
-  .card, .modal, .sidebar, .header {
-    -webkit-transform: translate3d(0, 0, 0) !important;
-    transform: translate3d(0, 0, 0) !important;
-  }
-
-  /* Scroll otimizado */
-  .scroll-container {
+  /* Tabelas responsivas em mobile */
+  .mobile-table-scroll {
+    overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
-    overflow-scrolling: touch !important;
   }
 
-  /* Prevenção de seleção de texto em elementos UI */
-  button, .btn, [role="button"], .sidebar, .nav {
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
-    user-select: none !important;
+  /* Modais responsivos em mobile */
+  .mobile-modal {
+    margin: 8px !important;
+    max-height: calc(100vh - 16px) !important;
+    overflow-y: auto !important;
+    background-color: white !important;
   }
 
-  /* Otimização de toque */
-  * {
-    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.2) !important;
-    tap-highlight-color: rgba(59, 130, 246, 0.2) !important;
+  /* Garantir que NENHUM elemento tenha fundo preto */
+  .bg-black, .bg-gray-900, .bg-gray-800, .bg-slate-900, .bg-slate-800 {
+    background-color: white !important;
   }
-}
+
+  /* Textos que eram brancos em fundo preto agora ficam escuros */
+  .text-white {
+    color: #1f2937 !important;
+  }
+
+  /* Bordas que eram pretas ficam cinza claro */
+  .border-black, .border-gray-900 {
+    border-color: #d1d5db !important;
+  }
+
+  /* Sombras que eram pretas ficam cinza suave */
+  .shadow-black {
+    box-shadow: 0 4px 6px -1px rgba(156, 163, 175, 0.1) !important;
+  }
+
+  /* Dropdowns e selects */
+  select, option {
+    background-color: white !important;
+    color: #1f2937 !important;
+  }
+
+  /* Checkboxes e radios */
+  input[type="checkbox"], input[type="radio"] {
+    background-color: white !important;
+    border: 1px solid #d1d5db !important;
+  }
+
+  /* Tooltips e popovers */
+  .tooltip, .popover {
+    background-color: white !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
+  }
+
+
 
 /* Tablet optimizations */
 @media (min-width: 641px) and (max-width: 1024px) {
