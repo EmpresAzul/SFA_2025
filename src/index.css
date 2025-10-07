@@ -181,40 +181,67 @@
   }
 }
 
-/* Custom gradient utilities */
-.gradient-fluxo {
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+/* SISTEMA DE CORES MODERNAS E VIBRANTES */
+
+/* Gradientes principais do sistema - Azul escuro, azul claro, branco */
+.gradient-fluxo-modern {
+  background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #3b82f6 100%);
+}
+
+.gradient-fluxo-vibrant {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 30%, #60a5fa 70%, #93c5fd 100%);
 }
 
 .gradient-fluxo-light {
-  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
 }
 
 .gradient-fluxo-dark {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
 }
 
-.gradient-professional {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
+.gradient-professional-modern {
+  background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 25%, #0284c7 50%, #0ea5e9 75%, #38bdf8 100%);
 }
 
-.gradient-modern {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.gradient-success-vibrant {
+  background: linear-gradient(135deg, #065f46 0%, #059669 50%, #10b981 100%);
 }
 
-.gradient-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+.gradient-warning-vibrant {
+  background: linear-gradient(135deg, #92400e 0%, #d97706 50%, #f59e0b 100%);
 }
 
-.gradient-warning {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+.gradient-error-vibrant {
+  background: linear-gradient(135deg, #991b1b 0%, #dc2626 50%, #ef4444 100%);
 }
 
-.gradient-fluxo-text {
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+/* Gradientes de texto vibrantes */
+.gradient-text-primary {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.gradient-text-vibrant {
+  background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 25%, #0284c7 50%, #0ea5e9 75%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Backgrounds modernos */
+.bg-modern-primary {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+}
+
+.bg-modern-secondary {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+}
+
+.bg-modern-accent {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
 }
 
 /* Professional black accents */
@@ -278,29 +305,50 @@
   background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
 }
 
-/* Professional card shadows */
-.shadow-professional {
+/* SOMBRAS MODERNAS E VIBRANTES */
+
+.shadow-modern {
   box-shadow:
-    0 4px 6px -1px rgba(15, 23, 42, 0.1),
-    0 2px 4px -1px rgba(15, 23, 42, 0.06);
+    0 4px 6px -1px rgba(59, 130, 246, 0.1),
+    0 2px 4px -1px rgba(59, 130, 246, 0.06),
+    0 0 0 1px rgba(59, 130, 246, 0.05);
 }
 
-.shadow-professional-lg {
-  box-shadow:
-    0 10px 15px -3px rgba(15, 23, 42, 0.1),
-    0 4px 6px -2px rgba(15, 23, 42, 0.05);
-}
-
-.shadow-colorful {
-  box-shadow:
-    0 10px 25px -5px rgba(59, 130, 246, 0.15),
-    0 8px 10px -6px rgba(59, 130, 246, 0.1);
-}
-
-.shadow-colorful-lg {
+.shadow-modern-lg {
   box-shadow:
     0 20px 25px -5px rgba(59, 130, 246, 0.1),
-    0 10px 10px -5px rgba(59, 130, 246, 0.04);
+    0 10px 10px -5px rgba(59, 130, 246, 0.04),
+    0 0 0 1px rgba(59, 130, 246, 0.05);
+}
+
+.shadow-vibrant {
+  box-shadow:
+    0 10px 25px -5px rgba(59, 130, 246, 0.25),
+    0 8px 10px -6px rgba(59, 130, 246, 0.15),
+    0 0 0 1px rgba(59, 130, 246, 0.1);
+}
+
+.shadow-vibrant-lg {
+  box-shadow:
+    0 25px 50px -12px rgba(59, 130, 246, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.shadow-glow {
+  box-shadow:
+    0 0 20px rgba(59, 130, 246, 0.3),
+    0 0 40px rgba(59, 130, 246, 0.1),
+    0 4px 6px -1px rgba(59, 130, 246, 0.1);
+}
+
+.shadow-glow-hover:hover {
+  box-shadow:
+    0 0 30px rgba(59, 130, 246, 0.4),
+    0 0 60px rgba(59, 130, 246, 0.2),
+    0 10px 15px -3px rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
 }
 
 /* Mobile optimizations */
@@ -698,6 +746,92 @@
     box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.15), 
                 0 10px 10px -5px rgba(59, 130, 246, 0.08);
   }
+}
+
+/* COMPONENTES MODERNOS E VIBRANTES */
+
+/* Botões modernos */
+.btn-modern-primary {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 600;
+  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-modern-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-modern-secondary {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  color: #1e40af;
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-modern-secondary:hover {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  transform: translateY(-1px);
+}
+
+/* Cards modernos */
+.card-modern {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -1px rgba(59, 130, 246, 0.06);
+  transition: all 0.3s ease;
+}
+
+.card-modern:hover {
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
+  transform: translateY(-4px);
+}
+
+.card-vibrant {
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 20px;
+  padding: 28px;
+  position: relative;
+}
+
+.card-vibrant::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd);
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+/* Inputs modernos */
+.input-modern {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.input-modern:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: #ffffff;
 }
 
 /* PWA Body Styles */
