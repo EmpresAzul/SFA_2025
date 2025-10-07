@@ -32,7 +32,7 @@ const Lembretes: React.FC = () => {
       let matchesDate = true;
       if (dateFilter !== "all") {
         const hoje = new Date();
-        const dataLembrete = new Date(lembrete.data_lembrete + "T00:00:00");
+        const dataLembrete = new Date(lembrete.data_vencimento + "T00:00:00");
 
         switch (dateFilter) {
           case "hoje": {
@@ -55,7 +55,7 @@ const Lembretes: React.FC = () => {
             break;
           }
           case "vencidos": {
-            matchesDate = dataLembrete < hoje && lembrete.status === "ativo";
+            matchesDate = dataLembrete < hoje && (lembrete.status === "ativo" || lembrete.status === null);
             break;
           }
         }

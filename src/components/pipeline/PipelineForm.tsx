@@ -11,12 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Negocio } from "@/types/pipeline";
+import { Lead } from "@/types/pipeline";
 import { CurrencyInput } from "@/components/ui/currency-input";
 import { parseStringToNumber } from "@/utils/currency";
 
 interface PipelineFormProps {
-  negocio?: Negocio;
+  negocio?: Lead;
   onSubmit: (data: any) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;

@@ -13,7 +13,7 @@ import { usePipeline } from "@/hooks/usePipeline";
 import { PipelineBoard } from "@/components/pipeline/PipelineBoard";
 import { PipelineForm } from "@/components/pipeline/PipelineForm";
 import { PipelineStats } from "@/components/pipeline/PipelineStats";
-import { Negocio } from "@/types/pipeline";
+import { Lead } from "@/types/pipeline";
 
 const Pipeline: React.FC = () => {
   const {
@@ -26,7 +26,7 @@ const Pipeline: React.FC = () => {
     deleteNegocio,
   } = usePipeline();
 
-  const [editingNegocio, setEditingNegocio] = useState<Negocio | null>(null);
+  const [editingNegocio, setEditingNegocio] = useState<Lead | null>(null);
   const [formLoading, setFormLoading] = useState(false);
 
   const handleSubmit = async (data: any) => {
@@ -45,7 +45,7 @@ const Pipeline: React.FC = () => {
     }
   };
 
-  const handleEdit = (negocio: Negocio) => {
+  const handleEdit = (negocio: Lead) => {
     setEditingNegocio(negocio);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

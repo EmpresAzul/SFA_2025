@@ -9,9 +9,12 @@ import SaldosBancariosList from "@/components/saldos-bancarios/SaldosBancariosLi
 
 interface SaldoForm {
   banco: string;
-  conta: string;
-  saldo_atual: number;
-  data_atualizacao: string;
+  agencia: string;
+  conta_tipo: string;
+  cidade: string;
+  pix: string;
+  saldo: number;
+  data: string;
 }
 
 const SaldosBancarios: React.FC = () => {
@@ -37,21 +40,9 @@ const SaldosBancarios: React.FC = () => {
     try {
       if (!user?.id) throw new Error('Usuário não autenticado');
       if (isEditMode && selectedSaldo?.id) {
-        await updateSaldo(selectedSaldo.id, {
-          banco: formData.banco,
-          conta: formData.conta,
-          saldo_atual: formData.saldo_atual,
-          data_atualizacao: formData.data_atualizacao,
-          user_id: user.id
-        });
+        await updateSaldo(selectedSaldo.id, formData);
       } else {
-        await createSaldo({
-          banco: formData.banco,
-          conta: formData.conta,
-          saldo_atual: formData.saldo_atual,
-          data_atualizacao: formData.data_atualizacao,
-          user_id: user.id
-        });
+        await createSaldo(formData);
       }
       setActiveTab("lista");
       setSelectedSaldo(null);
@@ -88,7 +79,7 @@ const SaldosBancarios: React.FC = () => {
     setIsEditMode(false);
   };
 
-  const totalSaldo = saldos.reduce((total, saldo) => total + saldo.saldo_atual, 0);
+  const totalSaldo = saldos.reduce((total, saldo) => total + (saldo.saldo || saldo.valor || 0), 0);
 
   return (
     <div className="p-6 space-y-6">

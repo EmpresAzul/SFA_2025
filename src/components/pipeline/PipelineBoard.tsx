@@ -3,12 +3,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DollarSign } from "lucide-react";
-import { Negocio } from "@/types/pipeline";
+import { Lead } from "@/types/pipeline";
 import { formatNumberToDisplay } from "@/utils/currency";
 
 interface PipelineBoardProps {
-  negocios: Negocio[];
-  onEdit: (negocio: Negocio) => void;
+  negocios: Lead[];
+  onEdit: (negocio: Lead) => void;
   onDelete: (id: string) => void;
   onUpdateStatus: (id: string, newStatus: string) => void;
 }
@@ -34,9 +34,9 @@ export const PipelineBoard: React.FC<PipelineBoardProps> = ({
     }
     acc[negocio.status].push(negocio);
     return acc;
-  }, {} as Record<string, Negocio[]>);
+  }, {} as Record<string, Lead[]>);
 
-  const renderNegocioCard = (negocio: Negocio) => (
+  const renderNegocioCard = (negocio: Lead) => (
     <Card key={negocio.id} className="mb-2 hover:shadow-md transition-shadow">
       <CardContent className="p-3">
         <div className="space-y-2">

@@ -50,20 +50,20 @@ const LembretesTable: React.FC<LembretesTableProps> = ({
     return time.slice(0, 5);
   };
 
-  const getStatusColor = (status: string) => {
-    return status === "ativo"
+  const getStatusColor = (status: string | null) => {
+    return (status === "ativo" || status === null)
       ? "bg-emerald-100 text-emerald-800 border-emerald-200"
       : "bg-gray-100 text-gray-800 border-gray-200";
   };
 
-  const isVencido = (dataLembrete: string) => {
+  const isVencido = (dataVencimento: string) => {
     const hoje = new Date().toISOString().split("T")[0];
-    return dataLembrete < hoje;
+    return dataVencimento < hoje;
   };
 
-  const isHoje = (dataLembrete: string) => {
+  const isHoje = (dataVencimento: string) => {
     const hoje = new Date().toISOString().split("T")[0];
-    return dataLembrete === hoje;
+    return dataVencimento === hoje;
   };
 
   return (
@@ -87,7 +87,7 @@ const LembretesTable: React.FC<LembretesTableProps> = ({
                     Lembrete
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Data/Hora
+                    Data Vencimento
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -109,8 +109,8 @@ const LembretesTable: React.FC<LembretesTableProps> = ({
                           <h3 className="text-sm font-semibold text-gray-900">
                             {lembrete.titulo}
                           </h3>
-                          {isVencido(lembrete.data_lembrete) &&
-                            lembrete.status === "ativo" && (
+                          {isVencido(lembrete.data_vencimento) &&
+                            (lembrete.status === "ativo" || lembrete.status === null) && (
                               <Badge
                                 variant="destructive"
                                 className="ml-2 text-xs"
@@ -118,12 +118,21 @@ const LembretesTable: React.FC<LembretesTableProps> = ({
                                 Vencido
                               </Badge>
                             )}
-                          {isHoje(lembrete.data_lembrete) &&
-                            lembrete.status === "ativo" && (
+                          {isHoje(lembrete.data_vencimento) &&
+                            (lembrete.status === "ativo" || lembrete.status === null) && (
                               <Badge className="ml-2 text-xs bg-orange-100 text-orange-800">
                                 Hoje
                               </Badge>
                             )}
+                          {lembrete.prioridade && (
+                            <Badge className={`ml-2 text-xs ${
+                              lembrete.prioridade === 'alta' ? 'bg-red-100 text-red-800' :
+                              lembrete.prioridade === 'media' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-green-100 text-green-800'
+                            }`}>
+                              {lembrete.prioridade}
+                            </Badge>
+                          )}
                         </div>
                         {lembrete.descricao && (
                           <p className="text-sm text-gray-600 mt-1 line-clamp-2">
@@ -135,16 +144,12 @@ const LembretesTable: React.FC<LembretesTableProps> = ({
                     <td className="px-6 py-4">
                       <div className="flex items-center text-sm text-gray-600">
                         <Calendar className="h-4 w-4 mr-1" />
-                        {formatDate(lembrete.data_lembrete)}
-                      </div>
-                      <div className="flex items-center text-sm text-gray-600 mt-1">
-                        <Clock className="h-4 w-4 mr-1" />
-                        {formatTime(lembrete.hora_lembrete)}
+                        {formatDate(lembrete.data_vencimento)}
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <Badge className={getStatusColor(lembrete.status)}>
-                        {lembrete.status === "ativo" ? "Ativo" : "Inativo"}
+                      <Badge className={getStatusColor(lembrete.status || "ativo")}>
+                        {(lembrete.status === "ativo" || lembrete.status === null) ? "Ativo" : "Inativo"}
                       </Badge>
                     </td>
                     <td className="px-6 py-4">
@@ -162,9 +167,9 @@ const LembretesTable: React.FC<LembretesTableProps> = ({
                           variant="outline"
                           size="sm"
                           onClick={() => handleToggleStatus(lembrete)}
-                          className={`hover:bg-${lembrete.status === "ativo" ? "orange" : "emerald"}-50`}
+                          className={`hover:bg-${(lembrete.status === "ativo" || lembrete.status === null) ? "orange" : "emerald"}-50`}
                         >
-                          {lembrete.status === "ativo" ? (
+                          {(lembrete.status === "ativo" || lembrete.status === null) ? (
                             <PowerOff className="h-4 w-4" />
                           ) : (
                             <Power className="h-4 w-4" />

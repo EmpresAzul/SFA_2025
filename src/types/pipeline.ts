@@ -1,11 +1,28 @@
 export interface Negocio {
   id: string;
+  name: string;
+  company: string;
+  email: string;
+  phone?: string;
+  source: string;
+  status: 'prospeccao' | 'qualificacao' | 'proposta' | 'negociacao' | 'fechamento' | 'perdido';
+  value: number;
+  probability: number;
+  next_follow_up?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+}
+
+// Interface para compatibilidade com o frontend
+export interface Lead {
+  id: string;
   nome_lead: string;
   email?: string;
   whatsapp?: string;
   valor_negocio?: number;
   status: 'prospeccao' | 'qualificacao' | 'proposta' | 'negociacao' | 'fechado' | 'perdido';
-  posicao?: number;
   observacoes?: string;
   created_at: string;
   updated_at: string;

@@ -8,18 +8,18 @@ export interface Lembrete {
   user_id: string;
   titulo: string;
   descricao: string | null;
-  data_lembrete: string;
-  hora_lembrete: string | null;
-  status: string;
-  created_at: string;
-  updated_at: string;
+  data_vencimento: string;
+  prioridade: string | null;
+  status: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 export interface LembreteFormData {
   titulo: string;
   descricao?: string;
-  data_lembrete: string;
-  hora_lembrete?: string;
+  data_vencimento: string;
+  prioridade?: string;
 }
 
 export const useLembretes = () => {
@@ -49,7 +49,7 @@ export const useLembretes = () => {
         .from("lembretes")
         .select("*")
         .eq("user_id", user.id)
-        .order("data_lembrete", { ascending: true });
+        .order("data_vencimento", { ascending: true });
 
       if (error) {
         console.error("useLembretes: Erro ao buscar lembretes:", error);
@@ -70,7 +70,7 @@ export const useLembretes = () => {
             id: lembrete.id,
             titulo: lembrete.titulo,
             status: lembrete.status,
-            data_lembrete: lembrete.data_lembrete,
+            data_vencimento: lembrete.data_vencimento,
             user_id: lembrete.user_id,
           });
         });

@@ -26,8 +26,8 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
   const [formData, setFormData] = useState<LembreteFormData>({
     titulo: "",
     descricao: "",
-    data_lembrete: "",
-    hora_lembrete: "",
+    data_vencimento: "",
+    prioridade: "",
   });
 
   // Carrega dados quando está editando
@@ -37,16 +37,16 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
       setFormData({
         titulo: editingLembrete.titulo || "",
         descricao: editingLembrete.descricao || "",
-        data_lembrete: editingLembrete.data_lembrete || "",
-        hora_lembrete: editingLembrete.hora_lembrete || "",
+        data_vencimento: editingLembrete.data_vencimento || "",
+        prioridade: editingLembrete.prioridade || "",
       });
     } else {
       // Limpa formulário quando não está editando
       setFormData({
         titulo: "",
         descricao: "",
-        data_lembrete: "",
-        hora_lembrete: "",
+        data_vencimento: "",
+        prioridade: "",
       });
     }
   }, [editingLembrete, isOpen]);
@@ -70,8 +70,8 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
       setFormData({
         titulo: "",
         descricao: "",
-        data_lembrete: "",
-        hora_lembrete: "",
+        data_vencimento: "",
+        prioridade: "",
       });
     } catch (error) {
       console.error("Erro ao salvar lembrete:", error);
@@ -132,13 +132,13 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="data_lembrete">Data *</Label>
+                <Label htmlFor="data_vencimento">Data de Vencimento *</Label>
                 <Input
-                  id="data_lembrete"
+                  id="data_vencimento"
                   type="date"
-                  value={formData.data_lembrete}
+                  value={formData.data_vencimento}
                   onChange={(e) =>
-                    setFormData({ ...formData, data_lembrete: e.target.value })
+                    setFormData({ ...formData, data_vencimento: e.target.value })
                   }
                   required
                   className="mt-1"
@@ -146,16 +146,20 @@ const LembretesForm: React.FC<LembretesFormProps> = ({
               </div>
 
               <div>
-                <Label htmlFor="hora_lembrete">Horário</Label>
-                <Input
-                  id="hora_lembrete"
-                  type="time"
-                  value={formData.hora_lembrete}
+                <Label htmlFor="prioridade">Prioridade</Label>
+                <select
+                  id="prioridade"
+                  value={formData.prioridade || ""}
                   onChange={(e) =>
-                    setFormData({ ...formData, hora_lembrete: e.target.value })
+                    setFormData({ ...formData, prioridade: e.target.value })
                   }
-                  className="mt-1"
-                />
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                >
+                  <option value="">Selecione</option>
+                  <option value="baixa">Baixa</option>
+                  <option value="media">Média</option>
+                  <option value="alta">Alta</option>
+                </select>
               </div>
             </div>
 

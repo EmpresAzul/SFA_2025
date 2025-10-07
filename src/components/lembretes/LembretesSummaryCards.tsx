@@ -13,20 +13,20 @@ const LembretesSummaryCards: React.FC<LembretesSummaryCardsProps> = ({
   const getTotalLembretes = () => lembretes.length;
 
   const getLembretesAtivos = () => {
-    return lembretes.filter((l) => l.status === "ativo").length;
+    return lembretes.filter((l) => l.status === "ativo" || l.status === null).length;
   };
 
   const getLembretesHoje = () => {
     const hoje = new Date().toISOString().split("T")[0];
     return lembretes.filter(
-      (l) => l.status === "ativo" && l.data_lembrete === hoje,
+      (l) => (l.status === "ativo" || l.status === null) && l.data_vencimento === hoje,
     ).length;
   };
 
   const getLembretesVencidos = () => {
     const hoje = new Date().toISOString().split("T")[0];
     return lembretes.filter(
-      (l) => l.status === "ativo" && l.data_lembrete < hoje,
+      (l) => (l.status === "ativo" || l.status === null) && l.data_vencimento < hoje,
     ).length;
   };
 

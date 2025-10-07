@@ -1,11 +1,11 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, TrendingUp, DollarSign, Users } from "lucide-react";
-import { Negocio } from "@/types/pipeline";
+import { Lead } from "@/types/pipeline";
 import { formatNumberToDisplay } from "@/utils/currency";
 
 interface PipelineStatsProps {
-  negocios: Negocio[];
+  negocios: Lead[];
 }
 
 export const PipelineStats: React.FC<PipelineStatsProps> = ({ negocios }) => {

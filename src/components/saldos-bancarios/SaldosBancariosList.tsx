@@ -75,23 +75,36 @@ const SaldosBancariosList: React.FC<SaldosBancariosListProps> = ({
           <div className="space-y-2">
             {saldos.map((saldo) => (
               <div
-                key={saldo.id || `${saldo.banco}-${saldo.data_atualizacao}`}
+                key={saldo.id || `${saldo.banco}-${saldo.data}`}
                 className="flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <div>
+                <div className="flex-1">
                   <h3 className="font-medium text-gray-900">{saldo.banco}</h3>
-                  <p className="text-sm text-gray-500">Conta: {saldo.conta}</p>
-                  <p className="text-sm text-gray-500">
-                    Data: {new Date(saldo.data_atualizacao).toLocaleDateString('pt-BR')}
-                  </p>
+                  <div className="grid grid-cols-2 gap-2 mt-1">
+                    <p className="text-sm text-gray-500">
+                      Agência: {saldo.tipo?.includes('Agência:') ? saldo.tipo.split('Agência:')[1]?.split('|')[0]?.trim() || 'N/A' : 'N/A'}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Conta: {saldo.tipo?.includes('Conta:') ? saldo.tipo.split('Conta:')[1]?.split('|')[0]?.trim() || 'N/A' : 'N/A'}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Cidade: {saldo.tipo?.includes('Cidade:') ? saldo.tipo.split('Cidade:')[1]?.split('|')[0]?.trim() || 'N/A' : 'N/A'}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      PIX: {saldo.tipo?.includes('PIX:') ? saldo.tipo.split('PIX:')[1]?.trim() || 'N/A' : 'N/A'}
+                    </p>
+                    <p className="text-sm text-gray-500 col-span-2">
+                      Data: {new Date(saldo.data).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <span
                     className={`font-semibold text-lg ${
-                      saldo.saldo_atual >= 0 ? "text-green-600" : "text-red-600"
+                      (saldo.saldo || saldo.valor || 0) >= 0 ? "text-green-600" : "text-red-600"
                     }`}
                   >
-                    {formatNumberToDisplay(saldo.saldo_atual)}
+                    {formatNumberToDisplay(saldo.saldo || saldo.valor || 0)}
                   </span>
                   <Button
                     variant="outline"
