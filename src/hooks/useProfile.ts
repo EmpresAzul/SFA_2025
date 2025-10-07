@@ -31,7 +31,7 @@ export const useProfile = () => {
       const { data: profileFromDB, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('id', user.id)
         .single();
 
       if (error && error.code !== 'PGRST116') { // PGRST116 = No rows found
@@ -82,11 +82,12 @@ export const useProfile = () => {
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
-            user_id: user.id,
+            id: user.id,
             nome: profileName,
             telefone: profileTelefone,
             empresa: profileEmpresa,
             cargo: profileCargo,
+            email: user.email,
             endereco_rua: enderecoData.rua,
             endereco_numero: enderecoData.numero,
             endereco_complemento: enderecoData.complemento,
@@ -195,11 +196,12 @@ export const useProfile = () => {
 
       // Preparar dados para o Supabase
       const supabaseData = {
-        user_id: user.id,
+        id: user.id,
         nome: data.nome.trim(),
         telefone: data.telefone?.trim() || null,
         empresa: data.empresa?.trim() || null,
         cargo: data.cargo?.trim() || null,
+        email: user.email,
         endereco_rua: data.endereco.rua?.trim() || null,
         endereco_numero: data.endereco.numero?.trim() || null,
         endereco_complemento: data.endereco.complemento?.trim() || null,
