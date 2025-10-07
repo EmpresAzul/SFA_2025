@@ -65,7 +65,7 @@ class ErrorBoundary extends Component<Props, State> {
                 <summary className="cursor-pointer text-sm text-gray-400">
                   Detalhes do erro (para desenvolvedores)
                 </summary>
-                <pre className="mt-2 text-xs bg-black/20 p-2 rounded overflow-auto">
+                <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-auto">
                   {this.state.error.toString()}
                 </pre>
               </details>

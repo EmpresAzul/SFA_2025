@@ -371,11 +371,52 @@
     color: #1f2937 !important;
   }
 
-  /* Botões com cores corretas em mobile */
+  /* Botões com cores corretas em mobile - SEM PRETO */
   .mobile-button-fix {
     background-color: #3b82f6 !important;
     color: white !important;
     border: none !important;
+  }
+
+  /* Remover TODOS os fundos pretos em mobile */
+  * {
+    background-color: white !important;
+  }
+
+  /* Exceções para elementos que precisam de cor */
+  .bg-blue-600, .bg-blue-500, .bg-blue-700 {
+    background-color: #3b82f6 !important;
+  }
+
+  .bg-green-600, .bg-green-500, .bg-green-700 {
+    background-color: #10b981 !important;
+  }
+
+  .bg-red-600, .bg-red-500, .bg-red-700 {
+    background-color: #ef4444 !important;
+  }
+
+  .bg-gray-50, .bg-gray-100 {
+    background-color: #f9fafb !important;
+  }
+
+  .bg-gradient-to-br, .bg-gradient-to-r {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e0f2fe 100%) !important;
+  }
+
+  /* Sidebar em mobile - fundo azul claro */
+  .sidebar, [data-sidebar] {
+    background-color: #3b82f6 !important;
+  }
+
+  /* Headers e navegação */
+  .header, .nav, .navigation {
+    background-color: #3b82f6 !important;
+  }
+
+  /* Modais e overlays */
+  .modal, .overlay, .backdrop {
+    background-color: rgba(255, 255, 255, 0.95) !important;
   }
 
   /* Sidebar responsiva em mobile */
@@ -403,6 +444,46 @@
     margin: 8px !important;
     max-height: calc(100vh - 16px) !important;
     overflow-y: auto !important;
+    background-color: white !important;
+  }
+
+  /* Garantir que NENHUM elemento tenha fundo preto */
+  .bg-black, .bg-gray-900, .bg-gray-800, .bg-slate-900, .bg-slate-800 {
+    background-color: white !important;
+  }
+
+  /* Textos que eram brancos em fundo preto agora ficam escuros */
+  .text-white {
+    color: #1f2937 !important;
+  }
+
+  /* Bordas que eram pretas ficam cinza claro */
+  .border-black, .border-gray-900 {
+    border-color: #d1d5db !important;
+  }
+
+  /* Sombras que eram pretas ficam cinza suave */
+  .shadow-black {
+    box-shadow: 0 4px 6px -1px rgba(156, 163, 175, 0.1) !important;
+  }
+
+  /* Dropdowns e selects */
+  select, option {
+    background-color: white !important;
+    color: #1f2937 !important;
+  }
+
+  /* Checkboxes e radios */
+  input[type="checkbox"], input[type="radio"] {
+    background-color: white !important;
+    border: 1px solid #d1d5db !important;
+  }
+
+  /* Tooltips e popovers */
+  .tooltip, .popover {
+    background-color: white !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
   }
 }
 

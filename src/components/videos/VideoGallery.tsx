@@ -59,7 +59,7 @@ const VideoGallery: React.FC = () => {
     <div className="flex flex-col md:flex-row gap-8 p-4 md:p-8">
       {/* Player do vídeo */}
       <div className="flex-1 min-w-0">
-        <div className="bg-black rounded-xl shadow-2xl overflow-hidden aspect-video w-full max-h-[70vh]">
+        <div className="bg-gray-100 rounded-xl shadow-2xl overflow-hidden aspect-video w-full max-h-[70vh]">
           {selected && (
             <iframe
               src={embedUrl}

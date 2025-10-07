@@ -53,7 +53,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       {/* Overlay para mobile */}
       {mobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-gray-100 bg-opacity-95 z-40 md:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
