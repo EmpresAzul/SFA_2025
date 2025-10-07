@@ -94,40 +94,6 @@
     @apply bg-background text-foreground font-sans text-sm;
   }
 
-  /* Garantir contraste perfeito em fundos coloridos */
-  .bg-blue-500, .bg-blue-600, .bg-blue-700, .bg-blue-800, .bg-blue-900,
-  .bg-indigo-500, .bg-indigo-600, .bg-indigo-700, .bg-indigo-800, .bg-indigo-900,
-  .bg-purple-500, .bg-purple-600, .bg-purple-700, .bg-purple-800, .bg-purple-900,
-  .bg-violet-500, .bg-violet-600, .bg-violet-700, .bg-violet-800, .bg-violet-900,
-  .bg-pink-500, .bg-pink-600, .bg-pink-700, .bg-pink-800, .bg-pink-900,
-  .bg-red-500, .bg-red-600, .bg-red-700, .bg-red-800, .bg-red-900,
-  .bg-orange-500, .bg-orange-600, .bg-orange-700, .bg-orange-800, .bg-orange-900,
-  .bg-green-500, .bg-green-600, .bg-green-700, .bg-green-800, .bg-green-900,
-  .bg-emerald-500, .bg-emerald-600, .bg-emerald-700, .bg-emerald-800, .bg-emerald-900,
-  .bg-teal-500, .bg-teal-600, .bg-teal-700, .bg-teal-800, .bg-teal-900,
-  .bg-cyan-500, .bg-cyan-600, .bg-cyan-700, .bg-cyan-800, .bg-cyan-900,
-  .bg-slate-600, .bg-slate-700, .bg-slate-800, .bg-slate-900,
-  .bg-gray-600, .bg-gray-700, .bg-gray-800, .bg-gray-900 {
-    @apply text-white;
-  }
-
-  /* Garantir que elementos filhos também herdem texto branco */
-  .bg-blue-500 *, .bg-blue-600 *, .bg-blue-700 *, .bg-blue-800 *, .bg-blue-900 *,
-  .bg-indigo-500 *, .bg-indigo-600 *, .bg-indigo-700 *, .bg-indigo-800 *, .bg-indigo-900 *,
-  .bg-purple-500 *, .bg-purple-600 *, .bg-purple-700 *, .bg-purple-800 *, .bg-purple-900 *,
-  .bg-violet-500 *, .bg-violet-600 *, .bg-violet-700 *, .bg-violet-800 *, .bg-violet-900 *,
-  .bg-pink-500 *, .bg-pink-600 *, .bg-pink-700 *, .bg-pink-800 *, .bg-pink-900 *,
-  .bg-red-500 *, .bg-red-600 *, .bg-red-700 *, .bg-red-800 *, .bg-red-900 *,
-  .bg-orange-500 *, .bg-orange-600 *, .bg-orange-700 *, .bg-orange-800 *, .bg-orange-900 *,
-  .bg-green-500 *, .bg-green-600 *, .bg-green-700 *, .bg-green-800 *, .bg-green-900 *,
-  .bg-emerald-500 *, .bg-emerald-600 *, .bg-emerald-700 *, .bg-emerald-800 *, .bg-emerald-900 *,
-  .bg-teal-500 *, .bg-teal-600 *, .bg-teal-700 *, .bg-teal-800 *, .bg-teal-900 *,
-  .bg-cyan-500 *, .bg-cyan-600 *, .bg-cyan-700 *, .bg-cyan-800 *, .bg-cyan-900 *,
-  .bg-slate-600 *, .bg-slate-700 *, .bg-slate-800 *, .bg-slate-900 *,
-  .bg-gray-600 *, .bg-gray-700 *, .bg-gray-800 *, .bg-gray-900 * {
-    @apply text-white;
-  }
-
   /* Tipografia responsiva melhorada */
   h1 {
     @apply text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold;
@@ -215,97 +181,40 @@
   }
 }
 
-/* SISTEMA DE CORES MODERNAS E VIBRANTES */
-
-/* Gradientes principais do sistema - Azul escuro, azul claro, branco */
-.gradient-fluxo-modern {
-  background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #3b82f6 100%);
-  color: white;
-}
-
-.gradient-fluxo-vibrant {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 30%, #60a5fa 70%, #93c5fd 100%);
-  color: white;
+/* Custom gradient utilities */
+.gradient-fluxo {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
 }
 
 .gradient-fluxo-light {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
-  color: #1e3a8a;
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
 }
 
 .gradient-fluxo-dark {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-  color: white;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
-.gradient-professional-modern {
-  background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 25%, #0284c7 50%, #0ea5e9 75%, #38bdf8 100%);
-  color: white;
+.gradient-professional {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
 }
 
-.gradient-success-vibrant {
-  background: linear-gradient(135deg, #065f46 0%, #059669 50%, #10b981 100%);
-  color: white;
+.gradient-modern {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.gradient-warning-vibrant {
-  background: linear-gradient(135deg, #92400e 0%, #d97706 50%, #f59e0b 100%);
-  color: white;
+.gradient-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
-.gradient-error-vibrant {
-  background: linear-gradient(135deg, #991b1b 0%, #dc2626 50%, #ef4444 100%);
-  color: white;
+.gradient-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 }
 
-/* Gradientes de texto vibrantes */
-.gradient-text-primary {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+.gradient-fluxo-text {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-weight: 600;
-}
-
-.gradient-text-vibrant {
-  background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 25%, #0284c7 50%, #0ea5e9 75%, #38bdf8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 600;
-}
-
-/* Classes para texto branco em fundos coloridos */
-.text-on-colored {
-  color: white !important;
-  font-weight: 500;
-}
-
-.text-on-light {
-  color: #1e3a8a !important;
-  font-weight: 500;
-}
-
-/* Garantir contraste em gradientes */
-[class*="bg-gradient-to"] {
-  color: white !important;
-}
-
-[class*="bg-gradient-to"] * {
-  color: white !important;
-}
-
-/* Backgrounds modernos */
-.bg-modern-primary {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
-}
-
-.bg-modern-secondary {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-}
-
-.bg-modern-accent {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
 }
 
 /* Professional black accents */
@@ -369,50 +278,29 @@
   background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
 }
 
-/* SOMBRAS MODERNAS E VIBRANTES */
-
-.shadow-modern {
+/* Professional card shadows */
+.shadow-professional {
   box-shadow:
-    0 4px 6px -1px rgba(59, 130, 246, 0.1),
-    0 2px 4px -1px rgba(59, 130, 246, 0.06),
-    0 0 0 1px rgba(59, 130, 246, 0.05);
+    0 4px 6px -1px rgba(15, 23, 42, 0.1),
+    0 2px 4px -1px rgba(15, 23, 42, 0.06);
 }
 
-.shadow-modern-lg {
+.shadow-professional-lg {
+  box-shadow:
+    0 10px 15px -3px rgba(15, 23, 42, 0.1),
+    0 4px 6px -2px rgba(15, 23, 42, 0.05);
+}
+
+.shadow-colorful {
+  box-shadow:
+    0 10px 25px -5px rgba(59, 130, 246, 0.15),
+    0 8px 10px -6px rgba(59, 130, 246, 0.1);
+}
+
+.shadow-colorful-lg {
   box-shadow:
     0 20px 25px -5px rgba(59, 130, 246, 0.1),
-    0 10px 10px -5px rgba(59, 130, 246, 0.04),
-    0 0 0 1px rgba(59, 130, 246, 0.05);
-}
-
-.shadow-vibrant {
-  box-shadow:
-    0 10px 25px -5px rgba(59, 130, 246, 0.25),
-    0 8px 10px -6px rgba(59, 130, 246, 0.15),
-    0 0 0 1px rgba(59, 130, 246, 0.1);
-}
-
-.shadow-vibrant-lg {
-  box-shadow:
-    0 25px 50px -12px rgba(59, 130, 246, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.shadow-glow {
-  box-shadow:
-    0 0 20px rgba(59, 130, 246, 0.3),
-    0 0 40px rgba(59, 130, 246, 0.1),
-    0 4px 6px -1px rgba(59, 130, 246, 0.1);
-}
-
-.shadow-glow-hover:hover {
-  box-shadow:
-    0 0 30px rgba(59, 130, 246, 0.4),
-    0 0 60px rgba(59, 130, 246, 0.2),
-    0 10px 15px -3px rgba(59, 130, 246, 0.1);
-  transform: translateY(-2px);
-  transition: all 0.3s ease;
+    0 10px 10px -5px rgba(59, 130, 246, 0.04);
 }
 
 /* Mobile optimizations */
@@ -490,77 +378,45 @@
     border: none !important;
   }
 
-  .mobile-stack {
-    @apply flex-col space-y-2 space-x-0;
-  }
-
-  .mobile-full {
-    @apply w-full;
-  }
-
-  .mobile-hidden {
-    @apply hidden;
-  }
-
-  /* Melhor experiência de toque em mobile */
-  .mobile-touch {
-    @apply min-h-[44px] min-w-[44px];
-  }
-
-  /* Textos otimizados para mobile */
-  .mobile-text-sm {
-    @apply text-xs;
-  }
-
-  .mobile-text-base {
-    @apply text-sm;
-  }
-
-  /* Padding reduzido em mobile */
-  .mobile-padding-sm {
-    @apply p-2;
-  }
-
-  /* Formulários otimizados para mobile */
-  .mobile-form-stack {
-    @apply flex-col space-y-3;
-  }
-
-  /* CORREÇÃO: Remover fundos pretos dos campos em mobile */
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="number"],
-  input[type="tel"],
-  textarea,
-  select {
+  /* Remover TODOS os fundos pretos em mobile */
+  * {
     background-color: white !important;
-    color: #1f2937 !important;
-    border: 1px solid #d1d5db !important;
-    -webkit-appearance: none !important;
-    appearance: none !important;
   }
 
-  /* Campos de formulário com fundo branco forçado */
-  .mobile-input-fix {
-    background-color: white !important;
-    color: #1f2937 !important;
-    border: 1px solid #d1d5db !important;
-    -webkit-appearance: none !important;
-    appearance: none !important;
-  }
-
-  /* Cards com fundo branco em mobile */
-  .mobile-card-fix {
-    background-color: white !important;
-    color: #1f2937 !important;
-  }
-
-  /* Botões com cores corretas em mobile - SEM PRETO */
-  .mobile-button-fix {
+  /* Exceções para elementos que precisam de cor */
+  .bg-blue-600, .bg-blue-500, .bg-blue-700 {
     background-color: #3b82f6 !important;
-    color: white !important;
-    border: none !important;
+  }
+
+  .bg-green-600, .bg-green-500, .bg-green-700 {
+    background-color: #10b981 !important;
+  }
+
+  .bg-red-600, .bg-red-500, .bg-red-700 {
+    background-color: #ef4444 !important;
+  }
+
+  .bg-gray-50, .bg-gray-100 {
+    background-color: #f9fafb !important;
+  }
+
+  .bg-gradient-to-br, .bg-gradient-to-r {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e0f2fe 100%) !important;
+  }
+
+  /* Sidebar em mobile - fundo azul claro */
+  .sidebar, [data-sidebar] {
+    background-color: #3b82f6 !important;
+  }
+
+  /* Headers e navegação */
+  .header, .nav, .navigation {
+    background-color: #3b82f6 !important;
+  }
+
+  /* Modais e overlays */
+  .modal, .overlay, .backdrop {
+    background-color: rgba(255, 255, 255, 0.95) !important;
   }
 
   /* Sidebar responsiva em mobile */
@@ -630,75 +486,6 @@
     border: 1px solid #d1d5db !important;
   }
 }
-
-  /* Sidebar responsiva em mobile */
-  .mobile-sidebar {
-    width: 100% !important;
-    height: auto !important;
-    position: relative !important;
-  }
-
-  /* Menu mobile otimizado */
-  .mobile-menu-item {
-    padding: 12px 16px !important;
-    font-size: 14px !important;
-    min-height: 48px !important;
-  }
-
-  /* Tabelas responsivas em mobile */
-  .mobile-table-scroll {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-
-  /* Modais responsivos em mobile */
-  .mobile-modal {
-    margin: 8px !important;
-    max-height: calc(100vh - 16px) !important;
-    overflow-y: auto !important;
-    background-color: white !important;
-  }
-
-  /* Garantir que NENHUM elemento tenha fundo preto */
-  .bg-black, .bg-gray-900, .bg-gray-800, .bg-slate-900, .bg-slate-800 {
-    background-color: white !important;
-  }
-
-  /* Textos que eram brancos em fundo preto agora ficam escuros */
-  .text-white {
-    color: #1f2937 !important;
-  }
-
-  /* Bordas que eram pretas ficam cinza claro */
-  .border-black, .border-gray-900 {
-    border-color: #d1d5db !important;
-  }
-
-  /* Sombras que eram pretas ficam cinza suave */
-  .shadow-black {
-    box-shadow: 0 4px 6px -1px rgba(156, 163, 175, 0.1) !important;
-  }
-
-  /* Dropdowns e selects */
-  select, option {
-    background-color: white !important;
-    color: #1f2937 !important;
-  }
-
-  /* Checkboxes e radios */
-  input[type="checkbox"], input[type="radio"] {
-    background-color: white !important;
-    border: 1px solid #d1d5db !important;
-  }
-
-  /* Tooltips e popovers */
-  .tooltip, .popover {
-    background-color: white !important;
-    color: #1f2937 !important;
-    border: 1px solid #d1d5db !important;
-  }
-
-
 
 /* Tablet optimizations */
 @media (min-width: 641px) and (max-width: 1024px) {
@@ -810,108 +597,6 @@
     box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.15), 
                 0 10px 10px -5px rgba(59, 130, 246, 0.08);
   }
-}
-
-/* COMPONENTES MODERNOS E VIBRANTES */
-
-/* Botões modernos */
-.btn-modern-primary {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-  color: white !important;
-  border: none;
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-weight: 600;
-  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
-  transition: all 0.3s ease;
-}
-
-.btn-modern-primary:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-  box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
-  transform: translateY(-2px);
-  color: white !important;
-}
-
-.btn-modern-secondary {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  color: #1e40af !important;
-  border: 2px solid #3b82f6;
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.btn-modern-secondary:hover {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  transform: translateY(-1px);
-  color: #1e40af !important;
-}
-
-/* Cards modernos */
-.card-modern {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border: 1px solid rgba(59, 130, 246, 0.1);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -1px rgba(59, 130, 246, 0.06);
-  transition: all 0.3s ease;
-  color: #1f2937;
-}
-
-.card-modern:hover {
-  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
-  transform: translateY(-4px);
-}
-
-.card-vibrant {
-  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-radius: 20px;
-  padding: 28px;
-  position: relative;
-  color: #1f2937;
-}
-
-.card-vibrant::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  padding: 2px;
-  background: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd);
-  border-radius: inherit;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-}
-
-.card-colored-bg {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white !important;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
-}
-
-.card-colored-bg * {
-  color: white !important;
-}
-
-/* Inputs modernos */
-.input-modern {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 14px 16px;
-  font-size: 16px;
-  transition: all 0.3s ease;
-}
-
-.input-modern:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  background: #ffffff;
 }
 
 /* PWA Body Styles */

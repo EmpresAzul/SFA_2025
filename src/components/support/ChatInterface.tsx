@@ -57,13 +57,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   return (
     <Card className="h-[500px] flex flex-col shadow-lg border-0 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-t-lg">
-        <CardTitle className="flex items-center gap-2 text-white">
-          <div className="relative text-white">
-            <Bot className="w-6 h-6 text-white" />
+      <CardHeader className="bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-t-lg">
+        <CardTitle className="flex items-center gap-2">
+          <div className="relative">
+            <Bot className="w-6 h-6" />
             <Sparkles className="w-3 h-3 absolute -top-1 -right-1 text-yellow-300" />
           </div>
-          <span className="text-white font-semibold">Agente Inteligente FluxoAzul</span>
+          Agente Inteligente FluxoAzul
         </CardTitle>
       </CardHeader>
 
