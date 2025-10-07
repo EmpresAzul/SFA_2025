@@ -30,7 +30,7 @@ export const useSupport = () => {
 
       console.log("Assistant ID existe:", !!assistantId);
 
-      const hasRequiredConfig = !!(assistantId && assistantId.trim());
+      const hasRequiredConfig = !!(assistantId && typeof assistantId === 'string' && assistantId.trim());
 
       console.log("Configuração válida:", hasRequiredConfig);
       setHasApiKey(hasRequiredConfig);

@@ -69,13 +69,8 @@ export const useDashboardMetrics = () => {
 
       console.log("✅ Produtos finais encontrados:", produtos?.length || 0);
 
-      // Buscar contagem de serviços na precificação
-      const { data: servicos } = await supabase
-        .from("precificacao")
-        .select("id")
-        .eq("user_id", session.user.id)
-        .eq("tipo", "Serviço")
-        .eq("status", "ativo");
+      // Buscar contagem de serviços na precificação - Desabilitado temporariamente
+      const servicos: any[] | null = [];
 
       // Buscar receitas do mês atual
       const startOfMonth = new Date();
@@ -123,13 +118,13 @@ export const useDashboardMetrics = () => {
       // Buscar dados de ponto de equilíbrio se existir
         const { data: pontoEquilibrioData } = await supabase
           .from("ponto_equilibrio")
-          .select("ponto_equilibrio_calculado")
+          .select("dados_json")
           .eq("user_id", session.user.id)
           .order("created_at", { ascending: false })
           .limit(1);
 
       // Usar ponto de equilíbrio calculado ou estimar baseado nas despesas
-      const pontoEquilibrio = pontoEquilibrioData?.[0]?.ponto_equilibrio_calculado || 
+      const pontoEquilibrio = (pontoEquilibrioData?.[0]?.dados_json as any)?.pontoEquilibrio || 
         (totalDespesas > 0 ? totalDespesas / 0.4 : 0);
 
       // Usar dados reais do sistema
