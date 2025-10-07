@@ -25,8 +25,8 @@ import PontoEquilibrio from "./pages/PontoEquilibrio";
 import Suporte from "./pages/Suporte";
 
 import Profile from "./pages/Profile";
-import Configuracoes from "./pages/Configuracoes";
 import NotFound from "./pages/NotFound";
+import RedirectToProfile from "./components/RedirectToProfile";
 import AdminSettings from "./pages/AdminSettings";
 import Pipeline from "./pages/Pipeline";
 
@@ -78,12 +78,9 @@ const App = () => (
       />
       <Route
         path="/dashboard/configuracoes"
-        element={
-          <AuthenticatedRoute>
-            <Configuracoes />
-          </AuthenticatedRoute>
-        }
+        element={<RedirectToProfile />}
       />
+
       <Route
         path="/lancamentos"
         element={

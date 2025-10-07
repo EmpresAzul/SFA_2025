@@ -340,6 +340,70 @@
   .mobile-form-stack {
     @apply flex-col space-y-3;
   }
+
+  /* CORREÇÃO: Remover fundos pretos dos campos em mobile */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  textarea,
+  select {
+    background-color: white !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+
+  /* Campos de formulário com fundo branco forçado */
+  .mobile-input-fix {
+    background-color: white !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+
+  /* Cards com fundo branco em mobile */
+  .mobile-card-fix {
+    background-color: white !important;
+    color: #1f2937 !important;
+  }
+
+  /* Botões com cores corretas em mobile */
+  .mobile-button-fix {
+    background-color: #3b82f6 !important;
+    color: white !important;
+    border: none !important;
+  }
+
+  /* Sidebar responsiva em mobile */
+  .mobile-sidebar {
+    width: 100% !important;
+    height: auto !important;
+    position: relative !important;
+  }
+
+  /* Menu mobile otimizado */
+  .mobile-menu-item {
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    min-height: 48px !important;
+  }
+
+  /* Tabelas responsivas em mobile */
+  .mobile-table-scroll {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Modais responsivos em mobile */
+  .mobile-modal {
+    margin: 8px !important;
+    max-height: calc(100vh - 16px) !important;
+    overflow-y: auto !important;
+  }
 }
 
 /* Tablet optimizations */
