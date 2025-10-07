@@ -28,6 +28,7 @@ const PontoEquilibrio: React.FC = () => {
     isLoadingProjecoes,
     projecaoAtual,
     salvarProjecao,
+    atualizarProjecao,
     carregarProjecao,
     deletarProjecao,
     novaProjecao,
@@ -91,6 +92,7 @@ const PontoEquilibrio: React.FC = () => {
             projecoes={projecoes}
             projecaoAtual={projecaoAtual}
             onSalvarProjecao={salvarProjecao}
+            onAtualizarProjecao={atualizarProjecao}
             onCarregarProjecao={carregarProjecao}
             onDeletarProjecao={deletarProjecao}
             onNovaProjecao={novaProjecao}

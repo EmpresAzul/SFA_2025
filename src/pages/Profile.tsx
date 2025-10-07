@@ -2,36 +2,112 @@ import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SubscriptionStatus } from "@/components/profile/SubscriptionStatus";
-import { LogOut, User, Settings, Calendar, Mail, MapPin } from "lucide-react";
-import { Link } from "react-router-dom";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { User, Mail, Edit, Save, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const Profile: React.FC = () => {
-  const { signOut } = useAuth();
-  const { profile, subscription, loading } = useProfile();
-  const [signOutLoading, setSignOutLoading] = useState(false);
+  const { profile, subscription, loading, updateProfile } = useProfile();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({
+    nome: '',
+    empresa: '',
+    cargo: '',
+    telefone: ''
+  });
+  const [saving, setSaving] = useState(false);
 
-  const handleSignOut = async () => {
-    setSignOutLoading(true);
-    try {
-      await signOut();
-    } catch (error) {
-      console.error("Erro ao fazer logout:", error);
-    } finally {
-      setSignOutLoading(false);
+  // Função para aplicar máscara de telefone
+  const formatPhone = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 11) {
+      return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
     }
+    return value;
+  };
+
+  const handleEdit = () => {
+    setEditData({
+      nome: profile?.nome || '',
+      empresa: profile?.empresa || '',
+      cargo: profile?.cargo || '',
+      telefone: profile?.telefone || ''
+    });
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditData({ nome: '', empresa: '', cargo: '', telefone: '' });
+  };
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      
+      // Validar campos obrigatórios
+      if (!editData.nome.trim()) {
+        toast({
+          title: "Erro de validação",
+          description: "O nome é obrigatório.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Preparar dados no formato correto para ProfileFormData
+      const profileData = {
+        nome: editData.nome.trim(),
+        telefone: editData.telefone.trim(),
+        empresa: editData.empresa.trim(),
+        cargo: editData.cargo.trim(),
+        endereco: {
+          rua: profile?.endereco?.rua || '',
+          numero: profile?.endereco?.numero || '',
+          complemento: profile?.endereco?.complemento || '',
+          bairro: profile?.endereco?.bairro || '',
+          cidade: profile?.endereco?.cidade || '',
+          estado: profile?.endereco?.estado || '',
+          cep: profile?.endereco?.cep || ''
+        }
+      };
+      
+      console.log('Salvando perfil:', profileData);
+      await updateProfile(profileData);
+      
+      // Sucesso - mostrar mensagem e redirecionar
+      toast({
+        title: "Perfil Atualizado com Sucesso!!!",
+        description: "Suas informações foram salvas e sincronizadas.",
+        duration: 3000,
+      });
+      
+      setIsEditing(false);
+      
+      // Redirecionar para /dashboard/perfil após 1 segundo
+      setTimeout(() => {
+        navigate('/dashboard/perfil');
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Erro ao salvar perfil:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar as alterações. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handlePhoneChange = (value: string) => {
+    const formatted = formatPhone(value);
+    setEditData({ ...editData, telefone: formatted });
   };
 
   if (loading) {
@@ -74,79 +150,114 @@ const Profile: React.FC = () => {
           </p>
         </div>
         
-        <div className="flex items-center gap-3">
-          <Link to="/dashboard/configuracoes">
-            <Button
-              variant="outline"
-              className="text-blue-600 border-blue-200 hover:bg-blue-50"
-            >
-              <Settings className="h-4 w-4 mr-2" />
-              Configurações
-            </Button>
-          </Link>
-          
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="text-red-600 border-red-200 hover:bg-red-50"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Sair da Conta
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Confirmar Logout</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Tem certeza que deseja sair da sua conta? Você precisará fazer login novamente para acessar o sistema.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleSignOut}
-                  disabled={signOutLoading}
-                  className="bg-red-600 hover:bg-red-700"
-                >
-                  {signOutLoading ? "Saindo..." : "Sair"}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+
       </div>
 
-      {/* Status da Assinatura */}
-      <SubscriptionStatus subscription={subscription} />
+
 
       {/* Cards de Informações */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
         {/* Resumo do Perfil */}
         <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5 text-blue-600" />
-              Resumo do Perfil
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <User className="h-5 w-5 text-blue-600" />
+                Resumo do Perfil
+              </div>
+              {!isEditing ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleEdit}
+                  className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                >
+                  <Edit className="h-4 w-4 mr-1" />
+                  Editar
+                </Button>
+              ) : (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCancel}
+                    className="text-gray-600"
+                  >
+                    <X className="h-4 w-4 mr-1" />
+                    Cancelar
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Save className="h-4 w-4 mr-1" />
+                    {saving ? 'Salvando...' : 'Salvar'}
+                  </Button>
+                </div>
+              )}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
-              <span className="text-sm text-gray-600">Nome:</span>
-              <span className="text-sm font-medium text-right">{profile.nome || 'Não informado'}</span>
-            </div>
-            <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
-              <span className="text-sm text-gray-600">Empresa:</span>
-              <span className="text-sm font-medium text-right">{profile.empresa || 'Não informado'}</span>
-            </div>
-            <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
-              <span className="text-sm text-gray-600">Cargo:</span>
-              <span className="text-sm font-medium text-right">{profile.cargo || 'Não informado'}</span>
-            </div>
-            <div className="flex items-start justify-between py-1.5">
-              <span className="text-sm text-gray-600">Telefone:</span>
-              <span className="text-sm font-medium text-right">{profile.telefone || 'Não informado'}</span>
-            </div>
+          <CardContent className="space-y-4">
+            {!isEditing ? (
+              <>
+                <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
+                  <span className="text-sm text-gray-600">Nome:</span>
+                  <span className="text-sm font-medium text-right">{profile.nome || 'Não informado'}</span>
+                </div>
+                <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
+                  <span className="text-sm text-gray-600">Empresa:</span>
+                  <span className="text-sm font-medium text-right">{profile.empresa || 'Não informado'}</span>
+                </div>
+                <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
+                  <span className="text-sm text-gray-600">Cargo:</span>
+                  <span className="text-sm font-medium text-right">{profile.cargo || 'Não informado'}</span>
+                </div>
+                <div className="flex items-start justify-between py-1.5">
+                  <span className="text-sm text-gray-600">Telefone:</span>
+                  <span className="text-sm font-medium text-right">
+                    {profile.telefone ? formatPhone(profile.telefone) : 'Não informado'}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">Nome:</label>
+                  <Input
+                    value={editData.nome}
+                    onChange={(e) => setEditData({ ...editData, nome: e.target.value })}
+                    placeholder="Digite seu nome"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">Empresa:</label>
+                  <Input
+                    value={editData.empresa}
+                    onChange={(e) => setEditData({ ...editData, empresa: e.target.value })}
+                    placeholder="Digite o nome da empresa"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">Cargo:</label>
+                  <Input
+                    value={editData.cargo}
+                    onChange={(e) => setEditData({ ...editData, cargo: e.target.value })}
+                    placeholder="Digite seu cargo"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600">Telefone:</label>
+                  <Input
+                    value={editData.telefone}
+                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    placeholder="(11) 99999-9999"
+                    maxLength={15}
+                  />
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -168,78 +279,10 @@ const Profile: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Configurações da Conta */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5 text-blue-600" />
-              Configurações da Conta
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
-              <span className="text-sm text-gray-600">Criado em:</span>
-              <span className="text-sm font-medium text-right">
-                {new Date(profile.created_at).toLocaleDateString('pt-BR')}
-              </span>
-            </div>
-            <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
-              <span className="text-sm text-gray-600">Última atualização:</span>
-              <span className="text-sm font-medium text-right">
-                {new Date(profile.updated_at).toLocaleDateString('pt-BR')}
-              </span>
-            </div>
-            <div className="flex items-start justify-between py-1.5">
-              <span className="text-sm text-gray-600">ID do usuário:</span>
-              <span className="text-xs font-mono text-right text-gray-500 break-all">
-                {profile.id}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+
       </div>
 
-      {/* Endereço */}
-      {(profile.endereco?.rua || profile.endereco?.cidade) && (
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg max-w-7xl mx-auto">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-blue-600" />
-              Endereço
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <div className="flex items-start justify-between py-1 border-b border-gray-100">
-                <span className="text-sm text-gray-600">Endereço:</span>
-                <span className="text-sm font-medium text-right max-w-[60%]">
-                  {profile.endereco?.rua && profile.endereco?.numero 
-                    ? `${profile.endereco.rua}, ${profile.endereco.numero}${profile.endereco?.complemento ? `, ${profile.endereco.complemento}` : ''}` 
-                    : 'Não informado'}
-                </span>
-              </div>
-              <div className="flex items-start justify-between py-1 border-b border-gray-100">
-                <span className="text-sm text-gray-600">Bairro:</span>
-                <span className="text-sm font-medium text-right">{profile.endereco?.bairro || 'Não informado'}</span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-start justify-between py-1 border-b border-gray-100">
-                <span className="text-sm text-gray-600">Cidade/UF:</span>
-                <span className="text-sm font-medium text-right">
-                  {profile.endereco?.cidade && profile.endereco?.estado 
-                    ? `${profile.endereco.cidade}/${profile.endereco.estado}` 
-                    : 'Não informado'}
-                </span>
-              </div>
-              <div className="flex items-start justify-between py-1">
-                <span className="text-sm text-gray-600">CEP:</span>
-                <span className="text-sm font-medium text-right">{profile.endereco?.cep || 'Não informado'}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+
     </div>
   );
 };

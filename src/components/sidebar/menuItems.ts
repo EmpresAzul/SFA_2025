@@ -122,12 +122,5 @@ export const menuItems: MenuItem[] = [
     href: "/dashboard/perfil",
     description: "Informações da conta",
   },
-  {
-    id: "configuracoes",
-    label: "Configurações",
-    icon: Settings,
-    iconColor: "text-gray-600",
-    href: "/dashboard/configuracoes",
-    description: "Configurar perfil e preferências",
-  },
+
 ];

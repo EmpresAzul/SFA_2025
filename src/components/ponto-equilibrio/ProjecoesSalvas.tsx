@@ -27,6 +27,7 @@ interface ProjecoesSalvasProps {
   projecoes: Projecao[];
   projecaoAtual: string | null;
   onSalvarProjecao: (nome: string) => void;
+  onAtualizarProjecao?: (id: string, nome?: string) => void;
   onCarregarProjecao: (projecao: Projecao) => void;
   onDeletarProjecao: (id: string) => void;
   onNovaProjecao: () => void;
@@ -38,6 +39,7 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
   projecoes,
   projecaoAtual,
   onSalvarProjecao,
+  onAtualizarProjecao,
   onCarregarProjecao,
   onDeletarProjecao,
   onNovaProjecao,
@@ -49,7 +51,13 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
 
   const handleSalvar = () => {
     if (nomeProjecao.trim()) {
-      onSalvarProjecao(nomeProjecao.trim());
+      if (projecaoAtual && onAtualizarProjecao) {
+        // Atualizar projeção existente
+        onAtualizarProjecao(projecaoAtual, nomeProjecao.trim());
+      } else {
+        // Criar nova projeção
+        onSalvarProjecao(nomeProjecao.trim());
+      }
       setNomeProjecao("");
       setDialogAberto(false);
     }
@@ -87,12 +95,14 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
               <DialogTrigger asChild>
                 <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
                   <Save className="w-4 h-4 mr-1" />
-                  Salvar
+                  {projecaoAtual ? "Atualizar" : "Salvar"}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Salvar Projeção</DialogTitle>
+                  <DialogTitle>
+                    {projecaoAtual ? "Atualizar Projeção" : "Salvar Projeção"}
+                  </DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
@@ -121,7 +131,10 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
                       onClick={handleSalvar}
                       disabled={!nomeProjecao.trim() || isSaving}
                     >
-                      {isSaving ? "Salvando..." : "Salvar"}
+                      {isSaving 
+                        ? (projecaoAtual ? "Atualizando..." : "Salvando...") 
+                        : (projecaoAtual ? "Atualizar" : "Salvar")
+                      }
                     </Button>
                   </div>
                 </div>
@@ -174,6 +187,18 @@ const ProjecoesSalvas: React.FC<ProjecoesSalvasProps> = ({
                       title="Carregar projeção"
                     >
                       <FolderOpen className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setNomeProjecao(projecao.nome_projecao);
+                        setDialogAberto(true);
+                      }}
+                      className="h-8 w-8 p-0 text-blue-500 hover:text-blue-700"
+                      title="Editar nome da projeção"
+                    >
+                      <Edit2 className="w-4 h-4" />
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>

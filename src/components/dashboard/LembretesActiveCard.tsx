@@ -13,25 +13,13 @@ const LembretesActiveCard: React.FC = () => {
   console.log("- Lembretes data:", lembretes);
 
   const getLembretesRelevantes = () => {
-    // Dados exatos da imagem do dashboard
-    return [
-      {
-        id: 1,
-        titulo: "Urgente",
-        descricao: "Atualizar no banco alguns documentos importantes",
-        data_lembrete: "2025-01-24",
-        hora_lembrete: "13:45",
-        status: "ativo"
-      },
-      {
-        id: 2,
-        titulo: "Lembrete",
-        descricao: "Verificar mensal",
-        data_lembrete: "2025-01-29",
-        hora_lembrete: "15:00",
-        status: "ativo"
-      }
-    ];
+    if (!lembretes || lembretes.length === 0) return [];
+    
+    // Filtrar lembretes ativos e ordenar por data de vencimento
+    return lembretes
+      .filter(lembrete => (lembrete.status === "ativo" || lembrete.status === null))
+      .sort((a, b) => new Date(a.data_vencimento).getTime() - new Date(b.data_vencimento).getTime())
+      .slice(0, 6); // Mostrar apenas os 6 mais próximos
   };
 
   const lembretesRelevantes = getLembretesRelevantes();
@@ -45,21 +33,21 @@ const LembretesActiveCard: React.FC = () => {
     return time.slice(0, 5);
   };
 
-  const isVencido = (dataLembrete: string) => {
+  const isVencido = (dataVencimento: string) => {
     const hoje = new Date().toISOString().split("T")[0];
-    return dataLembrete < hoje;
+    return dataVencimento < hoje;
   };
 
-  const isHoje = (dataLembrete: string) => {
+  const isHoje = (dataVencimento: string) => {
     const hoje = new Date().toISOString().split("T")[0];
-    return dataLembrete === hoje;
+    return dataVencimento === hoje;
   };
 
-  const isAmanha = (dataLembrete: string) => {
+  const isAmanha = (dataVencimento: string) => {
     const amanha = new Date();
     amanha.setDate(amanha.getDate() + 1);
     const amanhaStr = amanha.toISOString().split("T")[0];
-    return dataLembrete === amanhaStr;
+    return dataVencimento === amanhaStr;
   };
 
   if (isLoading) {
@@ -100,69 +88,77 @@ const LembretesActiveCard: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-3 max-h-64 overflow-y-auto">
-            {lembretesRelevantes.slice(0, 6).map((lembrete) => (
-              <div
-                key={lembrete.id}
-                className="p-3 rounded-lg border-l-4 bg-gradient-to-r from-red-50 to-red-100 border-red-500"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-semibold text-gray-900 text-sm line-clamp-1">
-                        {lembrete.titulo}
-                      </h4>
-                      {lembrete.titulo === "Urgente" && (
-                        <Badge
-                          variant="destructive"
-                          className="text-xs shrink-0"
-                        >
-                          <AlertTriangle className="h-3 w-3 mr-1" />
-                          Vencido
-                        </Badge>
-                      )}
-                      {lembrete.titulo === "Lembrete" && (
-                        <Badge
-                          variant="destructive"
-                          className="text-xs shrink-0"
-                        >
-                          <AlertTriangle className="h-3 w-3 mr-1" />
-                          Vencido
-                        </Badge>
-                      )}
-                      {isHoje(lembrete.data_lembrete) && (
-                        <Badge className="text-xs bg-orange-100 text-orange-800 shrink-0">
-                          Hoje
-                        </Badge>
-                      )}
-                      {isAmanha(lembrete.data_lembrete) && (
-                        <Badge className="text-xs bg-blue-100 text-blue-800 shrink-0">
-                          Amanhã
-                        </Badge>
-                      )}
-                    </div>
-
-                    <div className="flex items-center text-xs text-gray-600 gap-3 mb-2">
-                      <div className="flex items-center">
-                        <Calendar className="h-3 w-3 mr-1" />
-                        {formatDate(lembrete.data_lembrete)}
+            {lembretesRelevantes.slice(0, 6).map((lembrete) => {
+              const vencido = isVencido(lembrete.data_vencimento);
+              const hoje = isHoje(lembrete.data_vencimento);
+              const amanha = isAmanha(lembrete.data_vencimento);
+              
+              return (
+                <div
+                  key={lembrete.id}
+                  className={`p-3 rounded-lg border-l-4 ${
+                    vencido 
+                      ? 'bg-gradient-to-r from-red-50 to-red-100 border-red-500'
+                      : hoje
+                      ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-500'
+                      : amanha
+                      ? 'bg-gradient-to-r from-blue-50 to-blue-100 border-blue-500'
+                      : 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-500'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="font-semibold text-gray-900 text-sm line-clamp-1">
+                          {lembrete.titulo}
+                        </h4>
+                        {vencido && (
+                          <Badge
+                            variant="destructive"
+                            className="text-xs shrink-0"
+                          >
+                            <AlertTriangle className="h-3 w-3 mr-1" />
+                            Vencido
+                          </Badge>
+                        )}
+                        {hoje && (
+                          <Badge className="text-xs bg-orange-100 text-orange-800 shrink-0">
+                            Hoje
+                          </Badge>
+                        )}
+                        {amanha && (
+                          <Badge className="text-xs bg-blue-100 text-blue-800 shrink-0">
+                            Amanhã
+                          </Badge>
+                        )}
+                        {lembrete.prioridade && (
+                          <Badge className={`text-xs shrink-0 ${
+                            lembrete.prioridade === 'alta' ? 'bg-red-100 text-red-800' :
+                            lembrete.prioridade === 'media' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-green-100 text-green-800'
+                          }`}>
+                            {lembrete.prioridade}
+                          </Badge>
+                        )}
                       </div>
-                      {lembrete.hora_lembrete && (
+
+                      <div className="flex items-center text-xs text-gray-600 gap-3 mb-2">
                         <div className="flex items-center">
-                          <Clock className="h-3 w-3 mr-1" />
-                          {formatTime(lembrete.hora_lembrete)}
+                          <Calendar className="h-3 w-3 mr-1" />
+                          {formatDate(lembrete.data_vencimento)}
                         </div>
+                      </div>
+
+                      {lembrete.descricao && (
+                        <p className="text-xs text-gray-600 line-clamp-2">
+                          {lembrete.descricao}
+                        </p>
                       )}
                     </div>
-
-                    {lembrete.descricao && (
-                      <p className="text-xs text-gray-600 line-clamp-2">
-                        {lembrete.descricao}
-                      </p>
-                    )}
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {lembretesRelevantes.length > 6 && (
               <div className="text-center pt-2 border-t border-gray-200">

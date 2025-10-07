@@ -296,12 +296,7 @@ export const useProfile = () => {
         console.log("🔄 useProfile.updateProfile: Refresh forçado emitido");
       }, 100);
 
-      // Toast de sucesso
-      toast({
-        title: "✅ Perfil salvo com sucesso!",
-        description: `${data.nome} - ${data.empresa || 'EmpresaZul'} - Dados sincronizados em todas as abas!`,
-        duration: 5000,
-      });
+      // Toast de sucesso removido daqui - será mostrado no componente
 
       console.log("🎉 useProfile.updateProfile: ATUALIZAÇÃO CONCLUÍDA COM SUCESSO!");
       console.log("🎯 useProfile.updateProfile: Profile final:", newProfile);

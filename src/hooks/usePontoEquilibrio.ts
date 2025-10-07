@@ -123,13 +123,16 @@ export const usePontoEquilibrio = () => {
 
       if (error) throw error;
       return data.map(
-        (item) =>
-          ({
+        (item) => {
+          // Recuperar dados do JSON ou usar valores padrão
+          const dadosJson = item.dados_json as any || {};
+          
+          return {
             id: item.id,
-            nome_projecao: item.nome_projecao,
+            nome_projecao: item.nome,
             dados_projecao: {
               faturamento: item.faturamento_estimado || 0,
-              custosVariaveis: {
+              custosVariaveis: dadosJson.custosVariaveis || {
                 fornecedores: 25,
                 impostos: 8.5,
                 comissoes: 5,
@@ -137,21 +140,22 @@ export const usePontoEquilibrio = () => {
                 outros: 2,
                 lucratividade: 15,
               },
-              gastosFixos: {
+              gastosFixos: dadosJson.gastosFixos || {
                 gastosFixosMensais: item.gastos_fixos || 0,
-                proLabore: item.pro_labore || 0,
+                proLabore: 5000,
               },
-              saidasNaoOperacionais: item.saidas_nao_operacionais || 0,
+              saidasNaoOperacionais: dadosJson.saidasNaoOperacionais || 0,
               resultados: {
-                pontoEquilibrio: item.ponto_equilibrio_calculado || 0,
-                percentualPE: 0,
-                margemContribuicao: item.margem_contribuicao || 0,
-                proLaboreMaximo: 0,
+                pontoEquilibrio: dadosJson.pontoEquilibrio || 0,
+                percentualPE: dadosJson.percentualPE || 0,
+                margemContribuicao: dadosJson.margemContribuicao || 0,
+                proLaboreMaximo: dadosJson.proLaboreMaximo || 0,
               },
             },
-            created_at: item.created_at,
-            updated_at: item.updated_at,
-          }) as Projecao,
+            created_at: item.created_at || new Date().toISOString(),
+            updated_at: item.updated_at || new Date().toISOString(),
+          } as Projecao;
+        }
       );
     },
   });
@@ -162,18 +166,26 @@ export const usePontoEquilibrio = () => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) throw new Error("Usuário não autenticado");
 
+      // Preparar dados completos para salvar no JSON
+      const dadosCompletos = {
+        custosVariaveis,
+        gastosFixos,
+        saidasNaoOperacionais,
+        pontoEquilibrio,
+        percentualPE,
+        margemContribuicao,
+        proLaboreMaximo,
+      };
+
       const { data, error } = await supabase
         .from("ponto_equilibrio")
         .insert({
           user_id: userData.user.id,
-          nome_projecao: nomeProjecao,
+          nome: nomeProjecao,
           gastos_fixos: gastosFixos.gastosFixosMensais,
           custos_variaveis: totalCustosVariaveisPercentual,
           faturamento_estimado: faturamento,
-          pro_labore: gastosFixos.proLabore,
-          saidas_nao_operacionais: saidasNaoOperacionais,
-          ponto_equilibrio_calculado: pontoEquilibrio,
-          margem_contribuicao: margemContribuicao,
+          dados_json: dadosCompletos,
         })
         .select()
         .single();
@@ -202,16 +214,24 @@ export const usePontoEquilibrio = () => {
       id: string;
       nomeProjecao?: string;
     }) => {
+      // Preparar dados completos para atualizar no JSON
+      const dadosCompletos = {
+        custosVariaveis,
+        gastosFixos,
+        saidasNaoOperacionais,
+        pontoEquilibrio,
+        percentualPE,
+        margemContribuicao,
+        proLaboreMaximo,
+      };
+
       const updateData: Record<string, unknown> = {
         gastos_fixos: gastosFixos.gastosFixosMensais,
         custos_variaveis: totalCustosVariaveisPercentual,
         faturamento_estimado: faturamento,
-        pro_labore: gastosFixos.proLabore,
-        saidas_nao_operacionais: saidasNaoOperacionais,
-        ponto_equilibrio_calculado: pontoEquilibrio,
-        margem_contribuicao: margemContribuicao,
+        dados_json: dadosCompletos,
       };
-      if (nomeProjecao) updateData.nome_projecao = nomeProjecao;
+      if (nomeProjecao) updateData.nome = nomeProjecao;
 
       const { data, error } = await supabase
         .from("ponto_equilibrio")

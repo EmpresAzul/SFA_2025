@@ -67,20 +67,7 @@ const SupportSidebar: React.FC<SupportSidebarProps> = ({ onOpenWhatsApp }) => {
         </CardContent>
       </Card>
 
-      {/* Dicas Rápidas */}
-      <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-amber-800">💡 Dicas Rápidas</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2 text-sm text-amber-700">
-            <p>• 💬 Chat para dúvidas gerais</p>
-            <p>• 📱 WhatsApp para urgências</p>
-            <p>• 📧 E-mail para detalhamentos</p>
-            <p>• 🎫 Chamados para acompanhamento</p>
-          </div>
-        </CardContent>
-      </Card>
+
     </div>
   );
 };

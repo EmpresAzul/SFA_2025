@@ -1,38 +1,19 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSupport } from "@/hooks/useSupport";
-import { useTickets } from "@/hooks/useTickets";
 import ChatInterface from "@/components/support/ChatInterface";
 import SupportSidebar from "@/components/support/SupportSidebar";
-import { SupportStats } from "@/components/support/SupportStats";
-import { TicketForm } from "@/components/support/TicketForm";
-import { TicketsList } from "@/components/support/TicketsList";
-import { TicketViewModal } from "@/components/support/TicketViewModal";
-import { MessagesPanel } from "@/components/support/MessagesPanel";
-import { MessageCircle, Ticket, HelpCircle, MessageSquare } from "lucide-react";
-import { Ticket as TicketType } from "@/types/support";
+import { MessageCircle, HelpCircle } from "lucide-react";
 
 const Suporte: React.FC = () => {
   const [activeTab, setActiveTab] = useState("chat");
-  const [ticketLoading, setTicketLoading] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState<TicketType | null>(null);
-  
   const { messages, inputMessage, setInputMessage, isLoading, sendMessage } = useSupport();
-  const { tickets, stats, loading: statsLoading, createTicket } = useTickets();
 
   const openWhatsApp = () => {
     window.open("https://wa.me/5519990068219", "_blank");
   };
 
-  const handleCreateTicket = async (data: any) => {
-    setTicketLoading(true);
-    try {
-      await createTicket(data);
-      setActiveTab("chat"); // Voltar para o chat após criar o chamado
-    } finally {
-      setTicketLoading(false);
-    }
-  };
+
 
   return (
     <div className="p-6 space-y-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
@@ -48,35 +29,20 @@ const Suporte: React.FC = () => {
         </div>
       </div>
 
-      {/* Estatísticas */}
-      {!statsLoading && <SupportStats stats={stats} />}
+
 
       {/* Conteúdo Principal */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Área Principal */}
         <div className="lg:col-span-3">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-white shadow-lg rounded-xl h-14">
+            <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-14">
               <TabsTrigger
                 value="chat"
                 className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
                 Chat Inteligente
-              </TabsTrigger>
-              <TabsTrigger
-                value="ticket"
-                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-              >
-                <Ticket className="h-4 w-4 mr-2" />
-                Abrir Chamado
-              </TabsTrigger>
-              <TabsTrigger
-                value="messages"
-                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-              >
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Mensagens
               </TabsTrigger>
               <TabsTrigger
                 value="faq"
@@ -97,16 +63,7 @@ const Suporte: React.FC = () => {
               />
             </TabsContent>
 
-            <TabsContent value="ticket" className="mt-6">
-              <div className="space-y-6">
-                <TicketForm onSubmit={handleCreateTicket} loading={ticketLoading} />
-                <TicketsList tickets={tickets} onViewTicket={(ticket) => setSelectedTicket(ticket)} />
-              </div>
-            </TabsContent>
 
-            <TabsContent value="messages" className="mt-6">
-              <MessagesPanel />
-            </TabsContent>
 
             <TabsContent value="faq" className="mt-6">
               <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
@@ -209,12 +166,7 @@ const Suporte: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal de Visualização de Chamado */}
-      <TicketViewModal
-        ticket={selectedTicket}
-        isOpen={!!selectedTicket}
-        onClose={() => setSelectedTicket(null)}
-      />
+
     </div>
   );
 };
