@@ -587,7 +587,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     overflow-x: hidden !important;
   }
   
-  /* MOBILE SIDEBAR - OVERLAY BEHAVIOR */
+  /* MOBILE SIDEBAR - OVERLAY BEHAVIOR WITH FULL MENU */
   aside,
   nav,
   .sidebar,
@@ -598,10 +598,13 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     left: 0 !important;
     top: 0 !important;
     height: 100vh !important;
-    width: 280px !important;
+    width: 320px !important;
     z-index: 50 !important;
     transform: translateX(-100%) !important;
     transition: transform 0.3s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 50%, #1d4ed8 100%) !important;
   }
   
   /* SIDEBAR VISIBLE STATE */
@@ -777,6 +780,93 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     padding-right: env(safe-area-inset-right) !important;
   }
   
+  /* MOBILE SIDEBAR - COMPLETE MENU STRUCTURE */
+  .sidebar nav,
+  aside nav,
+  .sidebar .flex-1,
+  aside .flex-1 {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 1rem !important;
+  }
+  
+  /* MOBILE SIDEBAR MENU ITEMS - ALL VISIBLE */
+  .sidebar nav .space-y-1,
+  aside nav .space-y-1,
+  .sidebar .space-y-1,
+  aside .space-y-1 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+  
+  /* MOBILE SIDEBAR MENU ITEM STYLING */
+  .sidebar nav a,
+  aside nav a,
+  .sidebar nav button,
+  aside nav button {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 0.75rem 1rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-decoration: none !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+  }
+  
+  /* MOBILE SIDEBAR MENU ITEM HOVER */
+  .sidebar nav a:hover,
+  aside nav a:hover,
+  .sidebar nav button:hover,
+  aside nav button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+  }
+  
+  /* MOBILE SIDEBAR MENU ITEM ACTIVE */
+  .sidebar nav a.active,
+  aside nav a.active,
+  .sidebar nav button.active,
+  aside nav button.active {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+  }
+  
+  /* MOBILE SIDEBAR MENU ICONS */
+  .sidebar nav a svg,
+  aside nav a svg,
+  .sidebar nav button svg,
+  aside nav button svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    margin-right: 0.75rem !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* MOBILE SIDEBAR HEADER */
+  .sidebar > div > div:first-child,
+  aside > div > div:first-child {
+    display: flex !important;
+    align-items: center !important;
+    padding: 1rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  /* MOBILE SIDEBAR HEADER TEXT */
+  .sidebar h1,
+  aside h1,
+  .sidebar .text-xl,
+  aside .text-xl {
+    color: white !important;
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+  }
+  
   /* ENSURE LOGOUT BUTTON IS VISIBLE IN MOBILE SIDEBAR */
   .sidebar .p-3.border-t,
   aside .p-3.border-t,
@@ -787,16 +877,38 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     margin-top: auto !important;
     position: sticky !important;
     bottom: 0 !important;
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
   
   /* MOBILE SIDEBAR LOGOUT BUTTON */
   .sidebar button[class*="logout"],
   .sidebar button[class*="sign-out"],
-  .sidebar button[class*="sair"] {
+  .sidebar button[class*="sair"],
+  aside button[class*="logout"],
+  aside button[class*="sign-out"],
+  aside button[class*="sair"] {
     width: 100% !important;
     justify-content: flex-start !important;
     padding: 1rem !important;
     font-size: 0.875rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  /* MOBILE SIDEBAR LOGOUT BUTTON HOVER */
+  .sidebar button[class*="logout"]:hover,
+  .sidebar button[class*="sign-out"]:hover,
+  .sidebar button[class*="sair"]:hover,
+  aside button[class*="logout"]:hover,
+  aside button[class*="sign-out"]:hover,
+  aside button[class*="sair"]:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: white !important;
   }
 }
 
@@ -825,5 +937,169 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
   nav {
     padding-top: calc(1rem + env(safe-area-inset-top)) !important;
     padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+}/
+* MOBILE SIDEBAR - FORCE ALL MENU ITEMS TO BE VISIBLE */
+@media (max-width: 768px) {
+  
+  /* OVERRIDE ANY HIDING OF MENU ITEMS ON MOBILE */
+  .sidebar nav > div > *,
+  aside nav > div > *,
+  .sidebar .space-y-1 > *,
+  aside .space-y-1 > * {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* FORCE ALL SIDEBAR CONTENT TO BE VISIBLE */
+  .sidebar *,
+  aside * {
+    display: inherit !important;
+    visibility: inherit !important;
+    opacity: inherit !important;
+  }
+  
+  /* SPECIFIC MENU ITEM OVERRIDES */
+  .sidebar a[href="/dashboard"],
+  .sidebar a[href="/lancamentos"],
+  .sidebar a[href="/fluxo-caixa"],
+  .sidebar a[href="/dre"],
+  .sidebar a[href="/precificacao"],
+  .sidebar a[href="/estoque"],
+  .sidebar a[href="/cadastros"],
+  .sidebar a[href="/pipeline"],
+  .sidebar a[href="/saldos-bancarios"],
+  .sidebar a[href="/lembretes"],
+  .sidebar a[href="/ponto-equilibrio"],
+  .sidebar a[href="/suporte"],
+  .sidebar a[href="/dashboard/perfil"],
+  aside a[href="/dashboard"],
+  aside a[href="/lancamentos"],
+  aside a[href="/fluxo-caixa"],
+  aside a[href="/dre"],
+  aside a[href="/precificacao"],
+  aside a[href="/estoque"],
+  aside a[href="/cadastros"],
+  aside a[href="/pipeline"],
+  aside a[href="/saldos-bancarios"],
+  aside a[href="/lembretes"],
+  aside a[href="/ponto-equilibrio"],
+  aside a[href="/suporte"],
+  aside a[href="/dashboard/perfil"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 0.75rem 1rem !important;
+    margin: 0.25rem 0 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-decoration: none !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  
+  /* MOBILE MENU ITEM ICONS */
+  .sidebar a svg,
+  aside a svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    margin-right: 0.75rem !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+  }
+  
+  /* MOBILE MENU ITEM TEXT */
+  .sidebar a span,
+  aside a span {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+  }
+  
+  /* MOBILE SIDEBAR SCROLLABLE AREA */
+  .sidebar nav,
+  aside nav {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 1rem 0.75rem !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
+  }
+  
+  /* MOBILE SIDEBAR WEBKIT SCROLLBAR */
+  .sidebar nav::-webkit-scrollbar,
+  aside nav::-webkit-scrollbar {
+    width: 4px !important;
+  }
+  
+  .sidebar nav::-webkit-scrollbar-track,
+  aside nav::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+  
+  .sidebar nav::-webkit-scrollbar-thumb,
+  aside nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-radius: 2px !important;
+  }
+  
+  /* MOBILE SIDEBAR CONTAINER */
+  .sidebar,
+  aside {
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+  
+  /* MOBILE SIDEBAR CLOSE ON ITEM CLICK */
+  .sidebar a,
+  aside a {
+    cursor: pointer !important;
+  }
+  
+  /* ENSURE PROPER FLEX LAYOUT */
+  .sidebar > div,
+  aside > div {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+  }
+  
+  /* MOBILE SIDEBAR HEADER STYLING */
+  .sidebar .relative.z-10.h-full.flex.flex-col,
+  aside .relative.z-10.h-full.flex.flex-col {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+  }
+}
+
+/* MOBILE SIDEBAR ANIMATION ENHANCEMENTS */
+@media (max-width: 768px) {
+  
+  /* SMOOTH SIDEBAR ANIMATION */
+  .sidebar,
+  aside {
+    will-change: transform !important;
+    backface-visibility: hidden !important;
+  }
+  
+  /* SIDEBAR OPEN STATE */
+  .sidebar-open .sidebar,
+  .sidebar-open aside {
+    transform: translateX(0) !important;
+  }
+  
+  /* SIDEBAR CLOSED STATE */
+  .sidebar:not(.sidebar-open),
+  aside:not(.sidebar-open) {
+    transform: translateX(-100%) !important;
   }
 }
