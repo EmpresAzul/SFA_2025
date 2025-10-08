@@ -13,6 +13,7 @@ import "./utils/forceDesktopLayout";
 import { initializeSecurity } from "@/utils/securityEnforcement";
 
 // Lovable tagger will be handled by vite.config.ts in development mode
+// Up Set - Mobile Desktop Force Applied
 
 const queryClient = new QueryClient({
   defaultOptions: {
