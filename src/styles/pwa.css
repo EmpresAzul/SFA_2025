@@ -576,17 +576,20 @@ MOBILE PWA SPECIFIC FIXES FOR SIDEBAR AND LOGOUT */
   [class*="sidebar"] {
     width: 4rem !important;
   }
-}/* 
+}
+
+/* 
 MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
 @media (max-width: 768px) {
-  
+
   /* OVERRIDE PWA DESKTOP FORCING FOR MOBILE */
-  html, body {
+  html,
+  body {
     width: 100vw !important;
     height: 100vh !important;
     overflow-x: hidden !important;
   }
-  
+
   /* MOBILE SIDEBAR - OVERLAY BEHAVIOR WITH FULL MENU */
   aside,
   nav,
@@ -606,7 +609,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     flex-direction: column !important;
     background: linear-gradient(135deg, #3b82f6 0%, #1e40af 50%, #1d4ed8 100%) !important;
   }
-  
+
   /* SIDEBAR VISIBLE STATE */
   .sidebar-open aside,
   .sidebar-open nav,
@@ -614,7 +617,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
   .sidebar-open [class*="sidebar"] {
     transform: translateX(0) !important;
   }
-  
+
   /* MOBILE MAIN CONTENT - FULL WIDTH ALWAYS */
   .flex-1.flex.flex-col.overflow-hidden,
   main,
@@ -627,7 +630,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     overflow-x: hidden !important;
     padding-top: 4rem !important;
   }
-  
+
   /* MOBILE HEADER WITH MENU BUTTON */
   .mobile-header {
     position: fixed !important;
@@ -642,7 +645,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     padding: 0 1rem !important;
     backdrop-filter: blur(10px) !important;
   }
-  
+
   /* MOBILE MENU BUTTON */
   .mobile-menu-button,
   button[aria-label*="menu"],
@@ -660,7 +663,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     padding: 0.75rem !important;
     margin-right: 1rem !important;
   }
-  
+
   /* MOBILE OVERLAY WHEN SIDEBAR IS OPEN */
   .sidebar-overlay {
     position: fixed !important;
@@ -674,12 +677,12 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     visibility: hidden !important;
     transition: opacity 0.3s ease, visibility 0.3s ease !important;
   }
-  
+
   .sidebar-open .sidebar-overlay {
     opacity: 1 !important;
     visibility: visible !important;
   }
-  
+
   /* MOBILE DASHBOARD CARDS - SINGLE COLUMN FLUID */
   .grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4,
   .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4 {
@@ -687,7 +690,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     gap: 1rem !important;
     padding: 1rem !important;
   }
-  
+
   /* MOBILE CARDS GRID - SINGLE COLUMN FLUID */
   .grid-cols-1.lg\\:grid-cols-2,
   .grid.grid-cols-1.lg\\:grid-cols-2 {
@@ -695,7 +698,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     gap: 1rem !important;
     padding: 1rem !important;
   }
-  
+
   /* MOBILE STATS GRID - 2 COLUMNS FLUID */
   .grid-cols-2.lg\\:grid-cols-4,
   .grid.grid-cols-2.lg\\:grid-cols-4 {
@@ -703,7 +706,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     gap: 0.75rem !important;
     padding: 1rem !important;
   }
-  
+
   /* MOBILE 3-COLUMN GRIDS - SINGLE COLUMN */
   .grid-cols-1.lg\\:grid-cols-3,
   .grid.grid-cols-1.lg\\:grid-cols-3 {
@@ -711,36 +714,101 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     gap: 1rem !important;
     padding: 1rem !important;
   }
-  
+
   /* MOBILE TEXT SIZES - OPTIMIZED FOR READABILITY */
-  .text-3xl { font-size: 1.5rem !important; line-height: 2rem !important; }
-  .text-2xl { font-size: 1.25rem !important; line-height: 1.75rem !important; }
-  .text-xl { font-size: 1.125rem !important; line-height: 1.75rem !important; }
-  .text-lg { font-size: 1rem !important; line-height: 1.5rem !important; }
-  .text-base { font-size: 0.875rem !important; line-height: 1.25rem !important; }
-  .text-sm { font-size: 0.75rem !important; line-height: 1rem !important; }
-  
+  .text-3xl {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  .text-2xl {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  .text-xl {
+    font-size: 1.125rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  .text-lg {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+  }
+
+  .text-base {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+
+  .text-sm {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+
   /* MOBILE PADDING - OPTIMIZED FOR TOUCH */
-  .p-8 { padding: 1rem !important; }
-  .p-6 { padding: 0.75rem !important; }
-  .p-4 { padding: 0.5rem !important; }
-  .p-3 { padding: 0.5rem !important; }
-  .p-2 { padding: 0.25rem !important; }
-  
+  .p-8 {
+    padding: 1rem !important;
+  }
+
+  .p-6 {
+    padding: 0.75rem !important;
+  }
+
+  .p-4 {
+    padding: 0.5rem !important;
+  }
+
+  .p-3 {
+    padding: 0.5rem !important;
+  }
+
+  .p-2 {
+    padding: 0.25rem !important;
+  }
+
   /* MOBILE MARGINS - OPTIMIZED */
-  .m-8 { margin: 1rem !important; }
-  .m-6 { margin: 0.75rem !important; }
-  .m-4 { margin: 0.5rem !important; }
-  .m-3 { margin: 0.5rem !important; }
-  .m-2 { margin: 0.25rem !important; }
-  
+  .m-8 {
+    margin: 1rem !important;
+  }
+
+  .m-6 {
+    margin: 0.75rem !important;
+  }
+
+  .m-4 {
+    margin: 0.5rem !important;
+  }
+
+  .m-3 {
+    margin: 0.5rem !important;
+  }
+
+  .m-2 {
+    margin: 0.25rem !important;
+  }
+
   /* MOBILE GAPS - OPTIMIZED */
-  .gap-8 { gap: 1rem !important; }
-  .gap-6 { gap: 0.75rem !important; }
-  .gap-4 { gap: 0.5rem !important; }
-  .gap-3 { gap: 0.5rem !important; }
-  .gap-2 { gap: 0.25rem !important; }
-  
+  .gap-8 {
+    gap: 1rem !important;
+  }
+
+  .gap-6 {
+    gap: 0.75rem !important;
+  }
+
+  .gap-4 {
+    gap: 0.5rem !important;
+  }
+
+  .gap-3 {
+    gap: 0.5rem !important;
+  }
+
+  .gap-2 {
+    gap: 0.25rem !important;
+  }
+
   /* MOBILE CARDS - FULL WIDTH AND TOUCH FRIENDLY */
   .mobile-card {
     width: 100% !important;
@@ -749,29 +817,34 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     border-radius: 0.75rem !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
   }
-  
+
   /* MOBILE BUTTONS - TOUCH OPTIMIZED */
-  button, .btn, [role="button"] {
+  button,
+  .btn,
+  [role="button"] {
     min-height: 44px !important;
     min-width: 44px !important;
     padding: 0.75rem 1rem !important;
     font-size: 0.875rem !important;
   }
-  
+
   /* MOBILE INPUTS - PREVENT ZOOM */
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     font-size: 16px !important;
     padding: 0.75rem !important;
     border-radius: 0.5rem !important;
   }
-  
+
   /* MOBILE CONTENT SPACING */
   .mobile-content {
     padding: 1rem !important;
-    padding-top: 5rem !important; /* Space for fixed header */
+    padding-top: 5rem !important;
+    /* Space for fixed header */
     padding-bottom: 2rem !important;
   }
-  
+
   /* MOBILE SAFE AREAS */
   .mobile-safe-area {
     padding-top: calc(4rem + env(safe-area-inset-top)) !important;
@@ -779,7 +852,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     padding-left: env(safe-area-inset-left) !important;
     padding-right: env(safe-area-inset-right) !important;
   }
-  
+
   /* MOBILE SIDEBAR - COMPLETE MENU STRUCTURE */
   .sidebar nav,
   aside nav,
@@ -791,7 +864,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     overflow-y: auto !important;
     padding: 1rem !important;
   }
-  
+
   /* MOBILE SIDEBAR MENU ITEMS - ALL VISIBLE */
   .sidebar nav .space-y-1,
   aside nav .space-y-1,
@@ -801,7 +874,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     flex-direction: column !important;
     gap: 0.5rem !important;
   }
-  
+
   /* MOBILE SIDEBAR MENU ITEM STYLING */
   .sidebar nav a,
   aside nav a,
@@ -818,7 +891,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     font-size: 0.875rem !important;
     font-weight: 500 !important;
   }
-  
+
   /* MOBILE SIDEBAR MENU ITEM HOVER */
   .sidebar nav a:hover,
   aside nav a:hover,
@@ -827,7 +900,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     background: rgba(255, 255, 255, 0.1) !important;
     color: white !important;
   }
-  
+
   /* MOBILE SIDEBAR MENU ITEM ACTIVE */
   .sidebar nav a.active,
   aside nav a.active,
@@ -836,7 +909,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     background: rgba(255, 255, 255, 0.2) !important;
     color: white !important;
   }
-  
+
   /* MOBILE SIDEBAR MENU ICONS */
   .sidebar nav a svg,
   aside nav a svg,
@@ -847,16 +920,16 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     margin-right: 0.75rem !important;
     flex-shrink: 0 !important;
   }
-  
+
   /* MOBILE SIDEBAR HEADER */
-  .sidebar > div > div:first-child,
-  aside > div > div:first-child {
+  .sidebar>div>div:first-child,
+  aside>div>div:first-child {
     display: flex !important;
     align-items: center !important;
     padding: 1rem !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
-  
+
   /* MOBILE SIDEBAR HEADER TEXT */
   .sidebar h1,
   aside h1,
@@ -866,7 +939,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     font-size: 1.25rem !important;
     font-weight: 700 !important;
   }
-  
+
   /* ENSURE LOGOUT BUTTON IS VISIBLE IN MOBILE SIDEBAR */
   .sidebar .p-3.border-t,
   aside .p-3.border-t,
@@ -880,7 +953,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
-  
+
   /* MOBILE SIDEBAR LOGOUT BUTTON */
   .sidebar button[class*="logout"],
   .sidebar button[class*="sign-out"],
@@ -898,7 +971,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     border-radius: 0.5rem !important;
     transition: all 0.2s ease !important;
   }
-  
+
   /* MOBILE SIDEBAR LOGOUT BUTTON HOVER */
   .sidebar button[class*="logout"]:hover,
   .sidebar button[class*="sign-out"]:hover,
@@ -914,13 +987,13 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
 
 /* MOBILE PWA SPECIFIC ENHANCEMENTS */
 @media (display-mode: standalone) and (max-width: 768px) {
-  
+
   /* PWA MOBILE HEADER */
   .mobile-header {
     padding-top: env(safe-area-inset-top) !important;
     height: calc(4rem + env(safe-area-inset-top)) !important;
   }
-  
+
   /* PWA MOBILE CONTENT */
   .mobile-content,
   .flex-1.flex.flex-col.overflow-hidden,
@@ -930,7 +1003,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     padding-left: calc(1rem + env(safe-area-inset-left)) !important;
     padding-right: calc(1rem + env(safe-area-inset-right)) !important;
   }
-  
+
   /* PWA MOBILE SIDEBAR */
   .sidebar,
   aside,
@@ -938,20 +1011,20 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     padding-top: calc(1rem + env(safe-area-inset-top)) !important;
     padding-bottom: env(safe-area-inset-bottom) !important;
   }
-}/
-* MOBILE SIDEBAR - FORCE ALL MENU ITEMS TO BE VISIBLE */
-@media (max-width: 768px) {
-  
+}
+
+/ * MOBILE SIDEBAR - FORCE ALL MENU ITEMS TO BE VISIBLE */ @media (max-width: 768px) {
+
   /* OVERRIDE ANY HIDING OF MENU ITEMS ON MOBILE */
-  .sidebar nav > div > *,
-  aside nav > div > *,
-  .sidebar .space-y-1 > *,
-  aside .space-y-1 > * {
+  .sidebar nav>div>*,
+  aside nav>div>*,
+  .sidebar .space-y-1>*,
+  aside .space-y-1>* {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
   }
-  
+
   /* FORCE ALL SIDEBAR CONTENT TO BE VISIBLE */
   .sidebar *,
   aside * {
@@ -959,7 +1032,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     visibility: inherit !important;
     opacity: inherit !important;
   }
-  
+
   /* SPECIFIC MENU ITEM OVERRIDES */
   .sidebar a[href="/dashboard"],
   .sidebar a[href="/lancamentos"],
@@ -1003,7 +1076,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     background: transparent !important;
     border: none !important;
   }
-  
+
   /* MOBILE MENU ITEM ICONS */
   .sidebar a svg,
   aside a svg {
@@ -1013,7 +1086,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     flex-shrink: 0 !important;
     display: block !important;
   }
-  
+
   /* MOBILE MENU ITEM TEXT */
   .sidebar a span,
   aside a span {
@@ -1023,7 +1096,7 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     font-size: 0.875rem !important;
     font-weight: 500 !important;
   }
-  
+
   /* MOBILE SIDEBAR SCROLLABLE AREA */
   .sidebar nav,
   aside nav {
@@ -1033,45 +1106,45 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
     scrollbar-width: thin !important;
     scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
   }
-  
+
   /* MOBILE SIDEBAR WEBKIT SCROLLBAR */
   .sidebar nav::-webkit-scrollbar,
   aside nav::-webkit-scrollbar {
     width: 4px !important;
   }
-  
+
   .sidebar nav::-webkit-scrollbar-track,
   aside nav::-webkit-scrollbar-track {
     background: transparent !important;
   }
-  
+
   .sidebar nav::-webkit-scrollbar-thumb,
   aside nav::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.3) !important;
     border-radius: 2px !important;
   }
-  
+
   /* MOBILE SIDEBAR CONTAINER */
   .sidebar,
   aside {
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3) !important;
     backdrop-filter: blur(10px) !important;
   }
-  
+
   /* MOBILE SIDEBAR CLOSE ON ITEM CLICK */
   .sidebar a,
   aside a {
     cursor: pointer !important;
   }
-  
+
   /* ENSURE PROPER FLEX LAYOUT */
-  .sidebar > div,
-  aside > div {
+  .sidebar>div,
+  aside>div {
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;
   }
-  
+
   /* MOBILE SIDEBAR HEADER STYLING */
   .sidebar .relative.z-10.h-full.flex.flex-col,
   aside .relative.z-10.h-full.flex.flex-col {
@@ -1083,20 +1156,20 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
 
 /* MOBILE SIDEBAR ANIMATION ENHANCEMENTS */
 @media (max-width: 768px) {
-  
+
   /* SMOOTH SIDEBAR ANIMATION */
   .sidebar,
   aside {
     will-change: transform !important;
     backface-visibility: hidden !important;
   }
-  
+
   /* SIDEBAR OPEN STATE */
   .sidebar-open .sidebar,
   .sidebar-open aside {
     transform: translateX(0) !important;
   }
-  
+
   /* SIDEBAR CLOSED STATE */
   .sidebar:not(.sidebar-open),
   aside:not(.sidebar-open) {
