@@ -2,7 +2,7 @@ import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
-import { InstallPrompt } from "./components/pwa/InstallPrompt";
+
 import { OfflineIndicator } from "./components/pwa/OfflineIndicator";
 import { UpdateNotification } from "./components/pwa/UpdateNotification";
 import { ProfileProvider } from "./contexts/ProfileContext";
@@ -182,7 +182,6 @@ const App = () => (
       
       {/* PWA Components */}
       <OfflineIndicator />
-      <InstallPrompt />
       <UpdateNotification />
       
       <Toaster />
