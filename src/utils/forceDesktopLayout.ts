@@ -6,18 +6,16 @@ export const forceDesktopLayout = () => {
                       (window.navigator as any).standalone === true;
 
   if (isStandalone) {
-    // Force desktop viewport
-    const viewport = document.querySelector('meta[name="viewport"]');
-    if (viewport) {
-      viewport.setAttribute('content', 'width=1024, initial-scale=1.0, user-scalable=yes');
-    }
+    // DISABLED: Allow normal responsive behavior for proper menu
+    console.log('PWA: Allowing normal responsive layout for proper menu functionality');
+    return;
 
     // Add desktop-forced class to body
     document.body.classList.add('pwa-desktop-forced');
 
-    // Force minimum width
-    document.documentElement.style.minWidth = '1024px';
-    document.body.style.minWidth = '1024px';
+    // Allow responsive width for proper menu functionality
+    document.documentElement.style.width = '100%';
+    document.body.style.width = '100%';
 
     // Override CSS custom properties for desktop behavior
     document.documentElement.style.setProperty('--mobile-breakpoint', '1024px');
@@ -83,12 +81,10 @@ export const forceDesktopLayout = () => {
     `;
     document.head.appendChild(style);
 
-    // Force desktop behavior on window resize
+    // Allow responsive behavior for proper menu functionality
     const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        document.documentElement.style.width = '1024px';
-        document.body.style.width = '1024px';
-      }
+      document.documentElement.style.width = '100%';
+      document.body.style.width = '100%';
     };
 
     window.addEventListener('resize', handleResize);
