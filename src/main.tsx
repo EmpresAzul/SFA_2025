@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import App from "./App.tsx";
 import "./index.css";
+import "./styles/mobile-responsive.css";
 import "./styles/pwa.css";
 import "./styles/mobile-desktop-force.css";
 import "./utils/forceDesktopLayout";
