@@ -2,9 +2,10 @@ import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
-import PWAInstallPrompt from "./components/pwa/PWAInstallPrompt";
-import OfflineIndicator from "./components/pwa/OfflineIndicator";
-import UpdateNotification from "./components/pwa/UpdateNotification";
+import { InstallPrompt } from "./components/pwa/InstallPrompt";
+import { OfflineIndicator } from "./components/pwa/OfflineIndicator";
+import { UpdateNotification } from "./components/pwa/UpdateNotification";
+import { PWADebugInfo } from "./components/pwa/PWADebugInfo";
 import { ProfileProvider } from "./contexts/ProfileContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { useSystemNotifications } from "./hooks/useSystemNotifications";
@@ -182,8 +183,9 @@ const App = () => (
       
       {/* PWA Components */}
       <OfflineIndicator />
-      <PWAInstallPrompt />
+      <InstallPrompt />
       <UpdateNotification />
+      <PWADebugInfo />
       
       <Toaster />
   </>
