@@ -8,6 +8,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import App from "./App.tsx";
 import "./index.css";
 import "./styles/pwa.css";
+import "./utils/forceDesktopLayout";
 import { initializeSecurity } from "@/utils/securityEnforcement";
 
 // Lovable tagger will be handled by vite.config.ts in development mode
