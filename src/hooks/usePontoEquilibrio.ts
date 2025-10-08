@@ -179,14 +179,14 @@ export const usePontoEquilibrio = () => {
 
       const { data, error } = await supabase
         .from("ponto_equilibrio")
-        .insert({
+        .insert([{
           user_id: userData.user.id,
           nome: nomeProjecao,
           gastos_fixos: gastosFixos.gastosFixosMensais,
           custos_variaveis: totalCustosVariaveisPercentual,
           faturamento_estimado: faturamento,
-          dados_json: dadosCompletos,
-        })
+          dados_json: dadosCompletos as any,
+        }])
         .select()
         .single();
 

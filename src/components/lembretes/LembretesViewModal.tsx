@@ -68,24 +68,14 @@ const LembretesViewModal: React.FC<LembretesViewModalProps> = ({
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
-                Data
+                Data de Vencimento
               </h3>
               <p className="text-gray-700 bg-gray-50 p-2 rounded text-center">
-                {formatDate(lembrete.data_lembrete)}
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2 flex items-center">
-                <Clock className="h-4 w-4 mr-1" />
-                Horário
-              </h3>
-              <p className="text-gray-700 bg-gray-50 p-2 rounded text-center">
-                {formatTime(lembrete.hora_lembrete)}
+                {formatDate(lembrete.data_vencimento)}
               </p>
             </div>
           </div>

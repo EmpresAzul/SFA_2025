@@ -303,7 +303,7 @@
     0 10px 10px -5px rgba(59, 130, 246, 0.04);
 }
 
-/* Mobile optimizations */
+/* Mobile optimizations - Layout only, colors inherit from design system */
 @media (max-width: 640px) {
   .mobile-stack {
     @apply flex-col space-y-2 space-x-0;
@@ -339,43 +339,6 @@
   /* Formulários otimizados para mobile */
   .mobile-form-stack {
     @apply flex-col space-y-3;
-  }
-
-  /* CORREÇÃO: Remover fundos pretos dos campos em mobile */
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="number"],
-  input[type="tel"],
-  textarea,
-  select {
-    background-color: white !important;
-    color: #1f2937 !important;
-    border: 1px solid #d1d5db !important;
-    -webkit-appearance: none !important;
-    appearance: none !important;
-  }
-
-  /* Campos de formulário com fundo branco forçado */
-  .mobile-input-fix {
-    background-color: white !important;
-    color: #1f2937 !important;
-    border: 1px solid #d1d5db !important;
-    -webkit-appearance: none !important;
-    appearance: none !important;
-  }
-
-  /* Cards com fundo branco em mobile */
-  .mobile-card-fix {
-    background-color: white !important;
-    color: #1f2937 !important;
-  }
-
-  /* Botões com cores corretas em mobile */
-  .mobile-button-fix {
-    background-color: #3b82f6 !important;
-    color: white !important;
-    border: none !important;
   }
 
   /* Sidebar responsiva em mobile */
