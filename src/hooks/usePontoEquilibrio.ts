@@ -167,7 +167,7 @@ export const usePontoEquilibrio = () => {
       if (!userData.user) throw new Error("Usuário não autenticado");
 
       // Preparar dados completos para salvar no JSON
-      const dadosCompletos = JSON.parse(JSON.stringify({
+      const dadosCompletos = {
         custosVariaveis,
         gastosFixos,
         saidasNaoOperacionais,
@@ -175,18 +175,18 @@ export const usePontoEquilibrio = () => {
         percentualPE,
         margemContribuicao,
         proLaboreMaximo,
-      }));
+      };
 
       const { data, error } = await supabase
         .from("ponto_equilibrio")
-        .insert([{
+        .insert({
           user_id: userData.user.id,
           nome: nomeProjecao,
           gastos_fixos: gastosFixos.gastosFixosMensais,
           custos_variaveis: totalCustosVariaveisPercentual,
           faturamento_estimado: faturamento,
           dados_json: dadosCompletos,
-        }])
+        })
         .select()
         .single();
 
@@ -215,7 +215,7 @@ export const usePontoEquilibrio = () => {
       nomeProjecao?: string;
     }) => {
       // Preparar dados completos para atualizar no JSON
-      const dadosCompletos = JSON.parse(JSON.stringify({
+      const dadosCompletos = {
         custosVariaveis,
         gastosFixos,
         saidasNaoOperacionais,
@@ -223,7 +223,7 @@ export const usePontoEquilibrio = () => {
         percentualPE,
         margemContribuicao,
         proLaboreMaximo,
-      }));
+      };
 
       const updateData: Record<string, unknown> = {
         gastos_fixos: gastosFixos.gastosFixosMensais,

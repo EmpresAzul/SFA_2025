@@ -91,8 +91,8 @@ const PontoEquilibrio: React.FC = () => {
           <ProjecoesSalvas
             projecoes={projecoes}
             projecaoAtual={projecaoAtual}
-            onSalvarProjecao={(nome) => salvarProjecao(nome)}
-            onAtualizarProjecao={(id, nome) => atualizarProjecao({ id, nomeProjecao: nome })}
+            onSalvarProjecao={salvarProjecao}
+            onAtualizarProjecao={atualizarProjecao}
             onCarregarProjecao={carregarProjecao}
             onDeletarProjecao={deletarProjecao}
             onNovaProjecao={novaProjecao}

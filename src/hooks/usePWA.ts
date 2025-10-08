@@ -3,161 +3,139 @@ import { useState, useEffect } from 'react';
 interface PWAState {
   isInstalled: boolean;
   isInstallable: boolean;
-  isOnline: boolean;
-  platform: 'android' | 'ios' | 'desktop' | 'unknown';
-  showInstallPrompt: boolean;
-}
-
-interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
-    platform: string;
-  }>;
-  prompt(): Promise<void>;
+  isOffline: boolean;
+  isUpdateAvailable: boolean;
 }
 
 export const usePWA = () => {
-  const [state, setState] = useState<PWAState>({
+  const [pwaState, setPwaState] = useState<PWAState>({
     isInstalled: false,
     isInstallable: false,
-    isOnline: navigator.onLine,
-    platform: 'unknown',
-    showInstallPrompt: false
+    isOffline: false,
+    isUpdateAvailable: false,
   });
 
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-
   useEffect(() => {
-    // Detectar plataforma
-    const userAgent = navigator.userAgent.toLowerCase();
-    let platform: PWAState['platform'] = 'unknown';
-    
-    if (/android/.test(userAgent)) {
-      platform = 'android';
-    } else if (/iphone|ipad|ipod/.test(userAgent)) {
-      platform = 'ios';
-    } else {
-      platform = 'desktop';
-    }
-
     // Verificar se está instalado
-    const isInstalled = window.matchMedia('(display-mode: standalone)').matches ||
-                       (window.navigator as any).standalone === true;
+    const checkInstalled = () => {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                          (window.navigator as any).standalone === true;
+      
+      setPwaState(prev => ({ ...prev, isInstalled: isStandalone }));
+    };
 
-    setState(prev => ({
-      ...prev,
-      platform,
-      isInstalled
-    }));
+    // Verificar status offline com teste de conectividade real
+    const updateOnlineStatus = async () => {
+      const isOnline = navigator.onLine;
+      
+      if (!isOnline) {
+        setPwaState(prev => ({ ...prev, isOffline: true }));
+        return;
+      }
 
-    // Event listeners
+      // Teste de conectividade real para evitar falsos positivos
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        
+        const response = await fetch('/health-check.json', {
+          method: 'HEAD',
+          cache: 'no-cache',
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        setPwaState(prev => ({ ...prev, isOffline: !response.ok }));
+      } catch (error) {
+        // Se o health check falhar, considerar como potencialmente offline
+        // mas não marcar definitivamente como offline se navigator.onLine é true
+        setPwaState(prev => ({ ...prev, isOffline: false }));
+      }
+    };
+
+    // Listener para beforeinstallprompt
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
-      const promptEvent = e as BeforeInstallPromptEvent;
-      setDeferredPrompt(promptEvent);
-      
-      setState(prev => ({
-        ...prev,
-        isInstallable: true,
-        showInstallPrompt: !isInstalled
-      }));
+      setPwaState(prev => ({ ...prev, isInstallable: true }));
     };
 
+    // Listener para quando o app é instalado
     const handleAppInstalled = () => {
-      setState(prev => ({
-        ...prev,
-        isInstalled: true,
-        showInstallPrompt: false
+      setPwaState(prev => ({ 
+        ...prev, 
+        isInstalled: true, 
+        isInstallable: false 
       }));
-      setDeferredPrompt(null);
     };
 
-    const handleOnline = () => {
-      setState(prev => ({ ...prev, isOnline: true }));
+    // Verificar atualizações do Service Worker
+    const checkForUpdates = () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          setPwaState(prev => ({ ...prev, isUpdateAvailable: true }));
+        });
+      }
     };
 
-    const handleOffline = () => {
-      setState(prev => ({ ...prev, isOnline: false }));
+    // Registrar Service Worker
+    const registerServiceWorker = async () => {
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.register('/sw.js');
+          
+          console.log('FluxoAzul PWA: Service Worker registrado:', registration);
+
+          // Verificar atualizações
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  setPwaState(prev => ({ ...prev, isUpdateAvailable: true }));
+                }
+              });
+            }
+          });
+
+        } catch (error) {
+          console.error('FluxoAzul PWA: Erro ao registrar Service Worker:', error);
+        }
+      }
     };
 
-    // Adicionar listeners
+    // Inicializar
+    checkInstalled();
+    updateOnlineStatus();
+    registerServiceWorker();
+    checkForUpdates();
+
+    // Event listeners
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', updateOnlineStatus);
+      window.removeEventListener('offline', updateOnlineStatus);
     };
   }, []);
 
-  const installApp = async (): Promise<boolean> => {
-    if (!deferredPrompt) {
-      return false;
-    }
-
-    try {
-      await deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      
-      setDeferredPrompt(null);
-      setState(prev => ({ ...prev, showInstallPrompt: false }));
-      
-      return outcome === 'accepted';
-    } catch (error) {
-      console.error('Erro ao instalar PWA:', error);
-      return false;
-    }
-  };
-
-  const dismissInstallPrompt = () => {
-    setState(prev => ({ ...prev, showInstallPrompt: false }));
-    localStorage.setItem('pwa-install-dismissed', new Date().toISOString());
-  };
-
-  const canInstall = () => {
-    return state.isInstallable && !state.isInstalled && deferredPrompt !== null;
-  };
-
-  const getInstallInstructions = () => {
-    switch (state.platform) {
-      case 'ios':
-        return {
-          title: 'Adicionar à Tela Inicial',
-          steps: [
-            'Toque no botão de compartilhar (⬆️)',
-            'Selecione "Adicionar à Tela Inicial"',
-            'Toque em "Adicionar"'
-          ]
-        };
-      case 'android':
-        return {
-          title: 'Instalar App',
-          steps: [
-            'Toque em "Instalar" quando aparecer o prompt',
-            'Ou use o menu do navegador > "Adicionar à tela inicial"'
-          ]
-        };
-      default:
-        return {
-          title: 'Adicionar como App',
-          steps: [
-            'Use o menu do navegador',
-            'Selecione "Instalar FluxoAzul" ou "Adicionar à área de trabalho"'
-          ]
-        };
+  const updateApp = () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration().then((registration) => {
+        if (registration) {
+          registration.update();
+          window.location.reload();
+        }
+      });
     }
   };
 
   return {
-    ...state,
-    installApp,
-    dismissInstallPrompt,
-    canInstall: canInstall(),
-    installInstructions: getInstallInstructions()
+    ...pwaState,
+    updateApp,
   };
 };

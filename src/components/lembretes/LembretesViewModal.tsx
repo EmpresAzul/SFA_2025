@@ -75,7 +75,7 @@ const LembretesViewModal: React.FC<LembretesViewModalProps> = ({
                 Data
               </h3>
               <p className="text-gray-700 bg-gray-50 p-2 rounded text-center">
-                {formatDate(lembrete.data_vencimento)}
+                {formatDate(lembrete.data_lembrete)}
               </p>
             </div>
 
@@ -85,7 +85,7 @@ const LembretesViewModal: React.FC<LembretesViewModalProps> = ({
                 Horário
               </h3>
               <p className="text-gray-700 bg-gray-50 p-2 rounded text-center">
-                Não definido
+                {formatTime(lembrete.hora_lembrete)}
               </p>
             </div>
           </div>

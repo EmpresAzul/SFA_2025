@@ -7,14 +7,9 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import App from "./App.tsx";
 import "./index.css";
-import "./styles/mobile-responsive.css";
-import "./styles/pwa.css";
-import "./styles/mobile-desktop-force.css";
-import "./utils/forceDesktopLayout";
 import { initializeSecurity } from "@/utils/securityEnforcement";
 
 // Lovable tagger will be handled by vite.config.ts in development mode
-// Up Set - Mobile Desktop Force Applied
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,30 +20,33 @@ const queryClient = new QueryClient({
   },
 });
 
-// Register service worker for PWA functionality
+// Register service worker for PWA functionality - improved for custom domains
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/sw.js", { scope: "/" })
-      .then((registration) => {
-        console.log("FluxoAzul PWA: Service Worker registered successfully");
-        
-        // Check for updates
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // New content available
-                window.dispatchEvent(new CustomEvent('sw-update-available'));
-              }
-            });
+    // Add small delay to ensure DOM is fully loaded
+    setTimeout(() => {
+      navigator.serviceWorker
+        .register("/sw.js", { scope: "/" })
+        .then((registration) => {
+          console.log(
+            "FluxoAzul PWA: Service Worker registered successfully:",
+            registration.scope,
+            "- Domain:", window.location.hostname
+          );
+          
+          // Force update check for custom domains
+          if (!window.location.hostname.includes('lovable.app')) {
+            registration.update();
           }
+        })
+        .catch((error) => {
+          console.log(
+            "FluxoAzul PWA: Service Worker registration failed:",
+            error,
+            "- Domain:", window.location.hostname
+          );
         });
-      })
-      .catch((error) => {
-        console.log("FluxoAzul PWA: Service Worker registration failed:", error);
-      });
+    }, 1000);
   });
 }
 
