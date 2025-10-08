@@ -2,13 +2,14 @@
 
 /* Force desktop layout when app is installed as PWA */
 @media (display-mode: standalone) {
+
   /* Ensure proper desktop-like layout structure */
   html {
     width: 100vw !important;
     height: 100vh !important;
     overflow-x: hidden !important;
   }
-  
+
   body {
     width: 100vw !important;
     height: 100vh !important;
@@ -16,10 +17,14 @@
     padding: 0 !important;
     overflow-x: hidden !important;
   }
-  
+
   /* FORCE SIDEBAR TO ALWAYS BE VISIBLE ON MOBILE PWA */
-  aside, nav, .sidebar, [class*="sidebar"], 
-  .w-64, .w-16, 
+  aside,
+  nav,
+  .sidebar,
+  [class*="sidebar"],
+  .w-64,
+  .w-16,
   .bg-gradient-to-b.from-blue-600.to-blue-800,
   .w-64.bg-gradient-to-b.from-blue-600.to-blue-800 {
     display: flex !important;
@@ -35,170 +40,345 @@
     transform: translateX(0) !important;
     transition: none !important;
   }
-  
+
   /* FORCE ALL MOBILE RESPONSIVE CLASSES TO DESKTOP BEHAVIOR */
-  .hidden.md\\:flex, .hidden.lg\\:flex, .hidden.xl\\:flex,
-  .md\\:flex, .lg\\:flex, .xl\\:flex {
+  .hidden.md\\:flex,
+  .hidden.lg\\:flex,
+  .hidden.xl\\:flex,
+  .md\\:flex,
+  .lg\\:flex,
+  .xl\\:flex {
     display: flex !important;
   }
-  
-  .hidden.md\\:block, .hidden.lg\\:block, .hidden.xl\\:block,
-  .md\\:block, .lg\\:block, .xl\\:block {
+
+  .hidden.md\\:block,
+  .hidden.lg\\:block,
+  .hidden.xl\\:block,
+  .md\\:block,
+  .lg\\:block,
+  .xl\\:block {
     display: block !important;
   }
-  
-  .md\\:hidden, .lg\\:hidden, .xl\\:hidden {
+
+  .md\\:hidden,
+  .lg\\:hidden,
+  .xl\\:hidden {
     display: none !important;
   }
-  
+
   /* Force desktop main content area */
   .flex-1.flex.flex-col.overflow-hidden,
-  main, .main-content, [class*="main"] {
+  main,
+  .main-content,
+  [class*="main"] {
     margin-left: 16rem !important;
     width: calc(100vw - 16rem) !important;
     height: 100vh !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
   }
-  
+
   /* FORCE MOBILE MENU BUTTON TO BE HIDDEN */
-  .md\\:hidden, .lg\\:hidden,
-  button[aria-label*="menu"], button[aria-label*="Menu"],
-  .menu-button, .hamburger, [class*="menu-toggle"] {
+  .md\\:hidden,
+  .lg\\:hidden,
+  button[aria-label*="menu"],
+  button[aria-label*="Menu"],
+  .menu-button,
+  .hamburger,
+  [class*="menu-toggle"] {
     display: none !important;
   }
-  
+
   /* FORCE ALL RESPONSIVE GRIDS TO DESKTOP LAYOUT */
-  .grid-cols-1, .grid.grid-cols-1,
-  .grid-cols-1.md\\:grid-cols-2, .grid.grid-cols-1.md\\:grid-cols-2,
-  .grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4, .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4,
-  .grid-cols-1.lg\\:grid-cols-2, .grid.grid-cols-1.lg\\:grid-cols-2,
-  .grid-cols-1.lg\\:grid-cols-3, .grid.grid-cols-1.lg\\:grid-cols-3,
-  .grid-cols-1.lg\\:grid-cols-4, .grid.grid-cols-1.lg\\:grid-cols-4 {
+  .grid-cols-1,
+  .grid.grid-cols-1,
+  .grid-cols-1.md\\:grid-cols-2,
+  .grid.grid-cols-1.md\\:grid-cols-2,
+  .grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4,
+  .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4,
+  .grid-cols-1.lg\\:grid-cols-2,
+  .grid.grid-cols-1.lg\\:grid-cols-2,
+  .grid-cols-1.lg\\:grid-cols-3,
+  .grid.grid-cols-1.lg\\:grid-cols-3,
+  .grid-cols-1.lg\\:grid-cols-4,
+  .grid.grid-cols-1.lg\\:grid-cols-4 {
     display: grid !important;
   }
-  
+
   /* Force desktop dashboard grid - 4 columns */
   .grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4,
   .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4 {
     grid-template-columns: repeat(4, 1fr) !important;
     gap: 1.5rem !important;
   }
-  
+
   /* Force desktop cards grid - 2 columns */
   .grid-cols-1.lg\\:grid-cols-2,
   .grid.grid-cols-1.lg\\:grid-cols-2 {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 2rem !important;
   }
-  
+
   /* Force desktop stats grid - 4 columns */
   .grid-cols-2.lg\\:grid-cols-4,
   .grid.grid-cols-2.lg\\:grid-cols-4 {
     grid-template-columns: repeat(4, 1fr) !important;
     gap: 1rem !important;
   }
-  
+
   /* Force desktop 3-column grids */
   .grid-cols-1.lg\\:grid-cols-3,
   .grid.grid-cols-1.lg\\:grid-cols-3 {
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 1.5rem !important;
   }
-  
+
   /* FORCE ALL RESPONSIVE SPACING AND SIZING TO DESKTOP */
-  .sm\\:text-xs, .md\\:text-xs, .lg\\:text-xs, .text-xs { font-size: 0.75rem !important; line-height: 1rem !important; }
-  .sm\\:text-sm, .md\\:text-sm, .lg\\:text-sm, .text-sm { font-size: 0.875rem !important; line-height: 1.25rem !important; }
-  .sm\\:text-base, .md\\:text-base, .lg\\:text-base, .text-base { font-size: 1rem !important; line-height: 1.5rem !important; }
-  .sm\\:text-lg, .md\\:text-lg, .lg\\:text-lg, .text-lg { font-size: 1.125rem !important; line-height: 1.75rem !important; }
-  .sm\\:text-xl, .md\\:text-xl, .lg\\:text-xl, .text-xl { font-size: 1.25rem !important; line-height: 1.75rem !important; }
-  .sm\\:text-2xl, .md\\:text-2xl, .lg\\:text-2xl, .text-2xl { font-size: 1.5rem !important; line-height: 2rem !important; }
-  .sm\\:text-3xl, .md\\:text-3xl, .lg\\:text-3xl, .text-3xl { font-size: 1.875rem !important; line-height: 2.25rem !important; }
-  
+  .sm\\:text-xs,
+  .md\\:text-xs,
+  .lg\\:text-xs,
+  .text-xs {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+
+  .sm\\:text-sm,
+  .md\\:text-sm,
+  .lg\\:text-sm,
+  .text-sm {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+
+  .sm\\:text-base,
+  .md\\:text-base,
+  .lg\\:text-base,
+  .text-base {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+  }
+
+  .sm\\:text-lg,
+  .md\\:text-lg,
+  .lg\\:text-lg,
+  .text-lg {
+    font-size: 1.125rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  .sm\\:text-xl,
+  .md\\:text-xl,
+  .lg\\:text-xl,
+  .text-xl {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  .sm\\:text-2xl,
+  .md\\:text-2xl,
+  .lg\\:text-2xl,
+  .text-2xl {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  .sm\\:text-3xl,
+  .md\\:text-3xl,
+  .lg\\:text-3xl,
+  .text-3xl {
+    font-size: 1.875rem !important;
+    line-height: 2.25rem !important;
+  }
+
   /* FORCE ALL RESPONSIVE PADDING TO DESKTOP */
-  .p-1, .sm\\:p-1, .md\\:p-1, .lg\\:p-1 { padding: 0.25rem !important; }
-  .p-2, .sm\\:p-2, .md\\:p-2, .lg\\:p-2 { padding: 0.5rem !important; }
-  .p-3, .sm\\:p-3, .md\\:p-3, .lg\\:p-3 { padding: 0.75rem !important; }
-  .p-4, .sm\\:p-4, .md\\:p-4, .lg\\:p-4 { padding: 1rem !important; }
-  .p-6, .sm\\:p-6, .md\\:p-6, .lg\\:p-6 { padding: 1.5rem !important; }
-  .p-8, .sm\\:p-8, .md\\:p-8, .lg\\:p-8 { padding: 2rem !important; }
-  
+  .p-1,
+  .sm\\:p-1,
+  .md\\:p-1,
+  .lg\\:p-1 {
+    padding: 0.25rem !important;
+  }
+
+  .p-2,
+  .sm\\:p-2,
+  .md\\:p-2,
+  .lg\\:p-2 {
+    padding: 0.5rem !important;
+  }
+
+  .p-3,
+  .sm\\:p-3,
+  .md\\:p-3,
+  .lg\\:p-3 {
+    padding: 0.75rem !important;
+  }
+
+  .p-4,
+  .sm\\:p-4,
+  .md\\:p-4,
+  .lg\\:p-4 {
+    padding: 1rem !important;
+  }
+
+  .p-6,
+  .sm\\:p-6,
+  .md\\:p-6,
+  .lg\\:p-6 {
+    padding: 1.5rem !important;
+  }
+
+  .p-8,
+  .sm\\:p-8,
+  .md\\:p-8,
+  .lg\\:p-8 {
+    padding: 2rem !important;
+  }
+
   /* FORCE ALL RESPONSIVE MARGINS TO DESKTOP */
-  .m-1, .sm\\:m-1, .md\\:m-1, .lg\\:m-1 { margin: 0.25rem !important; }
-  .m-2, .sm\\:m-2, .md\\:m-2, .lg\\:m-2 { margin: 0.5rem !important; }
-  .m-3, .sm\\:m-3, .md\\:m-3, .lg\\:m-3 { margin: 0.75rem !important; }
-  .m-4, .sm\\:m-4, .md\\:m-4, .lg\\:m-4 { margin: 1rem !important; }
-  .m-6, .sm\\:m-6, .md\\:m-6, .lg\\:m-6 { margin: 1.5rem !important; }
-  .m-8, .sm\\:m-8, .md\\:m-8, .lg\\:m-8 { margin: 2rem !important; }
-  
+  .m-1,
+  .sm\\:m-1,
+  .md\\:m-1,
+  .lg\\:m-1 {
+    margin: 0.25rem !important;
+  }
+
+  .m-2,
+  .sm\\:m-2,
+  .md\\:m-2,
+  .lg\\:m-2 {
+    margin: 0.5rem !important;
+  }
+
+  .m-3,
+  .sm\\:m-3,
+  .md\\:m-3,
+  .lg\\:m-3 {
+    margin: 0.75rem !important;
+  }
+
+  .m-4,
+  .sm\\:m-4,
+  .md\\:m-4,
+  .lg\\:m-4 {
+    margin: 1rem !important;
+  }
+
+  .m-6,
+  .sm\\:m-6,
+  .md\\:m-6,
+  .lg\\:m-6 {
+    margin: 1.5rem !important;
+  }
+
+  .m-8,
+  .sm\\:m-8,
+  .md\\:m-8,
+  .lg\\:m-8 {
+    margin: 2rem !important;
+  }
+
   /* FORCE ALL RESPONSIVE GAPS TO DESKTOP */
-  .gap-1, .sm\\:gap-1, .md\\:gap-1, .lg\\:gap-1 { gap: 0.25rem !important; }
-  .gap-2, .sm\\:gap-2, .md\\:gap-2, .lg\\:gap-2 { gap: 0.5rem !important; }
-  .gap-3, .sm\\:gap-3, .md\\:gap-3, .lg\\:gap-3 { gap: 0.75rem !important; }
-  .gap-4, .sm\\:gap-4, .md\\:gap-4, .lg\\:gap-4 { gap: 1rem !important; }
-  .gap-6, .sm\\:gap-6, .md\\:gap-6, .lg\\:gap-6 { gap: 1.5rem !important; }
-  .gap-8, .sm\\:gap-8, .md\\:gap-8, .lg\\:gap-8 { gap: 2rem !important; }
-  
+  .gap-1,
+  .sm\\:gap-1,
+  .md\\:gap-1,
+  .lg\\:gap-1 {
+    gap: 0.25rem !important;
+  }
+
+  .gap-2,
+  .sm\\:gap-2,
+  .md\\:gap-2,
+  .lg\\:gap-2 {
+    gap: 0.5rem !important;
+  }
+
+  .gap-3,
+  .sm\\:gap-3,
+  .md\\:gap-3,
+  .lg\\:gap-3 {
+    gap: 0.75rem !important;
+  }
+
+  .gap-4,
+  .sm\\:gap-4,
+  .md\\:gap-4,
+  .lg\\:gap-4 {
+    gap: 1rem !important;
+  }
+
+  .gap-6,
+  .sm\\:gap-6,
+  .md\\:gap-6,
+  .lg\\:gap-6 {
+    gap: 1.5rem !important;
+  }
+
+  .gap-8,
+  .sm\\:gap-8,
+  .md\\:gap-8,
+  .lg\\:gap-8 {
+    gap: 2rem !important;
+  }
+
   /* Force desktop responsive padding */
   .responsive-padding {
     padding: 1.5rem !important;
   }
-  
+
   .responsive-margin {
     margin: 1.5rem !important;
   }
-  
+
   /* Force desktop card layouts */
   .mobile-card-fix {
     max-width: none !important;
     width: 100% !important;
   }
-  
+
   /* Ensure proper flex behavior */
   .flex {
     display: flex !important;
   }
-  
+
   .flex-col {
     flex-direction: column !important;
   }
-  
+
   .flex-row {
     flex-direction: row !important;
   }
-  
+
   /* Ensure proper grid behavior */
   .grid {
     display: grid !important;
   }
-  
+
   /* Force desktop heights */
   .h-screen {
     height: 100vh !important;
   }
-  
+
   .min-h-screen {
     min-height: 100vh !important;
   }
-  
+
   /* Force desktop widths */
   .w-full {
     width: 100% !important;
   }
-  
+
   .w-64 {
     width: 16rem !important;
   }
-  
+
   /* Force desktop overflow behavior */
   .overflow-hidden {
     overflow: hidden !important;
   }
-  
+
   .overflow-y-auto {
     overflow-y: auto !important;
   }
-  
+
   .overflow-x-hidden {
     overflow-x: hidden !important;
   }
@@ -207,6 +387,7 @@
 /* iOS Safari specific fixes */
 @supports (-webkit-touch-callout: none) {
   @media (display-mode: standalone) {
+
     /* Safe area handling */
     .pwa-safe-area {
       padding-top: env(safe-area-inset-top);
@@ -219,73 +400,106 @@
 
 /* Touch optimizations for PWA */
 @media (display-mode: standalone) {
+
   /* Proper touch targets */
-  button, a, [role="button"] {
+  button,
+  a,
+  [role="button"] {
     min-height: 44px !important;
     min-width: 44px !important;
   }
-  
+
   /* Smooth scrolling */
   * {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
   }
-  
+
   /* Prevent zoom on input focus */
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     font-size: 16px !important;
   }
-}  
+}
 
-  /* FORCE LOGOUT BUTTON TO BE VISIBLE ON MOBILE PWA */
-  button[class*="logout"], button[class*="sign-out"], button[class*="sair"],
-  .logout-button, .sign-out-button, .sair-button,
-  [aria-label*="logout"], [aria-label*="sign out"], [aria-label*="sair"],
-  [title*="logout"], [title*="sign out"], [title*="sair"] {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-  
-  /* FORCE ALL RESPONSIVE FLEX BEHAVIORS TO DESKTOP */
-  .flex-col.sm\\:flex-row, .flex-col.md\\:flex-row, .flex-col.lg\\:flex-row {
-    flex-direction: row !important;
-  }
-  
-  .flex-row.sm\\:flex-col, .flex-row.md\\:flex-col, .flex-row.lg\\:flex-col {
-    flex-direction: column !important;
-  }
-  
-  /* FORCE ALL RESPONSIVE WIDTHS TO DESKTOP */
-  .w-full.sm\\:w-auto, .w-full.md\\:w-auto, .w-full.lg\\:w-auto {
-    width: auto !important;
-  }
-  
-  .w-auto.sm\\:w-full, .w-auto.md\\:w-full, .w-auto.lg\\:w-full {
-    width: 100% !important;
-  }
-  
-  /* OVERRIDE ANY MOBILE-FIRST RESPONSIVE HIDING */
-  .block.sm\\:hidden, .block.md\\:hidden, .block.lg\\:hidden {
-    display: none !important;
-  }
-  
-  .hidden.sm\\:block, .hidden.md\\:block, .hidden.lg\\:block {
-    display: block !important;
-  }
-  
-  .flex.sm\\:hidden, .flex.md\\:hidden, .flex.lg\\:hidden {
-    display: none !important;
-  }
-  
-  .hidden.sm\\:flex, .hidden.md\\:flex, .hidden.lg\\:flex {
-    display: flex !important;
-  }
-  
-  /* FORCE DESKTOP LAYOUT FOR ANY CONTAINER */
-  .container, .max-w-7xl, .max-w-6xl, .max-w-5xl, .max-w-4xl {
-    max-width: none !important;
-    width: 100% !important;
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
-  }
+/* FORCE LOGOUT BUTTON TO BE VISIBLE ON MOBILE PWA */
+button[class*="logout"],
+button[class*="sign-out"],
+button[class*="sair"],
+.logout-button,
+.sign-out-button,
+.sair-button,
+[aria-label*="logout"],
+[aria-label*="sign out"],
+[aria-label*="sair"],
+[title*="logout"],
+[title*="sign out"],
+[title*="sair"] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* FORCE ALL RESPONSIVE FLEX BEHAVIORS TO DESKTOP */
+.flex-col.sm\\:flex-row,
+.flex-col.md\\:flex-row,
+.flex-col.lg\\:flex-row {
+  flex-direction: row !important;
+}
+
+.flex-row.sm\\:flex-col,
+.flex-row.md\\:flex-col,
+.flex-row.lg\\:flex-col {
+  flex-direction: column !important;
+}
+
+/* FORCE ALL RESPONSIVE WIDTHS TO DESKTOP */
+.w-full.sm\\:w-auto,
+.w-full.md\\:w-auto,
+.w-full.lg\\:w-auto {
+  width: auto !important;
+}
+
+.w-auto.sm\\:w-full,
+.w-auto.md\\:w-full,
+.w-auto.lg\\:w-full {
+  width: 100% !important;
+}
+
+/* OVERRIDE ANY MOBILE-FIRST RESPONSIVE HIDING */
+.block.sm\\:hidden,
+.block.md\\:hidden,
+.block.lg\\:hidden {
+  display: none !important;
+}
+
+.hidden.sm\\:block,
+.hidden.md\\:block,
+.hidden.lg\\:block {
+  display: block !important;
+}
+
+.flex.sm\\:hidden,
+.flex.md\\:hidden,
+.flex.lg\\:hidden {
+  display: none !important;
+}
+
+.hidden.sm\\:flex,
+.hidden.md\\:flex,
+.hidden.lg\\:flex {
+  display: flex !important;
+}
+
+/* FORCE DESKTOP LAYOUT FOR ANY CONTAINER */
+.container,
+.max-w-7xl,
+.max-w-6xl,
+.max-w-5xl,
+.max-w-4xl {
+  max-width: none !important;
+  width: 100% !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
