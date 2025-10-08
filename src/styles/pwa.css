@@ -1175,4 +1175,188 @@ MOBILE RESPONSIVE DESIGN - ALL PLATFORMS - FLUID AND PERFECT */
   aside:not(.sidebar-open) {
     transform: translateX(-100%) !important;
   }
+}/* MOBILE M
+ENU FIX - FORCE ALL MENU ITEMS TO BE VISIBLE */
+@media (max-width: 768px) {
+  
+  /* CRITICAL: OVERRIDE ALL HIDING AND FORCE MENU VISIBILITY */
+  .sidebar nav,
+  aside nav,
+  .sidebar .flex-1,
+  aside .flex-1 {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 0.75rem !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* FORCE MENU ITEMS CONTAINER */
+  .sidebar nav .space-y-1,
+  aside nav .space-y-1,
+  .sidebar .space-y-1,
+  aside .space-y-1 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.25rem !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* FORCE ALL INDIVIDUAL MENU ITEMS */
+  .sidebar nav .space-y-1 > *,
+  aside nav .space-y-1 > *,
+  .sidebar .space-y-1 > *,
+  aside .space-y-1 > *,
+  .sidebar nav > div > *,
+  aside nav > div > *,
+  .sidebar nav a,
+  aside nav a,
+  .sidebar nav button:not([class*="logout"]),
+  aside nav button:not([class*="logout"]) {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 0.75rem 1rem !important;
+    margin: 0.125rem 0 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-decoration: none !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+  }
+
+  /* SPECIFIC MENU ITEMS BY HREF */
+  .sidebar a[href="/dashboard"],
+  .sidebar a[href="/lancamentos"],
+  .sidebar a[href="/fluxo-caixa"],
+  .sidebar a[href="/dre"],
+  .sidebar a[href="/precificacao"],
+  .sidebar a[href="/estoque"],
+  .sidebar a[href="/cadastros"],
+  .sidebar a[href="/pipeline"],
+  .sidebar a[href="/saldos-bancarios"],
+  .sidebar a[href="/lembretes"],
+  .sidebar a[href="/ponto-equilibrio"],
+  .sidebar a[href="/suporte"],
+  .sidebar a[href="/dashboard/perfil"],
+  aside a[href="/dashboard"],
+  aside a[href="/lancamentos"],
+  aside a[href="/fluxo-caixa"],
+  aside a[href="/dre"],
+  aside a[href="/precificacao"],
+  aside a[href="/estoque"],
+  aside a[href="/cadastros"],
+  aside a[href="/pipeline"],
+  aside a[href="/saldos-bancarios"],
+  aside a[href="/lembretes"],
+  aside a[href="/ponto-equilibrio"],
+  aside a[href="/suporte"],
+  aside a[href="/dashboard/perfil"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* FORCE ALL MENU ICONS */
+  .sidebar nav a svg,
+  aside nav a svg,
+  .sidebar nav button svg,
+  aside nav button svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    margin-right: 0.75rem !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* FORCE ALL MENU TEXT */
+  .sidebar nav a span,
+  aside nav a span,
+  .sidebar nav button span,
+  aside nav button span {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: inherit !important;
+  }
+
+  /* OVERRIDE RESPONSIVE HIDING */
+  .sidebar .hidden,
+  aside .hidden,
+  .sidebar .md\\:hidden,
+  aside .md\\:hidden,
+  .sidebar .lg\\:hidden,
+  aside .lg\\:hidden {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* MENU HOVER EFFECTS */
+  .sidebar nav a:hover,
+  aside nav a:hover,
+  .sidebar nav button:hover,
+  aside nav button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+  }
+
+  /* ENSURE LOGOUT BUTTON STAYS AT BOTTOM */
+  .sidebar .p-3.border-t,
+  aside .p-3.border-t {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-top: auto !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* LOGOUT BUTTON STYLING */
+  .sidebar button[class*="logout"],
+  .sidebar button[class*="sign-out"],
+  .sidebar button[class*="sair"],
+  aside button[class*="logout"],
+  aside button[class*="sign-out"],
+  aside button[class*="sair"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
+    padding: 1rem !important;
+    font-size: 0.875rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+  }
+
+  /* LOGOUT BUTTON HOVER */
+  .sidebar button[class*="logout"]:hover,
+  .sidebar button[class*="sign-out"]:hover,
+  .sidebar button[class*="sair"]:hover,
+  aside button[class*="logout"]:hover,
+  aside button[class*="sign-out"]:hover,
+  aside button[class*="sair"]:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: white !important;
+  }
 }
