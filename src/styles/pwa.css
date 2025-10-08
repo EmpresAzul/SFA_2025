@@ -1,824 +1,185 @@
-/* PWA Specific Styles - Proper Menu Layout */
+/* PWA Styles - Force Desktop Layout Identical */
 
-/* Ensure proper menu functionality in PWA mode */
+/* Force desktop layout when app is installed as PWA */
 @media (display-mode: standalone) {
-
-  /* Reset any forced layouts */
-  html,
-  body {
-    width: 100% !important;
-    min-width: auto !important;
-    max-width: none !important;
+  /* Ensure proper desktop-like layout structure */
+  html {
+    width: 100vw !important;
+    height: 100vh !important;
     overflow-x: hidden !important;
   }
-
-  /* Ensure sidebar works properly */
-  .sidebar,
-  [class*="sidebar"] {
-    position: relative !important;
-    width: auto !important;
-    height: auto !important;
-    left: auto !important;
-    top: auto !important;
+  
+  body {
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
   }
-
-  /* Reset main content area */
-  .main-content,
-  [class*="main-content"] {
-    margin-left: 0 !important;
-    width: 100% !important;
-    padding: 1rem !important;
-  }
-
-  /* Allow normal touch behaviors */
-  * {
-    -webkit-touch-callout: default;
-    -webkit-user-select: auto;
-    user-select: auto;
-  }
-
-  /* Reset responsive containers to normal behavior */
-  .responsive-padding,
-  .responsive-margin {
-    padding: inherit !important;
-    margin: inherit !important;
-  }
-
-  /* Force desktop text sizes */
-  .text-xs {
-    font-size: 0.875rem !important;
-  }
-
-  .text-sm {
-    font-size: 1rem !important;
-  }
-
-  .text-base {
-    font-size: 1.125rem !important;
-  }
-
-  .text-lg {
-    font-size: 1.25rem !important;
-  }
-
-  .text-xl {
-    font-size: 1.5rem !important;
-  }
-
-  .text-2xl {
-    font-size: 2rem !important;
-  }
-
-  /* Force desktop spacing */
-  .p-2 {
-    padding: 1rem !important;
-  }
-
-  .p-3 {
-    padding: 1.25rem !important;
-  }
-
-  .p-4 {
-    padding: 1.5rem !important;
-  }
-
-  .p-6 {
-    padding: 2rem !important;
-  }
-
-  .m-2 {
-    margin: 1rem !important;
-  }
-
-  .m-3 {
-    margin: 1.25rem !important;
-  }
-
-  .m-4 {
-    margin: 1.5rem !important;
-  }
-
-  .m-6 {
-    margin: 2rem !important;
-  }
-
-  /* Force desktop button sizes */
-  .h-8 {
-    height: 2.5rem !important;
-  }
-
-  .h-10 {
-    height: 3rem !important;
-  }
-
-  .h-12 {
-    height: 3.5rem !important;
-  }
-
-  /* Force desktop sidebar behavior - DISABLED for proper menu */
-  /* .sidebar {
+  
+  /* Force desktop sidebar behavior */
+  .w-64.bg-gradient-to-b.from-blue-600.to-blue-800 {
     width: 16rem !important;
     position: fixed !important;
     left: 0 !important;
     top: 0 !important;
     height: 100vh !important;
-  } */
-
-  /* Force desktop main content area - DISABLED for proper layout */
-  /* .main-content {
+    z-index: 40 !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* Force desktop main content area */
+  .flex-1.flex.flex-col.overflow-hidden {
     margin-left: 16rem !important;
-    width: calc(100% - 16rem) !important;
-  } */
-
-  /* Override all mobile-first responsive classes */
-  .block {
-    display: block !important;
+    width: calc(100vw - 16rem) !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
   }
-
-  .hidden {
-    display: none !important;
-  }
-
-  .flex {
-    display: flex !important;
-  }
-
-  .grid {
+  
+  /* Force desktop dashboard grid - 4 columns */
+  .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4.gap-4.sm\\:gap-6 {
     display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.5rem !important;
   }
-
+  
+  /* Force desktop cards grid - 2 columns */
+  .grid.grid-cols-1.lg\\:grid-cols-2.gap-4.sm\\:gap-6 {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 2rem !important;
+  }
+  
+  /* Force desktop stats grid - 4 columns */
+  .grid.grid-cols-2.lg\\:grid-cols-4.gap-3.sm\\:gap-4 {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1rem !important;
+  }
+  
+  /* Force desktop text sizes */
+  .text-xs { font-size: 0.75rem !important; line-height: 1rem !important; }
+  .text-sm { font-size: 0.875rem !important; line-height: 1.25rem !important; }
+  .text-base { font-size: 1rem !important; line-height: 1.5rem !important; }
+  .text-lg { font-size: 1.125rem !important; line-height: 1.75rem !important; }
+  .text-xl { font-size: 1.25rem !important; line-height: 1.75rem !important; }
+  .text-2xl { font-size: 1.5rem !important; line-height: 2rem !important; }
+  
+  /* Force desktop padding */
+  .p-2 { padding: 0.5rem !important; }
+  .p-3 { padding: 0.75rem !important; }
+  .p-4 { padding: 1rem !important; }
+  .p-6 { padding: 1.5rem !important; }
+  .p-8 { padding: 2rem !important; }
+  
+  /* Force desktop margins */
+  .m-2 { margin: 0.5rem !important; }
+  .m-3 { margin: 0.75rem !important; }
+  .m-4 { margin: 1rem !important; }
+  .m-6 { margin: 1.5rem !important; }
+  .m-8 { margin: 2rem !important; }
+  
+  /* Force desktop gaps */
+  .gap-2 { gap: 0.5rem !important; }
+  .gap-3 { gap: 0.75rem !important; }
+  .gap-4 { gap: 1rem !important; }
+  .gap-6 { gap: 1.5rem !important; }
+  
+  /* Force desktop responsive padding */
+  .responsive-padding {
+    padding: 1.5rem !important;
+  }
+  
+  .responsive-margin {
+    margin: 1.5rem !important;
+  }
+  
   /* Force desktop card layouts */
   .mobile-card-fix {
     max-width: none !important;
     width: 100% !important;
   }
-}
-
-/* Touch optimizations */
-.pwa-touch-target {
-  min-height: 44px;
-  min-width: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Smooth scrolling for mobile */
-.pwa-smooth-scroll {
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-}
-
-/* Prevent zoom on input focus (iOS) */
-.pwa-input {
-  font-size: 16px;
-  /* Prevents zoom on iOS */
-}
-
-@media (max-width: 768px) {
-  .pwa-input {
-    font-size: 16px !important;
+  
+  /* Ensure proper flex behavior */
+  .flex {
+    display: flex !important;
   }
-}
-
-/* Loading states */
-.pwa-loading {
-  position: relative;
-  overflow: hidden;
-}
-
-.pwa-loading::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.4),
-      transparent);
-  animation: pwa-shimmer 1.5s infinite;
-}
-
-@keyframes pwa-shimmer {
-  0% {
-    left: -100%;
-  }
-
-  100% {
-    left: 100%;
-  }
-}
-
-/* Offline styles */
-.pwa-offline {
-  filter: grayscale(1);
-  opacity: 0.7;
-}
-
-.pwa-offline-banner {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: white;
-  padding: 0.5rem 1rem;
-  text-align: center;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-/* Install prompt styles */
-.pwa-install-prompt {
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Update notification styles */
-.pwa-update-notification {
-  backdrop-filter: blur(10px);
-  background: rgba(59, 130, 246, 0.95);
-  color: white;
-  animation: pwa-slide-in 0.3s ease-out;
-}
-
-@keyframes pwa-slide-in {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Responsive breakpoints */
-@media (max-width: 640px) {
-  .pwa-mobile-only {
-    display: block;
-  }
-
-  .pwa-desktop-only {
-    display: none;
-  }
-
-  /* Mobile-specific touch targets */
-  .pwa-mobile-touch {
-    min-height: 48px;
-    padding: 0.75rem;
-  }
-}
-
-@media (min-width: 641px) {
-  .pwa-mobile-only {
-    display: none;
-  }
-
-  .pwa-desktop-only {
-    display: block;
-  }
-}
-
-/* Tablet optimizations */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .pwa-tablet-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-}
-
-/* High DPI displays */
-@media (-webkit-min-device-pixel-ratio: 2),
-(min-resolution: 192dpi) {
-  .pwa-high-dpi {
-    /* Styles for high DPI displays */
-  }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .pwa-auto-dark {
-    background-color: #1f2937;
-    color: #f9fafb;
-  }
-
-  .pwa-install-prompt {
-    background: rgba(31, 41, 59, 0.95);
-    border-color: rgba(59, 130, 246, 0.5);
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .pwa-loading::after {
-    animation: none;
-  }
-
-  .pwa-update-notification {
-    animation: none;
-  }
-
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Focus styles for accessibility */
-.pwa-focus-visible:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-/* Print styles */
-@media print {
-  .pwa-no-print {
-    display: none !important;
-  }
-}
-
-/*
- Force desktop layout when PWA is installed */
-@media (display-mode: standalone) {
-  /* Override ALL Tailwind responsive utilities to force desktop behavior */
-
-  /* Force desktop flex layouts */
+  
   .flex-col {
+    flex-direction: column !important;
+  }
+  
+  .flex-row {
     flex-direction: row !important;
   }
-
-  .sm\:flex-row {
-    flex-direction: row !important;
+  
+  /* Ensure proper grid behavior */
+  .grid {
+    display: grid !important;
   }
-
-  .md\:flex-row {
-    flex-direction: row !important;
-  }
-
-  /* Force desktop grid layouts */
-  .grid-cols-1 {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-
-  .sm\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-
-  .md\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-
-  .lg\:grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-
-  .xl\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  }
-
-  /* Force desktop spacing for all responsive classes */
-  .space-y-2>*+* {
-    margin-top: 1rem !important;
-  }
-
-  .space-y-4>*+* {
-    margin-top: 1.5rem !important;
-  }
-
-  .space-y-6>*+* {
-    margin-top: 2rem !important;
-  }
-
-  .gap-2 {
-    gap: 1rem !important;
-  }
-
-  .gap-4 {
-    gap: 1.5rem !important;
-  }
-
-  .gap-6 {
-    gap: 2rem !important;
-  }
-
-  /* Force desktop widths */
-  .w-full {
-    width: 100% !important;
-  }
-
-  .max-w-sm {
-    max-width: 100% !important;
-  }
-
-  .max-w-md {
-    max-width: 100% !important;
-  }
-
-  .max-w-lg {
-    max-width: 100% !important;
-  }
-
-  .max-w-xl {
-    max-width: 100% !important;
-  }
-
-  .max-w-2xl {
-    max-width: 100% !important;
-  }
-
+  
   /* Force desktop heights */
   .h-screen {
     height: 100vh !important;
   }
-
+  
   .min-h-screen {
     min-height: 100vh !important;
   }
-
-  /* Force desktop positioning */
-  .fixed {
-    position: fixed !important;
+  
+  /* Force desktop widths */
+  .w-full {
+    width: 100% !important;
   }
-
-  .absolute {
-    position: absolute !important;
+  
+  .w-64 {
+    width: 16rem !important;
   }
-
-  .relative {
-    position: relative !important;
-  }
-
-  /* Force desktop z-index */
-  .z-10 {
-    z-index: 10 !important;
-  }
-
-  .z-20 {
-    z-index: 20 !important;
-  }
-
-  .z-30 {
-    z-index: 30 !important;
-  }
-
-  .z-40 {
-    z-index: 40 !important;
-  }
-
-  .z-50 {
-    z-index: 50 !important;
-  }
-
-  /* Disable mobile-specific transforms */
-  .transform {
-    transform: none !important;
-  }
-
-  .translate-x-0 {
-    transform: translateX(0) !important;
-  }
-
-  .translate-y-0 {
-    transform: translateY(0) !important;
-  }
-
+  
   /* Force desktop overflow behavior */
   .overflow-hidden {
-    overflow: visible !important;
+    overflow: hidden !important;
   }
-
-  .overflow-x-auto {
-    overflow-x: auto !important;
-  }
-
+  
   .overflow-y-auto {
     overflow-y: auto !important;
   }
-
-  /* Force desktop display properties */
-  .block {
-    display: block !important;
-  }
-
-  .inline-block {
-    display: inline-block !important;
-  }
-
-  .flex {
-    display: flex !important;
-  }
-
-  .inline-flex {
-    display: inline-flex !important;
-  }
-
-  .grid {
-    display: grid !important;
-  }
-
-  .hidden {
-    display: none !important;
-  }
-
-  /* Override mobile-specific hiding/showing */
-  .sm\:block {
-    display: block !important;
-  }
-
-  .md\:block {
-    display: block !important;
-  }
-
-  .lg\:block {
-    display: block !important;
-  }
-
-  .sm\:hidden {
-    display: none !important;
-  }
-
-  .md\:hidden {
-    display: none !important;
-  }
-
-  .lg\:hidden {
-    display: none !important;
-  }
-
-  /* Force desktop border radius */
-  .rounded {
-    border-radius: 0.5rem !important;
-  }
-
-  .rounded-lg {
-    border-radius: 0.75rem !important;
-  }
-
-  .rounded-xl {
-    border-radius: 1rem !important;
-  }
-
-  /* Force desktop shadows */
-  .shadow {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-  }
-
-  .shadow-lg {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-  }
-
-  .shadow-xl {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
+  
+  .overflow-x-hidden {
+    overflow-x: hidden !important;
   }
 }
 
-/* Specific overrides for common mobile patterns */
-@media (display-mode: standalone) {
-
-  /* Force sidebar to always be visible */
-  .sidebar-mobile-hidden {
-    display: block !important;
-  }
-
-  /* Force desktop navigation */
-  .mobile-menu {
-    display: none !important;
-  }
-
-  .desktop-menu {
-    display: block !important;
-  }
-
-  /* Force desktop table layouts */
-  .table-responsive {
-    overflow-x: visible !important;
-  }
-
-  /* Force desktop form layouts */
-  .form-mobile {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 1.5rem !important;
-  }
-
-  /* Force desktop card grids */
-  .card-grid-mobile {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
-    gap: 2rem !important;
-  }
-}
-
-/* Crit
-ical: Force exact desktop layout in PWA */
-.pwa-desktop-forced {
-  /* Allow proper responsive behavior */
-  width: 100% !important;
-  overflow-x: hidden !important;
-}
-
-.pwa-desktop-forced * {
-  /* Override ALL mobile-first responsive utilities */
-  box-sizing: border-box !important;
-}
-
-/* Force desktop layout for specific components */
-@media (display-mode: standalone) {
-
-  /* Dashboard Layout */
-  .dashboard-container {
-    display: grid !important;
-    grid-template-columns: 16rem 1fr !important;
-    min-height: 100vh !important;
-  }
-
-  /* Sidebar - DISABLED for proper menu functionality */
-  /* .sidebar {
-    width: 16rem !important;
-    position: fixed !important;
-    left: 0 !important;
-    top: 0 !important;
-    height: 100vh !important;
-    z-index: 40 !important;
-  } */
-
-  /* Main content - DISABLED for proper layout */
-  /* .main-content {
-    margin-left: 16rem !important;
-    width: calc(100% - 16rem) !important;
-    padding: 2rem !important;
-  } */
-
-  /* Cards and containers */
-  .card-container {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
-    gap: 2rem !important;
-  }
-
-  /* Forms */
-  .form-container {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 1.5rem !important;
-  }
-
-  /* Tables */
-  .table-container {
-    overflow-x: auto !important;
-    min-width: 100% !important;
-  }
-
-  /* Navigation */
-  .nav-container {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 2rem !important;
-  }
-
-  /* Buttons */
-  .btn-container {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 1rem !important;
-  }
-
-  /* Stats cards */
-  .stats-container {
-    display: grid !important;
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 1.5rem !important;
-  }
-
-  /* Pipeline board */
-  .pipeline-container {
-    display: grid !important;
-    grid-template-columns: repeat(6, 1fr) !important;
-    gap: 1rem !important;
-  }
-
-  /* Force desktop text and spacing everywhere */
-  .text-xs {
-    font-size: 0.875rem !important;
-    line-height: 1.25rem !important;
-  }
-
-  .text-sm {
-    font-size: 1rem !important;
-    line-height: 1.5rem !important;
-  }
-
-  .text-base {
-    font-size: 1.125rem !important;
-    line-height: 1.75rem !important;
-  }
-
-  .text-lg {
-    font-size: 1.25rem !important;
-    line-height: 1.75rem !important;
-  }
-
-  .text-xl {
-    font-size: 1.5rem !important;
-    line-height: 2rem !important;
-  }
-
-  .text-2xl {
-    font-size: 2rem !important;
-    line-height: 2.5rem !important;
-  }
-
-  .p-1 {
-    padding: 0.5rem !important;
-  }
-
-  .p-2 {
-    padding: 1rem !important;
-  }
-
-  .p-3 {
-    padding: 1.25rem !important;
-  }
-
-  .p-4 {
-    padding: 1.5rem !important;
-  }
-
-  .p-6 {
-    padding: 2rem !important;
-  }
-
-  .p-8 {
-    padding: 2.5rem !important;
-  }
-
-  .m-1 {
-    margin: 0.5rem !important;
-  }
-
-  .m-2 {
-    margin: 1rem !important;
-  }
-
-  .m-3 {
-    margin: 1.25rem !important;
-  }
-
-  .m-4 {
-    margin: 1.5rem !important;
-  }
-
-  .m-6 {
-    margin: 2rem !important;
-  }
-
-  .m-8 {
-    margin: 2.5rem !important;
-  }
-}
-
-/ * Critical fix for PWA menu layout */ @media (display-mode: standalone) {
-  /* Ensure proper dashboard layout */
-  body {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  /* Reset any forced positioning */
-  * {
-    position: static !important;
-  }
-
-  /* Allow sidebar to function normally */
-  .sidebar {
-    position: relative !important;
-  }
-
-  /* Ensure main content flows properly */
-  main,
-  .main,
-  [role="main"] {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 1rem !important;
-  }
-
-  /* Reset grid and flex to normal behavior */
-  .grid,
-  .flex {
-    display: inherit !important;
-  }
-
-  /* Allow normal responsive behavior */
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 100% !important;
-      height: auto !important;
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  @media (display-mode: standalone) {
+    /* Safe area handling */
+    .pwa-safe-area {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
     }
+  }
+}
+
+/* Touch optimizations for PWA */
+@media (display-mode: standalone) {
+  /* Proper touch targets */
+  button, a, [role="button"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+  
+  /* Smooth scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px !important;
   }
 }
