@@ -37,12 +37,12 @@
     transform: translateX(0) !important;
     transition: width 0.3s ease !important;
   }
-  
+
   /* SIDEBAR WIDTH CONTROL - ALLOW COLLAPSE ON MOBILE */
   .w-64 {
     width: 16rem !important;
   }
-  
+
   .w-16 {
     width: 4rem !important;
   }
@@ -82,21 +82,21 @@
     overflow-x: hidden !important;
     transition: margin-left 0.3s ease, width 0.3s ease !important;
   }
-  
+
   /* MAIN CONTENT WHEN SIDEBAR IS EXPANDED (w-64) */
-  .w-64 ~ .flex-1.flex.flex-col.overflow-hidden,
-  .w-64 ~ main,
-  .w-64 ~ .main-content,
-  .w-64 ~ [class*="main"] {
+  .w-64~.flex-1.flex.flex-col.overflow-hidden,
+  .w-64~main,
+  .w-64~.main-content,
+  .w-64~[class*="main"] {
     margin-left: 16rem !important;
     width: calc(100vw - 16rem) !important;
   }
-  
+
   /* MAIN CONTENT WHEN SIDEBAR IS COLLAPSED (w-16) */
-  .w-16 ~ .flex-1.flex.flex-col.overflow-hidden,
-  .w-16 ~ main,
-  .w-16 ~ .main-content,
-  .w-16 ~ [class*="main"] {
+  .w-16~.flex-1.flex.flex-col.overflow-hidden,
+  .w-16~main,
+  .w-16~.main-content,
+  .w-16~[class*="main"] {
     margin-left: 4rem !important;
     width: calc(100vw - 4rem) !important;
   }
@@ -525,10 +525,12 @@ button[class*="sair"],
   width: 100% !important;
   padding-left: 1.5rem !important;
   padding-right: 1.5rem !important;
-}/* 
+}
+
+/* 
 MOBILE PWA SPECIFIC FIXES FOR SIDEBAR AND LOGOUT */
 @media (display-mode: standalone) and (max-width: 768px) {
-  
+
   /* ENSURE LOGOUT BUTTON IS ALWAYS VISIBLE IN MOBILE PWA */
   .p-3.border-t.border-white\/10,
   [class*="logout"],
@@ -541,7 +543,7 @@ MOBILE PWA SPECIFIC FIXES FOR SIDEBAR AND LOGOUT */
     position: relative !important;
     z-index: 50 !important;
   }
-  
+
   /* SIDEBAR LOGOUT SECTION - ALWAYS VISIBLE */
   .sidebar .p-3.border-t,
   aside .p-3.border-t,
@@ -551,7 +553,7 @@ MOBILE PWA SPECIFIC FIXES FOR SIDEBAR AND LOGOUT */
     opacity: 1 !important;
     margin-top: auto !important;
   }
-  
+
   /* FORCE LOGOUT BUTTON TEXT TO SHOW WHEN COLLAPSED */
   .w-16 button[class*="logout"] span,
   .w-16 button[class*="sign-out"] span,
@@ -560,13 +562,13 @@ MOBILE PWA SPECIFIC FIXES FOR SIDEBAR AND LOGOUT */
     visibility: visible !important;
     opacity: 1 !important;
   }
-  
+
   /* ADJUST MAIN CONTENT FOR MOBILE PWA */
   .flex-1.flex.flex-col.overflow-hidden {
     margin-left: 4rem !important;
     width: calc(100vw - 4rem) !important;
   }
-  
+
   /* DEFAULT SIDEBAR TO COLLAPSED ON MOBILE PWA */
   aside,
   nav,
