@@ -36,18 +36,31 @@ export const usePipeline = () => {
       }
 
       // Converter dados da tabela cadastros para o formato esperado pelo frontend
-      const leadsMapeados: Lead[] = (data || []).map(cadastro => ({
-        id: cadastro.id,
-        nome_lead: cadastro.nome,
-        email: cadastro.email || '',
-        whatsapp: cadastro.telefone || '',
-        valor_negocio: 0, // Será armazenado nas observações por enquanto
-        status: (cadastro.status as any) || 'prospeccao',
-        observacoes: cadastro.observacoes || '',
-        created_at: cadastro.created_at || new Date().toISOString(),
-        updated_at: cadastro.updated_at || new Date().toISOString(),
-        user_id: cadastro.user_id
-      }));
+      const leadsMapeados: Lead[] = (data || []).map(cadastro => {
+        // Extrair valor das observações (formato: "Valor: R$ 5000")
+        let valorNegocio = 0;
+        if (cadastro.observacoes) {
+          const match = cadastro.observacoes.match(/Valor:\s*R\$\s*([\d.,]+)/i);
+          if (match) {
+            // Remover pontos e vírgulas e converter para número
+            const valorStr = match[1].replace(/\./g, '').replace(',', '.');
+            valorNegocio = parseFloat(valorStr) || 0;
+          }
+        }
+
+        return {
+          id: cadastro.id,
+          nome_lead: cadastro.nome,
+          email: cadastro.email || '',
+          whatsapp: cadastro.telefone || '',
+          valor_negocio: valorNegocio,
+          status: (cadastro.status as any) || 'prospeccao',
+          observacoes: cadastro.observacoes || '',
+          created_at: cadastro.created_at || new Date().toISOString(),
+          updated_at: cadastro.updated_at || new Date().toISOString(),
+          user_id: cadastro.user_id
+        };
+      });
 
       setNegocios(leadsMapeados);
     } catch (error) {
@@ -69,13 +82,17 @@ export const usePipeline = () => {
       if (!user) throw new Error("Usuário não autenticado");
 
       // Converter dados do frontend para o formato da tabela cadastros
+      const observacoesComValor = negocio.observacoes || '';
+      const valorFormatado = `Valor: R$ ${negocio.valor_negocio || 0}`;
+      const observacoesFinal = observacoesComValor ? `${observacoesComValor}\n${valorFormatado}` : valorFormatado;
+
       const leadData = {
         nome: negocio.nome_lead,
         email: negocio.email || '',
         telefone: negocio.whatsapp || '',
         tipo: 'lead', // Identificar como lead
         status: negocio.status,
-        observacoes: `${negocio.observacoes || ''}\nValor: R$ ${negocio.valor_negocio || 0}`,
+        observacoes: observacoesFinal,
         user_id: user.id,
         ativo: true
       };
@@ -116,9 +133,16 @@ export const usePipeline = () => {
       if (updates.whatsapp !== undefined) updateData.telefone = updates.whatsapp;
       if (updates.status) updateData.status = updates.status;
       if (updates.observacoes !== undefined || updates.valor_negocio !== undefined) {
-        const obs = updates.observacoes || '';
-        const valor = updates.valor_negocio || 0;
-        updateData.observacoes = `${obs}\nValor: R$ ${valor}`;
+        // Pegar observações atuais do lead
+        const leadAtual = negocios.find(n => n.id === id);
+        let obsAtuais = updates.observacoes !== undefined ? updates.observacoes : (leadAtual?.observacoes || '');
+        
+        // Remover linha de valor existente das observações
+        obsAtuais = obsAtuais.replace(/\nValor:\s*R\$\s*[\d.,]+/gi, '');
+        
+        // Adicionar novo valor
+        const valor = updates.valor_negocio !== undefined ? updates.valor_negocio : (leadAtual?.valor_negocio || 0);
+        updateData.observacoes = `${obsAtuais}\nValor: R$ ${valor}`.trim();
       }
 
       const { error } = await supabase
