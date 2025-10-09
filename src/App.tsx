@@ -2,6 +2,8 @@ import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
+import PWAInstallBanner from "./components/PWAInstallBanner";
+import PWAStatusIndicator from "./components/PWAStatusIndicator";
 import PWAInstallPrompt from "./components/pwa/PWAInstallPrompt";
 import OfflineIndicator from "./components/pwa/OfflineIndicator";
 import UpdateNotification from "./components/pwa/UpdateNotification";
@@ -183,6 +185,8 @@ const App = () => (
       {/* PWA Components */}
       <OfflineIndicator />
       <PWAInstallPrompt />
+      <PWAInstallBanner />
+      <PWAStatusIndicator />
       <UpdateNotification />
       
       <Toaster />

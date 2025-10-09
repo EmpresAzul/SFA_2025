@@ -4,19 +4,14 @@
   "description": "Sistema de gestão financeira completo para pequenas e médias empresas",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#1e3a8a",
+  "background_color": "#0a0f1e",
+  "theme_color": "#0a0f1e",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "pt-BR",
   "categories": ["business", "finance", "productivity"],
   "display_override": ["window-controls-overlay", "standalone"],
   "icons": [
-    {
-      "src": "/favicon.ico",
-      "sizes": "48x48",
-      "type": "image/x-icon"
-    },
     {
       "src": "/icon-192x192.png",
       "sizes": "192x192",
@@ -30,15 +25,15 @@
       "purpose": "maskable"
     },
     {
-      "src": "/favicon.svg",
+      "src": "/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/favicon.svg",
+      "src": "/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
