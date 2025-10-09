@@ -528,7 +528,7 @@ body {
   }
 }
 
-/* Dark mode support for PWA */
+/* Dark mode support for PWA - visual consistency across all devices */
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
