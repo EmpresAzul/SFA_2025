@@ -20,33 +20,45 @@ const queryClient = new QueryClient({
   },
 });
 
-// Register service worker for PWA functionality - improved for custom domains
-if ("serviceWorker" in navigator && import.meta.env.PROD) {
+// Register service worker for PWA functionality - FECHAMENTO25 Force Update
+if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    // Add small delay to ensure DOM is fully loaded
-    setTimeout(() => {
-      navigator.serviceWorker
-        .register("/sw.js", { scope: "/" })
-        .then((registration) => {
-          console.log(
-            "FluxoAzul PWA: Service Worker registered successfully:",
-            registration.scope,
-            "- Domain:", window.location.hostname
-          );
-          
-          // Force update check for custom domains
-          if (!window.location.hostname.includes('lovable.app')) {
-            registration.update();
+    // Force immediate registration and update
+    navigator.serviceWorker
+      .register("/sw.js", { scope: "/" })
+      .then((registration) => {
+        console.log(
+          "FluxoAzul PWA FECHAMENTO25: Service Worker registered:",
+          registration.scope
+        );
+        
+        // Force immediate update
+        registration.update();
+        
+        // Listen for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // New version available, force reload
+                console.log('FluxoAzul: New version available, reloading...');
+                window.location.reload();
+              }
+            });
           }
-        })
-        .catch((error) => {
-          console.log(
-            "FluxoAzul PWA: Service Worker registration failed:",
-            error,
-            "- Domain:", window.location.hostname
-          );
         });
-    }, 1000);
+      })
+      .catch((error) => {
+        console.log("FluxoAzul PWA: Service Worker registration failed:", error);
+      });
+  });
+  
+  // Force reload on SW message
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'RELOAD_PAGE') {
+      window.location.reload();
+    }
   });
 }
 
@@ -155,4 +167,34 @@ try {
 
     rootElement.appendChild(container);
   }
+}
+// FECHAMENTO25 - Force cache clear for PWA and mobile
+if (typeof window !== 'undefined') {
+  // Clear all caches
+  if ('caches' in window) {
+    caches.keys().then((names) => {
+      names.forEach((name) => {
+        if (!name.includes('FECHAMENTO25')) {
+          caches.delete(name);
+        }
+      });
+    });
+  }
+  
+  // Force CSS reload
+  const cssLinks = document.querySelectorAll('link[rel="stylesheet"]');
+  cssLinks.forEach((link) => {
+    const href = link.getAttribute('href');
+    if (href && !href.includes('FECHAMENTO25')) {
+      const newLink = document.createElement('link');
+      newLink.rel = 'stylesheet';
+      newLink.href = href + '?v=FECHAMENTO25-' + Date.now();
+      document.head.appendChild(newLink);
+      link.remove();
+    }
+  });
+  
+  // Add version info to localStorage
+  localStorage.setItem('fluxoazul-version', 'FECHAMENTO25');
+  localStorage.setItem('fluxoazul-build-time', new Date().toISOString());
 }
