@@ -9,7 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select-white";
+} from "@/components/ui/select";
 import { unidadesMedida } from "@/types/estoque";
 
 interface EstoqueFormProps {

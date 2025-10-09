@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select-white";
+} from "@/components/ui/select";
 
 interface DREHeaderProps {
   periodo: string;

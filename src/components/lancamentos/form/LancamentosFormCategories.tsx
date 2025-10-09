@@ -1,5 +1,5 @@
 import React from "react";
-import { SelectItem } from "@/components/ui/select-white";
+import { SelectItem } from "@/components/ui/select";
 
 // Categorias do DRE organizadas conforme estrutura oficial
 const categoriasReceita = {

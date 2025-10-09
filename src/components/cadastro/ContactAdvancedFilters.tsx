@@ -8,7 +8,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select-white";
+} from "@/components/ui/select";
 import { Search, Filter, Calendar } from "lucide-react";
 
 interface ContactAdvancedFiltersProps {

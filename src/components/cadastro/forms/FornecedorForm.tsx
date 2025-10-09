@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select-white";
+} from "@/components/ui/select";
 import { CadastroData } from "../CadastroEditModal";
 
 interface FornecedorFormProps {
