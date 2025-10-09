@@ -235,10 +235,12 @@
 
 /* Custom animations */
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -253,6 +255,7 @@
     opacity: 0;
     transform: translate3d(0, -100%, 0);
   }
+
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
@@ -373,13 +376,13 @@
 /* CARDS E CONTAINERS - DESIGN SYSTEM UNIFICADO */
 .fluxo-card {
   @apply bg-white rounded-xl shadow-lg border border-gray-100;
-  box-shadow: 
+  box-shadow:
     0 10px 25px -5px rgba(30, 58, 138, 0.1),
     0 8px 10px -6px rgba(30, 58, 138, 0.05);
 }
 
 .fluxo-card:hover {
-  box-shadow: 
+  box-shadow:
     0 20px 25px -5px rgba(30, 58, 138, 0.15),
     0 10px 10px -5px rgba(30, 58, 138, 0.08);
   transform: translateY(-2px);
@@ -465,18 +468,25 @@
 }
 
 /* FORÇA FUNDO BRANCO EM TODOS OS SELECTS E INPUTS */
-select, input, textarea, 
-.select-trigger, .input-field,
-[role="combobox"], [role="listbox"],
-.ui-select, .ui-input {
+select,
+input,
+textarea,
+.select-trigger,
+.input-field,
+[role="combobox"],
+[role="listbox"],
+.ui-select,
+.ui-input {
   background: white !important;
   background-color: white !important;
   color: #374151 !important;
 }
 
 /* FORÇA FUNDO BRANCO EM DROPDOWNS E MENUS */
-.select-content, .dropdown-content, 
-.popover-content, .menu-content,
+.select-content,
+.dropdown-content,
+.popover-content,
+.menu-content,
 [data-radix-popper-content-wrapper],
 [data-state="open"] {
   background: white !important;
@@ -485,16 +495,22 @@ select, input, textarea,
 }
 
 /* FORÇA FUNDO BRANCO EM ITENS DE MENU */
-.select-item, .dropdown-item, 
-.menu-item, .option-item,
-[role="option"], [data-highlighted] {
+.select-item,
+.dropdown-item,
+.menu-item,
+.option-item,
+[role="option"],
+[data-highlighted] {
   background: white !important;
   color: #374151 !important;
 }
 
-.select-item:hover, .dropdown-item:hover,
-.menu-item:hover, .option-item:hover,
-[role="option"]:hover, [data-highlighted]:hover {
+.select-item:hover,
+.dropdown-item:hover,
+.menu-item:hover,
+.option-item:hover,
+[role="option"]:hover,
+[data-highlighted]:hover {
   background: #f8fafc !important;
   color: #1e3a8a !important;
 }
@@ -628,6 +644,7 @@ select, input, textarea,
 
 /* MOBILE ESPECÍFICO - MANTÉM IDENTIDADE VISUAL */
 @media (max-width: 640px) {
+
   /* Layout adaptativo mantendo cores e gradientes */
   .mobile-stack {
     @apply flex-col space-y-3 space-x-0;
@@ -680,7 +697,10 @@ select, input, textarea,
   }
 
   /* FORÇA FUNDO BRANCO EM MOBILE - CRÍTICO */
-  select, input, textarea, button[role="combobox"] {
+  select,
+  input,
+  textarea,
+  button[role="combobox"] {
     background: white !important;
     background-color: white !important;
     color: #374151 !important;
@@ -781,19 +801,20 @@ select, input, textarea,
 
 /* PWA Specific Styles */
 @layer utilities {
+
   /* Safe area insets for mobile devices */
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
   }
-  
+
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
-  
+
   .safe-area-left {
     padding-left: env(safe-area-inset-left);
   }
-  
+
   .safe-area-right {
     padding-right: env(safe-area-inset-right);
   }
@@ -802,15 +823,15 @@ select, input, textarea,
   .responsive-padding {
     @apply px-4 sm:px-6 lg:px-8;
   }
-  
+
   .responsive-margin {
     @apply mx-auto max-w-7xl;
   }
-  
+
   .responsive-grid {
     @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4;
   }
-  
+
   .responsive-grid-2 {
     @apply grid grid-cols-1 lg:grid-cols-2 gap-4;
   }
@@ -832,7 +853,7 @@ select, input, textarea,
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
+
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -841,12 +862,13 @@ select, input, textarea,
   .pwa-fade-in {
     animation: pwaFadeIn 0.3s ease-in-out;
   }
-  
+
   @keyframes pwaFadeIn {
     from {
       opacity: 0;
       transform: translateY(10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -855,13 +877,13 @@ select, input, textarea,
 
   /* Colorful shadow for cards */
   .shadow-colorful {
-    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1), 
-                0 10px 10px -5px rgba(59, 130, 246, 0.04);
+    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1),
+      0 10px 10px -5px rgba(59, 130, 246, 0.04);
   }
-  
+
   .shadow-colorful:hover {
-    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.15), 
-                0 10px 10px -5px rgba(59, 130, 246, 0.08);
+    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.15),
+      0 10px 10px -5px rgba(59, 130, 246, 0.08);
   }
 }
 
@@ -869,32 +891,34 @@ select, input, textarea,
 body {
   /* Prevent zoom on iOS */
   touch-action: manipulation;
-  
+
   /* Smooth font rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
   /* Prevent text size adjust on orientation change */
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
-  
+
   /* Better tap highlighting com cor da marca */
   -webkit-tap-highlight-color: rgba(30, 58, 138, 0.2);
-  
+
   /* Font family unificada */
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  
+
   /* Cor de fundo consistente */
   background-color: #f8fafc;
 }
 
 /* PWA specific media queries */
 @media (display-mode: standalone) {
+
   /* Styles when app is installed as PWA */
   body {
-    user-select: none; /* Prevent text selection in PWA mode */
+    user-select: none;
+    /* Prevent text selection in PWA mode */
   }
-  
+
   /* Add padding for status bar on iOS */
   .pwa-header {
     padding-top: env(safe-area-inset-top);
@@ -903,6 +927,7 @@ body {
 
 /* iOS specific styles */
 @supports (-webkit-touch-callout: none) {
+
   /* iOS Safari specific styles */
   .ios-scroll-fix {
     -webkit-overflow-scrolling: touch;
@@ -910,7 +935,9 @@ body {
 }
 
 /* High DPI displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
   /* Styles for high DPI displays */
   .crisp-edges {
     image-rendering: -webkit-optimize-contrast;
@@ -1014,15 +1041,22 @@ body {
 }
 
 /* FORÇA FUNDO BRANCO EM QUALQUER ELEMENTO ESCURO */
-.bg-black, .bg-gray-900, .bg-slate-900, .bg-zinc-900,
-.dark\:bg-black, .dark\:bg-gray-900, .dark\:bg-slate-900 {
+.bg-black,
+.bg-gray-900,
+.bg-slate-900,
+.bg-zinc-900,
+.dark\:bg-black,
+.dark\:bg-gray-900,
+.dark\:bg-slate-900 {
   background: white !important;
   background-color: white !important;
   color: #374151 !important;
 }
 
 /* FORÇA FUNDO BRANCO EM OVERLAYS */
-.bg-black\/80, .bg-black\/50, .bg-gray-900\/80 {
+.bg-black\/80,
+.bg-black\/50,
+.bg-gray-900\/80 {
   background: rgba(0, 0, 0, 0.5) !important;
 }
 
@@ -1042,7 +1076,7 @@ button.fluxo-btn-primary,
 }
 
 /* PAGINAÇÃO - FORÇA FUNDO BRANCO */
-.pagination-select, 
+.pagination-select,
 button[role="combobox"],
 .select-trigger {
   background: white !important;
