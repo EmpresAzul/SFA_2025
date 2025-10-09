@@ -303,7 +303,7 @@
     0 10px 10px -5px rgba(59, 130, 246, 0.04);
 }
 
-/* Mobile optimizations - Layout only, colors inherit from design system */
+/* Mobile optimizations - Layout only, NO color overrides */
 @media (max-width: 640px) {
   .mobile-stack {
     @apply flex-col space-y-2 space-x-0;
@@ -317,12 +317,12 @@
     @apply hidden;
   }
 
-  /* Melhor experiência de toque em mobile */
+  /* Touch targets for mobile */
   .mobile-touch {
     @apply min-h-[44px] min-w-[44px];
   }
 
-  /* Textos otimizados para mobile */
+  /* Text sizing for mobile - layout only */
   .mobile-text-sm {
     @apply text-xs;
   }
@@ -331,37 +331,23 @@
     @apply text-sm;
   }
 
-  /* Padding reduzido em mobile */
+  /* Spacing for mobile - layout only */
   .mobile-padding-sm {
     @apply p-2;
   }
 
-  /* Formulários otimizados para mobile */
+  /* Forms for mobile - layout only */
   .mobile-form-stack {
     @apply flex-col space-y-3;
   }
 
-  /* Sidebar responsiva em mobile */
-  .mobile-sidebar {
-    width: 100% !important;
-    height: auto !important;
-    position: relative !important;
-  }
-
-  /* Menu mobile otimizado */
-  .mobile-menu-item {
-    padding: 12px 16px !important;
-    font-size: 14px !important;
-    min-height: 48px !important;
-  }
-
-  /* Tabelas responsivas em mobile */
+  /* Tables for mobile - layout only */
   .mobile-table-scroll {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
   }
 
-  /* Modais responsivos em mobile */
+  /* Modals for mobile - layout only */
   .mobile-modal {
     margin: 8px !important;
     max-height: calc(100vh - 16px) !important;
