@@ -1,6 +1,6 @@
-// Service Worker para FluxoAzul - FECHAMENTO25
-const CACHE_NAME = 'fluxoazul-v-FECHAMENTO25-' + Date.now();
-const CACHE_VERSION = 'FECHAMENTO25';
+// Service Worker para FluxoAzul - FECHAMENTO26
+const CACHE_NAME = 'fluxoazul-v-FECHAMENTO26-' + Date.now();
+const CACHE_VERSION = 'FECHAMENTO26';
 
 // Força atualização do cache
 self.addEventListener('install', (event) => {

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
-/* FECHAMENTO25 - Cache Bust: Force PWA and mobile to reload styles */
+/* FECHAMENTO26 - Cache Bust: Force PWA and mobile to reload styles */
 
 @layer base {
   :root {
@@ -1992,4 +1992,326 @@ body {
 
 .perfil-status-inativo {
   @apply bg-red-100 text-red-800;
+}
+
+/* ===== RESPONSIVE LAYOUT SYSTEM ===== */
+/* FECHAMENTO26 - Unified responsive classes for all modules */
+
+/* Base container classes */
+.fluxo-container {
+  @apply p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto;
+}
+
+.fluxo-section {
+  @apply space-y-4 sm:space-y-6;
+}
+
+.responsive-padding {
+  @apply p-4 sm:p-6 lg:p-8;
+}
+
+/* ===== DRE MODULE STYLES ===== */
+.dre-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.dre-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.dre-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.dre-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.dre-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.dre-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+.dre-period-selector {
+  @apply w-full sm:w-auto;
+}
+
+/* ===== LANÇAMENTOS MODULE STYLES ===== */
+.lancamentos-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.lancamentos-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.lancamentos-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.lancamentos-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.lancamentos-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.lancamentos-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+/* ===== PRECIFICAÇÃO MODULE STYLES ===== */
+.precificacao-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.precificacao-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.precificacao-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.precificacao-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.precificacao-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.precificacao-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+/* ===== ESTOQUE MODULE STYLES ===== */
+.estoque-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.estoque-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.estoque-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.estoque-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.estoque-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.estoque-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+/* ===== CRM MODULE STYLES ===== */
+.crm-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.crm-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.crm-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.crm-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.crm-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.crm-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+/* ===== SALDOS BANCÁRIOS MODULE STYLES ===== */
+.saldos-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.saldos-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.saldos-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.saldos-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.saldos-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.saldos-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+/* ===== LEMBRETES MODULE STYLES ===== */
+.lembretes-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.lembretes-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.lembretes-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.lembretes-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.lembretes-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.lembretes-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+/* ===== PONTO DE EQUILÍBRIO MODULE STYLES ===== */
+.equilibrio-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.equilibrio-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.equilibrio-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.equilibrio-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.equilibrio-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.equilibrio-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+/* ===== SUPORTE MODULE STYLES ===== */
+.suporte-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.suporte-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.suporte-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.suporte-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.suporte-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.suporte-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+/* ===== PERFIL MODULE STYLES ===== */
+.perfil-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.perfil-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.perfil-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.perfil-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.perfil-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.perfil-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+/* ===== PIPELINE MODULE STYLES ===== */
+.pipeline-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8;
+}
+
+.pipeline-card {
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 border-0 overflow-hidden;
+}
+
+.pipeline-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.pipeline-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.pipeline-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.pipeline-card-icon {
+  @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
+}
+
+/* ===== RESPONSIVE UTILITIES ===== */
+@media (max-width: 640px) {
+  .fluxo-container {
+    @apply px-3 py-4;
+  }
+  
+  .dre-card-content,
+  .lancamentos-card-content,
+  .precificacao-card-content,
+  .estoque-card-content,
+  .crm-card-content,
+  .saldos-card-content,
+  .lembretes-card-content,
+  .equilibrio-card-content,
+  .suporte-card-content,
+  .perfil-card-content,
+  .pipeline-card-content {
+    @apply p-3;
+  }
+}
+
+/* ===== CACHE BUSTING STYLES ===== */
+/* FECHAMENTO26 - Force reload on PWA and mobile */
+.cache-bust-fechamento26 {
+  content: "FECHAMENTO26";
 }
