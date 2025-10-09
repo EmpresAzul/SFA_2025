@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { X, Download, Smartphone, Monitor } from 'lucide-react';
+import { useResponsiveClasses } from '@/hooks/useResponsiveDesign';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -100,69 +101,85 @@ const PWAInstallPrompt: React.FC = () => {
     }
   }
 
+  const { getCardClass, getButtonClass, getTextClass, isMobile } = useResponsiveClasses();
+
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96">
-      <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-2xl">
-        <CardContent className="p-4">
-          <div className="flex items-start justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="bg-white/20 p-2 rounded-lg">
-                <Smartphone className="h-5 w-5" />
+      <div className={`${getCardClass('elevated')} border-0`} 
+           style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)' }}>
+        <div className="p-4 sm:p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
+                <Smartphone className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-sm">Instalar FluxoAzul</h3>
-                <p className="text-xs text-white/90">
-                  Acesso rápido e offline
+                <h3 className={`${getTextClass('md')} text-white font-semibold`}>
+                  Instalar FluxoAzul
+                </h3>
+                <p className={`${getTextClass('body-sm')} text-white/90`}>
+                  Acesso rápido e funcionalidade offline
                 </p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={handleDismiss}
-              className="text-white hover:bg-white/20 p-1 h-auto"
+              className="text-white hover:bg-white/20 p-2 rounded-lg transition-all duration-200 mobile-touch"
             >
               <X className="h-4 w-4" />
-            </Button>
+            </button>
           </div>
 
           {isIOS ? (
-            <div className="space-y-3">
-              <p className="text-xs text-white/90">
+            <div className="space-y-4">
+              <p className={`${getTextClass('body-md')} text-white/95`}>
                 Para instalar no iOS:
               </p>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-white/60 rounded-full"></div>
-                  <span>Toque no ícone de compartilhar</span>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-white/70 rounded-full flex-shrink-0"></div>
+                  <span className={`${getTextClass('body-sm')} text-white/90`}>
+                    Toque no ícone de compartilhar (⬆️)
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-1 bg-white/60 rounded-full"></div>
-                  <span>Selecione "Adicionar à Tela de Início"</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-white/70 rounded-full flex-shrink-0"></div>
+                  <span className={`${getTextClass('body-sm')} text-white/90`}>
+                    Selecione "Adicionar à Tela de Início"
+                  </span>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="flex gap-2">
-              <Button
+            <div className={`flex gap-3 ${isMobile ? 'flex-col' : 'flex-row'}`}>
+              <button
                 onClick={handleInstallClick}
-                className="flex-1 bg-white text-blue-600 hover:bg-white/90 text-sm py-2"
                 disabled={!deferredPrompt}
+                className={`
+                  flex-1 bg-white text-blue-600 hover:bg-white/95 
+                  font-medium rounded-lg px-4 py-3 
+                  transition-all duration-200 mobile-touch
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  flex items-center justify-center gap-2
+                `}
               >
-                <Download className="h-4 w-4 mr-2" />
-                Instalar App
-              </Button>
-              <Button
+                <Download className="h-4 w-4" />
+                <span className={getTextClass('body-md')}>Instalar App</span>
+              </button>
+              <button
                 onClick={handleDismiss}
-                variant="ghost"
-                className="text-white hover:bg-white/20 text-sm py-2"
+                className={`
+                  text-white hover:bg-white/20 font-medium rounded-lg 
+                  px-4 py-3 transition-all duration-200 mobile-touch
+                  ${isMobile ? 'w-full' : 'min-w-[120px]'}
+                `}
               >
-                Agora não
-              </Button>
+                <span className={getTextClass('body-md')}>Agora não</span>
+              </button>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

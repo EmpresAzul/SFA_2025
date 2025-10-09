@@ -31,6 +31,7 @@ import NotFound from "./pages/NotFound";
 import RedirectToProfile from "./components/RedirectToProfile";
 import AdminSettings from "./pages/AdminSettings";
 import Pipeline from "./pages/Pipeline";
+import DesignSystemDemo from "./pages/DesignSystemDemo";
 
 // Componente para inicializar notificações do sistema
 const SystemNotificationManager = () => {
@@ -176,6 +177,14 @@ const App = () => (
         element={
           <AuthenticatedRoute>
             <AdminSettings />
+          </AuthenticatedRoute>
+        }
+      />
+      <Route
+        path="/design-system"
+        element={
+          <AuthenticatedRoute>
+            <DesignSystemDemo />
           </AuthenticatedRoute>
         }
       />

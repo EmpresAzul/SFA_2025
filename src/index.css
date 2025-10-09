@@ -303,10 +303,292 @@
     0 10px 10px -5px rgba(59, 130, 246, 0.04);
 }
 
-/* Mobile optimizations - Layout only, NO color overrides */
+/* =================================================================
+   SISTEMA DE DESIGN UNIFICADO - ESPELHO VISUAL DESKTOP
+   Todas as versões (Mobile, App, PWA) seguem EXATAMENTE o padrão desktop
+   ================================================================= */
+
+/* CORES E GRADIENTES - IDENTIDADE VISUAL UNIFICADA */
+.fluxo-brand-primary {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+}
+
+.fluxo-brand-secondary {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.fluxo-brand-accent {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+}
+
+.fluxo-text-gradient {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* TIPOGRAFIA RESPONSIVA - MANTÉM HIERARQUIA VISUAL */
+.fluxo-heading-xl {
+  @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.fluxo-heading-lg {
+  @apply text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold;
+  color: #1e3a8a;
+}
+
+.fluxo-heading-md {
+  @apply text-base sm:text-lg md:text-xl lg:text-2xl font-semibold;
+  color: #1e3a8a;
+}
+
+.fluxo-heading-sm {
+  @apply text-sm sm:text-base md:text-lg font-medium;
+  color: #1e3a8a;
+}
+
+.fluxo-body-lg {
+  @apply text-sm sm:text-base md:text-lg;
+  color: #374151;
+}
+
+.fluxo-body-md {
+  @apply text-xs sm:text-sm md:text-base;
+  color: #374151;
+}
+
+.fluxo-body-sm {
+  @apply text-xs sm:text-sm;
+  color: #6b7280;
+}
+
+/* CARDS E CONTAINERS - DESIGN SYSTEM UNIFICADO */
+.fluxo-card {
+  @apply bg-white rounded-xl shadow-lg border border-gray-100;
+  box-shadow: 
+    0 10px 25px -5px rgba(30, 58, 138, 0.1),
+    0 8px 10px -6px rgba(30, 58, 138, 0.05);
+}
+
+.fluxo-card:hover {
+  box-shadow: 
+    0 20px 25px -5px rgba(30, 58, 138, 0.15),
+    0 10px 10px -5px rgba(30, 58, 138, 0.08);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+.fluxo-card-header {
+  @apply p-4 sm:p-6 border-b border-gray-100;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.fluxo-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.fluxo-card-footer {
+  @apply p-4 sm:p-6 border-t border-gray-100 bg-gray-50;
+}
+
+/* BOTÕES - SISTEMA UNIFICADO */
+.fluxo-btn-primary {
+  @apply px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium text-white;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  box-shadow: 0 4px 14px 0 rgba(30, 58, 138, 0.3);
+  transition: all 0.3s ease;
+}
+
+.fluxo-btn-primary:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+  box-shadow: 0 6px 20px 0 rgba(30, 58, 138, 0.4);
+  transform: translateY(-1px);
+}
+
+.fluxo-btn-secondary {
+  @apply px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium border-2;
+  color: #1e3a8a;
+  border-color: #1e3a8a;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.fluxo-btn-secondary:hover {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.fluxo-btn-ghost {
+  @apply px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium;
+  color: #1e3a8a;
+  background: rgba(30, 58, 138, 0.05);
+  transition: all 0.3s ease;
+}
+
+.fluxo-btn-ghost:hover {
+  background: rgba(30, 58, 138, 0.1);
+  transform: translateY(-1px);
+}
+
+/* INPUTS E FORMULÁRIOS - DESIGN CONSISTENTE */
+.fluxo-input {
+  @apply w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-gray-300;
+  @apply focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  @apply transition-all duration-200;
+  background: white;
+}
+
+.fluxo-input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.fluxo-select {
+  @apply fluxo-input appearance-none bg-white;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+.fluxo-textarea {
+  @apply fluxo-input resize-none;
+  min-height: 100px;
+}
+
+/* TABELAS - DESIGN RESPONSIVO UNIFICADO */
+.fluxo-table-container {
+  @apply overflow-x-auto rounded-xl border border-gray-200;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.fluxo-table {
+  @apply w-full text-sm;
+}
+
+.fluxo-table thead {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+}
+
+.fluxo-table th {
+  @apply px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-white uppercase tracking-wider;
+}
+
+.fluxo-table td {
+  @apply px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.fluxo-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* NAVEGAÇÃO E SIDEBAR - IDENTIDADE VISUAL */
+.fluxo-nav-item {
+  @apply flex items-center px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm font-medium;
+  @apply transition-all duration-200;
+  color: #374151;
+}
+
+.fluxo-nav-item:hover {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+  color: #1e3a8a;
+}
+
+.fluxo-nav-item.active {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  box-shadow: 0 4px 14px 0 rgba(30, 58, 138, 0.3);
+}
+
+/* BADGES E INDICADORES */
+.fluxo-badge {
+  @apply inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium;
+}
+
+.fluxo-badge-primary {
+  @apply fluxo-badge text-white;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+}
+
+.fluxo-badge-success {
+  @apply fluxo-badge text-white;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+
+.fluxo-badge-warning {
+  @apply fluxo-badge text-white;
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+}
+
+.fluxo-badge-danger {
+  @apply fluxo-badge text-white;
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+}
+
+/* GRIDS RESPONSIVOS - LAYOUT UNIFICADO */
+.fluxo-grid-1 {
+  @apply grid grid-cols-1 gap-4 sm:gap-6;
+}
+
+.fluxo-grid-2 {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6;
+}
+
+.fluxo-grid-3 {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+}
+
+.fluxo-grid-4 {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+}
+
+.fluxo-grid-auto {
+  @apply grid gap-4 sm:gap-6;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* ESPAÇAMENTOS RESPONSIVOS - SISTEMA UNIFICADO */
+.fluxo-container {
+  @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+}
+
+.fluxo-section {
+  @apply py-6 sm:py-8 lg:py-12;
+}
+
+.fluxo-spacing-xs {
+  @apply space-y-2 sm:space-y-3;
+}
+
+.fluxo-spacing-sm {
+  @apply space-y-3 sm:space-y-4;
+}
+
+.fluxo-spacing-md {
+  @apply space-y-4 sm:space-y-6;
+}
+
+.fluxo-spacing-lg {
+  @apply space-y-6 sm:space-y-8;
+}
+
+.fluxo-spacing-xl {
+  @apply space-y-8 sm:space-y-12;
+}
+
+/* MOBILE ESPECÍFICO - MANTÉM IDENTIDADE VISUAL */
 @media (max-width: 640px) {
+  /* Layout adaptativo mantendo cores e gradientes */
   .mobile-stack {
-    @apply flex-col space-y-2 space-x-0;
+    @apply flex-col space-y-3 space-x-0;
   }
 
   .mobile-full {
@@ -317,41 +599,84 @@
     @apply hidden;
   }
 
-  /* Touch targets for mobile */
+  /* Touch targets otimizados */
   .mobile-touch {
     @apply min-h-[44px] min-w-[44px];
   }
 
-  /* Text sizing for mobile - layout only */
-  .mobile-text-sm {
-    @apply text-xs;
-  }
-
-  .mobile-text-base {
-    @apply text-sm;
-  }
-
-  /* Spacing for mobile - layout only */
-  .mobile-padding-sm {
-    @apply p-2;
-  }
-
-  /* Forms for mobile - layout only */
+  /* Formulários mobile com design consistente */
   .mobile-form-stack {
-    @apply flex-col space-y-3;
+    @apply flex-col space-y-4;
   }
 
-  /* Tables for mobile - layout only */
+  .mobile-form-grid {
+    @apply grid grid-cols-1 gap-4;
+  }
+
+  /* Tabelas mobile com scroll horizontal */
   .mobile-table-scroll {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
   }
 
-  /* Modals for mobile - layout only */
+  /* Modais mobile responsivos */
   .mobile-modal {
-    margin: 8px !important;
-    max-height: calc(100vh - 16px) !important;
+    margin: 12px !important;
+    max-height: calc(100vh - 24px) !important;
     overflow-y: auto !important;
+    border-radius: 16px !important;
+  }
+
+  /* Cards mobile com espaçamento otimizado */
+  .mobile-card-compact {
+    @apply p-3 rounded-lg;
+  }
+
+  /* Navegação mobile */
+  .mobile-nav-compact {
+    @apply px-3 py-2 text-sm;
+  }
+}
+
+/* TABLET ESPECÍFICO - DESIGN INTERMEDIÁRIO */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tablet-grid-2 {
+    @apply grid-cols-2;
+  }
+
+  .tablet-grid-3 {
+    @apply grid-cols-3;
+  }
+
+  .tablet-padding {
+    @apply p-5;
+  }
+
+  .tablet-spacing {
+    @apply space-y-5;
+  }
+}
+
+/* DESKTOP - DESIGN COMPLETO */
+@media (min-width: 1025px) {
+  .desktop-grid-3 {
+    @apply grid-cols-3;
+  }
+
+  .desktop-grid-4 {
+    @apply grid-cols-4;
+  }
+
+  .desktop-grid-5 {
+    @apply grid-cols-5;
+  }
+
+  .desktop-padding-lg {
+    @apply p-8;
+  }
+
+  .desktop-spacing-lg {
+    @apply space-y-8;
   }
 }
 
@@ -467,7 +792,7 @@
   }
 }
 
-/* PWA Body Styles */
+/* PWA Body Styles - IDENTIDADE VISUAL UNIFICADA */
 body {
   /* Prevent zoom on iOS */
   touch-action: manipulation;
@@ -480,8 +805,14 @@ body {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   
-  /* Better tap highlighting */
-  -webkit-tap-highlight-color: hsl(var(--primary) / 0.2);
+  /* Better tap highlighting com cor da marca */
+  -webkit-tap-highlight-color: rgba(30, 58, 138, 0.2);
+  
+  /* Font family unificada */
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  /* Cor de fundo consistente */
+  background-color: #f8fafc;
 }
 
 /* PWA specific media queries */
