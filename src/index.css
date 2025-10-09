@@ -1,6 +1,3 @@
-/* Importar correções críticas para mobile */
-@import './styles/mobile-fixes.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -235,12 +232,10 @@
 
 /* Custom animations */
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0px);
   }
-
   50% {
     transform: translateY(-10px);
   }
@@ -255,7 +250,6 @@
     opacity: 0;
     transform: translate3d(0, -100%, 0);
   }
-
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
@@ -376,13 +370,13 @@
 /* CARDS E CONTAINERS - DESIGN SYSTEM UNIFICADO */
 .fluxo-card {
   @apply bg-white rounded-xl shadow-lg border border-gray-100;
-  box-shadow:
+  box-shadow: 
     0 10px 25px -5px rgba(30, 58, 138, 0.1),
     0 8px 10px -6px rgba(30, 58, 138, 0.05);
 }
 
 .fluxo-card:hover {
-  box-shadow:
+  box-shadow: 
     0 20px 25px -5px rgba(30, 58, 138, 0.15),
     0 10px 10px -5px rgba(30, 58, 138, 0.08);
   transform: translateY(-2px);
@@ -447,72 +441,20 @@
   @apply w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-gray-300;
   @apply focus:ring-2 focus:ring-blue-500 focus:border-transparent;
   @apply transition-all duration-200;
-  background: white !important;
-  color: #374151 !important;
+  background: white;
 }
 
 .fluxo-input:focus {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  background: white !important;
 }
 
 .fluxo-select {
-  @apply fluxo-input appearance-none;
-  background: white !important;
+  @apply fluxo-input appearance-none bg-white;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 0.5rem center;
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
-  color: #374151 !important;
-}
-
-/* FORÇA FUNDO BRANCO EM TODOS OS SELECTS E INPUTS */
-select,
-input,
-textarea,
-.select-trigger,
-.input-field,
-[role="combobox"],
-[role="listbox"],
-.ui-select,
-.ui-input {
-  background: white !important;
-  background-color: white !important;
-  color: #374151 !important;
-}
-
-/* FORÇA FUNDO BRANCO EM DROPDOWNS E MENUS */
-.select-content,
-.dropdown-content,
-.popover-content,
-.menu-content,
-[data-radix-popper-content-wrapper],
-[data-state="open"] {
-  background: white !important;
-  background-color: white !important;
-  color: #374151 !important;
-}
-
-/* FORÇA FUNDO BRANCO EM ITENS DE MENU */
-.select-item,
-.dropdown-item,
-.menu-item,
-.option-item,
-[role="option"],
-[data-highlighted] {
-  background: white !important;
-  color: #374151 !important;
-}
-
-.select-item:hover,
-.dropdown-item:hover,
-.menu-item:hover,
-.option-item:hover,
-[role="option"]:hover,
-[data-highlighted]:hover {
-  background: #f8fafc !important;
-  color: #1e3a8a !important;
 }
 
 .fluxo-textarea {
@@ -644,7 +586,6 @@ textarea,
 
 /* MOBILE ESPECÍFICO - MANTÉM IDENTIDADE VISUAL */
 @media (max-width: 640px) {
-
   /* Layout adaptativo mantendo cores e gradientes */
   .mobile-stack {
     @apply flex-col space-y-3 space-x-0;
@@ -694,40 +635,6 @@ textarea,
   /* Navegação mobile */
   .mobile-nav-compact {
     @apply px-3 py-2 text-sm;
-  }
-
-  /* FORÇA FUNDO BRANCO EM MOBILE - CRÍTICO */
-  select,
-  input,
-  textarea,
-  button[role="combobox"] {
-    background: white !important;
-    background-color: white !important;
-    color: #374151 !important;
-    -webkit-appearance: none !important;
-    appearance: none !important;
-  }
-
-  /* Força fundo branco em dropdowns mobile */
-  [data-radix-select-content],
-  [data-radix-dropdown-menu-content],
-  [data-radix-popover-content] {
-    background: white !important;
-    background-color: white !important;
-    color: #374151 !important;
-  }
-
-  /* Força fundo branco em itens de select mobile */
-  [data-radix-select-item],
-  [data-radix-dropdown-menu-item] {
-    background: white !important;
-    color: #374151 !important;
-  }
-
-  [data-radix-select-item]:hover,
-  [data-radix-dropdown-menu-item]:hover {
-    background: #f8fafc !important;
-    color: #1e3a8a !important;
   }
 }
 
@@ -801,20 +708,19 @@ textarea,
 
 /* PWA Specific Styles */
 @layer utilities {
-
   /* Safe area insets for mobile devices */
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
   }
-
+  
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
-
+  
   .safe-area-left {
     padding-left: env(safe-area-inset-left);
   }
-
+  
   .safe-area-right {
     padding-right: env(safe-area-inset-right);
   }
@@ -823,15 +729,15 @@ textarea,
   .responsive-padding {
     @apply px-4 sm:px-6 lg:px-8;
   }
-
+  
   .responsive-margin {
     @apply mx-auto max-w-7xl;
   }
-
+  
   .responsive-grid {
     @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4;
   }
-
+  
   .responsive-grid-2 {
     @apply grid grid-cols-1 lg:grid-cols-2 gap-4;
   }
@@ -853,7 +759,7 @@ textarea,
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-
+  
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -862,13 +768,12 @@ textarea,
   .pwa-fade-in {
     animation: pwaFadeIn 0.3s ease-in-out;
   }
-
+  
   @keyframes pwaFadeIn {
     from {
       opacity: 0;
       transform: translateY(10px);
     }
-
     to {
       opacity: 1;
       transform: translateY(0);
@@ -877,13 +782,13 @@ textarea,
 
   /* Colorful shadow for cards */
   .shadow-colorful {
-    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1),
-      0 10px 10px -5px rgba(59, 130, 246, 0.04);
+    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1), 
+                0 10px 10px -5px rgba(59, 130, 246, 0.04);
   }
-
+  
   .shadow-colorful:hover {
-    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.15),
-      0 10px 10px -5px rgba(59, 130, 246, 0.08);
+    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.15), 
+                0 10px 10px -5px rgba(59, 130, 246, 0.08);
   }
 }
 
@@ -891,34 +796,32 @@ textarea,
 body {
   /* Prevent zoom on iOS */
   touch-action: manipulation;
-
+  
   /* Smooth font rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
+  
   /* Prevent text size adjust on orientation change */
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
-
+  
   /* Better tap highlighting com cor da marca */
   -webkit-tap-highlight-color: rgba(30, 58, 138, 0.2);
-
+  
   /* Font family unificada */
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-
+  
   /* Cor de fundo consistente */
   background-color: #f8fafc;
 }
 
 /* PWA specific media queries */
 @media (display-mode: standalone) {
-
   /* Styles when app is installed as PWA */
   body {
-    user-select: none;
-    /* Prevent text selection in PWA mode */
+    user-select: none; /* Prevent text selection in PWA mode */
   }
-
+  
   /* Add padding for status bar on iOS */
   .pwa-header {
     padding-top: env(safe-area-inset-top);
@@ -927,7 +830,6 @@ body {
 
 /* iOS specific styles */
 @supports (-webkit-touch-callout: none) {
-
   /* iOS Safari specific styles */
   .ios-scroll-fix {
     -webkit-overflow-scrolling: touch;
@@ -935,9 +837,7 @@ body {
 }
 
 /* High DPI displays */
-@media (-webkit-min-device-pixel-ratio: 2),
-(min-resolution: 192dpi) {
-
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   /* Styles for high DPI displays */
   .crisp-edges {
     image-rendering: -webkit-optimize-contrast;
@@ -959,128 +859,4 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* =================================================================
-   CORREÇÃO CRÍTICA - FORÇA FUNDO BRANCO EM TODOS OS COMPONENTES
-   Remove qualquer fundo preto/escuro das versões mobile e app
-   ================================================================= */
-
-/* RADIX UI - FORÇA FUNDO BRANCO */
-[data-radix-select-content] {
-  background: white !important;
-  background-color: white !important;
-  color: #374151 !important;
-  border: 1px solid #d1d5db !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-}
-
-[data-radix-select-item] {
-  background: white !important;
-  color: #374151 !important;
-  padding: 8px 12px !important;
-}
-
-[data-radix-select-item][data-highlighted] {
-  background: #f8fafc !important;
-  color: #1e3a8a !important;
-}
-
-[data-radix-select-trigger] {
-  background: white !important;
-  background-color: white !important;
-  color: #374151 !important;
-  border: 1px solid #d1d5db !important;
-}
-
-/* DROPDOWN MENUS */
-[data-radix-dropdown-menu-content] {
-  background: white !important;
-  background-color: white !important;
-  color: #374151 !important;
-  border: 1px solid #d1d5db !important;
-}
-
-[data-radix-dropdown-menu-item] {
-  background: white !important;
-  color: #374151 !important;
-}
-
-[data-radix-dropdown-menu-item][data-highlighted] {
-  background: #f8fafc !important;
-  color: #1e3a8a !important;
-}
-
-/* POPOVERS */
-[data-radix-popover-content] {
-  background: white !important;
-  background-color: white !important;
-  color: #374151 !important;
-  border: 1px solid #d1d5db !important;
-}
-
-/* COMBOBOX E COMMAND */
-[cmdk-root] {
-  background: white !important;
-  color: #374151 !important;
-}
-
-[cmdk-input] {
-  background: white !important;
-  color: #374151 !important;
-}
-
-[cmdk-item] {
-  background: white !important;
-  color: #374151 !important;
-}
-
-[cmdk-item][data-selected="true"] {
-  background: #f8fafc !important;
-  color: #1e3a8a !important;
-}
-
-/* FORÇA FUNDO BRANCO EM QUALQUER ELEMENTO ESCURO */
-.bg-black,
-.bg-gray-900,
-.bg-slate-900,
-.bg-zinc-900,
-.dark\:bg-black,
-.dark\:bg-gray-900,
-.dark\:bg-slate-900 {
-  background: white !important;
-  background-color: white !important;
-  color: #374151 !important;
-}
-
-/* FORÇA FUNDO BRANCO EM OVERLAYS */
-.bg-black\/80,
-.bg-black\/50,
-.bg-gray-900\/80 {
-  background: rgba(0, 0, 0, 0.5) !important;
-}
-
-/* FORÇA TEXTO ESCURO EM ELEMENTOS CLAROS - SEM CIRCULAR DEPENDENCY */
-.force-dark-text {
-  color: #374151 !important;
-}
-
-/* EXCEÇÕES - Mantém branco apenas onde necessário */
-.fluxo-brand-primary,
-.fluxo-btn-primary,
-.gradient-fluxo,
-button.fluxo-btn-primary,
-.bg-blue-600,
-.bg-gradient-to-r {
-  color: white !important;
-}
-
-/* PAGINAÇÃO - FORÇA FUNDO BRANCO */
-.pagination-select,
-button[role="combobox"],
-.select-trigger {
-  background: white !important;
-  background-color: white !important;
-  color: #374151 !important;
-  border: 1px solid #d1d5db !important;
 }

@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select-white";
+} from "@/components/ui/select";
 import { Search, Filter, Calendar, DollarSign } from "lucide-react";
 
 interface LancamentosFiltersProps {

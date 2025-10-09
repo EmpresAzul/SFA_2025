@@ -217,15 +217,8 @@ export const ResponsiveInput: React.FC<ResponsiveInputProps> = ({
       onChange={onChange}
       disabled={disabled}
       required={required}
-      style={{ 
-        background: 'white', 
-        backgroundColor: 'white',
-        color: '#374151'
-      }}
       className={cn(
         'fluxo-input mobile-touch',
-        'bg-white text-gray-700 border-gray-300',
-        'focus:bg-white focus:text-gray-700',
         disabled && 'opacity-50 cursor-not-allowed',
         className
       )}
@@ -254,102 +247,6 @@ export const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
   );
 };
 
-interface ResponsiveSelectProps {
-  children: React.ReactNode;
-  value?: string;
-  onValueChange?: (value: string) => void;
-  className?: string;
-  disabled?: boolean;
-}
-
-/**
- * Select responsivo com fundo branco forçado
- */
-export const ResponsiveSelect: React.FC<ResponsiveSelectProps> = ({
-  children,
-  value,
-  onValueChange,
-  className,
-  disabled = false
-}) => {
-  return (
-    <div 
-      className={cn(
-        'relative',
-        className
-      )}
-      style={{ 
-        background: 'white', 
-        backgroundColor: 'white'
-      }}
-    >
-      {children}
-    </div>
-  );
-};
-
-interface ResponsiveSelectTriggerProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-/**
- * Trigger do Select com fundo branco garantido
- */
-export const ResponsiveSelectTrigger: React.FC<ResponsiveSelectTriggerProps> = ({
-  children,
-  className
-}) => {
-  return (
-    <button
-      className={cn(
-        'fluxo-select mobile-touch',
-        'bg-white text-gray-700 border-gray-300',
-        'focus:bg-white focus:text-gray-700',
-        'w-full flex items-center justify-between',
-        className
-      )}
-      style={{ 
-        background: 'white !important', 
-        backgroundColor: 'white !important',
-        color: '#374151 !important'
-      }}
-    >
-      {children}
-    </button>
-  );
-};
-
-interface ResponsiveSelectContentProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-/**
- * Content do Select com fundo branco garantido
- */
-export const ResponsiveSelectContent: React.FC<ResponsiveSelectContentProps> = ({
-  children,
-  className
-}) => {
-  return (
-    <div
-      className={cn(
-        'absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg',
-        'max-h-60 overflow-auto',
-        className
-      )}
-      style={{ 
-        background: 'white !important', 
-        backgroundColor: 'white !important',
-        color: '#374151 !important'
-      }}
-    >
-      {children}
-    </div>
-  );
-};
-
 // Exportar todos os componentes
 export {
   ResponsiveLayout as Layout,
@@ -357,8 +254,5 @@ export {
   ResponsiveCard as Card,
   ResponsiveButton as Button,
   ResponsiveInput as Input,
-  ResponsiveTable as Table,
-  ResponsiveSelect as Select,
-  ResponsiveSelectTrigger as SelectTrigger,
-  ResponsiveSelectContent as SelectContent
+  ResponsiveTable as Table
 };

@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select-white";
+} from "@/components/ui/select";
 import { Lead } from "@/types/pipeline";
 import { CurrencyInput } from "@/components/ui/currency-input";
 import { parseStringToNumber } from "@/utils/currency";

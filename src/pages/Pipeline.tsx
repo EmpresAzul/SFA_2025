@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select-white";
+} from "@/components/ui/select";
 import { Plus, Search, Filter } from "lucide-react";
 import { usePipeline } from "@/hooks/usePipeline";
 import { PipelineBoard } from "@/components/pipeline/PipelineBoard";
