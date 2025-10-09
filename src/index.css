@@ -467,7 +467,7 @@
   color: #374151 !important;
 }
 
-/* FORÇA FUNDO BRANCO EM TODOS OS SELECTS E INPUTS */
+/* FORÇA FUNDO BRANCO EM TODOS OS SELECTS E INPUTS - TODAS AS VERSÕES */
 select,
 input,
 textarea,
@@ -476,33 +476,46 @@ textarea,
 [role="combobox"],
 [role="listbox"],
 .ui-select,
-.ui-input {
+.ui-input,
+button[role="combobox"],
+[data-radix-select-trigger],
+.fluxo-select,
+.fluxo-input {
   background: white !important;
   background-color: white !important;
   color: #374151 !important;
+  border: 1px solid #d1d5db !important;
 }
 
-/* FORÇA FUNDO BRANCO EM DROPDOWNS E MENUS */
+/* FORÇA FUNDO BRANCO EM DROPDOWNS E MENUS - TODAS AS VERSÕES */
 .select-content,
 .dropdown-content,
 .popover-content,
 .menu-content,
 [data-radix-popper-content-wrapper],
+[data-radix-select-content],
+[data-radix-dropdown-menu-content],
+[data-radix-popover-content],
 [data-state="open"] {
   background: white !important;
   background-color: white !important;
   color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* FORÇA FUNDO BRANCO EM ITENS DE MENU */
+/* FORÇA FUNDO BRANCO EM ITENS DE MENU - TODAS AS VERSÕES */
 .select-item,
 .dropdown-item,
 .menu-item,
 .option-item,
 [role="option"],
+[data-radix-select-item],
+[data-radix-dropdown-menu-item],
 [data-highlighted] {
   background: white !important;
   color: #374151 !important;
+  padding: 8px 12px !important;
 }
 
 .select-item:hover,
@@ -510,6 +523,10 @@ textarea,
 .menu-item:hover,
 .option-item:hover,
 [role="option"]:hover,
+[data-radix-select-item]:hover,
+[data-radix-dropdown-menu-item]:hover,
+[data-radix-select-item][data-highlighted],
+[data-radix-dropdown-menu-item][data-highlighted],
 [data-highlighted]:hover {
   background: #f8fafc !important;
   color: #1e3a8a !important;

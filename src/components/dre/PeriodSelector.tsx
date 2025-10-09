@@ -18,10 +18,10 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = ({
   onChange,
 }) => {
   return (
-    <div className="space-y-2">
-      <Label>Período</Label>
+    <div className="space-y-2 w-full">
+      <Label className="text-xs sm:text-sm font-medium text-gray-700">Período</Label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-48">
+        <SelectTrigger className="fluxo-select w-full lg:w-48 h-10 text-sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

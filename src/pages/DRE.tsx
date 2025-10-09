@@ -114,19 +114,21 @@ const DRE: React.FC = () => {
   }
 
   return (
-    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-green-50 min-h-screen">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+    <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-green-50 min-h-screen">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="fluxo-heading-lg">
             📊 Demonstração do Resultado do Exercício (DRE)
           </h1>
-          <p className="text-gray-600 mt-2 text-sm">
+          <p className="text-gray-600 mt-2 text-sm sm:text-base">
             Análise financeira completa baseada em {lancamentosFiltrados.length}{" "}
             lançamentos do período
           </p>
         </div>
 
-        <PeriodSelector value={periodo} onChange={setPeriodo} />
+        <div className="w-full lg:w-auto">
+          <PeriodSelector value={periodo} onChange={setPeriodo} />
+        </div>
       </div>
 
       {/* Filtro por período personalizado */}

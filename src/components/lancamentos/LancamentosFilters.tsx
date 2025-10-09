@@ -37,17 +37,17 @@ const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
 }) => {
   return (
     <Card className="mb-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-          <Filter className="h-5 w-5 text-blue-600" />
+      <CardHeader className="p-4 sm:p-6">
+        <CardTitle className="text-base sm:text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
           Filtros de Busca
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <CardContent className="p-4 sm:p-6 pt-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           {/* Busca por Descrição */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
+          <div className="space-y-2 col-span-1 sm:col-span-2 lg:col-span-1">
+            <label className="text-xs sm:text-sm font-medium text-gray-700">
               Buscar por Descrição
             </label>
             <div className="relative">
@@ -56,14 +56,14 @@ const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
                 placeholder="Digite a descrição..."
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="pl-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                className="fluxo-input pl-10 text-sm"
               />
             </div>
           </div>
 
           {/* Busca por Valor */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-xs sm:text-sm font-medium text-gray-700">
               Buscar por Valor
             </label>
             <div className="relative">
@@ -72,18 +72,18 @@ const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
                 placeholder="Ex: 1000 ou 1.500,00"
                 value={searchValue}
                 onChange={(e) => onSearchValueChange(e.target.value)}
-                className="pl-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                className="fluxo-input pl-10 text-sm"
               />
             </div>
           </div>
 
           {/* Filtro por Tipo */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-xs sm:text-sm font-medium text-gray-700">
               Tipo de Lançamento
             </label>
             <Select value={selectedTipo} onValueChange={onTipoChange}>
-              <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+              <SelectTrigger className="fluxo-select h-10 text-sm">
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent>
@@ -96,9 +96,9 @@ const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
 
           {/* Filtro por Categoria */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Categoria</label>
+            <label className="text-xs sm:text-sm font-medium text-gray-700">Categoria</label>
             <Select value={selectedCategoria} onValueChange={onCategoriaChange}>
-              <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+              <SelectTrigger className="fluxo-select h-10 text-sm">
                 <SelectValue placeholder="Selecione a categoria" />
               </SelectTrigger>
               <SelectContent>
@@ -168,9 +168,9 @@ const LancamentosFilters: React.FC<LancamentosFiltersProps> = ({
 
           {/* Filtro por Período */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Período</label>
+            <label className="text-xs sm:text-sm font-medium text-gray-700">Período</label>
             <Select value={selectedPeriodo} onValueChange={onPeriodoChange}>
-              <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+              <SelectTrigger className="fluxo-select h-10 text-sm">
                 <SelectValue placeholder="Selecione o período" />
               </SelectTrigger>
               <SelectContent>

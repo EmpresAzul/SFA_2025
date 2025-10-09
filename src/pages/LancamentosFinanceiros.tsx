@@ -224,19 +224,19 @@ const LancamentosFinanceiros: React.FC = () => {
   };
 
   return (
-    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+    <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="fluxo-heading-lg">
             💰 Lançamentos Financeiros
           </h1>
-          <p className="text-gray-600 mt-2 text-sm">
+          <p className="text-gray-600 mt-2 text-sm sm:text-base">
             Gerencie receitas e despesas da sua empresa
           </p>
         </div>
         <button
           onClick={handleNewLancamentoClick}
-          className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2"
+          className="fluxo-btn-primary w-full lg:w-auto flex items-center justify-center gap-2"
         >
           <Plus className="h-4 w-4" />
           Novo Lançamento
@@ -244,20 +244,22 @@ const LancamentosFinanceiros: React.FC = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-6 bg-white/80 backdrop-blur-sm shadow-lg rounded-xl h-12 sm:h-14">
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 mb-6 bg-white/80 backdrop-blur-sm shadow-lg rounded-xl h-auto sm:h-14 gap-2 sm:gap-0 p-2">
           <TabsTrigger
             value="lista"
-            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+            className="flex items-center justify-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl w-full"
           >
             <List className="h-4 w-4" />
-            Lista de Lançamentos
+            <span className="hidden sm:inline">Lista de Lançamentos</span>
+            <span className="sm:hidden">Lista</span>
           </TabsTrigger>
           <TabsTrigger
             value="formulario"
-            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
+            className="flex items-center justify-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl w-full"
           >
             <Plus className="h-4 w-4" />
-            {editingItem ? "Editar Lançamento" : "Novo Lançamento"}
+            <span className="hidden sm:inline">{editingItem ? "Editar Lançamento" : "Novo Lançamento"}</span>
+            <span className="sm:hidden">{editingItem ? "Editar" : "Novo"}</span>
           </TabsTrigger>
         </TabsList>
 
