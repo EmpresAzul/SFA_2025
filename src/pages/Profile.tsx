@@ -138,27 +138,25 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div className="p-2 sm:p-4 md:p-6 space-y-4 sm:space-y-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen perfil-container perfil-responsive">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
             👤 Meu Perfil
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 text-sm sm:text-base">
             Visualize suas informações pessoais da conta
           </p>
         </div>
-        
-
       </div>
 
 
 
       {/* Cards de Informações */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 max-w-7xl mx-auto px-2 sm:px-0">
+      <div className="perfil-layout grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Resumo do Perfil */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mobile-card-fix">
+        <Card className="perfil-card bg-white/80 backdrop-blur-sm border-0 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -266,7 +264,7 @@ const Profile: React.FC = () => {
         </Card>
 
         {/* Email */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg mobile-card-fix">
+        <Card className="perfil-card bg-white/80 backdrop-blur-sm border-0 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Mail className="h-5 w-5 text-blue-600" />

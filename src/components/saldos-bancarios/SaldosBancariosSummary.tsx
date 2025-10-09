@@ -10,15 +10,15 @@ const SaldosBancariosSummary: React.FC<SaldosBancariosSummaryProps> = ({
   totalSaldo,
 }) => {
   return (
-    <Card className="bg-gradient-to-r from-blue-50 to-green-50 border-blue-200">
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-700">Total Geral</h3>
-            <p className="text-sm text-gray-500">Saldo consolidado de todas as contas</p>
+    <Card className="saldos-summary-card bg-white border-0 shadow-lg mb-6">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex-1">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-1">Total Geral</h3>
+            <p className="text-xs sm:text-sm text-gray-500">Saldo consolidado de todas as contas</p>
           </div>
-          <div className="text-right">
-            <p className={`text-3xl font-bold ${
+          <div className="text-left sm:text-right">
+            <p className={`text-xl sm:text-2xl lg:text-3xl font-bold ${
               totalSaldo >= 0 ? "text-green-600" : "text-red-600"
             }`}>
               {formatNumberToDisplay(totalSaldo)}

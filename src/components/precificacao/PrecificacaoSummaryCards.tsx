@@ -16,52 +16,68 @@ const PrecificacaoSummaryCards: React.FC<PrecificacaoSummaryCardsProps> = ({
   totalHoras,
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <div className="precificacao-summary-cards">
       {/* Total de Itens */}
-      <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total de Itens</CardTitle>
-          <TrendingUp className="h-4 w-4" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{totalItens}</div>
-          <p className="text-xs text-emerald-100">Todos os itens cadastrados</p>
+      <Card className="precificacao-card bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+        <CardContent className="precificacao-card-content">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="precificacao-card-title">Total de Itens</p>
+              <p className="precificacao-card-value">{totalItens}</p>
+              <p className="text-xs text-white/80">Todos os itens cadastrados</p>
+            </div>
+            <div className="precificacao-card-icon">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       {/* Produtos */}
-      <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Produtos</CardTitle>
-          <Package className="h-4 w-4" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{totalProdutos}</div>
-          <p className="text-xs text-blue-100">Produtos cadastrados</p>
+      <Card className="precificacao-card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+        <CardContent className="precificacao-card-content">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="precificacao-card-title">Produtos</p>
+              <p className="precificacao-card-value">{totalProdutos}</p>
+              <p className="text-xs text-white/80">Produtos cadastrados</p>
+            </div>
+            <div className="precificacao-card-icon">
+              <Package className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       {/* Serviços */}
-      <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Serviços</CardTitle>
-          <Wrench className="h-4 w-4" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{totalServicos}</div>
-          <p className="text-xs text-purple-100">Serviços cadastrados</p>
+      <Card className="precificacao-card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+        <CardContent className="precificacao-card-content">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="precificacao-card-title">Serviços</p>
+              <p className="precificacao-card-value">{totalServicos}</p>
+              <p className="text-xs text-white/80">Serviços cadastrados</p>
+            </div>
+            <div className="precificacao-card-icon">
+              <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       {/* Horas */}
-      <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Horas</CardTitle>
-          <Clock className="h-4 w-4" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{totalHoras}</div>
-          <p className="text-xs text-orange-100">Horas cadastradas</p>
+      <Card className="precificacao-card bg-gradient-to-br from-orange-500 to-orange-600 text-white">
+        <CardContent className="precificacao-card-content">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="precificacao-card-title">Horas</p>
+              <p className="precificacao-card-value">{totalHoras}</p>
+              <p className="text-xs text-white/80">Horas cadastradas</p>
+            </div>
+            <div className="precificacao-card-icon">
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -82,11 +82,13 @@ const SaldosBancarios: React.FC = () => {
   const totalSaldo = saldos.reduce((total, saldo) => total + (saldo.saldo || saldo.valor || 0), 0);
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Saldos Bancários</h1>
-          <p className="text-gray-600 mt-2">
+    <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen saldos-container saldos-responsive">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+            Saldos Bancários
+          </h1>
+          <p className="text-gray-600 text-sm sm:text-base">
             Gerencie os saldos das suas contas bancárias
           </p>
         </div>
@@ -95,10 +97,22 @@ const SaldosBancarios: React.FC = () => {
       <SaldosBancariosSummary totalSaldo={totalSaldo} />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="lista">Lista de Saldos</TabsTrigger>
-          <TabsTrigger value="formulario">Novo Saldo</TabsTrigger>
-        </TabsList>
+        <div className="flex flex-col lg:flex-row gap-4 mb-6">
+          <TabsList className="grid grid-cols-1 sm:grid-cols-2 bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg rounded-xl h-auto sm:h-14 p-1">
+            <TabsTrigger
+              value="lista"
+              className="flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 text-white font-semibold text-sm sm:text-base py-3 rounded-lg transition-all duration-300 hover:bg-white/10"
+            >
+              Lista de Saldos
+            </TabsTrigger>
+            <TabsTrigger
+              value="formulario"
+              className="flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 text-white font-semibold text-sm sm:text-base py-3 rounded-lg transition-all duration-300 hover:bg-white/10"
+            >
+              Novo Saldo
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="lista" className="space-y-4">
           <SaldosBancariosList 

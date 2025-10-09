@@ -65,14 +65,14 @@ const Pipeline: React.FC = () => {
   };
 
   return (
-    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen crm-container crm-responsive">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
             📊 CRM
           </h1>
-          <p className="text-gray-600 mt-2 text-sm">
+          <p className="text-gray-600 text-sm sm:text-base">
             Gerencie seus leads e acompanhe o progresso dos negócios
           </p>
         </div>
@@ -81,23 +81,21 @@ const Pipeline: React.FC = () => {
             setEditingNegocio(null);
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
-          className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+          className="fluxo-btn-primary w-full sm:w-auto flex items-center justify-center gap-2"
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-4 w-4" />
           Novo Lead
         </Button>
       </div>
 
       {/* Estatísticas no topo */}
-      <div className="mb-8">
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg">
-          <PipelineStats negocios={negocios} />
-        </div>
+      <div className="mb-6">
+        <PipelineStats negocios={negocios} />
       </div>
 
       {/* Formulário de Cadastro/Edição */}
-      <div className="mb-8">
-        <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+      <div className="mb-6">
+        <div className="crm-form">
           <PipelineForm
             negocio={editingNegocio}
             onSubmit={handleSubmit}
@@ -108,40 +106,47 @@ const Pipeline: React.FC = () => {
       </div>
 
       {/* Filtros */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            placeholder="Buscar leads..."
-            value={filters.search || ""}
-            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-            className="pl-10"
-          />
+      <div className="crm-filters">
+        <div className="crm-filters-grid">
+          <div className="space-y-2">
+            <label className="crm-filter-label">Buscar leads</label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Buscar leads..."
+                value={filters.search || ""}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                className="fluxo-input pl-10 text-sm"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="crm-filter-label">Status</label>
+            <Select
+              value={filters.status || "all"}
+              onValueChange={(status) =>
+                setFilters({ ...filters, status: status === "all" ? undefined : status })
+              }
+            >
+              <SelectTrigger className="fluxo-select h-10 text-sm">
+                <SelectValue placeholder="Todos os status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os status</SelectItem>
+                <SelectItem value="prospeccao">Prospecção</SelectItem>
+                <SelectItem value="qualificacao">Qualificação</SelectItem>
+                <SelectItem value="proposta">Proposta</SelectItem>
+                <SelectItem value="negociacao">Negociação</SelectItem>
+                <SelectItem value="fechado">Fechado</SelectItem>
+                <SelectItem value="perdido">Perdido</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <Select
-          value={filters.status || "all"}
-          onValueChange={(status) =>
-            setFilters({ ...filters, status: status === "all" ? undefined : status })
-          }
-        >
-          <SelectTrigger className="w-full sm:w-48">
-            <Filter className="h-4 w-4 mr-2" />
-            <SelectValue placeholder="Filtrar por status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos os status</SelectItem>
-            <SelectItem value="prospeccao">Prospecção</SelectItem>
-            <SelectItem value="qualificacao">Qualificação</SelectItem>
-            <SelectItem value="proposta">Proposta</SelectItem>
-            <SelectItem value="negociacao">Negociação</SelectItem>
-            <SelectItem value="fechado">Fechado</SelectItem>
-            <SelectItem value="perdido">Perdido</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Pipeline Board */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-lg">
+      <div className="crm-pipeline-board">
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>

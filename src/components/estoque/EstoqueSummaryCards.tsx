@@ -25,62 +25,65 @@ export const EstoqueSummaryCards: React.FC<EstoqueSummaryCardsProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <Card className="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-        <CardContent className="p-4">
+    <div className="estoque-summary-cards">
+      <Card className="estoque-card bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
+        <CardContent className="estoque-card-content">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-emerald-100 text-sm font-medium">
-                Total de Itens
-              </p>
-              <p className="text-xl font-bold">{filteredEstoques.length}</p>
+            <div className="flex-1">
+              <p className="estoque-card-title">Total de Itens</p>
+              <p className="estoque-card-value">{filteredEstoques.length}</p>
+              <p className="text-xs text-white/80">Itens no estoque</p>
             </div>
-            <Package className="h-8 w-8 text-emerald-200" />
+            <div className="estoque-card-icon">
+              <Package className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-blue-400 to-blue-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-        <CardContent className="p-4">
+      <Card className="estoque-card bg-gradient-to-br from-blue-400 to-blue-600 text-white">
+        <CardContent className="estoque-card-content">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-blue-100 text-sm font-medium">
-                Quantidade Total
-              </p>
-              <p className="text-xl font-bold">{getTotalItems().toFixed(2)}</p>
+            <div className="flex-1">
+              <p className="estoque-card-title">Quantidade Total</p>
+              <p className="estoque-card-value">{getTotalItems().toFixed(2)}</p>
+              <p className="text-xs text-white/80">Unidades totais</p>
             </div>
-            <TrendingUp className="h-8 w-8 text-blue-200" />
+            <div className="estoque-card-icon">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-purple-400 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-        <CardContent className="p-4">
+      <Card className="estoque-card bg-gradient-to-br from-purple-400 to-purple-600 text-white">
+        <CardContent className="estoque-card-content">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-purple-100 text-sm font-medium">Valor Total</p>
-              <p className="text-xl font-bold">
-                R$ {getTotalValue().toFixed(2)}
-              </p>
+            <div className="flex-1">
+              <p className="estoque-card-title">Valor Total</p>
+              <p className="estoque-card-value">R$ {getTotalValue().toFixed(2)}</p>
+              <p className="text-xs text-white/80">Valor do estoque</p>
             </div>
-            <DollarSign className="h-8 w-8 text-purple-200" />
+            <div className="estoque-card-icon">
+              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-orange-400 to-orange-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-        <CardContent className="p-4">
+      <Card className="estoque-card bg-gradient-to-br from-orange-400 to-orange-600 text-white">
+        <CardContent className="estoque-card-content">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-orange-100 text-sm font-medium">Valor Médio</p>
-              <p className="text-xl font-bold">
-                R${" "}
-                {filteredEstoques.length > 0
-                  ? (getTotalValue() / filteredEstoques.length).toFixed(2)
-                  : "0.00"}
+            <div className="flex-1">
+              <p className="estoque-card-title">Valor Médio</p>
+              <p className="estoque-card-value">
+                R$ {filteredEstoques.length > 0 ? (getTotalValue() / filteredEstoques.length).toFixed(2) : "0.00"}
               </p>
+              <p className="text-xs text-white/80">Por item</p>
             </div>
-            <BarChart3 className="h-8 w-8 text-orange-200" />
+            <div className="estoque-card-icon">
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
           </div>
         </CardContent>
       </Card>

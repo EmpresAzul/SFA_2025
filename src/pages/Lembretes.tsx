@@ -84,24 +84,24 @@ const Lembretes: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen lembretes-container lembretes-responsive">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-            <Bell className="h-8 w-8 mr-3 text-blue-600" />
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 flex items-center">
+            <Bell className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 mr-3 text-blue-600" />
             Lembretes
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-gray-600 text-sm sm:text-base">
             Gerencie seus lembretes importantes
           </p>
         </div>
 
         <Button
           onClick={() => setIsFormOpen(true)}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
+          className="fluxo-btn-primary w-full sm:w-auto flex items-center justify-center gap-2"
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-4 w-4" />
           Novo Lembrete
         </Button>
       </div>

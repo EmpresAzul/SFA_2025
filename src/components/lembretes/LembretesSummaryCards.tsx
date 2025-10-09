@@ -31,64 +31,62 @@ const LembretesSummaryCards: React.FC<LembretesSummaryCardsProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300">
-        <CardContent className="p-6">
-          <div className="flex items-center">
-            <Bell className="h-10 w-10 text-blue-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-blue-600">
-                Total Lembretes
-              </p>
-              <p className="text-2xl font-bold text-blue-900">
-                {getTotalLembretes()}
-              </p>
-              <p className="text-xs text-blue-600 mt-1">Todos os lembretes</p>
+    <div className="lembretes-summary-cards">
+      <Card className="lembretes-card bg-gradient-to-br from-blue-400 to-blue-600 text-white">
+        <CardContent className="lembretes-card-content">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="lembretes-card-title">Total Lembretes</p>
+              <p className="lembretes-card-value">{getTotalLembretes()}</p>
+              <p className="text-xs text-white/80">Todos os lembretes</p>
+            </div>
+            <div className="lembretes-card-icon">
+              <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300">
-        <CardContent className="p-6">
-          <div className="flex items-center">
-            <Calendar className="h-10 w-10 text-emerald-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-emerald-600">Ativos</p>
-              <p className="text-2xl font-bold text-emerald-900">
-                {getLembretesAtivos()}
-              </p>
-              <p className="text-xs text-emerald-600 mt-1">Lembretes ativos</p>
+      <Card className="lembretes-card bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
+        <CardContent className="lembretes-card-content">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="lembretes-card-title">Ativos</p>
+              <p className="lembretes-card-value">{getLembretesAtivos()}</p>
+              <p className="text-xs text-white/80">Lembretes ativos</p>
+            </div>
+            <div className="lembretes-card-icon">
+              <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200 shadow-lg hover:shadow-xl transition-all duration-300">
-        <CardContent className="p-6">
-          <div className="flex items-center">
-            <Clock className="h-10 w-10 text-orange-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-orange-600">Para Hoje</p>
-              <p className="text-2xl font-bold text-orange-900">
-                {getLembretesHoje()}
-              </p>
-              <p className="text-xs text-orange-600 mt-1">Lembretes de hoje</p>
+      <Card className="lembretes-card bg-gradient-to-br from-orange-400 to-orange-600 text-white">
+        <CardContent className="lembretes-card-content">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="lembretes-card-title">Para Hoje</p>
+              <p className="lembretes-card-value">{getLembretesHoje()}</p>
+              <p className="text-xs text-white/80">Lembretes de hoje</p>
+            </div>
+            <div className="lembretes-card-icon">
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200 shadow-lg hover:shadow-xl transition-all duration-300">
-        <CardContent className="p-6">
-          <div className="flex items-center">
-            <AlertTriangle className="h-10 w-10 text-red-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-red-600">Vencidos</p>
-              <p className="text-2xl font-bold text-red-900">
-                {getLembretesVencidos()}
-              </p>
-              <p className="text-xs text-red-600 mt-1">Precisam atenção</p>
+      <Card className="lembretes-card bg-gradient-to-br from-red-400 to-red-600 text-white">
+        <CardContent className="lembretes-card-content">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <p className="lembretes-card-title">Vencidos</p>
+              <p className="lembretes-card-value">{getLembretesVencidos()}</p>
+              <p className="text-xs text-white/80">Precisam atenção</p>
+            </div>
+            <div className="lembretes-card-icon">
+              <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
           </div>
         </CardContent>

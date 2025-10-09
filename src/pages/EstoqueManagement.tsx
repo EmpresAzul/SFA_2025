@@ -71,13 +71,13 @@ const EstoqueManagement: React.FC = () => {
   }, [filteredData]);
 
   return (
-    <div className="p-6 space-y-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+    <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen estoque-container estoque-responsive">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
             Gestão de Estoques
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 text-sm sm:text-base">
             Controle completo e inteligente do seu estoque
           </p>
         </div>
@@ -86,20 +86,22 @@ const EstoqueManagement: React.FC = () => {
       <EstoqueSummaryCards filteredEstoques={filteredData} />
 
       <Tabs defaultValue="lista" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-white shadow-lg rounded-xl h-14">
-          <TabsTrigger
-            value="lista"
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-lg py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-          >
-            📋 Lista de Estoques
-          </TabsTrigger>
-          <TabsTrigger
-            value="formulario"
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-lg py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-          >
-            ➕ {isEditMode ? "Editar Item" : "Cadastrar Item"}
-          </TabsTrigger>
-        </TabsList>
+        <div className="flex flex-col lg:flex-row gap-4 mb-6">
+          <TabsList className="grid grid-cols-1 sm:grid-cols-2 bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg rounded-xl h-auto sm:h-14 p-1">
+            <TabsTrigger
+              value="lista"
+              className="flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 text-white font-semibold text-sm sm:text-base py-3 rounded-lg transition-all duration-300 hover:bg-white/10"
+            >
+              📋 <span className="hidden sm:inline">Lista de Estoques</span><span className="sm:hidden">Lista</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="formulario"
+              className="flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 text-white font-semibold text-sm sm:text-base py-3 rounded-lg transition-all duration-300 hover:bg-white/10"
+            >
+              ➕ <span className="hidden sm:inline">Cadastrar Item</span><span className="sm:hidden">Cadastrar</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="lista" className="space-y-6 mt-8">
           <EstoqueFilters

@@ -19,19 +19,17 @@ const FaturamentoEstimativa: React.FC<FaturamentoEstimativaProps> = ({
   };
 
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-white/90 backdrop-blur-sm">
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 text-red-700 text-lg">
-          <TrendingUp className="w-5 h-5" />
-          Passo 1: Estimativa do Faturamento
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div className="ponto-equilibrio-step">
+      <div className="ponto-equilibrio-step-header">
+        <div className="ponto-equilibrio-step-number">1</div>
         <div>
-          <Label
-            htmlFor="faturamento"
-            className="text-sm font-medium text-gray-700"
-          >
+          <div className="ponto-equilibrio-step-title">Estimativa do Faturamento</div>
+          <div className="ponto-equilibrio-step-description">Faturamento Mensal Estimado</div>
+        </div>
+      </div>
+      <div className="ponto-equilibrio-input-group">
+        <div>
+          <Label className="ponto-equilibrio-input-label">
             Faturamento Mensal Estimado
           </Label>
           <div className="relative mt-1">
@@ -39,11 +37,10 @@ const FaturamentoEstimativa: React.FC<FaturamentoEstimativaProps> = ({
               R$
             </span>
             <Input
-              id="faturamento"
               type="number"
               value={value}
               onChange={handleChange}
-              className="pl-10 text-right"
+              className="ponto-equilibrio-input pl-10 text-right"
               placeholder="0,00"
             />
           </div>
@@ -51,8 +48,8 @@ const FaturamentoEstimativa: React.FC<FaturamentoEstimativaProps> = ({
             Insira o faturamento mensal estimado ou atual do seu negócio
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

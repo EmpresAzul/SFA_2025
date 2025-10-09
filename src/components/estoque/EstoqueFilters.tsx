@@ -25,31 +25,32 @@ export const EstoqueFilters: React.FC<EstoqueFiltersProps> = ({
   setStatusFilter,
 }) => {
   return (
-    <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
-      <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-t-lg">
-        <CardTitle className="text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          🔍 Filtros de Pesquisa
+    <Card className="estoque-filters">
+      <CardHeader className="estoque-filters-header">
+        <CardTitle className="estoque-filters-title">
+          <Search className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+          Filtros de Pesquisa
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <CardContent className="estoque-filters-content">
+        <div className="estoque-filters-grid">
           <div className="space-y-2">
-            <Label className="text-gray-700 font-medium">Buscar Produto</Label>
+            <Label className="estoque-filter-label">Buscar Produto</Label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Digite o nome do produto..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg"
+                className="fluxo-input pl-10 text-sm"
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label className="text-gray-700 font-medium">Status</Label>
+            <Label className="estoque-filter-label">Status</Label>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="h-12 border-2 border-gray-200 focus:border-blue-500 rounded-lg">
-                <SelectValue />
+              <SelectTrigger className="fluxo-select h-10 text-sm">
+                <SelectValue placeholder="Todos os Status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos os Status</SelectItem>

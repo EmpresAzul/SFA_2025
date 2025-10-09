@@ -926,3 +926,1069 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+/* 
+=================================================================
+   DRE LAYOUT ESPECÍFICO - PADRÃO DESKTOP EM TODAS AS VERSÕES
+   ================================================================= */
+
+/* DRE Cards - Layout responsivo mantendo identidade visual */
+.dre-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6;
+}
+
+.dre-card {
+  @apply border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
+}
+
+.dre-card-content {
+  @apply p-4 sm:p-6 text-white;
+}
+
+.dre-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.dre-card-value {
+  @apply text-base sm:text-lg lg:text-xl font-bold text-white;
+}
+
+.dre-card-icon {
+  @apply w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm;
+}
+
+/* DRE Report - Layout consistente */
+.dre-report-header {
+  @apply bg-gradient-to-r from-green-600 to-blue-600 text-white p-4 sm:p-6 rounded-t-lg;
+}
+
+.dre-report-title {
+  @apply text-sm sm:text-base lg:text-lg flex items-center gap-2 font-semibold;
+}
+
+.dre-section-header {
+  @apply py-2 sm:py-3 px-3 sm:px-4 lg:px-6;
+}
+
+.dre-section-title {
+  @apply font-bold text-xs sm:text-sm lg:text-base;
+}
+
+/* DRE Line Items - Layout desktop em todas as versões */
+.dre-line-item {
+  @apply flex justify-between items-center py-1.5 px-4 text-sm border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150;
+}
+
+.dre-line-item-label {
+  @apply flex-1;
+}
+
+.dre-line-item-value {
+  @apply font-mono ml-4 min-w-[120px] text-right;
+}
+
+.dre-line-item-subtotal {
+  @apply bg-slate-50 border-t border-slate-200 font-semibold;
+}
+
+.dre-line-item-total {
+  @apply bg-gradient-to-r from-indigo-50 to-purple-50 border-t-2 border-indigo-300 font-bold;
+}
+
+/* Period Selector - Layout consistente */
+.dre-period-selector {
+  @apply bg-white rounded-lg p-3 shadow-sm border;
+}
+
+.dre-period-label {
+  @apply text-sm font-medium text-gray-700 mb-2;
+}
+
+.dre-period-select {
+  @apply w-full h-10 text-sm bg-white border-gray-200;
+}
+
+/* Mobile específico - mantém layout desktop */
+@media (max-width: 640px) {
+  .dre-summary-cards {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .dre-card-content {
+    @apply p-4;
+  }
+  
+  .dre-card-title {
+    @apply text-xs;
+  }
+  
+  .dre-card-value {
+    @apply text-base;
+  }
+  
+  .dre-card-icon {
+    @apply w-8 h-8;
+  }
+  
+  .dre-report-header {
+    @apply p-4;
+  }
+  
+  .dre-report-title {
+    @apply text-sm;
+  }
+  
+  .dre-section-header {
+    @apply py-2 px-3;
+  }
+  
+  .dre-section-title {
+    @apply text-xs;
+  }
+  
+  .dre-line-item {
+    @apply text-xs px-3;
+  }
+  
+  .dre-line-item-value {
+    @apply min-w-[100px];
+  }
+}
+
+/* PWA e App - força layout desktop */
+@media (display-mode: standalone) {
+  .dre-summary-cards,
+  .dre-report-header,
+  .dre-line-item,
+  .dre-period-selector {
+    /* Mantém todas as classes desktop */
+  }
+}/* ======
+===========================================================
+   PRECIFICAÇÃO E ESTOQUE - PADRÃO DESKTOP EM TODAS AS VERSÕES
+   ================================================================= */
+
+/* Precificação e Estoque - Layout responsivo mantendo identidade visual */
+.precificacao-summary-cards,
+.estoque-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6;
+}
+
+.precificacao-card,
+.estoque-card {
+  @apply border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
+}
+
+.precificacao-card-content,
+.estoque-card-content {
+  @apply p-4 sm:p-6 text-white;
+}
+
+.precificacao-card-title,
+.estoque-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.precificacao-card-value,
+.estoque-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.precificacao-card-icon,
+.estoque-card-icon {
+  @apply w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm;
+}
+
+/* Tabs - Layout consistente para Precificação e Estoque */
+.precificacao-tabs,
+.estoque-tabs {
+  @apply grid grid-cols-1 sm:grid-cols-4 bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg rounded-xl h-auto sm:h-14 p-1;
+}
+
+.precificacao-tab,
+.estoque-tab {
+  @apply flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 text-white font-semibold text-sm sm:text-base py-3 rounded-lg transition-all duration-300 hover:bg-white/10;
+}
+
+/* Filtros - Layout consistente */
+.precificacao-filters,
+.estoque-filters {
+  @apply mb-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg;
+}
+
+.precificacao-filters-header,
+.estoque-filters-header {
+  @apply p-4 sm:p-6;
+}
+
+.precificacao-filters-title,
+.estoque-filters-title {
+  @apply text-base sm:text-lg font-semibold text-gray-800 flex items-center gap-2;
+}
+
+.precificacao-filters-content,
+.estoque-filters-content {
+  @apply p-4 sm:p-6 pt-0;
+}
+
+.precificacao-filters-grid,
+.estoque-filters-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.precificacao-filter-label,
+.estoque-filter-label {
+  @apply text-xs sm:text-sm font-medium text-gray-700;
+}
+
+/* Tabelas - Layout responsivo */
+.precificacao-table,
+.estoque-table {
+  @apply overflow-x-auto;
+}
+
+.precificacao-table-container,
+.estoque-table-container {
+  @apply bg-white/80 backdrop-blur-sm border-0 shadow-lg rounded-lg;
+}
+
+.precificacao-table-header,
+.estoque-table-header {
+  @apply p-4 sm:p-6;
+}
+
+.precificacao-table-title,
+.estoque-table-title {
+  @apply text-sm sm:text-base font-semibold text-gray-800;
+}
+
+/* Mobile específico - mantém layout desktop */
+@media (max-width: 640px) {
+  .precificacao-summary-cards,
+  .estoque-summary-cards {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .precificacao-card-content,
+  .estoque-card-content {
+    @apply p-4;
+  }
+  
+  .precificacao-card-title,
+  .estoque-card-title {
+    @apply text-xs;
+  }
+  
+  .precificacao-card-value,
+  .estoque-card-value {
+    @apply text-lg;
+  }
+  
+  .precificacao-card-icon,
+  .estoque-card-icon {
+    @apply w-8 h-8;
+  }
+  
+  .precificacao-tabs,
+  .estoque-tabs {
+    @apply grid-cols-1 gap-1;
+  }
+  
+  .precificacao-tab,
+  .estoque-tab {
+    @apply text-sm py-2;
+  }
+  
+  .precificacao-filters-grid,
+  .estoque-filters-grid {
+    @apply grid-cols-1 gap-3;
+  }
+  
+  .precificacao-filters-header,
+  .estoque-filters-header,
+  .precificacao-filters-content,
+  .estoque-filters-content {
+    @apply p-4;
+  }
+  
+  .precificacao-table-header,
+  .estoque-table-header {
+    @apply p-4;
+  }
+}
+
+/* Tablet específico - layout intermediário */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .precificacao-summary-cards,
+  .estoque-summary-cards {
+    @apply grid-cols-2;
+  }
+  
+  .precificacao-tabs,
+  .estoque-tabs {
+    @apply grid-cols-2;
+  }
+  
+  .precificacao-filters-grid,
+  .estoque-filters-grid {
+    @apply grid-cols-2;
+  }
+}
+
+/* PWA e App - força layout desktop */
+@media (display-mode: standalone) {
+  .precificacao-summary-cards,
+  .estoque-summary-cards,
+  .precificacao-tabs,
+  .estoque-tabs,
+  .precificacao-filters,
+  .estoque-filters {
+    /* Mantém todas as classes desktop */
+  }
+}
+
+/* Força alinhamento perfeito - evita sobreposição */
+.precificacao-container,
+.estoque-container {
+  @apply space-y-4 sm:space-y-6;
+}
+
+.precificacao-container > *,
+.estoque-container > * {
+  @apply w-full;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Garante que nenhum elemento saia da tela */
+.precificacao-responsive,
+.estoque-responsive {
+  @apply w-full max-w-full;
+  box-sizing: border-box;
+}
+
+.precificacao-responsive *,
+.estoque-responsive * {
+  @apply max-w-full;
+  box-sizing: border-box;
+}/* =====
+============================================================
+   CRM, SALDOS BANCÁRIOS E LEMBRETES - PADRÃO DESKTOP EM TODAS AS VERSÕES
+   ================================================================= */
+
+/* CRM - Layout responsivo mantendo identidade visual */
+.crm-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6;
+}
+
+.crm-card {
+  @apply border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
+}
+
+.crm-card-content {
+  @apply p-4 sm:p-6 text-white;
+}
+
+.crm-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.crm-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.crm-card-icon {
+  @apply w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm;
+}
+
+/* Saldos Bancários - Layout consistente */
+.saldos-summary-card {
+  @apply bg-white border-0 shadow-lg mb-6 rounded-lg;
+}
+
+.saldos-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.saldos-total-label {
+  @apply text-base sm:text-lg font-semibold text-gray-700 mb-1;
+}
+
+.saldos-total-description {
+  @apply text-xs sm:text-sm text-gray-500;
+}
+
+.saldos-total-value {
+  @apply text-xl sm:text-2xl lg:text-3xl font-bold;
+}
+
+/* Lembretes - Layout responsivo mantendo identidade visual */
+.lembretes-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6;
+}
+
+.lembretes-card {
+  @apply border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
+}
+
+.lembretes-card-content {
+  @apply p-4 sm:p-6 text-white;
+}
+
+.lembretes-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1 sm:mb-2;
+}
+
+.lembretes-card-value {
+  @apply text-lg sm:text-xl lg:text-2xl font-bold text-white;
+}
+
+.lembretes-card-icon {
+  @apply w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm;
+}
+
+/* Formulários e Filtros - Layout consistente */
+.crm-form,
+.saldos-form,
+.lembretes-form {
+  @apply bg-white/80 backdrop-blur-sm rounded-lg p-4 sm:p-6 shadow-lg;
+}
+
+.crm-filters,
+.saldos-filters,
+.lembretes-filters {
+  @apply bg-white/80 backdrop-blur-sm rounded-lg p-4 sm:p-6 shadow-lg mb-6;
+}
+
+.crm-filters-grid,
+.saldos-filters-grid,
+.lembretes-filters-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.crm-filter-label,
+.saldos-filter-label,
+.lembretes-filter-label {
+  @apply text-xs sm:text-sm font-medium text-gray-700;
+}
+
+/* Pipeline Board - Layout responsivo */
+.crm-pipeline-board {
+  @apply bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-lg;
+}
+
+.crm-pipeline-column {
+  @apply bg-gray-50 rounded-lg p-3 min-h-[200px];
+}
+
+.crm-pipeline-card {
+  @apply bg-white rounded-lg p-3 mb-3 shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200;
+}
+
+/* Tabelas - Layout responsivo */
+.crm-table,
+.saldos-table,
+.lembretes-table {
+  @apply overflow-x-auto;
+}
+
+.crm-table-container,
+.saldos-table-container,
+.lembretes-table-container {
+  @apply bg-white/80 backdrop-blur-sm border-0 shadow-lg rounded-lg;
+}
+
+.crm-table-header,
+.saldos-table-header,
+.lembretes-table-header {
+  @apply p-4 sm:p-6;
+}
+
+.crm-table-title,
+.saldos-table-title,
+.lembretes-table-title {
+  @apply text-sm sm:text-base font-semibold text-gray-800;
+}
+
+/* Mobile específico - mantém layout desktop */
+@media (max-width: 640px) {
+  .crm-summary-cards,
+  .lembretes-summary-cards {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .crm-card-content,
+  .lembretes-card-content {
+    @apply p-4;
+  }
+  
+  .crm-card-title,
+  .lembretes-card-title {
+    @apply text-xs;
+  }
+  
+  .crm-card-value,
+  .lembretes-card-value {
+    @apply text-lg;
+  }
+  
+  .crm-card-icon,
+  .lembretes-card-icon {
+    @apply w-8 h-8;
+  }
+  
+  .saldos-summary-card {
+    @apply rounded-lg;
+  }
+  
+  .saldos-card-content {
+    @apply p-4;
+  }
+  
+  .saldos-total-label {
+    @apply text-base;
+  }
+  
+  .saldos-total-value {
+    @apply text-xl;
+  }
+  
+  .crm-form,
+  .saldos-form,
+  .lembretes-form,
+  .crm-filters,
+  .saldos-filters,
+  .lembretes-filters {
+    @apply p-4;
+  }
+  
+  .crm-filters-grid,
+  .saldos-filters-grid,
+  .lembretes-filters-grid {
+    @apply grid-cols-1 gap-3;
+  }
+  
+  .crm-pipeline-board {
+    @apply p-3;
+  }
+  
+  .crm-pipeline-column {
+    @apply p-2 min-h-[150px];
+  }
+  
+  .crm-pipeline-card {
+    @apply p-2 mb-2;
+  }
+}
+
+/* Tablet específico - layout intermediário */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .crm-summary-cards,
+  .lembretes-summary-cards {
+    @apply grid-cols-2;
+  }
+  
+  .crm-filters-grid,
+  .saldos-filters-grid,
+  .lembretes-filters-grid {
+    @apply grid-cols-2;
+  }
+}
+
+/* PWA e App - força layout desktop */
+@media (display-mode: standalone) {
+  .crm-summary-cards,
+  .lembretes-summary-cards,
+  .saldos-summary-card,
+  .crm-filters,
+  .saldos-filters,
+  .lembretes-filters {
+    /* Mantém todas as classes desktop */
+  }
+}
+
+/* Força alinhamento perfeito - evita sobreposição */
+.crm-container,
+.saldos-container,
+.lembretes-container {
+  @apply space-y-4 sm:space-y-6;
+}
+
+.crm-container > *,
+.saldos-container > *,
+.lembretes-container > * {
+  @apply w-full;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Garante que nenhum elemento saia da tela */
+.crm-responsive,
+.saldos-responsive,
+.lembretes-responsive {
+  @apply w-full max-w-full;
+  box-sizing: border-box;
+}
+
+.crm-responsive *,
+.saldos-responsive *,
+.lembretes-responsive * {
+  @apply max-w-full;
+  box-sizing: border-box;
+}
+
+/* Botões específicos */
+.crm-btn,
+.saldos-btn,
+.lembretes-btn {
+  @apply fluxo-btn-primary w-full sm:w-auto flex items-center justify-center gap-2;
+}
+
+/* Status badges */
+.crm-status-badge,
+.saldos-status-badge,
+.lembretes-status-badge {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.crm-status-prospeccao {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.crm-status-qualificacao {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.crm-status-proposta {
+  @apply bg-purple-100 text-purple-800;
+}
+
+.crm-status-negociacao {
+  @apply bg-orange-100 text-orange-800;
+}
+
+.crm-status-fechado {
+  @apply bg-green-100 text-green-800;
+}
+
+.crm-status-perdido {
+  @apply bg-red-100 text-red-800;
+}
+
+.lembretes-status-ativo {
+  @apply bg-green-100 text-green-800;
+}
+
+.lembretes-status-concluido {
+  @apply bg-gray-100 text-gray-800;
+}
+
+.lembretes-status-vencido {
+  @apply bg-red-100 text-red-800;
+}/* =====
+============================================================
+   PONTO DE EQUILÍBRIO, SUPORTE E PERFIL - PADRÃO DESKTOP EM TODAS AS VERSÕES
+   ================================================================= */
+
+/* Ponto de Equilíbrio - Layout responsivo mantendo identidade visual */
+.ponto-equilibrio-layout {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6;
+}
+
+.ponto-equilibrio-card {
+  @apply bg-white/80 backdrop-blur-sm border-0 shadow-lg rounded-lg;
+}
+
+.ponto-equilibrio-card-header {
+  @apply p-4 sm:p-6 border-b border-gray-100;
+}
+
+.ponto-equilibrio-card-title {
+  @apply text-base sm:text-lg font-semibold text-gray-800;
+}
+
+.ponto-equilibrio-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.ponto-equilibrio-input-group {
+  @apply space-y-2;
+}
+
+.ponto-equilibrio-input-label {
+  @apply text-xs sm:text-sm font-medium text-gray-700;
+}
+
+.ponto-equilibrio-input {
+  @apply fluxo-input text-sm;
+}
+
+.ponto-equilibrio-result-card {
+  @apply bg-gradient-to-br from-green-50 to-emerald-100 border-green-200 p-4 sm:p-6 rounded-lg;
+}
+
+.ponto-equilibrio-result-value {
+  @apply text-xl sm:text-2xl lg:text-3xl font-bold text-green-700;
+}
+
+.ponto-equilibrio-result-label {
+  @apply text-sm sm:text-base text-green-600;
+}
+
+/* Suporte - Layout consistente */
+.suporte-layout {
+  @apply grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6;
+}
+
+.suporte-tabs {
+  @apply grid grid-cols-1 sm:grid-cols-2 bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg rounded-xl h-auto sm:h-14 p-1;
+}
+
+.suporte-tab {
+  @apply flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 text-white font-semibold text-sm sm:text-base py-3 rounded-lg transition-all duration-300 hover:bg-white/10;
+}
+
+.suporte-chat-container {
+  @apply bg-white/80 backdrop-blur-sm rounded-lg p-4 sm:p-6 shadow-lg;
+}
+
+.suporte-faq-container {
+  @apply bg-white/80 backdrop-blur-sm rounded-lg p-4 sm:p-6 shadow-lg;
+}
+
+.suporte-faq-section {
+  @apply mb-6 sm:mb-8;
+}
+
+.suporte-faq-title {
+  @apply text-sm sm:text-base font-semibold mb-4 flex items-center gap-2;
+}
+
+.suporte-faq-item {
+  @apply border-l-4 pl-3 py-2 mb-3;
+}
+
+.suporte-faq-question {
+  @apply font-medium text-gray-800 text-xs sm:text-sm;
+}
+
+.suporte-faq-answer {
+  @apply text-xs text-gray-600 mt-1;
+}
+
+.suporte-sidebar {
+  @apply bg-white/80 backdrop-blur-sm rounded-lg p-4 sm:p-6 shadow-lg;
+}
+
+.suporte-sidebar-section {
+  @apply mb-4 sm:mb-6;
+}
+
+.suporte-sidebar-title {
+  @apply text-base sm:text-lg font-semibold text-gray-800 mb-3;
+}
+
+.suporte-contact-item {
+  @apply flex items-center gap-3 p-3 bg-gray-50 rounded-lg mb-3;
+}
+
+.suporte-contact-icon {
+  @apply w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center;
+}
+
+.suporte-contact-info {
+  @apply flex-1;
+}
+
+.suporte-contact-label {
+  @apply text-xs sm:text-sm font-medium text-gray-700;
+}
+
+.suporte-contact-value {
+  @apply text-xs text-gray-600;
+}
+
+/* Perfil - Layout responsivo mantendo identidade visual */
+.perfil-layout {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6;
+}
+
+.perfil-card {
+  @apply bg-white/80 backdrop-blur-sm border-0 shadow-lg rounded-lg;
+}
+
+.perfil-card-header {
+  @apply p-4 sm:p-6 border-b border-gray-100;
+}
+
+.perfil-card-title {
+  @apply text-base sm:text-lg font-semibold text-gray-800 flex items-center justify-between;
+}
+
+.perfil-card-content {
+  @apply p-4 sm:p-6;
+}
+
+.perfil-info-row {
+  @apply flex items-start justify-between py-2 border-b border-gray-100 last:border-b-0;
+}
+
+.perfil-info-label {
+  @apply text-xs sm:text-sm text-gray-600;
+}
+
+.perfil-info-value {
+  @apply text-xs sm:text-sm font-medium text-right;
+}
+
+.perfil-edit-group {
+  @apply space-y-2;
+}
+
+.perfil-edit-label {
+  @apply text-xs sm:text-sm text-gray-600;
+}
+
+.perfil-edit-input {
+  @apply fluxo-input text-sm;
+}
+
+.perfil-edit-actions {
+  @apply flex gap-2 flex-wrap;
+}
+
+.perfil-btn {
+  @apply px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200;
+}
+
+.perfil-btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.perfil-btn-secondary {
+  @apply border border-gray-300 text-gray-600 hover:bg-gray-50;
+}
+
+.perfil-email-display {
+  @apply p-3 bg-gray-50 rounded-lg border;
+}
+
+.perfil-email-text {
+  @apply text-sm font-medium text-gray-800;
+}
+
+.perfil-email-subtitle {
+  @apply text-xs text-gray-500 mt-1;
+}
+
+/* Mobile específico - mantém layout desktop */
+@media (max-width: 640px) {
+  .ponto-equilibrio-layout {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .ponto-equilibrio-card-header,
+  .ponto-equilibrio-card-content {
+    @apply p-4;
+  }
+  
+  .ponto-equilibrio-card-title {
+    @apply text-base;
+  }
+  
+  .ponto-equilibrio-result-value {
+    @apply text-xl;
+  }
+  
+  .suporte-layout {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .suporte-tabs {
+    @apply grid-cols-1 gap-1;
+  }
+  
+  .suporte-tab {
+    @apply text-sm py-2;
+  }
+  
+  .suporte-chat-container,
+  .suporte-faq-container,
+  .suporte-sidebar {
+    @apply p-4;
+  }
+  
+  .suporte-faq-section {
+    @apply mb-6;
+  }
+  
+  .suporte-faq-title {
+    @apply text-sm;
+  }
+  
+  .suporte-sidebar-section {
+    @apply mb-4;
+  }
+  
+  .suporte-sidebar-title {
+    @apply text-base;
+  }
+  
+  .suporte-contact-icon {
+    @apply w-8 h-8;
+  }
+  
+  .perfil-layout {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .perfil-card-header,
+  .perfil-card-content {
+    @apply p-4;
+  }
+  
+  .perfil-card-title {
+    @apply text-base flex-col items-start gap-2;
+  }
+  
+  .perfil-edit-actions {
+    @apply flex-col;
+  }
+  
+  .perfil-btn {
+    @apply w-full justify-center;
+  }
+}
+
+/* Tablet específico - layout intermediário */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .ponto-equilibrio-layout {
+    @apply grid-cols-1;
+  }
+  
+  .suporte-layout {
+    @apply grid-cols-1;
+  }
+  
+  .suporte-tabs {
+    @apply grid-cols-2;
+  }
+  
+  .perfil-layout {
+    @apply grid-cols-1;
+  }
+}
+
+/* PWA e App - força layout desktop */
+@media (display-mode: standalone) {
+  .ponto-equilibrio-layout,
+  .suporte-layout,
+  .perfil-layout {
+    /* Mantém todas as classes desktop */
+  }
+}
+
+/* Força alinhamento perfeito - evita sobreposição */
+.ponto-equilibrio-container,
+.suporte-container,
+.perfil-container {
+  @apply space-y-4 sm:space-y-6;
+}
+
+.ponto-equilibrio-container > *,
+.suporte-container > *,
+.perfil-container > * {
+  @apply w-full;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Garante que nenhum elemento saia da tela */
+.ponto-equilibrio-responsive,
+.suporte-responsive,
+.perfil-responsive {
+  @apply w-full max-w-full;
+  box-sizing: border-box;
+}
+
+.ponto-equilibrio-responsive *,
+.suporte-responsive *,
+.perfil-responsive * {
+  @apply max-w-full;
+  box-sizing: border-box;
+}
+
+/* Componentes específicos */
+.ponto-equilibrio-step {
+  @apply bg-white/80 backdrop-blur-sm rounded-lg p-4 sm:p-6 shadow-lg mb-4;
+}
+
+.ponto-equilibrio-step-header {
+  @apply flex items-center gap-3 mb-4;
+}
+
+.ponto-equilibrio-step-number {
+  @apply w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-bold;
+}
+
+.ponto-equilibrio-step-title {
+  @apply text-base sm:text-lg font-semibold text-gray-800;
+}
+
+.ponto-equilibrio-step-description {
+  @apply text-xs sm:text-sm text-gray-600;
+}
+
+/* Chat específico */
+.suporte-chat-message {
+  @apply p-3 rounded-lg mb-3;
+}
+
+.suporte-chat-user {
+  @apply bg-blue-100 text-blue-800 ml-auto max-w-[80%];
+}
+
+.suporte-chat-bot {
+  @apply bg-gray-100 text-gray-800 mr-auto max-w-[80%];
+}
+
+.suporte-chat-input {
+  @apply fluxo-input text-sm;
+}
+
+.suporte-chat-send {
+  @apply fluxo-btn-primary px-4 py-2;
+}
+
+/* FAQ específico */
+.suporte-faq-alta {
+  @apply border-red-500 bg-red-50;
+}
+
+.suporte-faq-media {
+  @apply border-yellow-500 bg-yellow-50;
+}
+
+.suporte-faq-baixa {
+  @apply border-green-500 bg-green-50;
+}
+
+/* Perfil específico */
+.perfil-avatar {
+  @apply w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-full flex items-center justify-center;
+}
+
+.perfil-avatar-icon {
+  @apply w-8 h-8 sm:w-10 sm:h-10 text-blue-600;
+}
+
+.perfil-status-badge {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.perfil-status-ativo {
+  @apply bg-green-100 text-green-800;
+}
+
+.perfil-status-inativo {
+  @apply bg-red-100 text-red-800;
+}

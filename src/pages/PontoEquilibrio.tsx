@@ -37,20 +37,21 @@ const PontoEquilibrio: React.FC = () => {
   } = usePontoEquilibrio();
 
   return (
-    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-red-50 min-h-screen">
+    <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-red-50 min-h-screen ponto-equilibrio-container ponto-equilibrio-responsive">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
-          📊 Ponto de Equilíbrio
-        </h1>
-        <p className="text-gray-600 text-sm">
-          Calcule o ponto de equilíbrio do seu negócio e determine o faturamento
-          mínimo necessário
-        </p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
+            📊 Ponto de Equilíbrio
+          </h1>
+          <p className="text-gray-600 text-sm sm:text-base">
+            Calcule o ponto de equilíbrio do seu negócio e determine o faturamento mínimo necessário
+          </p>
+        </div>
       </div>
 
       {/* Layout Principal */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="ponto-equilibrio-layout grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Coluna Esquerda - Inputs */}
         <div className="lg:col-span-1 space-y-6">
           <FaturamentoEstimativa

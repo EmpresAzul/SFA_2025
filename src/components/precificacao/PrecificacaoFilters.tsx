@@ -28,18 +28,18 @@ const PrecificacaoFilters: React.FC<PrecificacaoFiltersProps> = ({
   onStatusChange,
 }) => {
   return (
-    <Card className="mb-6 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-          <Filter className="h-5 w-5 text-blue-600" />
+    <Card className="precificacao-filters">
+      <CardHeader className="precificacao-filters-header">
+        <CardTitle className="precificacao-filters-title">
+          <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
           Filtros de Busca
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <CardContent className="precificacao-filters-content">
+        <div className="precificacao-filters-grid">
           {/* Busca por Nome */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
+            <label className="precificacao-filter-label">
               Buscar por Nome
             </label>
             <div className="relative">
@@ -48,19 +48,19 @@ const PrecificacaoFilters: React.FC<PrecificacaoFiltersProps> = ({
                 placeholder="Digite o nome do item..."
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="pl-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                className="fluxo-input pl-10 text-sm"
               />
             </div>
           </div>
 
           {/* Filtro por Tipo */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
+            <label className="precificacao-filter-label">
               Tipo de Item
             </label>
             <Select value={selectedTipo} onValueChange={onTipoChange}>
-              <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
-                <SelectValue placeholder="Selecione o tipo" />
+              <SelectTrigger className="fluxo-select h-10 text-sm">
+                <SelectValue placeholder="Todos os Tipos" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos os Tipos</SelectItem>
@@ -73,10 +73,10 @@ const PrecificacaoFilters: React.FC<PrecificacaoFiltersProps> = ({
 
           {/* Filtro por Status */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Status</label>
+            <label className="precificacao-filter-label">Status</label>
             <Select value={selectedStatus} onValueChange={onStatusChange}>
-              <SelectTrigger className="border-gray-200 focus:border-blue-500 focus:ring-blue-500">
-                <SelectValue placeholder="Selecione o status" />
+              <SelectTrigger className="fluxo-select h-10 text-sm">
+                <SelectValue placeholder="Todos os Status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos os Status</SelectItem>

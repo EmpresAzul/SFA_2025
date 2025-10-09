@@ -121,53 +121,55 @@ const PrecificacaoPage: React.FC = () => {
   };
 
   return (
-    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+    <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen precificacao-container precificacao-responsive">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
             📊 Sistema de Precificação
           </h1>
-          <p className="text-gray-600 mt-2 text-sm">
+          <p className="text-gray-600 text-sm sm:text-base">
             Gerencie seus produtos, serviços e horas cadastrados
           </p>
         </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-6 bg-white/80 backdrop-blur-sm shadow-lg rounded-xl h-12 sm:h-14">
-          <TabsTrigger
-            value="lista"
-            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-          >
-            <List className="h-4 w-4" />
-            Lista de Itens
-          </TabsTrigger>
-          <TabsTrigger
-            value="produto"
-            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-          >
-            <Package className="h-4 w-4" />
-            {editingItem?.tipo === "Produto"
-              ? "Editar Produto"
-              : "Cadastrar Produto"}
-          </TabsTrigger>
-          <TabsTrigger
-            value="servico"
-            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-          >
-            <Wrench className="h-4 w-4" />
-            {editingItem?.tipo === "Serviço"
-              ? "Editar Serviço"
-              : "Cadastrar Serviço"}
-          </TabsTrigger>
-          <TabsTrigger
-            value="hora"
-            className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-600 data-[state=active]:text-white font-semibold text-sm sm:text-base py-3 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-          >
-            <Clock className="h-4 w-4" />
-            {editingItem?.tipo === "Hora" ? "Editar Hora" : "Cadastrar Hora"}
-          </TabsTrigger>
-        </TabsList>
+        <div className="flex flex-col lg:flex-row gap-4 mb-6">
+          <TabsList className="grid grid-cols-1 sm:grid-cols-4 bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg rounded-xl h-auto sm:h-14 p-1">
+            <TabsTrigger
+              value="lista"
+              className="flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 text-white font-semibold text-sm sm:text-base py-3 rounded-lg transition-all duration-300 hover:bg-white/10"
+            >
+              <List className="h-4 w-4" />
+              <span className="hidden sm:inline">Lista de Itens</span>
+              <span className="sm:hidden">Lista</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="produto"
+              className="flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 text-white font-semibold text-sm sm:text-base py-3 rounded-lg transition-all duration-300 hover:bg-white/10"
+            >
+              <Package className="h-4 w-4" />
+              <span className="hidden sm:inline">Cadastrar Produto</span>
+              <span className="sm:hidden">Produto</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="servico"
+              className="flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 text-white font-semibold text-sm sm:text-base py-3 rounded-lg transition-all duration-300 hover:bg-white/10"
+            >
+              <Wrench className="h-4 w-4" />
+              <span className="hidden sm:inline">Cadastrar Serviço</span>
+              <span className="sm:hidden">Serviço</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="hora"
+              className="flex items-center justify-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-600 text-white font-semibold text-sm sm:text-base py-3 rounded-lg transition-all duration-300 hover:bg-white/10"
+            >
+              <Clock className="h-4 w-4" />
+              <span className="hidden sm:inline">Cadastrar Hora</span>
+              <span className="sm:hidden">Hora</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="lista" className="space-y-6">
           <PrecificacaoSummaryCards
