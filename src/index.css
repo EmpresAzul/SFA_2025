@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
-/* FECHAMENTO26 - Cache Bust: Force PWA and mobile to reload styles */
+/* FECHAMENTO26 - DRE: Cache Bust: Force PWA and mobile to reload styles */
 
 @layer base {
   :root {
