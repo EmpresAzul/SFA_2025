@@ -14,7 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select-white";
 import { Textarea } from "@/components/ui/textarea";
 import { X, Save } from "lucide-react";
 

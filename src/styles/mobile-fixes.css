@@ -1,0 +1,159 @@
+/* =================================================================
+   CORREÇÕES CRÍTICAS PARA MOBILE E APP
+   Remove TODOS os fundos pretos/escuros das versões mobile e app
+   Força fundo branco em TODOS os componentes
+   ================================================================= */
+
+/* FORÇA FUNDO BRANCO EM TODOS OS INPUTS E SELECTS */
+input, 
+select, 
+textarea,
+button[role="combobox"],
+[data-radix-select-trigger],
+[data-radix-select-content],
+[data-radix-select-item],
+[data-radix-dropdown-menu-trigger],
+[data-radix-dropdown-menu-content],
+[data-radix-dropdown-menu-item],
+[data-radix-popover-trigger],
+[data-radix-popover-content],
+[cmdk-root],
+[cmdk-input],
+[cmdk-item] {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+}
+
+/* FORÇA FUNDO BRANCO EM ESTADOS HOVER E FOCUS */
+input:hover,
+input:focus,
+select:hover,
+select:focus,
+textarea:hover,
+textarea:focus,
+button[role="combobox"]:hover,
+button[role="combobox"]:focus,
+[data-radix-select-trigger]:hover,
+[data-radix-select-trigger]:focus,
+[data-radix-select-item]:hover,
+[data-radix-select-item][data-highlighted],
+[data-radix-dropdown-menu-item]:hover,
+[data-radix-dropdown-menu-item][data-highlighted],
+[cmdk-item]:hover,
+[cmdk-item][data-selected="true"] {
+  background: #f8fafc !important;
+  background-color: #f8fafc !important;
+  color: #1e3a8a !important;
+}
+
+/* FORÇA FUNDO BRANCO EM MOBILE ESPECÍFICO */
+@media (max-width: 768px) {
+  /* Todos os elementos de formulário */
+  input, 
+  select, 
+  textarea,
+  button[role="combobox"] {
+    background: white !important;
+    background-color: white !important;
+    color: #374151 !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+
+  /* Força fundo branco em dropdowns e menus */
+  [data-radix-select-content],
+  [data-radix-dropdown-menu-content],
+  [data-radix-popover-content],
+  .select-content,
+  .dropdown-content {
+    background: white !important;
+    background-color: white !important;
+    color: #374151 !important;
+    border: 1px solid #d1d5db !important;
+  }
+
+  /* Força fundo branco em itens de menu */
+  [data-radix-select-item],
+  [data-radix-dropdown-menu-item],
+  .select-item,
+  .dropdown-item {
+    background: white !important;
+    background-color: white !important;
+    color: #374151 !important;
+  }
+
+  /* Estados hover em mobile */
+  [data-radix-select-item]:hover,
+  [data-radix-select-item][data-highlighted],
+  [data-radix-dropdown-menu-item]:hover,
+  [data-radix-dropdown-menu-item][data-highlighted] {
+    background: #f8fafc !important;
+    background-color: #f8fafc !important;
+    color: #1e3a8a !important;
+  }
+}
+
+/* FORÇA FUNDO BRANCO EM PWA/STANDALONE */
+@media (display-mode: standalone) {
+  input, 
+  select, 
+  textarea,
+  button[role="combobox"],
+  [data-radix-select-trigger],
+  [data-radix-select-content],
+  [data-radix-select-item] {
+    background: white !important;
+    background-color: white !important;
+    color: #374151 !important;
+  }
+}
+
+/* REMOVE QUALQUER FUNDO PRETO/ESCURO */
+.bg-black,
+.bg-gray-900,
+.bg-slate-900,
+.bg-zinc-900,
+.dark\:bg-black,
+.dark\:bg-gray-900,
+.dark\:bg-slate-900 {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+}
+
+/* EXCEÇÕES - Mantém gradientes da marca */
+.fluxo-brand-primary,
+.fluxo-btn-primary,
+.gradient-fluxo,
+button.fluxo-btn-primary,
+.bg-blue-600,
+.bg-gradient-to-r {
+  /* Mantém os gradientes da marca */
+}
+
+/* FORÇA FUNDO BRANCO EM COMPONENTES ESPECÍFICOS */
+.select-trigger,
+.input-field,
+.form-control,
+.ui-select,
+.ui-input,
+.pagination-select {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* FORÇA TEXTO ESCURO EM ELEMENTOS CLAROS */
+.force-dark-text {
+  color: #374151 !important;
+}
+
+/* OVERLAYS COM COR DA MARCA AO INVÉS DE PRETO */
+.overlay,
+.modal-overlay,
+.backdrop {
+  background: rgba(30, 58, 138, 0.6) !important;
+  background-color: rgba(30, 58, 138, 0.6) !important;
+}

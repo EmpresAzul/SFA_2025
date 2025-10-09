@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select-white";
 import { AlertCircle, Send } from "lucide-react";
 import { TicketFormData } from "@/types/support";
 import { useToast } from "@/hooks/use-toast";

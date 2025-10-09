@@ -1,3 +1,6 @@
+/* Importar correções críticas para mobile */
+@import './styles/mobile-fixes.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -441,20 +444,59 @@
   @apply w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-gray-300;
   @apply focus:ring-2 focus:ring-blue-500 focus:border-transparent;
   @apply transition-all duration-200;
-  background: white;
+  background: white !important;
+  color: #374151 !important;
 }
 
 .fluxo-input:focus {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: white !important;
 }
 
 .fluxo-select {
-  @apply fluxo-input appearance-none bg-white;
+  @apply fluxo-input appearance-none;
+  background: white !important;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 0.5rem center;
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
+  color: #374151 !important;
+}
+
+/* FORÇA FUNDO BRANCO EM TODOS OS SELECTS E INPUTS */
+select, input, textarea, 
+.select-trigger, .input-field,
+[role="combobox"], [role="listbox"],
+.ui-select, .ui-input {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+}
+
+/* FORÇA FUNDO BRANCO EM DROPDOWNS E MENUS */
+.select-content, .dropdown-content, 
+.popover-content, .menu-content,
+[data-radix-popper-content-wrapper],
+[data-state="open"] {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+}
+
+/* FORÇA FUNDO BRANCO EM ITENS DE MENU */
+.select-item, .dropdown-item, 
+.menu-item, .option-item,
+[role="option"], [data-highlighted] {
+  background: white !important;
+  color: #374151 !important;
+}
+
+.select-item:hover, .dropdown-item:hover,
+.menu-item:hover, .option-item:hover,
+[role="option"]:hover, [data-highlighted]:hover {
+  background: #f8fafc !important;
+  color: #1e3a8a !important;
 }
 
 .fluxo-textarea {
@@ -635,6 +677,37 @@
   /* Navegação mobile */
   .mobile-nav-compact {
     @apply px-3 py-2 text-sm;
+  }
+
+  /* FORÇA FUNDO BRANCO EM MOBILE - CRÍTICO */
+  select, input, textarea, button[role="combobox"] {
+    background: white !important;
+    background-color: white !important;
+    color: #374151 !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+
+  /* Força fundo branco em dropdowns mobile */
+  [data-radix-select-content],
+  [data-radix-dropdown-menu-content],
+  [data-radix-popover-content] {
+    background: white !important;
+    background-color: white !important;
+    color: #374151 !important;
+  }
+
+  /* Força fundo branco em itens de select mobile */
+  [data-radix-select-item],
+  [data-radix-dropdown-menu-item] {
+    background: white !important;
+    color: #374151 !important;
+  }
+
+  [data-radix-select-item]:hover,
+  [data-radix-dropdown-menu-item]:hover {
+    background: #f8fafc !important;
+    color: #1e3a8a !important;
   }
 }
 
@@ -859,4 +932,121 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* =================================================================
+   CORREÇÃO CRÍTICA - FORÇA FUNDO BRANCO EM TODOS OS COMPONENTES
+   Remove qualquer fundo preto/escuro das versões mobile e app
+   ================================================================= */
+
+/* RADIX UI - FORÇA FUNDO BRANCO */
+[data-radix-select-content] {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-radix-select-item] {
+  background: white !important;
+  color: #374151 !important;
+  padding: 8px 12px !important;
+}
+
+[data-radix-select-item][data-highlighted] {
+  background: #f8fafc !important;
+  color: #1e3a8a !important;
+}
+
+[data-radix-select-trigger] {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* DROPDOWN MENUS */
+[data-radix-dropdown-menu-content] {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+[data-radix-dropdown-menu-item] {
+  background: white !important;
+  color: #374151 !important;
+}
+
+[data-radix-dropdown-menu-item][data-highlighted] {
+  background: #f8fafc !important;
+  color: #1e3a8a !important;
+}
+
+/* POPOVERS */
+[data-radix-popover-content] {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+/* COMBOBOX E COMMAND */
+[cmdk-root] {
+  background: white !important;
+  color: #374151 !important;
+}
+
+[cmdk-input] {
+  background: white !important;
+  color: #374151 !important;
+}
+
+[cmdk-item] {
+  background: white !important;
+  color: #374151 !important;
+}
+
+[cmdk-item][data-selected="true"] {
+  background: #f8fafc !important;
+  color: #1e3a8a !important;
+}
+
+/* FORÇA FUNDO BRANCO EM QUALQUER ELEMENTO ESCURO */
+.bg-black, .bg-gray-900, .bg-slate-900, .bg-zinc-900,
+.dark\:bg-black, .dark\:bg-gray-900, .dark\:bg-slate-900 {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+}
+
+/* FORÇA FUNDO BRANCO EM OVERLAYS */
+.bg-black\/80, .bg-black\/50, .bg-gray-900\/80 {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* FORÇA TEXTO ESCURO EM ELEMENTOS CLAROS - SEM CIRCULAR DEPENDENCY */
+.force-dark-text {
+  color: #374151 !important;
+}
+
+/* EXCEÇÕES - Mantém branco apenas onde necessário */
+.fluxo-brand-primary,
+.fluxo-btn-primary,
+.gradient-fluxo,
+button.fluxo-btn-primary,
+.bg-blue-600,
+.bg-gradient-to-r {
+  color: white !important;
+}
+
+/* PAGINAÇÃO - FORÇA FUNDO BRANCO */
+.pagination-select, 
+button[role="combobox"],
+.select-trigger {
+  background: white !important;
+  background-color: white !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
 }

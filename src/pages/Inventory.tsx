@@ -9,7 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select-white";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
@@ -528,7 +528,8 @@ const Inventory: React.FC = () => {
 
       {/* Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50" 
+             style={{ backgroundColor: 'rgba(30, 58, 138, 0.5)' }}>
           <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto border-fluxo-black-200 shadow-professional-lg">
             <CardHeader>
               <CardTitle className="text-fluxo-black-800">
@@ -752,7 +753,8 @@ const Inventory: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteItemId && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50" 
+             style={{ backgroundColor: 'rgba(30, 58, 138, 0.5)' }}>
           <Card className="w-full max-w-md border-fluxo-black-200 shadow-professional-lg">
             <CardHeader>
               <CardTitle className="text-fluxo-black-800">

@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select-white";
 import { Search, Filter } from "lucide-react";
 
 interface PrecificacaoFiltersProps {

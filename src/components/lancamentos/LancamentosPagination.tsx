@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select-white";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 interface LancamentosPaginationProps {
@@ -44,7 +44,14 @@ const LancamentosPagination: React.FC<LancamentosPaginationProps> = ({
             value={itemsPerPage.toString()}
             onValueChange={(value) => onItemsPerPageChange(Number(value))}
           >
-            <SelectTrigger className="w-20 h-8">
+            <SelectTrigger 
+              className="w-20 h-8"
+              style={{ 
+                background: 'white !important', 
+                backgroundColor: 'white !important',
+                color: '#374151 !important'
+              }}
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
