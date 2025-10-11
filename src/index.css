@@ -653,6 +653,43 @@ button[role="combobox"],
 
 /* MOBILE ESPECÍFICO - MANTÉM IDENTIDADE VISUAL */
 @media (max-width: 640px) {
+  /* Força fundo branco/claro em todas as páginas mobile */
+  body {
+    background-color: #f8fafc !important;
+  }
+  
+  /* Remove fundos pretos de botões e elementos */
+  button, .btn, [role="button"] {
+    background-color: transparent !important;
+  }
+  
+  button.bg-primary, .btn-primary {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+  }
+  
+  /* Garante que tabelas e listagens sejam visíveis */
+  table, .table, [role="table"] {
+    background-color: white !important;
+    color: #1e293b !important;
+  }
+  
+  table th, .table th, [role="columnheader"] {
+    background-color: #f1f5f9 !important;
+    color: #1e3a8a !important;
+  }
+  
+  table td, .table td, [role="cell"] {
+    background-color: white !important;
+    color: #334155 !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+  
+  /* Cards e containers mobile */
+  .card, [role="article"], section {
+    background-color: white !important;
+    color: #1e293b !important;
+  }
+  
   /* Layout adaptativo mantendo cores e gradientes */
   .mobile-stack {
     @apply flex-col space-y-3 space-x-0;
@@ -684,6 +721,7 @@ button[role="combobox"],
   .mobile-table-scroll {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
+    background-color: white !important;
   }
 
   /* Modais mobile responsivos */
@@ -692,11 +730,13 @@ button[role="combobox"],
     max-height: calc(100vh - 24px) !important;
     overflow-y: auto !important;
     border-radius: 16px !important;
+    background-color: white !important;
   }
 
   /* Cards mobile com espaçamento otimizado */
   .mobile-card-compact {
     @apply p-3 rounded-lg;
+    background-color: white !important;
   }
 
   /* Navegação mobile */
@@ -884,9 +924,41 @@ body {
 
 /* PWA specific media queries */
 @media (display-mode: standalone) {
-  /* Styles when app is installed as PWA */
+  /* Força fundo branco/claro em PWA */
   body {
-    user-select: none; /* Prevent text selection in PWA mode */
+    background-color: #f8fafc !important;
+    user-select: none;
+  }
+  
+  /* Remove fundos pretos de botões e elementos PWA */
+  button, .btn, [role="button"] {
+    background-color: transparent !important;
+  }
+  
+  button.bg-primary, .btn-primary {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+  }
+  
+  /* Garante que tabelas e listagens sejam visíveis em PWA */
+  table, .table, [role="table"] {
+    background-color: white !important;
+    color: #1e293b !important;
+  }
+  
+  table th, .table th, [role="columnheader"] {
+    background-color: #f1f5f9 !important;
+    color: #1e3a8a !important;
+  }
+  
+  table td, .table td, [role="cell"] {
+    background-color: white !important;
+    color: #334155 !important;
+  }
+  
+  /* Cards e containers PWA */
+  .card, [role="article"], section {
+    background-color: white !important;
+    color: #1e293b !important;
   }
   
   /* Add padding for status bar on iOS */
@@ -2291,10 +2363,13 @@ body {
 
 /* ===== RESPONSIVE UTILITIES ===== */
 @media (max-width: 640px) {
+  /* Força visibilidade em mobile */
   .fluxo-container {
     @apply px-3 py-4;
+    background-color: transparent !important;
   }
   
+  /* Garante que todos os módulos tenham fundo branco */
   .dre-card-content,
   .lancamentos-card-content,
   .precificacao-card-content,
@@ -2307,11 +2382,42 @@ body {
   .perfil-card-content,
   .pipeline-card-content {
     @apply p-3;
+    background-color: inherit !important;
+  }
+  
+  /* Força legibilidade em listagens mobile */
+  ul, ol, [role="list"] {
+    background-color: white !important;
+    color: #1e293b !important;
+  }
+  
+  li, [role="listitem"] {
+    background-color: white !important;
+    color: #334155 !important;
+    border-bottom: 1px solid #e2e8f0;
   }
 }
 
 /* ===== CACHE BUSTING STYLES ===== */
-/* FECHAMENTO26 - Force reload on PWA and mobile */
-.cache-bust-fechamento26 {
-  content: "FECHAMENTO26";
+/* FECHAMENTO27 - Force reload on PWA and mobile - Corrige fundos pretos */
+.cache-bust-fechamento27 {
+  content: "FECHAMENTO27";
+}
+
+/* Aplicativo (iOS/Android) - Correções específicas */
+@media (max-width: 640px) and (display-mode: standalone) {
+  /* Força visibilidade total em aplicativos mobile */
+  * {
+    background-color: var(--background-color, transparent) !important;
+  }
+  
+  body, html {
+    background-color: #f8fafc !important;
+  }
+  
+  /* Remove qualquer fundo preto residual */
+  .bg-black, .bg-gray-900, .bg-slate-900 {
+    background-color: white !important;
+    color: #1e293b !important;
+  }
 }
