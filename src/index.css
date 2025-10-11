@@ -653,6 +653,158 @@ button[role="combobox"],
 
 /* MOBILE ESPECÍFICO - MANTÉM IDENTIDADE VISUAL */
 @media (max-width: 640px) {
+  /* Força fundo branco/claro em todas as páginas mobile */
+  body {
+    background-color: #f8fafc !important;
+  }
+  
+  /* BOTÕES - Comunicação visual clara e bonita */
+  button, .btn, [role="button"] {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    padding: 0.625rem 1rem !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  button:hover, .btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  button.bg-primary, .btn-primary, button[class*="bg-blue"], button[class*="bg-indigo"] {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+    color: white !important;
+    border: none !important;
+  }
+  
+  button.bg-secondary, .btn-secondary {
+    background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%) !important;
+    color: white !important;
+  }
+  
+  button[class*="bg-green"] {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+    color: white !important;
+  }
+  
+  button[class*="bg-red"] {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+    color: white !important;
+  }
+  
+  /* TABELAS - Legibilidade perfeita */
+  table, .table, [role="table"] {
+    background-color: white !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+    font-size: 0.8125rem !important;
+  }
+  
+  table th, .table th, [role="columnheader"] {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+    color: #1e3a8a !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.05em !important;
+    padding: 0.75rem 0.5rem !important;
+    border-bottom: 2px solid #cbd5e1 !important;
+  }
+  
+  table td, .table td, [role="cell"] {
+    background-color: white !important;
+    color: #334155 !important;
+    padding: 0.75rem 0.5rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    line-height: 1.5 !important;
+  }
+  
+  table tr:hover td, .table tr:hover td {
+    background-color: #f8fafc !important;
+  }
+  
+  /* PAGINAÇÃO - Visual bonito e claro */
+  nav[aria-label*="pagination"], .pagination {
+    display: flex !important;
+    gap: 0.5rem !important;
+    justify-content: center !important;
+    margin-top: 1.5rem !important;
+  }
+  
+  nav[aria-label*="pagination"] button, .pagination button {
+    min-width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: 0.5rem !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+  }
+  
+  nav[aria-label*="pagination"] button[aria-current="page"], 
+  .pagination button.active {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+    color: white !important;
+  }
+  
+  /* GRÁFICOS - Visibilidade perfeita */
+  canvas, svg {
+    max-width: 100% !important;
+    height: auto !important;
+    background-color: white !important;
+    border-radius: 0.75rem !important;
+    padding: 0.5rem !important;
+  }
+  
+  /* CARDS - Comunicação visual elegante */
+  .card, [role="article"], section[class*="card"] {
+    background-color: white !important;
+    color: #1e293b !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+  
+  /* MOSTRADORES E MÉTRICAS - Destaque visual */
+  [class*="metric"], [class*="summary"], [class*="stats"] {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #1e3a8a !important;
+  }
+  
+  /* LISTAGENS - Organização visual clara */
+  ul, ol, [role="list"] {
+    background-color: white !important;
+    border-radius: 0.75rem !important;
+    padding: 0.5rem !important;
+  }
+  
+  li, [role="listitem"] {
+    background-color: white !important;
+    color: #334155 !important;
+    padding: 0.75rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+  }
+  
+  li:last-child {
+    border-bottom: none !important;
+  }
+  
+  li:hover {
+    background-color: #f8fafc !important;
+  }
+  
+  /* NÚMEROS E VALORES - Legibilidade máxima */
+  [class*="value"], [class*="amount"], [class*="price"], [class*="total"] {
+    font-family: 'Inter', system-ui, sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    color: #1e3a8a !important;
+  }
+  
   /* Layout adaptativo mantendo cores e gradientes */
   .mobile-stack {
     @apply flex-col space-y-3 space-x-0;
@@ -684,6 +836,7 @@ button[role="combobox"],
   .mobile-table-scroll {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
+    background-color: white !important;
   }
 
   /* Modais mobile responsivos */
@@ -692,11 +845,13 @@ button[role="combobox"],
     max-height: calc(100vh - 24px) !important;
     overflow-y: auto !important;
     border-radius: 16px !important;
+    background-color: white !important;
   }
 
   /* Cards mobile com espaçamento otimizado */
   .mobile-card-compact {
     @apply p-3 rounded-lg;
+    background-color: white !important;
   }
 
   /* Navegação mobile */
@@ -884,9 +1039,121 @@ body {
 
 /* PWA specific media queries */
 @media (display-mode: standalone) {
-  /* Styles when app is installed as PWA */
+  /* Força fundo branco/claro em PWA */
   body {
-    user-select: none; /* Prevent text selection in PWA mode */
+    background-color: #f8fafc !important;
+    user-select: none;
+  }
+  
+  /* BOTÕES PWA - Comunicação visual clara e bonita */
+  button, .btn, [role="button"] {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    padding: 0.625rem 1rem !important;
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  button.bg-primary, .btn-primary, button[class*="bg-blue"], button[class*="bg-indigo"] {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+    color: white !important;
+  }
+  
+  button[class*="bg-green"] {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+    color: white !important;
+  }
+  
+  button[class*="bg-red"] {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+    color: white !important;
+  }
+  
+  /* TABELAS PWA - Legibilidade perfeita */
+  table, .table, [role="table"] {
+    background-color: white !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+  }
+  
+  table th, .table th, [role="columnheader"] {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+    color: #1e3a8a !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.05em !important;
+    padding: 0.75rem !important;
+  }
+  
+  table td, .table td, [role="cell"] {
+    background-color: white !important;
+    color: #334155 !important;
+    padding: 0.75rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+  
+  /* PAGINAÇÃO PWA - Visual bonito */
+  nav[aria-label*="pagination"], .pagination {
+    display: flex !important;
+    gap: 0.5rem !important;
+    justify-content: center !important;
+  }
+  
+  nav[aria-label*="pagination"] button, .pagination button {
+    min-width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: 0.5rem !important;
+    font-weight: 600 !important;
+  }
+  
+  nav[aria-label*="pagination"] button[aria-current="page"], 
+  .pagination button.active {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+    color: white !important;
+  }
+  
+  /* GRÁFICOS PWA */
+  canvas, svg {
+    background-color: white !important;
+    border-radius: 0.75rem !important;
+    padding: 0.5rem !important;
+  }
+  
+  /* Cards e containers PWA */
+  .card, [role="article"], section {
+    background-color: white !important;
+    color: #1e293b !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+  }
+  
+  /* MOSTRADORES PWA */
+  [class*="metric"], [class*="summary"], [class*="stats"] {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #1e3a8a !important;
+  }
+  
+  /* LISTAGENS PWA */
+  ul, ol, [role="list"] {
+    background-color: white !important;
+    border-radius: 0.75rem !important;
+  }
+  
+  li, [role="listitem"] {
+    background-color: white !important;
+    color: #334155 !important;
+    padding: 0.75rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+  
+  /* NÚMEROS PWA */
+  [class*="value"], [class*="amount"], [class*="price"], [class*="total"] {
+    font-weight: 700 !important;
+    color: #1e3a8a !important;
   }
   
   /* Add padding for status bar on iOS */
@@ -1410,48 +1677,47 @@ body {
   @apply text-sm sm:text-base font-semibold text-gray-800;
 }
 
-/* Mobile específico - MANTÉM EXATAMENTE O MESMO LAYOUT DESKTOP */
+/* Mobile específico - mantém layout desktop */
 @media (max-width: 640px) {
-  /* Removendo todas as diferenças para manter o layout desktop */
   .crm-summary-cards,
   .lembretes-summary-cards {
-    @apply grid-cols-3 gap-6;
+    @apply grid-cols-1 gap-4;
   }
   
   .crm-card-content,
   .lembretes-card-content {
-    @apply p-6;
+    @apply p-4;
   }
   
   .crm-card-title,
   .lembretes-card-title {
-    @apply text-sm;
+    @apply text-xs;
   }
   
   .crm-card-value,
   .lembretes-card-value {
-    @apply text-2xl;
+    @apply text-lg;
   }
   
   .crm-card-icon,
   .lembretes-card-icon {
-    @apply w-12 h-12;
+    @apply w-8 h-8;
   }
   
   .saldos-summary-card {
-    @apply rounded-xl;
+    @apply rounded-lg;
   }
   
   .saldos-card-content {
-    @apply p-6;
+    @apply p-4;
   }
   
   .saldos-total-label {
-    @apply text-lg;
+    @apply text-base;
   }
   
   .saldos-total-value {
-    @apply text-3xl;
+    @apply text-xl;
   }
   
   .crm-form,
@@ -1460,25 +1726,25 @@ body {
   .crm-filters,
   .saldos-filters,
   .lembretes-filters {
-    @apply p-6;
+    @apply p-4;
   }
   
   .crm-filters-grid,
   .saldos-filters-grid,
   .lembretes-filters-grid {
-    @apply grid-cols-3 gap-4;
+    @apply grid-cols-1 gap-3;
   }
   
   .crm-pipeline-board {
-    @apply p-6;
+    @apply p-3;
   }
   
   .crm-pipeline-column {
-    @apply p-4 min-h-[200px];
+    @apply p-2 min-h-[150px];
   }
   
   .crm-pipeline-card {
-    @apply p-4 mb-4;
+    @apply p-2 mb-2;
   }
 }
 
@@ -1782,149 +2048,110 @@ body {
   @apply text-xs text-gray-500 mt-1;
 }
 
-/* Mobile específico - MANTÉM EXATAMENTE O MESMO LAYOUT DESKTOP */
+/* Mobile específico - mantém layout desktop */
 @media (max-width: 640px) {
-  /* DRE (Demonstração de Resultado do Exercício) */
   .ponto-equilibrio-layout {
-    @apply grid-cols-2 gap-6;
+    @apply grid-cols-1 gap-4;
   }
   
   .ponto-equilibrio-card-header,
   .ponto-equilibrio-card-content {
-    @apply p-6;
+    @apply p-4;
   }
   
   .ponto-equilibrio-card-title {
-    @apply text-lg;
+    @apply text-base;
   }
   
   .ponto-equilibrio-result-value {
-    @apply text-2xl;
+    @apply text-xl;
   }
   
-  /* Suporte */
   .suporte-layout {
-    @apply grid-cols-3 gap-6;
+    @apply grid-cols-1 gap-4;
   }
   
   .suporte-tabs {
-    @apply grid-cols-3 gap-2;
+    @apply grid-cols-1 gap-1;
   }
   
   .suporte-tab {
-    @apply text-base py-3;
+    @apply text-sm py-2;
   }
   
   .suporte-chat-container,
   .suporte-faq-container,
   .suporte-sidebar {
-    @apply p-6;
+    @apply p-4;
   }
   
   .suporte-faq-section {
-    @apply mb-8;
-  }
-  
-  .suporte-faq-title {
-    @apply text-base;
-  }
-  
-  .suporte-sidebar-section {
     @apply mb-6;
   }
   
+  .suporte-faq-title {
+    @apply text-sm;
+  }
+  
+  .suporte-sidebar-section {
+    @apply mb-4;
+  }
+  
   .suporte-sidebar-title {
-    @apply text-lg;
+    @apply text-base;
   }
   
   .suporte-contact-icon {
-    @apply w-12 h-12;
+    @apply w-8 h-8;
   }
   
-  /* Perfil */
   .perfil-layout {
-    @apply grid-cols-2 gap-6;
+    @apply grid-cols-1 gap-4;
   }
   
   .perfil-card-header,
   .perfil-card-content {
-    @apply p-6;
+    @apply p-4;
   }
   
   .perfil-card-title {
-    @apply text-lg flex-row items-center gap-4;
+    @apply text-base flex-col items-start gap-2;
   }
   
   .perfil-edit-actions {
-    @apply flex-row;
+    @apply flex-col;
   }
   
   .perfil-btn {
-    @apply w-auto;
+    @apply w-full justify-center;
   }
 }
 
-/* Tablet específico - MANTÉM EXATAMENTE O MESMO LAYOUT DESKTOP */
+/* Tablet específico - layout intermediário */
 @media (min-width: 641px) and (max-width: 1024px) {
   .ponto-equilibrio-layout {
-    @apply grid-cols-2 gap-6;
+    @apply grid-cols-1;
   }
   
   .suporte-layout {
-    @apply grid-cols-3 gap-6;
+    @apply grid-cols-1;
   }
   
   .suporte-tabs {
-    @apply grid-cols-3 gap-2;
+    @apply grid-cols-2;
   }
   
   .perfil-layout {
-    @apply grid-cols-2 gap-6;
+    @apply grid-cols-1;
   }
 }
 
-/* PWA e App - MANTÉM EXATAMENTE O MESMO LAYOUT DESKTOP */
+/* PWA e App - força layout desktop */
 @media (display-mode: standalone) {
-  /* DRE */
-  .ponto-equilibrio-layout {
-    @apply grid-cols-2 gap-6;
-  }
-  
-  .ponto-equilibrio-card-header,
-  .ponto-equilibrio-card-content {
-    @apply p-6;
-  }
-  
-  .ponto-equilibrio-card-title {
-    @apply text-lg;
-  }
-  
-  .ponto-equilibrio-result-value {
-    @apply text-2xl;
-  }
-  
-  /* Suporte */
-  .suporte-layout {
-    @apply grid-cols-3 gap-6;
-  }
-  
-  .suporte-tabs {
-    @apply grid-cols-3 gap-2;
-  }
-  
-  .suporte-tab {
-    @apply text-base py-3;
-  }
-  
-  .suporte-chat-container,
-  .suporte-faq-container,
-  .suporte-sidebar {
-    @apply p-6;
-  }
-  
-  /* Perfil */
+  .ponto-equilibrio-layout,
+  .suporte-layout,
   .perfil-layout {
-    @apply grid-cols-2 gap-6;
+    /* Mantém todas as classes desktop */
   }
 }
 
@@ -2331,10 +2558,13 @@ body {
 
 /* ===== RESPONSIVE UTILITIES ===== */
 @media (max-width: 640px) {
+  /* Força visibilidade em mobile */
   .fluxo-container {
     @apply px-3 py-4;
+    background-color: transparent !important;
   }
   
+  /* Garante que todos os módulos tenham fundo branco */
   .dre-card-content,
   .lancamentos-card-content,
   .precificacao-card-content,
@@ -2347,11 +2577,115 @@ body {
   .perfil-card-content,
   .pipeline-card-content {
     @apply p-3;
+    background-color: inherit !important;
+  }
+  
+  /* Força legibilidade em listagens mobile */
+  ul, ol, [role="list"] {
+    background-color: white !important;
+    color: #1e293b !important;
+  }
+  
+  li, [role="listitem"] {
+    background-color: white !important;
+    color: #334155 !important;
+    border-bottom: 1px solid #e2e8f0;
   }
 }
 
 /* ===== CACHE BUSTING STYLES ===== */
-/* FECHAMENTO26 - Force reload on PWA and mobile */
-.cache-bust-fechamento26 {
-  content: "FECHAMENTO26";
+/* FECHAMENTO28 - Comunicação visual perfeita em mobile/PWA/app */
+.cache-bust-fechamento28 {
+  content: "FECHAMENTO28";
+}
+
+/* Aplicativo (iOS/Android) - Comunicação visual perfeita */
+@media (max-width: 640px) and (display-mode: standalone) {
+  /* APLICATIVO - Padrão visual harmonioso com desktop */
+  
+  /* Força fundos claros */
+  body, html {
+    background-color: #f8fafc !important;
+  }
+  
+  /* Remove qualquer fundo escuro */
+  .bg-black, .bg-gray-900, .bg-slate-900, [class*="bg-black"] {
+    background-color: white !important;
+    color: #1e293b !important;
+  }
+  
+  /* GRÁFICOS - Aplicativo */
+  canvas, svg, [class*="chart"] {
+    background-color: white !important;
+    padding: 1rem !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  }
+  
+  /* TABELAS - Aplicativo */
+  table {
+    width: 100% !important;
+    font-size: 0.8125rem !important;
+  }
+  
+  table th {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+    color: white !important;
+    padding: 0.875rem 0.5rem !important;
+    font-weight: 700 !important;
+  }
+  
+  table td {
+    padding: 0.75rem 0.5rem !important;
+    color: #334155 !important;
+    font-weight: 500 !important;
+  }
+  
+  /* BOTÕES - Aplicativo */
+  button {
+    font-size: 0.875rem !important;
+    padding: 0.75rem 1.25rem !important;
+    font-weight: 600 !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* PAGINAÇÃO - Aplicativo */
+  [class*="pagination"] button {
+    min-width: 2.75rem !important;
+    height: 2.75rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+  }
+  
+  /* VALORES E NÚMEROS - Aplicativo */
+  [class*="value"], [class*="total"], [class*="amount"], [class*="price"] {
+    font-size: 1.125rem !important;
+    font-weight: 700 !important;
+    color: #1e3a8a !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+  }
+  
+  /* LISTAGENS - Aplicativo */
+  li {
+    padding: 1rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.6 !important;
+  }
+  
+  /* INPUTS E SELECTS - Aplicativo */
+  input, select, textarea {
+    font-size: 1rem !important;
+    padding: 0.75rem !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 0.5rem !important;
+    background-color: white !important;
+    color: #1e293b !important;
+  }
+  
+  input:focus, select:focus, textarea:focus {
+    border-color: #3b82f6 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  }
 }
