@@ -94,8 +94,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <PWAStatusIndicator />
 
         {/* Main scrollable content - Smooth scroll */}
-        <main className="flex-1 overflow-y-auto bg-gray-50 smooth-scroll overscroll-contain">
-          <div className={`${getContainerClass()} py-3 sm:py-4 md:py-6`}>
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-gray-50 smooth-scroll overscroll-contain w-full max-w-full">
+          <div className={`${getContainerClass()} py-3 sm:py-4 md:py-6 w-full max-w-full`}>
             <div className="space-y-3 sm:space-y-4 md:space-y-6">
               {children}
             </div>

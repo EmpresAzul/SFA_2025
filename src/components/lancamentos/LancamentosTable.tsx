@@ -53,9 +53,9 @@ const LancamentosTable: React.FC<LancamentosTableProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        {/* Mobile-optimized horizontal scroll */}
-        <div className="overflow-x-auto smooth-scroll scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-          <Table className="min-w-full">
+        {/* Mobile-optimized horizontal scroll - prevent overflow */}
+        <div className="w-full overflow-x-auto smooth-scroll scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <Table className="w-full min-w-full">
             <TableHeader>
               <TableRow className="bg-gradient-to-r from-gray-50 to-gray-100 h-10 sm:h-12">
                 <TableHead className="text-gray-700 text-xs sm:text-sm py-2 px-2 sm:px-3 md:px-4 font-semibold">
