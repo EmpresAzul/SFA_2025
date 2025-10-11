@@ -162,11 +162,11 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-100">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform rotate-12 scale-150"></div>
-        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/3 to-transparent transform -rotate-12 scale-150"></div>
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-200/30 to-transparent transform rotate-12 scale-150"></div>
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-blue-100/20 to-transparent transform -rotate-12 scale-150"></div>
       </div>
       
       <div className="relative z-10 w-full max-w-md px-4">
@@ -261,7 +261,7 @@ const LoginForm: React.FC = () => {
                 <Button
                   type="submit"
                   disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
-                  className="w-full h-11 bg-gradient-to-r from-slate-800 to-blue-600 hover:from-slate-900 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full h-11 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center space-x-2">
