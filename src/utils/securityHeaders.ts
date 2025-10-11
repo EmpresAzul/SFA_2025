@@ -96,11 +96,7 @@ export const validateSessionIntegrity = (sessionData: any): boolean => {
 
 // Input sanitization for security-critical operations
 export const sanitizeSecurityInput = (input: string): string => {
-  // Temporarily disable sanitization for debugging
-  if (import.meta.env.DEV) {
-    console.warn('FluxoAzul: Input sanitization is temporarily disabled for development.');
-    return input;
-  }
+  // Always sanitize for security - no development bypass
   return input
     .replace(/<script[^>]*>.*?<\/script>/gi, '')
     .replace(/<[^>]*>/g, '')

@@ -14,7 +14,39 @@ serve(async (req) => {
   }
 
   try {
-    const { message } = await req.json();
+    const body = await req.json();
+    const { message } = body;
+
+    // Input validation
+    if (!message || typeof message !== 'string') {
+      return new Response(
+        JSON.stringify({ error: 'Invalid message format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (message.length > 4000) {
+      return new Response(
+        JSON.stringify({ error: 'Message too long' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check for potential prompt injection patterns
+    const suspiciousPatterns = [
+      /ignore\s+(previous|above|prior)\s+instructions/i,
+      /disregard\s+(previous|above|prior)/i,
+      /forget\s+(previous|everything)/i,
+      /new\s+instructions:/i
+    ];
+
+    if (suspiciousPatterns.some(pattern => pattern.test(message))) {
+      console.warn('Suspicious message pattern detected:', message.substring(0, 100));
+      return new Response(
+        JSON.stringify({ error: 'Invalid message content' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Criar cliente Supabase
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -212,7 +244,6 @@ serve(async (req) => {
         error: "Erro interno do servidor",
         response:
           "Desculpe, ocorreu um erro. Por favor, tente novamente ou entre em contato pelo WhatsApp.",
-        details: error.message,
       }),
       {
         status: 500,

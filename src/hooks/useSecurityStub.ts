@@ -13,7 +13,8 @@ export const useSecurity = () => ({
   logSuspiciousActivity: async (...args: any[]) => {},
   logDataModification: async (...args: any[]) => {},
   useSecurityEvents: () => ({ data: [], loading: false, error: null, isLoading: false }),
-  useIsAdmin: () => false,
+  // Note: useIsAdmin and useCurrentUserRole now implemented in useRoles.ts
+  useIsAdmin: () => ({ data: false, isLoading: false }),
   useCurrentUserRole: () => 'user',
   useUserSessions: () => ({ data: [], loading: false }),
   useRevokeSession: () => ({ mutateAsync: async () => {}, mutate: () => {}, isPending: false }),
