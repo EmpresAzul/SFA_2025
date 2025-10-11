@@ -2607,15 +2607,16 @@ body {
   @apply flex-shrink-0 p-2 sm:p-3 bg-white/20 rounded-full;
 }
 
-/* ===== RESPONSIVE UTILITIES ===== */
+/* ===== MOBILE RESPONSIVE - MESMA COMUNICAÇÃO VISUAL DO DESKTOP ===== */
+/* Desktop intacto - Mobile herda as cores do desktop */
+
 @media (max-width: 640px) {
-  /* Força visibilidade em mobile */
+  /* Mantém spacing responsivo sem alterar cores */
   .fluxo-container {
     @apply px-3 py-4;
-    background-color: transparent !important;
   }
   
-  /* Garante que todos os módulos tenham fundo branco */
+  /* Cards responsivos mantendo cores do desktop */
   .dre-card-content,
   .lancamentos-card-content,
   .precificacao-card-content,
@@ -2628,132 +2629,47 @@ body {
   .perfil-card-content,
   .pipeline-card-content {
     @apply p-3;
-    background-color: inherit !important;
-  }
-  
-  /* Força legibilidade em listagens mobile */
-  ul, ol, [role="list"] {
-    background-color: white !important;
-    color: #1e293b !important;
-  }
-  
-  li, [role="listitem"] {
-    background-color: white !important;
-    color: #334155 !important;
-    border-bottom: 1px solid #e2e8f0;
   }
 }
 
-/* ===== CACHE BUSTING STYLES ===== */
-/* FECHAMENTO28 - Comunicação visual perfeita em mobile/PWA/app */
-.cache-bust-fechamento28 {
-  content: "FECHAMENTO28";
-}
-
-/* Aplicativo (iOS/Android) - Comunicação visual perfeita */
+/* ===== PWA/APP STANDALONE - MESMA COMUNICAÇÃO VISUAL DO DESKTOP ===== */
 @media (max-width: 640px) and (display-mode: standalone) {
-  /* APLICATIVO - Padrão visual harmonioso com desktop */
+  /* Touch-friendly sizing sem alterar cores do desktop */
   
-  /* Força fundos claros */
-  body, html {
-    background-color: #f8fafc !important;
-  }
-  
-  /* Remove qualquer fundo escuro */
-  .bg-black, .bg-gray-900, .bg-slate-900, [class*="bg-black"] {
-    background-color: white !important;
-    color: #1e293b !important;
-  }
-  
-  /* GRÁFICOS - Aplicativo */
-  canvas, svg, [class*="chart"] {
-    background-color: white !important;
-    padding: 1rem !important;
-    border-radius: 0.75rem !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
-  }
-  
-  /* TABELAS - Aplicativo */
   table {
-    width: 100% !important;
-    font-size: 0.8125rem !important;
+    width: 100%;
+    font-size: 0.8125rem;
   }
   
   table th {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
-    color: white !important;
-    padding: 0.875rem 0.5rem !important;
-    font-weight: 700 !important;
+    padding: 0.875rem 0.5rem;
   }
   
   table td {
-    padding: 0.75rem 0.5rem !important;
-    color: #334155 !important;
-    font-weight: 500 !important;
+    padding: 0.75rem 0.5rem;
   }
   
-  /* BOTÕES - Aplicativo - Touch friendly */
+  /* Botões touch-friendly mantendo cores do desktop */
   button {
-    min-height: 44px !important;
-    min-width: 44px !important;
-    font-size: 0.875rem !important;
-    padding: 0.75rem 1.25rem !important;
-    font-weight: 600 !important;
-    border-radius: 0.5rem !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    min-height: 44px;
+    min-width: 44px;
   }
   
-  /* PAGINAÇÃO - Aplicativo */
+  /* Paginação touch-friendly */
   [class*="pagination"] button {
-    min-width: 2.75rem !important;
-    height: 2.75rem !important;
-    font-size: 0.875rem !important;
-    font-weight: 700 !important;
+    min-width: 2.75rem;
+    height: 2.75rem;
   }
   
-  /* VALORES E NÚMEROS - Aplicativo */
-  [class*="value"], [class*="total"], [class*="amount"], [class*="price"] {
-    font-size: 1.125rem !important;
-    font-weight: 700 !important;
-    color: #1e3a8a !important;
-    font-family: 'Inter', system-ui, sans-serif !important;
-  }
-  
-  /* LISTAGENS - Aplicativo */
-  li {
-    padding: 1rem !important;
-    font-size: 0.875rem !important;
-    line-height: 1.6 !important;
-  }
-  
-  /* INPUTS E SELECTS - Aplicativo */
+  /* Inputs touch-friendly */
   input, select, textarea {
-    font-size: 1rem !important;
-    padding: 0.75rem !important;
-    border: 2px solid #e2e8f0 !important;
-    border-radius: 0.5rem !important;
-    background-color: white !important;
-    color: #1e293b !important;
+    font-size: 1rem;
+    padding: 0.75rem;
   }
   
-  input:focus, select:focus, textarea:focus {
-    border-color: #3b82f6 !important;
-    outline: none !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-  }
-
-  /* CARDS - Aplicativo - Touch spacing */
+  /* Cards spacing */
   .fluxo-card, [class*="card"] {
-    margin-bottom: 1rem !important;
-    padding: 1rem !important;
-    border-radius: 1rem !important;
-  }
-
-  /* MODAIS - Aplicativo */
-  [role="dialog"], .modal {
-    max-height: 90vh !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
+    margin-bottom: 1rem;
   }
 }
 
