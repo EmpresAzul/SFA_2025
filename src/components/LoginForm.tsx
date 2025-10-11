@@ -162,11 +162,11 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-100">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-950">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-200/30 to-transparent transform rotate-12 scale-150"></div>
-        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-blue-100/20 to-transparent transform -rotate-12 scale-150"></div>
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/20 to-transparent transform rotate-12 scale-150"></div>
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-indigo-400/20 to-transparent transform -rotate-12 scale-150"></div>
       </div>
       
       <div className="relative z-10 w-full max-w-md px-4">
@@ -174,7 +174,7 @@ const LoginForm: React.FC = () => {
           {/* Header com logo */}
           <div className="bg-white p-6 text-center">
             <div className="mb-4">
-              <h1 className="text-4xl font-black bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-black bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">
                 FluxoAzul
               </h1>
             </div>
