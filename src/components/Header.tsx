@@ -8,23 +8,30 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 shadow-sm">
+    <header className="h-14 sm:h-16 bg-white border-b border-gray-200 flex items-center justify-between px-3 sm:px-4 md:px-6 shadow-sm safe-area-inset">
+      {/* Menu button - Touch friendly */}
       <Button
         variant="ghost"
         size="icon"
         onClick={onMenuToggle}
-        className="hover:bg-blue-50 md:hidden"
+        className="hover:bg-blue-50 md:hidden touch-target min-w-[44px] min-h-[44px]"
+        aria-label="Abrir menu"
       >
-        <Menu className="h-5 w-5 text-gray-700" />
+        <Menu className="h-6 w-6 text-gray-700" />
       </Button>
 
-      {/* Logo ou título no mobile */}
+      {/* Logo mobile - Centered */}
       <div className="flex-1 md:hidden flex justify-center">
-        <span className="text-lg font-bold text-blue-600">FluxoAzul</span>
+        <span className="text-base sm:text-lg font-bold text-blue-600 tracking-tight">
+          FluxoAzul
+        </span>
       </div>
 
-      {/* Espaço vazio para desktop */}
+      {/* Desktop spacer */}
       <div className="hidden md:flex flex-1"></div>
+
+      {/* Empty space for balance on mobile */}
+      <div className="md:hidden w-[44px]"></div>
     </header>
   );
 };

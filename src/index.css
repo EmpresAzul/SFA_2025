@@ -95,9 +95,14 @@
     @apply bg-background text-foreground font-sans text-sm;
   }
 
-  /* Tipografia responsiva melhorada */
+  /* ===================================
+     MOBILE-FIRST RESPONSIVE DESIGN
+     Desktop permanece intacto (md: e acima)
+     ================================== */
+  
+  /* Tipografia responsiva - Mobile otimizado */
   h1 {
-    @apply text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold;
+    @apply text-base sm:text-lg md:text-2xl lg:text-2xl font-bold;
   }
 
   h2 {
@@ -179,6 +184,52 @@
   /* Espaçamentos responsivos globais */
   .container-responsive {
     @apply mx-auto px-2 sm:px-4 md:px-6 lg:px-8 max-w-7xl;
+  }
+
+  /* ===================================
+     MOBILE TOUCH OPTIMIZATION
+     Touch-friendly mobile experience
+     ================================== */
+  
+  /* Touch targets - mínimo 44x44px para iOS/Android */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Smooth scroll para mobile */
+  .smooth-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Disable text selection em elementos interativos */
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Safe area insets para notch/home indicator */
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Mobile input styling */
+  input,
+  textarea,
+  select {
+    @apply text-base; /* Prevent zoom on iOS */
+  }
+
+  @media (min-width: 768px) {
+    input,
+    textarea,
+    select {
+      @apply text-sm;
+    }
   }
 }
 
@@ -2641,8 +2692,10 @@ body {
     font-weight: 500 !important;
   }
   
-  /* BOTÕES - Aplicativo */
+  /* BOTÕES - Aplicativo - Touch friendly */
   button {
+    min-height: 44px !important;
+    min-width: 44px !important;
     font-size: 0.875rem !important;
     padding: 0.75rem 1.25rem !important;
     font-weight: 600 !important;
@@ -2687,5 +2740,163 @@ body {
     border-color: #3b82f6 !important;
     outline: none !important;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  }
+
+  /* CARDS - Aplicativo - Touch spacing */
+  .fluxo-card, [class*="card"] {
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+    border-radius: 1rem !important;
+  }
+
+  /* MODAIS - Aplicativo */
+  [role="dialog"], .modal {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+/* ===================================
+   PWA MOBILE OPTIMIZATION
+   Standalone mode (installed PWA)
+   ================================== */
+@media (max-width: 768px) and (display-mode: standalone) {
+  /* PWA - Safe area para notch */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Header PWA */
+  header {
+    padding-top: calc(env(safe-area-inset-top) + 0.5rem) !important;
+  }
+
+  /* Sidebar PWA - Improved touch */
+  aside, nav {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Tabelas PWA - Horizontal scroll smooth */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+
+  /* Cards PWA - Optimized spacing */
+  .fluxo-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  }
+}
+
+/* ===================================
+   MOBILE BROWSER OPTIMIZATION
+   Todas as plataformas mobile
+   ================================== */
+@media (max-width: 768px) {
+  /* Touch-friendly buttons */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
+  }
+
+  /* Optimized table scroll */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  thead, tbody, tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  /* Modal mobile full height */
+  [role="dialog"] {
+    max-height: calc(100vh - 2rem);
+    max-width: calc(100vw - 2rem);
+  }
+
+  /* Form inputs mobile - prevent zoom */
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="password"],
+  input[type="tel"],
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevent iOS zoom */
+  }
+
+  /* Dropdown menus mobile */
+  [role="menu"],
+  [role="listbox"],
+  .dropdown-menu {
+    max-height: 60vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background-color: white;
+    z-index: 9999;
+  }
+
+  /* Charts mobile responsive */
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Grid mobile stack */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Spacing mobile compact */
+  .space-y-6 {
+    @apply space-y-3;
+  }
+
+  .space-y-4 {
+    @apply space-y-2;
+  }
+
+  /* Container mobile full width */
+  .container {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+}
+
+/* ===================================
+   TABLET OPTIMIZATION (768px - 1024px)
+   Desktop intacto (>= 1024px)
+   ================================== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet - 2 colunas para cards */
+  .responsive-grid {
+    @apply grid-cols-2;
+  }
+
+  /* Tablet - Forms 2 colunas */
+  .responsive-form-grid {
+    @apply grid-cols-2;
+  }
+
+  /* Tablet - Sidebar width */
+  aside {
+    min-width: 200px;
+    max-width: 240px;
+  }
+
+  /* Tablet - Touch targets */
+  button, a[role="button"] {
+    min-height: 40px;
+    min-width: 40px;
   }
 }

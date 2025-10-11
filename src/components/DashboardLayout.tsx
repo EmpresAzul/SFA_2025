@@ -51,24 +51,33 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className={`flex h-screen bg-gray-50 ${getPWAClasses()}`}>
+    <div className={`flex h-screen bg-gray-50 ${getPWAClasses()} safe-area-inset`}>
       <InactivityManager />
       
-      {/* Overlay para mobile com design unificado */}
+      {/* Overlay para mobile - Touch dismiss */}
       {mobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-60 z-40 md:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/70 z-40 md:hidden backdrop-blur-sm touch-target"
           onClick={() => setMobileMenuOpen(false)}
+          role="button"
+          aria-label="Fechar menu"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape' || e.key === 'Enter') {
+              setMobileMenuOpen(false);
+            }
+          }}
         />
       )}
 
-      {/* Sidebar com transições suaves */}
+      {/* Sidebar - Mobile slide-in com hardware acceleration */}
       <div className={`
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} 
         md:translate-x-0 
         fixed md:relative 
         z-50 md:z-auto 
-        transition-all duration-300 ease-in-out
+        transition-transform duration-300 ease-out
+        will-change-transform
         ${isMobile ? 'shadow-2xl' : ''}
       `}>
         <Sidebar
@@ -79,13 +88,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         />
       </div>
 
+      {/* Main content area - Safe area aware */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header onMenuToggle={handleMenuToggle} />
         <PWAStatusIndicator />
 
-        <main className="flex-1 overflow-y-auto bg-gray-50 smooth-scroll">
-          <div className={`${getContainerClass()} py-4 sm:py-6`}>
-            <div className="fluxo-spacing-md">
+        {/* Main scrollable content - Smooth scroll */}
+        <main className="flex-1 overflow-y-auto bg-gray-50 smooth-scroll overscroll-contain">
+          <div className={`${getContainerClass()} py-3 sm:py-4 md:py-6`}>
+            <div className="space-y-3 sm:space-y-4 md:space-y-6">
               {children}
             </div>
           </div>
