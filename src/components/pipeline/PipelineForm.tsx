@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +33,7 @@ export const PipelineForm: React.FC<PipelineFormProps> = ({
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -47,6 +48,29 @@ export const PipelineForm: React.FC<PipelineFormProps> = ({
 
   const statusValue = watch("status");
   const valorNegocioValue = watch("valor_negocio");
+
+  // Atualiza o formulário quando o negócio muda (para edição)
+  useEffect(() => {
+    if (negocio) {
+      reset({
+        nome_lead: negocio.nome_lead || "",
+        email: negocio.email || "",
+        whatsapp: negocio.whatsapp || "",
+        valor_negocio: negocio.valor_negocio ? String(negocio.valor_negocio) : "",
+        status: negocio.status || "prospeccao",
+        observacoes: negocio.observacoes || "",
+      });
+    } else {
+      reset({
+        nome_lead: "",
+        email: "",
+        whatsapp: "",
+        valor_negocio: "",
+        status: "prospeccao",
+        observacoes: "",
+      });
+    }
+  }, [negocio, reset]);
 
   // Atualiza o valor do campo ao digitar na máscara
   const handleCurrencyChange = (formatted: string) => {
