@@ -116,11 +116,12 @@ const DRE: React.FC = () => {
   return (
     <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-green-50 min-h-screen">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
-        <div className="flex-1">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
-            📊 Demonstração do Resultado do Exercício (DRE)
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600 mb-2 flex items-center gap-2">
+            <span className="flex-shrink-0">📊</span>
+            <span className="truncate">Demonstração do Resultado do Exercício (DRE)</span>
           </h1>
-          <p className="text-gray-600 text-sm sm:text-base">
+          <p className="text-gray-600 text-xs sm:text-sm">
             Análise financeira completa baseada em {lancamentosFiltrados.length}{" "}
             lançamentos do período
           </p>

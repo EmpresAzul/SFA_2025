@@ -15,18 +15,18 @@ const DREReport: React.FC<DREReportProps> = ({
   periodoLabel,
 }) => {
   return (
-    <Card className="shadow-lg border-0">
-      <CardHeader className="dre-report-header">
-        <CardTitle className="dre-report-title">
-          <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span>Demonstração do Resultado do Exercício (DRE) - {periodoLabel}</span>
+    <Card className="shadow-lg border-0 overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white p-4 sm:p-6">
+        <CardTitle className="text-sm sm:text-base lg:text-lg flex items-center gap-2 sm:gap-3 font-bold">
+          <FileText className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+          <span className="truncate">Demonstração do Resultado do Exercício (DRE) - {periodoLabel}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         <div className="space-y-0">
           {/* RECEITA BRUTA DE VENDAS */}
-          <div className="dre-section-header bg-gradient-to-r from-emerald-100 to-green-100 border-b border-emerald-200">
-            <h3 className="dre-section-title text-emerald-800">
+          <div className="py-2 sm:py-3 px-4 sm:px-6 bg-emerald-50 border-b border-emerald-200">
+            <h3 className="font-bold text-xs sm:text-sm lg:text-base text-emerald-800">
               RECEITA BRUTA DE VENDAS
             </h3>
           </div>
@@ -50,8 +50,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* DEDUÇÕES DA RECEITA BRUTA */}
-          <div className="dre-section-header bg-gradient-to-r from-red-100 to-rose-100 border-b border-red-200">
-            <h3 className="dre-section-title text-red-800">
+          <div className="py-2 sm:py-3 px-4 sm:px-6 bg-pink-50 border-b border-pink-200">
+            <h3 className="font-bold text-xs sm:text-sm lg:text-base text-red-700">
               (-) DEDUÇÕES DA RECEITA BRUTA
             </h3>
           </div>
@@ -92,8 +92,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* CUSTO DOS PRODUTOS/SERVIÇOS/MERCADORIAS VENDIDAS */}
-          <div className="dre-section-header bg-gradient-to-r from-orange-100 to-amber-100 border-b border-orange-200">
-            <h3 className="dre-section-title text-orange-800">
+          <div className="py-2 sm:py-3 px-4 sm:px-6 bg-amber-50 border-b border-amber-200">
+            <h3 className="font-bold text-xs sm:text-sm lg:text-base text-orange-800">
               (-) CUSTO DOS PRODUTOS/SERVIÇOS/MERCADORIAS VENDIDAS (CPV/CSP/CMV)
             </h3>
           </div>
@@ -134,8 +134,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* DESPESAS OPERACIONAIS */}
-          <div className="dre-section-header bg-gradient-to-r from-blue-100 to-indigo-100 border-b border-blue-200">
-            <h3 className="dre-section-title text-blue-800">
+          <div className="py-2 sm:py-3 px-4 sm:px-6 bg-blue-50 border-b border-blue-200">
+            <h3 className="font-bold text-xs sm:text-sm lg:text-base text-blue-800">
               (-) DESPESAS OPERACIONAIS
             </h3>
           </div>
@@ -169,8 +169,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* RESULTADO FINANCEIRO */}
-          <div className="dre-section-header bg-gradient-to-r from-purple-100 to-violet-100 border-b border-purple-200">
-            <h3 className="dre-section-title text-purple-800">
+          <div className="py-2 sm:py-3 px-4 sm:px-6 bg-purple-50 border-b border-purple-200">
+            <h3 className="font-bold text-xs sm:text-sm lg:text-base text-purple-800">
               (+/-) RESULTADO FINANCEIRO
             </h3>
           </div>
@@ -196,8 +196,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* OUTRAS RECEITAS E DESPESAS NÃO OPERACIONAIS */}
-          <div className="dre-section-header bg-gradient-to-r from-slate-100 to-gray-100 border-b border-slate-200">
-            <h3 className="dre-section-title text-slate-800">
+          <div className="py-2 sm:py-3 px-4 sm:px-6 bg-slate-100 border-b border-slate-300">
+            <h3 className="font-bold text-xs sm:text-sm lg:text-base text-purple-800">
               (+/-) OUTRAS RECEITAS E DESPESAS (NÃO OPERACIONAIS)
             </h3>
           </div>
@@ -223,8 +223,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* IRPJ E CSLL */}
-          <div className="dre-section-header bg-gradient-to-r from-yellow-100 to-amber-100 border-b border-yellow-200">
-            <h3 className="dre-section-title text-yellow-800">
+          <div className="py-2 sm:py-3 px-4 sm:px-6 bg-yellow-50 border-b border-yellow-200">
+            <h3 className="font-bold text-xs sm:text-sm lg:text-base text-yellow-800">
               (-) IMPOSTO DE RENDA PESSOA JURÍDICA (IRPJ) E CONTRIBUIÇÃO SOCIAL SOBRE O LUCRO LÍQUIDO (CSLL)
             </h3>
           </div>
@@ -242,8 +242,8 @@ const DREReport: React.FC<DREReportProps> = ({
           />
 
           {/* PARTICIPAÇÕES */}
-          <div className="dre-section-header bg-gradient-to-r from-indigo-100 to-purple-100 border-b border-indigo-200">
-            <h3 className="dre-section-title text-indigo-800">
+          <div className="py-2 sm:py-3 px-4 sm:px-6 bg-blue-50 border-b border-blue-200">
+            <h3 className="font-bold text-xs sm:text-sm lg:text-base text-blue-800">
               (-) PARTICIPAÇÕES
             </h3>
           </div>

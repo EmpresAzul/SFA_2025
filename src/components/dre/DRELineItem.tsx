@@ -22,29 +22,30 @@ const DRELineItem: React.FC<DRELineItemProps> = ({
 }) => (
   <div
     className={`
-    flex justify-between items-center py-1.5 px-4 text-sm border-b border-gray-100
-    ${isTotal ? "bg-gradient-to-r from-indigo-50 to-purple-50 border-t-2 border-indigo-300 font-bold" : ""}
-    ${isSubtotal ? "bg-slate-50 border-t border-slate-200 font-semibold" : ""}
-    ${level > 0 ? `pl-${4 + level * 4}` : ""}
-    hover:bg-gray-50 transition-colors duration-150
+    flex justify-between items-center py-2 px-4 sm:px-6 text-xs sm:text-sm border-b border-gray-100
+    ${isTotal ? "bg-gradient-to-r from-indigo-50 to-purple-50 border-t-2 border-indigo-300 font-bold py-3" : ""}
+    ${isSubtotal ? "bg-slate-100 border-t border-slate-300 font-semibold py-2.5" : ""}
+    ${level > 0 ? "pl-8 sm:pl-12" : ""}
+    hover:bg-gray-50/80 transition-all duration-150
   `}
   >
-    <div className="flex-1">
+    <div className="flex-1 min-w-0">
       <span
         className={`
-        ${isTotal ? "text-indigo-800 font-bold" : ""}
-        ${isSubtotal ? "text-slate-700 font-semibold" : "text-slate-600"}
-        ${isNegative ? "text-red-600" : ""}
+        block truncate
+        ${isTotal ? "text-indigo-900 font-bold text-sm sm:text-base" : ""}
+        ${isSubtotal ? "text-slate-800 font-semibold text-sm" : "text-slate-700"}
+        ${isNegative ? "text-red-700" : ""}
       `}
       >
         {label}
       </span>
       {detalhes && Object.keys(detalhes).length > 0 && (
-        <div className="text-xs text-slate-500 mt-1 ml-4 space-y-0.5">
+        <div className="text-xs text-slate-500 mt-1.5 ml-4 space-y-1">
           {Object.entries(detalhes).map(([cat, val]) => (
-            <div key={cat} className="flex justify-between">
-              <span className="truncate max-w-[200px]">{cat}</span>
-              <span className="font-mono">{formatCurrency(val)}</span>
+            <div key={cat} className="flex justify-between gap-2">
+              <span className="truncate flex-1 min-w-0">{cat}</span>
+              <span className="font-mono text-slate-600 flex-shrink-0">{formatCurrency(val)}</span>
             </div>
           ))}
         </div>
@@ -52,10 +53,10 @@ const DRELineItem: React.FC<DRELineItemProps> = ({
     </div>
     <span
       className={`
-      font-mono ml-4 min-w-[120px] text-right
-      ${isTotal ? "text-indigo-800 font-bold" : ""}
-      ${isSubtotal ? "text-slate-700 font-semibold" : "text-slate-600"}
-      ${value < 0 ? "text-red-600" : value > 0 ? "text-green-600" : "text-slate-600"}
+      font-mono ml-4 min-w-[100px] sm:min-w-[130px] text-right flex-shrink-0
+      ${isTotal ? "text-indigo-900 font-bold text-sm sm:text-base" : ""}
+      ${isSubtotal ? "text-slate-800 font-semibold text-sm" : "text-slate-700 text-xs sm:text-sm"}
+      ${value < 0 ? "text-red-700 font-semibold" : value > 0 ? "text-green-700 font-semibold" : "text-slate-700"}
     `}
     >
       {formatCurrency(value)}
