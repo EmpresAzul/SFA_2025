@@ -651,224 +651,142 @@ button[role="combobox"],
   @apply space-y-8 sm:space-y-12;
 }
 
-/* ============================================================================
-   MOBILE, PWA E APLICATIVO - ESPELHO PERFEITO DO DESKTOP
-   Responsividade perfeita mantendo identidade visual desktop
-   ============================================================================ */
-
-/* MOBILE ESPECÍFICO - PADRÃO DESKTOP ADAPTADO */
+/* MOBILE ESPECÍFICO - MANTÉM IDENTIDADE VISUAL */
 @media (max-width: 640px) {
-  /* Fundo branco/claro consistente */
+  /* Força fundo branco/claro em todas as páginas mobile */
   body {
     background-color: #f8fafc !important;
-    color: #1e293b !important;
   }
   
-  /* Páginas e containers com fundo branco */
-  main, .page, .container, [role="main"] {
-    background-color: #f8fafc !important;
-  }
-  
-  /* BOTÕES - Idêntico ao desktop com gradientes da marca */
-  button, .btn, [role="button"], [type="button"], [type="submit"] {
+  /* BOTÕES - Comunicação visual clara e bonita */
+  button, .btn, [role="button"] {
     font-size: 0.875rem !important;
     font-weight: 600 !important;
-    padding: 0.625rem 1.25rem !important;
+    padding: 0.625rem 1rem !important;
     border-radius: 0.5rem !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 2px 8px rgba(30, 58, 138, 0.15) !important;
-    background: white !important;
-    color: #1e3a8a !important;
-    border: 1px solid #cbd5e1 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
   }
   
   button:hover, .btn:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
   }
   
-  /* Botões primários com gradiente da marca */
-  button[class*="primary"], button[class*="bg-blue"], button[class*="bg-indigo"],
-  .btn-primary, [variant="primary"] {
+  button.bg-primary, .btn-primary, button[class*="bg-blue"], button[class*="bg-indigo"] {
     background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
     color: white !important;
     border: none !important;
   }
   
-  /* Botões de sucesso */
-  button[class*="bg-green"], button[class*="success"], .btn-success {
+  button.bg-secondary, .btn-secondary {
+    background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%) !important;
+    color: white !important;
+  }
+  
+  button[class*="bg-green"] {
     background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
     color: white !important;
-    border: none !important;
   }
   
-  /* Botões de perigo */
-  button[class*="bg-red"], button[class*="danger"], button[class*="destructive"], .btn-danger {
+  button[class*="bg-red"] {
     background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
     color: white !important;
-    border: none !important;
   }
   
-  /* Botões secundários */
-  button[class*="secondary"], button[class*="outline"], .btn-secondary {
-    background: white !important;
-    color: #1e3a8a !important;
-    border: 2px solid #1e3a8a !important;
-  }
-  
-  button[class*="secondary"]:hover, button[class*="outline"]:hover {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
-    color: white !important;
-  }
-  
-  /* TABELAS - Design desktop responsivo */
-  table, .table, [role="table"], [class*="Table"] {
-    width: 100% !important;
+  /* TABELAS - Legibilidade perfeita */
+  table, .table, [role="table"] {
     background-color: white !important;
     border-radius: 0.75rem !important;
     overflow: hidden !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
     font-size: 0.8125rem !important;
-    border: 1px solid #e2e8f0 !important;
   }
   
-  /* Cabeçalho com gradiente da marca */
-  table th, .table th, [role="columnheader"], thead th {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
-    color: white !important;
+  table th, .table th, [role="columnheader"] {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+    color: #1e3a8a !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
-    font-size: 0.7rem !important;
+    font-size: 0.75rem !important;
     letter-spacing: 0.05em !important;
-    padding: 0.875rem 0.625rem !important;
-    border: none !important;
+    padding: 0.75rem 0.5rem !important;
+    border-bottom: 2px solid #cbd5e1 !important;
   }
   
-  /* Células da tabela com fundo branco */
-  table td, .table td, [role="cell"], tbody td {
+  table td, .table td, [role="cell"] {
     background-color: white !important;
     color: #334155 !important;
-    padding: 0.875rem 0.625rem !important;
-    border-bottom: 1px solid #f1f5f9 !important;
-    line-height: 1.6 !important;
-    font-size: 0.8125rem !important;
+    padding: 0.75rem 0.5rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    line-height: 1.5 !important;
   }
   
-  /* Hover nas linhas */
-  table tbody tr:hover td, .table tbody tr:hover td {
+  table tr:hover td, .table tr:hover td {
     background-color: #f8fafc !important;
-    cursor: pointer !important;
   }
   
-  /* Scroll horizontal em tabelas */
-  .table-container, [class*="TableContainer"] {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    background-color: white !important;
-    border-radius: 0.75rem !important;
-  }
-  
-  /* PAGINAÇÃO - Idêntico ao desktop */
-  nav[aria-label*="pagination"], .pagination, [class*="Pagination"] {
+  /* PAGINAÇÃO - Visual bonito e claro */
+  nav[aria-label*="pagination"], .pagination {
     display: flex !important;
     gap: 0.5rem !important;
     justify-content: center !important;
-    align-items: center !important;
     margin-top: 1.5rem !important;
-    padding: 1rem !important;
   }
   
-  nav[aria-label*="pagination"] button, .pagination button, 
-  [class*="PaginationItem"] button {
-    min-width: 2.75rem !important;
-    height: 2.75rem !important;
+  nav[aria-label*="pagination"] button, .pagination button {
+    min-width: 2.5rem !important;
+    height: 2.5rem !important;
     border-radius: 0.5rem !important;
     font-weight: 600 !important;
     font-size: 0.875rem !important;
-    background: white !important;
-    color: #1e3a8a !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
   }
   
-  /* Página ativa com gradiente */
   nav[aria-label*="pagination"] button[aria-current="page"], 
-  .pagination button.active,
-  [class*="PaginationItem"] button[data-active="true"] {
+  .pagination button.active {
     background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
     color: white !important;
-    border: none !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3) !important;
   }
   
-  /* Números de página */
-  .pagination-info, [class*="showing"] {
-    font-size: 0.875rem !important;
-    color: #64748b !important;
-    font-weight: 500 !important;
-  }
-  
-  /* GRÁFICOS - Fundo branco com sombra */
-  canvas, svg, [class*="Chart"] {
+  /* GRÁFICOS - Visibilidade perfeita */
+  canvas, svg {
     max-width: 100% !important;
     height: auto !important;
     background-color: white !important;
     border-radius: 0.75rem !important;
-    padding: 1rem !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08) !important;
+    padding: 0.5rem !important;
   }
   
-  /* CARDS - Design desktop adaptado */
-  .card, [role="article"], section[class*="card"], [class*="Card"] {
+  /* CARDS - Comunicação visual elegante */
+  .card, [role="article"], section[class*="card"] {
     background-color: white !important;
     color: #1e293b !important;
     border-radius: 0.75rem !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
     border: 1px solid #e2e8f0 !important;
-    padding: 1rem !important;
-    margin-bottom: 1rem !important;
   }
   
-  /* Cabeçalho de cards */
-  .card-header, [class*="CardHeader"] {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
-    padding: 1rem !important;
-    border-bottom: 1px solid #e2e8f0 !important;
-    border-radius: 0.75rem 0.75rem 0 0 !important;
-  }
-  
-  .card-title, [class*="CardTitle"] {
+  /* MOSTRADORES E MÉTRICAS - Destaque visual */
+  [class*="metric"], [class*="summary"], [class*="stats"] {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
     color: #1e3a8a !important;
-    font-weight: 700 !important;
-    font-size: 1.125rem !important;
   }
   
-  /* MOSTRADORES E MÉTRICAS - Destaque com gradiente */
-  [class*="metric"], [class*="summary"], [class*="stats"], [class*="Metric"], 
-  [class*="Summary"], [class*="Stats"] {
-    font-size: 1.5rem !important;
-    font-weight: 700 !important;
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-  }
-  
-  /* LISTAGENS - Fundo branco limpo */
-  ul, ol, [role="list"], [class*="List"] {
+  /* LISTAGENS - Organização visual clara */
+  ul, ol, [role="list"] {
     background-color: white !important;
     border-radius: 0.75rem !important;
-    padding: 0.75rem !important;
-    border: 1px solid #e2e8f0 !important;
+    padding: 0.5rem !important;
   }
   
-  li, [role="listitem"], [class*="ListItem"] {
+  li, [role="listitem"] {
     background-color: white !important;
     color: #334155 !important;
-    padding: 0.875rem !important;
-    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 0.75rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
     font-size: 0.875rem !important;
-    line-height: 1.6 !important;
+    line-height: 1.5 !important;
   }
   
   li:last-child {
@@ -877,33 +795,14 @@ button[role="combobox"],
   
   li:hover {
     background-color: #f8fafc !important;
-    cursor: pointer !important;
   }
   
-  /* NÚMEROS E VALORES - Tipografia desktop */
-  [class*="value"], [class*="amount"], [class*="price"], [class*="total"],
-  [class*="Value"], [class*="Amount"], [class*="Price"], [class*="Total"] {
+  /* NÚMEROS E VALORES - Legibilidade máxima */
+  [class*="value"], [class*="amount"], [class*="price"], [class*="total"] {
     font-family: 'Inter', system-ui, sans-serif !important;
     font-weight: 700 !important;
-    font-size: 1.125rem !important;
+    font-size: 1rem !important;
     color: #1e3a8a !important;
-  }
-  
-  /* FORMULÁRIOS - Inputs com fundo branco */
-  input, textarea, select, [type="text"], [type="email"], [type="number"], 
-  [type="password"], [type="tel"], [class*="Input"] {
-    background-color: white !important;
-    color: #1e293b !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 0.5rem !important;
-    padding: 0.75rem !important;
-    font-size: 0.875rem !important;
-  }
-  
-  input:focus, textarea:focus, select:focus {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-    outline: none !important;
   }
   
   /* Layout adaptativo mantendo cores e gradientes */
@@ -1138,206 +1037,126 @@ body {
   background-color: #f8fafc;
 }
 
-/* ============================================================================
-   PWA (PROGRESSIVE WEB APP) - ESPELHO PERFEITO DO DESKTOP
-   Todas as funcionalidades com identidade visual desktop
-   ============================================================================ */
+/* PWA specific media queries */
 @media (display-mode: standalone) {
-  /* Fundo padrão desktop */
+  /* Força fundo branco/claro em PWA */
   body {
     background-color: #f8fafc !important;
     user-select: none;
-    color: #1e293b !important;
   }
   
-  /* Containers e páginas */
-  main, .page, .container, [role="main"] {
-    background-color: #f8fafc !important;
-  }
-  
-  /* BOTÕES PWA - Gradientes desktop */
-  button, .btn, [role="button"], [type="button"], [type="submit"] {
+  /* BOTÕES PWA - Comunicação visual clara e bonita */
+  button, .btn, [role="button"] {
     font-size: 0.875rem !important;
     font-weight: 600 !important;
-    padding: 0.625rem 1.25rem !important;
+    padding: 0.625rem 1rem !important;
     border-radius: 0.5rem !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 2px 8px rgba(30, 58, 138, 0.15) !important;
-    background: white !important;
-    color: #1e3a8a !important;
-    border: 1px solid #cbd5e1 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
   }
   
-  button:hover, .btn:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25) !important;
-  }
-  
-  button[class*="primary"], button[class*="bg-blue"], button[class*="bg-indigo"],
-  .btn-primary, [variant="primary"] {
+  button.bg-primary, .btn-primary, button[class*="bg-blue"], button[class*="bg-indigo"] {
     background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
     color: white !important;
-    border: none !important;
   }
   
-  button[class*="bg-green"], button[class*="success"], .btn-success {
+  button[class*="bg-green"] {
     background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
     color: white !important;
-    border: none !important;
   }
   
-  button[class*="bg-red"], button[class*="danger"], button[class*="destructive"], .btn-danger {
+  button[class*="bg-red"] {
     background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
     color: white !important;
-    border: none !important;
   }
   
-  button[class*="secondary"], button[class*="outline"], .btn-secondary {
-    background: white !important;
-    color: #1e3a8a !important;
-    border: 2px solid #1e3a8a !important;
-  }
-  
-  /* TABELAS PWA - Desktop responsivo */
-  table, .table, [role="table"], [class*="Table"] {
-    width: 100% !important;
+  /* TABELAS PWA - Legibilidade perfeita */
+  table, .table, [role="table"] {
     background-color: white !important;
     border-radius: 0.75rem !important;
     overflow: hidden !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08) !important;
-    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
   }
   
-  table th, .table th, [role="columnheader"], thead th {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
-    color: white !important;
+  table th, .table th, [role="columnheader"] {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+    color: #1e3a8a !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     font-size: 0.75rem !important;
     letter-spacing: 0.05em !important;
-    padding: 0.875rem !important;
-    border: none !important;
+    padding: 0.75rem !important;
   }
   
-  table td, .table td, [role="cell"], tbody td {
+  table td, .table td, [role="cell"] {
     background-color: white !important;
     color: #334155 !important;
-    padding: 0.875rem !important;
-    border-bottom: 1px solid #f1f5f9 !important;
-    font-size: 0.875rem !important;
+    padding: 0.75rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
   }
   
-  table tbody tr:hover td {
-    background-color: #f8fafc !important;
-  }
-  
-  /* PAGINAÇÃO PWA - Design desktop */
-  nav[aria-label*="pagination"], .pagination, [class*="Pagination"] {
+  /* PAGINAÇÃO PWA - Visual bonito */
+  nav[aria-label*="pagination"], .pagination {
     display: flex !important;
     gap: 0.5rem !important;
     justify-content: center !important;
-    align-items: center !important;
-    margin-top: 1.5rem !important;
-    padding: 1rem !important;
   }
   
   nav[aria-label*="pagination"] button, .pagination button {
-    min-width: 2.75rem !important;
-    height: 2.75rem !important;
+    min-width: 2.5rem !important;
+    height: 2.5rem !important;
     border-radius: 0.5rem !important;
     font-weight: 600 !important;
-    background: white !important;
-    color: #1e3a8a !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
   }
   
   nav[aria-label*="pagination"] button[aria-current="page"], 
   .pagination button.active {
     background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
     color: white !important;
-    border: none !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3) !important;
   }
   
   /* GRÁFICOS PWA */
-  canvas, svg, [class*="Chart"] {
+  canvas, svg {
     background-color: white !important;
     border-radius: 0.75rem !important;
-    padding: 1rem !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08) !important;
+    padding: 0.5rem !important;
   }
   
-  /* CARDS PWA */
-  .card, [role="article"], section[class*="card"], [class*="Card"] {
+  /* Cards e containers PWA */
+  .card, [role="article"], section {
     background-color: white !important;
     color: #1e293b !important;
     border-radius: 0.75rem !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08) !important;
-    border: 1px solid #e2e8f0 !important;
-    padding: 1rem !important;
-  }
-  
-  .card-header, [class*="CardHeader"] {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
-    padding: 1rem !important;
-    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
   }
   
   /* MOSTRADORES PWA */
-  [class*="metric"], [class*="summary"], [class*="stats"], 
-  [class*="Metric"], [class*="Summary"], [class*="Stats"] {
-    font-size: 1.5rem !important;
+  [class*="metric"], [class*="summary"], [class*="stats"] {
+    font-size: 1.25rem !important;
     font-weight: 700 !important;
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-  }
-  
-  /* LISTAGENS PWA */
-  ul, ol, [role="list"], [class*="List"] {
-    background-color: white !important;
-    border-radius: 0.75rem !important;
-    padding: 0.75rem !important;
-    border: 1px solid #e2e8f0 !important;
-  }
-  
-  li, [role="listitem"], [class*="ListItem"] {
-    background-color: white !important;
-    color: #334155 !important;
-    padding: 0.875rem !important;
-    border-bottom: 1px solid #f1f5f9 !important;
-  }
-  
-  li:hover {
-    background-color: #f8fafc !important;
-  }
-  
-  /* NÚMEROS PWA */
-  [class*="value"], [class*="amount"], [class*="price"], [class*="total"],
-  [class*="Value"], [class*="Amount"], [class*="Price"], [class*="Total"] {
-    font-weight: 700 !important;
-    font-size: 1.125rem !important;
     color: #1e3a8a !important;
   }
   
-  /* FORMULÁRIOS PWA */
-  input, textarea, select, [type="text"], [type="email"], [type="number"],
-  [class*="Input"] {
+  /* LISTAGENS PWA */
+  ul, ol, [role="list"] {
     background-color: white !important;
-    color: #1e293b !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 0.5rem !important;
+    border-radius: 0.75rem !important;
+  }
+  
+  li, [role="listitem"] {
+    background-color: white !important;
+    color: #334155 !important;
     padding: 0.75rem !important;
+    border-bottom: 1px solid #e2e8f0 !important;
   }
   
-  input:focus, textarea:focus, select:focus {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  /* NÚMEROS PWA */
+  [class*="value"], [class*="amount"], [class*="price"], [class*="total"] {
+    font-weight: 700 !important;
+    color: #1e3a8a !important;
   }
   
-  /* Safe area para notch/status bar iOS */
+  /* Add padding for status bar on iOS */
   .pwa-header {
     padding-top: env(safe-area-inset-top);
   }
@@ -1348,130 +1167,6 @@ body {
   /* iOS Safari specific styles */
   .ios-scroll-fix {
     -webkit-overflow-scrolling: touch;
-  }
-}
-
-/* ============================================================================
-   APLICATIVO NATIVO (iOS/Android via Capacitor) - ESPELHO DESKTOP
-   Identidade visual desktop em apps nativos
-   ============================================================================ */
-@media (hover: none) and (pointer: coarse) {
-  /* Detecta dispositivos touch (apps nativos) */
-  
-  body {
-    background-color: #f8fafc !important;
-    color: #1e293b !important;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-  
-  /* Containers */
-  main, .page, .container, [role="main"] {
-    background-color: #f8fafc !important;
-  }
-  
-  /* BOTÕES APP - Design desktop */
-  button, .btn, [role="button"], [type="button"], [type="submit"] {
-    font-size: 0.875rem !important;
-    font-weight: 600 !important;
-    padding: 0.75rem 1.25rem !important;
-    border-radius: 0.5rem !important;
-    transition: all 0.2s ease !important;
-    box-shadow: 0 2px 8px rgba(30, 58, 138, 0.15) !important;
-    background: white !important;
-    color: #1e3a8a !important;
-    border: 1px solid #cbd5e1 !important;
-    min-height: 44px !important;
-    min-width: 44px !important;
-  }
-  
-  button[class*="primary"], button[class*="bg-blue"],
-  .btn-primary, [variant="primary"] {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
-    color: white !important;
-    border: none !important;
-  }
-  
-  button[class*="bg-green"], button[class*="success"] {
-    background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
-    color: white !important;
-    border: none !important;
-  }
-  
-  button[class*="bg-red"], button[class*="danger"], button[class*="destructive"] {
-    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
-    color: white !important;
-    border: none !important;
-  }
-  
-  /* TABELAS APP */
-  table, .table, [role="table"], [class*="Table"] {
-    background-color: white !important;
-    border-radius: 0.75rem !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08) !important;
-    border: 1px solid #e2e8f0 !important;
-  }
-  
-  table th, thead th {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
-    color: white !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    font-size: 0.75rem !important;
-    padding: 1rem 0.75rem !important;
-  }
-  
-  table td, tbody td {
-    background-color: white !important;
-    color: #334155 !important;
-    padding: 1rem 0.75rem !important;
-    border-bottom: 1px solid #f1f5f9 !important;
-  }
-  
-  /* CARDS APP */
-  .card, [role="article"], [class*="Card"] {
-    background-color: white !important;
-    color: #1e293b !important;
-    border-radius: 0.75rem !important;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08) !important;
-    border: 1px solid #e2e8f0 !important;
-    padding: 1rem !important;
-  }
-  
-  /* FORMULÁRIOS APP */
-  input, textarea, select, [class*="Input"] {
-    background-color: white !important;
-    color: #1e293b !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 0.5rem !important;
-    padding: 0.875rem !important;
-    font-size: 1rem !important;
-    min-height: 44px !important;
-  }
-  
-  /* MÉTRICAS APP */
-  [class*="metric"], [class*="summary"], [class*="stats"] {
-    font-size: 1.5rem !important;
-    font-weight: 700 !important;
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-  }
-  
-  /* PAGINAÇÃO APP */
-  nav[aria-label*="pagination"] button {
-    min-width: 44px !important;
-    min-height: 44px !important;
-    background: white !important;
-    color: #1e3a8a !important;
-    border: 1px solid #cbd5e1 !important;
-  }
-  
-  nav[aria-label*="pagination"] button[aria-current="page"] {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
-    color: white !important;
-    border: none !important;
   }
 }
 
