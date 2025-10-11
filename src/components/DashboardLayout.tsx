@@ -57,7 +57,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       {/* Overlay para mobile - Touch dismiss */}
       {mobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/70 z-40 md:hidden backdrop-blur-sm touch-target"
+          className="fixed inset-0 bg-foreground/70 z-40 md:hidden backdrop-blur-sm touch-target"
           onClick={() => setMobileMenuOpen(false)}
           role="button"
           aria-label="Fechar menu"
