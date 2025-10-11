@@ -1410,47 +1410,48 @@ body {
   @apply text-sm sm:text-base font-semibold text-gray-800;
 }
 
-/* Mobile específico - mantém layout desktop */
+/* Mobile específico - MANTÉM EXATAMENTE O MESMO LAYOUT DESKTOP */
 @media (max-width: 640px) {
+  /* Removendo todas as diferenças para manter o layout desktop */
   .crm-summary-cards,
   .lembretes-summary-cards {
-    @apply grid-cols-1 gap-4;
+    @apply grid-cols-3 gap-6;
   }
   
   .crm-card-content,
   .lembretes-card-content {
-    @apply p-4;
+    @apply p-6;
   }
   
   .crm-card-title,
   .lembretes-card-title {
-    @apply text-xs;
+    @apply text-sm;
   }
   
   .crm-card-value,
   .lembretes-card-value {
-    @apply text-lg;
+    @apply text-2xl;
   }
   
   .crm-card-icon,
   .lembretes-card-icon {
-    @apply w-8 h-8;
+    @apply w-12 h-12;
   }
   
   .saldos-summary-card {
-    @apply rounded-lg;
+    @apply rounded-xl;
   }
   
   .saldos-card-content {
-    @apply p-4;
+    @apply p-6;
   }
   
   .saldos-total-label {
-    @apply text-base;
+    @apply text-lg;
   }
   
   .saldos-total-value {
-    @apply text-xl;
+    @apply text-3xl;
   }
   
   .crm-form,
@@ -1459,25 +1460,25 @@ body {
   .crm-filters,
   .saldos-filters,
   .lembretes-filters {
-    @apply p-4;
+    @apply p-6;
   }
   
   .crm-filters-grid,
   .saldos-filters-grid,
   .lembretes-filters-grid {
-    @apply grid-cols-1 gap-3;
+    @apply grid-cols-3 gap-4;
   }
   
   .crm-pipeline-board {
-    @apply p-3;
+    @apply p-6;
   }
   
   .crm-pipeline-column {
-    @apply p-2 min-h-[150px];
+    @apply p-4 min-h-[200px];
   }
   
   .crm-pipeline-card {
-    @apply p-2 mb-2;
+    @apply p-4 mb-4;
   }
 }
 
@@ -1781,110 +1782,149 @@ body {
   @apply text-xs text-gray-500 mt-1;
 }
 
-/* Mobile específico - mantém layout desktop */
+/* Mobile específico - MANTÉM EXATAMENTE O MESMO LAYOUT DESKTOP */
 @media (max-width: 640px) {
+  /* DRE (Demonstração de Resultado do Exercício) */
   .ponto-equilibrio-layout {
-    @apply grid-cols-1 gap-4;
+    @apply grid-cols-2 gap-6;
   }
   
   .ponto-equilibrio-card-header,
   .ponto-equilibrio-card-content {
-    @apply p-4;
+    @apply p-6;
   }
   
   .ponto-equilibrio-card-title {
-    @apply text-base;
+    @apply text-lg;
   }
   
   .ponto-equilibrio-result-value {
-    @apply text-xl;
+    @apply text-2xl;
   }
   
+  /* Suporte */
   .suporte-layout {
-    @apply grid-cols-1 gap-4;
+    @apply grid-cols-3 gap-6;
   }
   
   .suporte-tabs {
-    @apply grid-cols-1 gap-1;
+    @apply grid-cols-3 gap-2;
   }
   
   .suporte-tab {
-    @apply text-sm py-2;
+    @apply text-base py-3;
   }
   
   .suporte-chat-container,
   .suporte-faq-container,
   .suporte-sidebar {
-    @apply p-4;
+    @apply p-6;
   }
   
   .suporte-faq-section {
-    @apply mb-6;
+    @apply mb-8;
   }
   
   .suporte-faq-title {
-    @apply text-sm;
-  }
-  
-  .suporte-sidebar-section {
-    @apply mb-4;
-  }
-  
-  .suporte-sidebar-title {
     @apply text-base;
   }
   
-  .suporte-contact-icon {
-    @apply w-8 h-8;
+  .suporte-sidebar-section {
+    @apply mb-6;
   }
   
+  .suporte-sidebar-title {
+    @apply text-lg;
+  }
+  
+  .suporte-contact-icon {
+    @apply w-12 h-12;
+  }
+  
+  /* Perfil */
   .perfil-layout {
-    @apply grid-cols-1 gap-4;
+    @apply grid-cols-2 gap-6;
   }
   
   .perfil-card-header,
   .perfil-card-content {
-    @apply p-4;
+    @apply p-6;
   }
   
   .perfil-card-title {
-    @apply text-base flex-col items-start gap-2;
+    @apply text-lg flex-row items-center gap-4;
   }
   
   .perfil-edit-actions {
-    @apply flex-col;
+    @apply flex-row;
   }
   
   .perfil-btn {
-    @apply w-full justify-center;
+    @apply w-auto;
   }
 }
 
-/* Tablet específico - layout intermediário */
+/* Tablet específico - MANTÉM EXATAMENTE O MESMO LAYOUT DESKTOP */
 @media (min-width: 641px) and (max-width: 1024px) {
   .ponto-equilibrio-layout {
-    @apply grid-cols-1;
+    @apply grid-cols-2 gap-6;
   }
   
   .suporte-layout {
-    @apply grid-cols-1;
+    @apply grid-cols-3 gap-6;
   }
   
   .suporte-tabs {
-    @apply grid-cols-2;
+    @apply grid-cols-3 gap-2;
   }
   
   .perfil-layout {
-    @apply grid-cols-1;
+    @apply grid-cols-2 gap-6;
   }
 }
 
-/* PWA e App - força layout desktop */
+/* PWA e App - MANTÉM EXATAMENTE O MESMO LAYOUT DESKTOP */
 @media (display-mode: standalone) {
-  .ponto-equilibrio-layout,
-  .suporte-layout,
+  /* DRE */
+  .ponto-equilibrio-layout {
+    @apply grid-cols-2 gap-6;
+  }
+  
+  .ponto-equilibrio-card-header,
+  .ponto-equilibrio-card-content {
+    @apply p-6;
+  }
+  
+  .ponto-equilibrio-card-title {
+    @apply text-lg;
+  }
+  
+  .ponto-equilibrio-result-value {
+    @apply text-2xl;
+  }
+  
+  /* Suporte */
+  .suporte-layout {
+    @apply grid-cols-3 gap-6;
+  }
+  
+  .suporte-tabs {
+    @apply grid-cols-3 gap-2;
+  }
+  
+  .suporte-tab {
+    @apply text-base py-3;
+  }
+  
+  .suporte-chat-container,
+  .suporte-faq-container,
+  .suporte-sidebar {
+    @apply p-6;
+  }
+  
+  /* Perfil */
   .perfil-layout {
-    /* Mantém todas as classes desktop */
+    @apply grid-cols-2 gap-6;
   }
 }
 
