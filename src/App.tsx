@@ -14,6 +14,7 @@ import { useSecurityMonitoring } from "./hooks/useSecurityMonitoring";
 
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import LancamentosFinanceiros from "./pages/LancamentosFinanceiros";
 import FluxoCaixa from "./pages/FluxoCaixa";
@@ -63,6 +64,7 @@ const App = () => (
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route
         path="/dashboard"
         element={

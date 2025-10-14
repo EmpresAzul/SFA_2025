@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { Eye, EyeOff, LogIn, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +12,7 @@ import { useInputValidation, validateEmail } from "@/hooks/useInputValidation";
 import { loginRateLimiter } from "@/utils/inputSanitization";
 import { sanitizeSecurityInput } from "@/utils/securityHeaders";
 import { useSecurity } from "@/hooks/useSecurity";
+import { supabase } from "@/integrations/supabase/client";
 import Logo from "./Logo";
 
 const LoginForm: React.FC = () => {
@@ -18,6 +20,9 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
   const [rateLimitInfo, setRateLimitInfo] = useState<{
     isLimited: boolean;
     remainingAttempts: number;
@@ -161,6 +166,54 @@ const LoginForm: React.FC = () => {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!resetEmail.trim()) {
+      toast({
+        title: "Email obrigatório",
+        description: "Por favor, insira seu email",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validateEmail(resetEmail)) {
+      toast({
+        title: "Email inválido",
+        description: "Por favor, insira um email válido",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setResetLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Email enviado!",
+        description: "Link de recuperação enviado! Verifique seu email.",
+      });
+      setShowForgotPassword(false);
+      setResetEmail("");
+    } catch (error: any) {
+      console.error("Error sending reset email:", error);
+      toast({
+        title: "Erro ao enviar",
+        description: "Erro ao enviar email. Verifique se o email está cadastrado.",
+        variant: "destructive",
+      });
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#0f2847] to-[#1a2847]">
       {/* Background Pattern */}
@@ -278,6 +331,17 @@ const LoginForm: React.FC = () => {
               </div>
             </form>
 
+            {/* Forgot Password Link */}
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-sm text-blue-600 hover:text-blue-700 transition-colors underline font-medium"
+              >
+                Esqueci minha senha
+              </button>
+            </div>
+
             {/* Footer */}
             <div className="mt-6 pt-4 border-t border-gray-200 text-center">
               <p className="text-gray-500 text-xs">
@@ -287,6 +351,53 @@ const LoginForm: React.FC = () => {
           </div>
         </Card>
       </div>
+
+      {/* Forgot Password Dialog */}
+      <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
+        <DialogContent className="sm:max-w-md bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-gray-900">Recuperar Senha</DialogTitle>
+            <DialogDescription className="text-gray-600">
+              Digite seu email para receber o link de redefinição de senha
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="reset-email" className="text-gray-700 font-medium">Email</Label>
+              <Input
+                id="reset-email"
+                type="email"
+                placeholder="seu@email.com"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(sanitizeSecurityInput(e.target.value.trim()))}
+                className="h-11 border-2 border-gray-200 focus:border-blue-500"
+                disabled={resetLoading}
+              />
+            </div>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setShowForgotPassword(false);
+                  setResetEmail("");
+                }}
+                className="flex-1 h-11 border-2"
+                disabled={resetLoading}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1 h-11 bg-gradient-to-r from-[#0a1628] via-[#0f2847] to-[#1a2847] hover:from-[#0f2847] hover:via-[#1a2847] hover:to-[#1e3a8a] text-white"
+                disabled={resetLoading}
+              >
+                {resetLoading ? "Enviando..." : "Enviar Link"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

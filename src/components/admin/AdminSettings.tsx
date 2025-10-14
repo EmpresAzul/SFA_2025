@@ -14,7 +14,9 @@ import {
   CheckCircle,
   XCircle,
   Loader2,
+  Users,
 } from "lucide-react";
+import UserManagement from "./UserManagement";
 
 const AdminSettings: React.FC = () => {
   const [openaiApiKey, setOpenaiApiKey] = useState("");
@@ -242,9 +244,13 @@ const AdminSettings: React.FC = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="credentials" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="credentials">Credenciais</TabsTrigger>
               <TabsTrigger value="test">Teste de Conexão</TabsTrigger>
+              <TabsTrigger value="users">
+                <Users className="w-4 h-4 mr-2" />
+                Usuários
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="credentials" className="space-y-6">
@@ -357,6 +363,10 @@ const AdminSettings: React.FC = () => {
                   </div>
                 )}
               </div>
+            </TabsContent>
+
+            <TabsContent value="users" className="space-y-6">
+              <UserManagement />
             </TabsContent>
           </Tabs>
         </CardContent>
