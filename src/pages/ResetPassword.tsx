@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Lock } from "lucide-react";
 import Logo from "@/components/Logo";
 
@@ -34,27 +34,47 @@ const ResetPassword: React.FC = () => {
     e.preventDefault();
 
     if (!password || !confirmPassword) {
-      toast.error("Preencha todos os campos");
+      toast({
+        title: "Erro",
+        description: "Preencha todos os campos",
+        variant: "destructive"
+      });
       return;
     }
 
     if (password.length < 8) {
-      toast.error("A senha deve ter pelo menos 8 caracteres");
+      toast({
+        title: "Erro",
+        description: "A senha deve ter pelo menos 8 caracteres",
+        variant: "destructive"
+      });
       return;
     }
 
     if (!/\d/.test(password)) {
-      toast.error("A senha deve conter pelo menos um número");
+      toast({
+        title: "Erro",
+        description: "A senha deve conter pelo menos um número",
+        variant: "destructive"
+      });
       return;
     }
 
     if (!/[a-zA-Z]/.test(password)) {
-      toast.error("A senha deve conter pelo menos uma letra");
+      toast({
+        title: "Erro",
+        description: "A senha deve conter pelo menos uma letra",
+        variant: "destructive"
+      });
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error("As senhas não coincidem");
+      toast({
+        title: "Erro",
+        description: "As senhas não coincidem",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -67,13 +87,21 @@ const ResetPassword: React.FC = () => {
 
       if (error) throw error;
 
-      toast.success("Senha redefinida com sucesso! Faça login com sua nova senha.");
+      toast({
+        title: "Sucesso!",
+        description: "Senha redefinida com sucesso! Faça login com sua nova senha."
+      });
+      
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (error: any) {
       console.error("Error resetting password:", error);
-      toast.error("Erro ao redefinir senha. O link pode ter expirado.");
+      toast({
+        title: "Erro",
+        description: "Erro ao redefinir senha. O link pode ter expirado.",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
@@ -100,18 +128,18 @@ const ResetPassword: React.FC = () => {
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-500"></div>
       </div>
 
-      <Card className="w-full max-w-md relative z-10 bg-gradient-to-br from-blue-950/40 via-blue-900/30 to-indigo-950/40 backdrop-blur-xl border-2 border-blue-800/30 shadow-2xl">
-        <CardContent className="pt-8 pb-8 px-8">
+      <Card className="w-full max-w-md relative z-10 bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
+        <CardContent className="pt-8 pb-8 px-6 sm:px-8">
           {/* Logo */}
           <div className="flex justify-center mb-8">
             <Logo className="h-16 w-16" />
           </div>
 
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#0f2847] via-[#1a2847] to-[#1e3a8a] bg-clip-text text-transparent mb-2">
+            <h1 className="text-3xl font-bold text-white mb-2">
               Redefinir Senha
             </h1>
-            <p className="text-blue-200 text-sm">
+            <p className="text-blue-200/80 text-sm">
               Crie uma nova senha para sua conta
             </p>
           </div>
@@ -119,7 +147,7 @@ const ResetPassword: React.FC = () => {
           <form onSubmit={handleResetPassword} className="space-y-6">
             {/* New Password */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white font-medium flex items-center gap-2">
+              <Label htmlFor="password" className="text-gray-700 font-medium flex items-center gap-2">
                 <Lock className="h-4 w-4" />
                 Nova Senha
               </Label>
@@ -130,13 +158,13 @@ const ResetPassword: React.FC = () => {
                   placeholder="Digite sua nova senha"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-white/10 border-blue-700/50 text-white placeholder:text-blue-300/50 pr-10"
+                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 pr-10 h-11"
                   disabled={loading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-300 hover:text-blue-200 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -155,7 +183,7 @@ const ResetPassword: React.FC = () => {
                       />
                     ))}
                   </div>
-                  <p className="text-xs text-blue-200">
+                  <p className="text-xs text-gray-600">
                     Força da senha: <span className="font-semibold">{getStrengthText()}</span>
                   </p>
                 </div>
@@ -164,7 +192,7 @@ const ResetPassword: React.FC = () => {
 
             {/* Confirm Password */}
             <div className="space-y-2">
-              <Label htmlFor="confirm-password" className="text-white font-medium flex items-center gap-2">
+              <Label htmlFor="confirm-password" className="text-gray-700 font-medium flex items-center gap-2">
                 <Lock className="h-4 w-4" />
                 Confirmar Senha
               </Label>
@@ -175,13 +203,13 @@ const ResetPassword: React.FC = () => {
                   placeholder="Digite novamente sua senha"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="bg-white/10 border-blue-700/50 text-white placeholder:text-blue-300/50 pr-10"
+                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 pr-10 h-11"
                   disabled={loading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-300 hover:text-blue-200 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                 >
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -189,16 +217,16 @@ const ResetPassword: React.FC = () => {
             </div>
 
             {/* Password Requirements */}
-            <div className="bg-blue-900/20 border border-blue-700/30 rounded-lg p-3">
-              <p className="text-xs text-blue-200 mb-2 font-semibold">A senha deve conter:</p>
-              <ul className="space-y-1 text-xs text-blue-300">
-                <li className={password.length >= 8 ? "text-green-400" : ""}>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-xs text-gray-700 mb-2 font-semibold">A senha deve conter:</p>
+              <ul className="space-y-1 text-xs text-gray-600">
+                <li className={password.length >= 8 ? "text-green-600 font-medium" : ""}>
                   • Mínimo 8 caracteres
                 </li>
-                <li className={/[a-zA-Z]/.test(password) ? "text-green-400" : ""}>
+                <li className={/[a-zA-Z]/.test(password) ? "text-green-600 font-medium" : ""}>
                   • Pelo menos uma letra
                 </li>
-                <li className={/\d/.test(password) ? "text-green-400" : ""}>
+                <li className={/\d/.test(password) ? "text-green-600 font-medium" : ""}>
                   • Pelo menos um número
                 </li>
               </ul>
@@ -206,7 +234,7 @@ const ResetPassword: React.FC = () => {
 
             <Button
               type="submit"
-              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-[#0a1628] via-[#0f2847] to-[#1a2847] hover:from-[#0f2847] hover:via-[#1a2847] hover:to-[#1e3a8a] text-white shadow-lg transition-all duration-300 hover:shadow-blue-500/50"
+              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white shadow-lg transition-all duration-300 hover:shadow-blue-500/50"
               disabled={loading}
             >
               {loading ? "Redefinindo..." : "Redefinir Senha"}
@@ -216,7 +244,7 @@ const ResetPassword: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate("/login")}
-                className="text-sm text-blue-300 hover:text-blue-200 transition-colors underline"
+                className="text-sm text-blue-600 hover:text-blue-800 transition-colors underline font-medium"
               >
                 Voltar para o login
               </button>
