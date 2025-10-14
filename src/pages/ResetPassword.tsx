@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Lock } from "lucide-react";
-import Logo from "@/components/Logo";
 
 const ResetPassword: React.FC = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -120,142 +118,150 @@ const ResetPassword: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#0a1628] via-[#0f2847] to-[#1a2847] relative overflow-hidden">
-      {/* Animated background patterns */}
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#0f2847] to-[#1a2847]">
+      {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent transform rotate-12 scale-150"></div>
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-indigo-500/20 to-transparent transform -rotate-12 scale-150"></div>
       </div>
-
-      <Card className="w-full max-w-md relative z-10 bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
-        <CardContent className="pt-8 pb-8 px-6 sm:px-8">
-          {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <Logo className="h-16 w-16" />
-          </div>
-
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">
+      
+      <div className="relative z-10 w-full max-w-md px-4">
+        <Card className="bg-white shadow-2xl border-0 overflow-hidden rounded-lg">
+          {/* Header com logo */}
+          <div className="bg-white p-6 text-center">
+            <div className="mb-4">
+              <h1 className="text-4xl font-black bg-gradient-to-r from-[#0f2847] via-[#1a2847] to-[#1e3a8a] bg-clip-text text-transparent">
+                FluxoAzul
+              </h1>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-1">
               Redefinir Senha
-            </h1>
-            <p className="text-blue-200/80 text-sm">
+            </h2>
+            <p className="text-gray-600 text-sm">
               Crie uma nova senha para sua conta
             </p>
           </div>
 
-          <form onSubmit={handleResetPassword} className="space-y-6">
-            {/* New Password */}
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-700 font-medium flex items-center gap-2">
-                <Lock className="h-4 w-4" />
-                Nova Senha
-              </Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Digite sua nova senha"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 pr-10 h-11"
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-              
-              {/* Password Strength Indicator */}
-              {password && (
-                <div className="space-y-1">
-                  <div className="flex gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <div
-                        key={i}
-                        className={`h-1 flex-1 rounded-full transition-colors ${
-                          i < passwordStrength ? getStrengthColor() : "bg-gray-600"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <p className="text-xs text-gray-600">
-                    Força da senha: <span className="font-semibold">{getStrengthText()}</span>
-                  </p>
+          <div className="px-6 pb-6">
+
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              {/* New Password */}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-700 font-medium text-sm flex items-center gap-2">
+                  <Lock className="h-4 w-4" />
+                  Nova Senha
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Digite sua nova senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="h-11 border-2 bg-white text-gray-900 placeholder:text-gray-500 border-gray-200 focus:border-blue-500 transition-all duration-200 rounded-lg pr-12"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
-              )}
-            </div>
+                
+                {/* Password Strength Indicator */}
+                {password && (
+                  <div className="space-y-1">
+                    <div className="flex gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <div
+                          key={i}
+                          className={`h-1 flex-1 rounded-full transition-colors ${
+                            i < passwordStrength ? getStrengthColor() : "bg-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-600">
+                      Força da senha: <span className="font-semibold">{getStrengthText()}</span>
+                    </p>
+                  </div>
+                )}
+              </div>
 
-            {/* Confirm Password */}
-            <div className="space-y-2">
-              <Label htmlFor="confirm-password" className="text-gray-700 font-medium flex items-center gap-2">
-                <Lock className="h-4 w-4" />
-                Confirmar Senha
-              </Label>
-              <div className="relative">
-                <Input
-                  id="confirm-password"
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Digite novamente sua senha"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 pr-10 h-11"
+              {/* Confirm Password */}
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password" className="text-gray-700 font-medium text-sm flex items-center gap-2">
+                  <Lock className="h-4 w-4" />
+                  Confirmar Senha
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="confirm-password"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Digite novamente sua senha"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="h-11 border-2 bg-white text-gray-900 placeholder:text-gray-500 border-gray-200 focus:border-blue-500 transition-all duration-200 rounded-lg pr-12"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-600 transition-colors"
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Password Requirements */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-xs text-gray-700 mb-2 font-semibold">A senha deve conter:</p>
+                <ul className="space-y-1 text-xs text-gray-600">
+                  <li className={password.length >= 8 ? "text-green-600 font-medium" : ""}>
+                    • Mínimo 8 caracteres
+                  </li>
+                  <li className={/[a-zA-Z]/.test(password) ? "text-green-600 font-medium" : ""}>
+                    • Pelo menos uma letra
+                  </li>
+                  <li className={/\d/.test(password) ? "text-green-600 font-medium" : ""}>
+                    • Pelo menos um número
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  type="submit"
+                  className="w-full h-11 bg-gradient-to-r from-[#0a1628] via-[#0f2847] to-[#1a2847] hover:from-[#0f2847] hover:via-[#1a2847] hover:to-[#1e3a8a] text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   disabled={loading}
-                />
+                >
+                  {loading ? "Redefinindo..." : "Redefinir Senha"}
+                </Button>
+              </div>
+
+              {/* Forgot Password Link */}
+              <div className="mt-4 text-center">
                 <button
                   type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                  onClick={() => navigate("/login")}
+                  className="text-sm text-blue-600 hover:text-blue-700 transition-colors underline font-medium"
                 >
-                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  Voltar para o login
                 </button>
               </div>
-            </div>
 
-            {/* Password Requirements */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-xs text-gray-700 mb-2 font-semibold">A senha deve conter:</p>
-              <ul className="space-y-1 text-xs text-gray-600">
-                <li className={password.length >= 8 ? "text-green-600 font-medium" : ""}>
-                  • Mínimo 8 caracteres
-                </li>
-                <li className={/[a-zA-Z]/.test(password) ? "text-green-600 font-medium" : ""}>
-                  • Pelo menos uma letra
-                </li>
-                <li className={/\d/.test(password) ? "text-green-600 font-medium" : ""}>
-                  • Pelo menos um número
-                </li>
-              </ul>
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:from-blue-700 hover:via-blue-800 hover:to-blue-900 text-white shadow-lg transition-all duration-300 hover:shadow-blue-500/50"
-              disabled={loading}
-            >
-              {loading ? "Redefinindo..." : "Redefinir Senha"}
-            </Button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => navigate("/login")}
-                className="text-sm text-blue-600 hover:text-blue-800 transition-colors underline font-medium"
-              >
-                Voltar para o login
-              </button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-
-      {/* Footer */}
-      <div className="absolute bottom-4 left-0 right-0 text-center text-blue-300/60 text-xs">
-        <p>© 2025 FluxoAzul. Todos os direitos reservados.</p>
+              {/* Footer */}
+              <div className="mt-6 pt-4 border-t border-gray-200 text-center">
+                <p className="text-gray-500 text-xs">
+                  © 2025 FluxoAzul. Todos os direitos reservados.
+                </p>
+              </div>
+            </form>
+          </div>
+        </Card>
       </div>
     </div>
   );
