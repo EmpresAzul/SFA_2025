@@ -13,6 +13,19 @@ export const useLancamentosQuery = () => {
         throw new Error("Usuário não autenticado");
       }
 
+      console.log("🔍 Buscando lançamentos para user_id:", session.user.id);
+
+      // Primeiro, buscar lançamentos sem joins para verificar se existem
+      const { data: simpleData, error: simpleError } = await supabase
+        .from("lancamentos")
+        .select("*")
+        .eq("user_id", session.user.id);
+
+      console.log("📊 Lançamentos encontrados (sem joins):", simpleData?.length || 0);
+      if (simpleData && simpleData.length > 0) {
+        console.log("📋 Primeiro lançamento:", simpleData[0]);
+      }
+
       // Buscar lançamentos com joins opcionais para clientes e fornecedores
       const { data, error } = await supabase
         .from("lancamentos")
@@ -26,9 +39,11 @@ export const useLancamentosQuery = () => {
 
       if (error) {
         console.error("❌ Erro ao buscar lançamentos:", error.message);
+        console.error("Detalhes:", error);
         throw error;
       }
 
+      console.log("✅ Lançamentos com joins:", data?.length || 0);
       return data as LancamentoComRelacoes[];
     },
     enabled: !!session?.user?.id,

@@ -142,6 +142,7 @@ const LancamentosFinanceiros: React.FC = () => {
 
   // Calcular estatísticas baseadas em TODOS os lançamentos, não apenas os filtrados
   const stats = useMemo(() => {
+    console.log("📊 Calculando stats com filteredLancamentos:", filteredLancamentos.length);
     const total = filteredLancamentos.length;
     const receitas = filteredLancamentos
       .filter((item) => item.tipo === "receita")
@@ -151,6 +152,7 @@ const LancamentosFinanceiros: React.FC = () => {
       .reduce((sum, item) => sum + item.valor, 0);
     const saldo = receitas - despesas;
 
+    console.log("📈 Stats:", { total, receitas, despesas, saldo });
     return { total, receitas, despesas, saldo };
   }, [filteredLancamentos]);
 

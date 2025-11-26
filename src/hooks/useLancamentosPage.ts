@@ -25,6 +25,13 @@ export const useLancamentosPage = () => {
   
   const { data: lancamentos, isLoading, error } = useLancamentosQuery();
 
+  console.log("🔍 useLancamentosPage - Estado:", {
+    lancamentos: lancamentos?.length || 0,
+    isLoading,
+    hasError: !!error,
+    errorMessage: error?.message
+  });
+
   const createLancamento = useCreate();
   const updateLancamento = useUpdate();
   const deleteLancamento = useDelete();
@@ -36,10 +43,12 @@ export const useLancamentosPage = () => {
   const fornecedores = allCadastros.filter((item: any) => item.tipo === "Fornecedor");
 
   useEffect(() => {
+    console.log("🔄 useEffect - lancamentos mudou:", lancamentos?.length || 0);
     if (lancamentos) {
       setFilteredLancamentos(lancamentos);
       filterLancamentos();
     } else {
+      console.log("⚠️ Nenhum lançamento encontrado");
       setFilteredLancamentos([]);
     }
   }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
