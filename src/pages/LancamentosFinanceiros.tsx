@@ -6,8 +6,7 @@ import LancamentosTable from "@/components/lancamentos/LancamentosTable";
 import LancamentosSummaryCards from "@/components/lancamentos/LancamentosSummaryCards";
 import LancamentosForm from "@/components/lancamentos/LancamentosForm";
 import LancamentosViewModal from "@/components/lancamentos/LancamentosViewModal";
-import { LancamentosDebug } from "@/components/lancamentos/LancamentosDebug";
-import { List, Plus, DollarSign, TrendingUp, TrendingDown } from "lucide-react";
+import { List, Plus } from "lucide-react";
 import type { Lancamento } from "@/hooks/useLancamentos";
 
 // Função auxiliar para verificar se uma data está dentro do período selecionado
@@ -89,15 +88,6 @@ const LancamentosFinanceiros: React.FC = () => {
 
   // Filtrar dados baseado nos filtros
   const filteredData = useMemo(() => {
-    console.log('🔍 Aplicando filtros:', {
-      searchTerm,
-      searchValue,
-      selectedTipo,
-      selectedCategoria,
-      selectedPeriodo,
-      totalLancamentos: filteredLancamentos.length
-    });
-
     const filtered = filteredLancamentos.filter((item) => {
       // Busca por descrição/observações
       const matchesSearch = searchTerm === "" || 
@@ -122,24 +112,7 @@ const LancamentosFinanceiros: React.FC = () => {
       // Filtro por período
       const matchesPeriodo = selectedPeriodo === "todos" || isDateInPeriod(item.data, selectedPeriodo);
 
-      const matches = matchesSearch && matchesValue && matchesTipo && matchesCategoria && matchesPeriodo;
-      
-      // Debug para período específico
-      if (selectedPeriodo !== "todos" && !matchesPeriodo) {
-        console.log('❌ Item filtrado por período:', {
-          data: item.data,
-          categoria: item.categoria,
-          valor: item.valor,
-          selectedPeriodo
-        });
-      }
-      
-      return matches;
-    });
-
-    console.log('✅ Resultados após filtros:', {
-      filtrados: filtered.length,
-      periodo: selectedPeriodo
+      return matchesSearch && matchesValue && matchesTipo && matchesCategoria && matchesPeriodo;
     });
 
     return filtered;
@@ -169,24 +142,15 @@ const LancamentosFinanceiros: React.FC = () => {
 
   // Calcular estatísticas baseadas em TODOS os lançamentos, não apenas os filtrados
   const stats = useMemo(() => {
-    console.log("📊 Calculando estatísticas dos lançamentos:", filteredLancamentos.length);
-    
     const total = filteredLancamentos.length;
     const receitas = filteredLancamentos
       .filter((item) => item.tipo === "receita")
-      .reduce((sum, item) => {
-        console.log("💰 Receita:", item.categoria, item.valor);
-        return sum + item.valor;
-      }, 0);
+      .reduce((sum, item) => sum + item.valor, 0);
     const despesas = filteredLancamentos
       .filter((item) => item.tipo === "despesa")
-      .reduce((sum, item) => {
-        console.log("💸 Despesa:", item.categoria, item.valor);
-        return sum + item.valor;
-      }, 0);
+      .reduce((sum, item) => sum + item.valor, 0);
     const saldo = receitas - despesas;
 
-    console.log("📈 Estatísticas calculadas:", { total, receitas, despesas, saldo });
     return { total, receitas, despesas, saldo };
   }, [filteredLancamentos]);
 
@@ -211,7 +175,6 @@ const LancamentosFinanceiros: React.FC = () => {
   };
 
   const handleNewLancamentoClick = () => {
-    console.log("🆕 Criando novo lançamento");
     setEditingItem(null);
     setActiveTab("formulario");
   };
@@ -291,14 +254,7 @@ const LancamentosFinanceiros: React.FC = () => {
               <span className="ml-2 text-gray-600">Carregando lançamentos...</span>
             </div>
           ) : (
-            <>
-              {console.log("🔍 Renderizando tabela com:", {
-                paginatedData: paginatedData.length,
-                filteredData: filteredData.length,
-                filteredLancamentos: filteredLancamentos.length,
-                isLoading
-              })}
-              <LancamentosTable
+            <LancamentosTable
                 data={paginatedData}
                 totalItems={filteredData.length}
                 currentPage={currentPage}
@@ -323,7 +279,6 @@ const LancamentosFinanceiros: React.FC = () => {
             createLancamento={createLancamentoMutation}
             updateLancamento={updateLancamentoMutation}
           />
-          <LancamentosDebug />
         </TabsContent>
       </Tabs>
 

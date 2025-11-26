@@ -44,9 +44,10 @@ export const useLancamentosFormSubmit = ({
           tipo: formData.tipo,
           categoria: formData.categoria,
           valor: valorNumerico,
+          descricao: formData.observacoes?.trim() || `${formData.tipo} - ${formData.categoria}`,
           cliente_id: formData.cliente_id || null,
           fornecedor_id: formData.fornecedor_id || null,
-          observacoes: formData.observacoes.trim() || null,
+          observacoes: formData.observacoes?.trim() || null,
         };
 
         await updateLancamento.mutateAsync(updateData);
@@ -72,24 +73,21 @@ export const useLancamentosFormSubmit = ({
           meses_recorrencia: formData.meses_recorrencia || null,
         };
 
-        console.log("🚀 Criando novo lançamento com dados:", lancamentoData);
-
         // Se for recorrente, usar função especial
         if (formData.recorrente && formData.meses_recorrencia && formData.meses_recorrencia > 0) {
           await criarLancamentosRecorrentes(lancamentoData, formData.meses_recorrencia);
           toast({
-            title: "Sucesso!",
-            description: `Lançamento recorrente criado com sucesso! Serão criados ${formData.meses_recorrencia} lançamentos mensais.`,
+            title: "✅ Lançamentos Recorrentes Criados!",
+            description: `${formData.meses_recorrencia} lançamentos mensais foram criados com sucesso.`,
+            duration: 5000,
           });
         } else {
-          console.log("🚀 Enviando lançamento para criação:", lancamentoData);
           await createLancamento.mutateAsync(lancamentoData);
-          console.log("✅ Lançamento criado com sucesso!");
           
           toast({
-            title: "✅ Lançamento Salvo com Sucesso!",
-            description: `${formData.tipo === 'receita' ? 'Receita' : 'Despesa'} de ${formData.categoria} no valor de R$ ${valorNumerico.toFixed(2).replace('.', ',')} foi registrada com sucesso.`,
-            duration: 5000,
+            title: "✅ Lançamento Salvo!",
+            description: `${formData.tipo === 'receita' ? 'Receita' : 'Despesa'} de ${formData.categoria} no valor de R$ ${valorNumerico.toFixed(2).replace('.', ',')} foi registrada.`,
+            duration: 4000,
           });
         }
       }

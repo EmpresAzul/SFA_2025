@@ -34,22 +34,13 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
     field: keyof FormData,
     value: string | boolean | number | null,
   ) => {
-    console.log("FormFields: Atualizando campo", field, "com valor:", value);
-    setFormData((prev) => {
-      const updated = { ...prev, [field]: value };
-      console.log("FormFields: Estado atualizado:", updated);
-      return updated;
-    });
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleCurrencyChange = (
     numericValue: number,
     formattedValue: string,
   ) => {
-    console.log("FormFields: Valor monetário atualizado:", {
-      numericValue,
-      formattedValue,
-    });
     // Armazenar como string formatada para manter consistência na exibição
     handleInputChange("valor", formattedValue);
   };
@@ -63,12 +54,6 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
 
   // Converter valor para número para o componente de currency
   const valorNumerico = parseStringToNumber(formData.valor);
-  console.log(
-    "FormFields: Valor atual do formulário:",
-    formData.valor,
-    "convertido para:",
-    valorNumerico,
-  );
 
   return (
     <div className="space-y-6">

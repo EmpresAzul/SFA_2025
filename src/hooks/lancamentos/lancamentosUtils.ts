@@ -48,8 +48,6 @@ export const criarLancamentosRecorrentes = async (
     throw erroLancamentoPrincipal;
   }
 
-  console.log("Lançamento principal criado:", lancamentoPrincipal);
-
   // Criar os lançamentos futuros
   for (let i = 1; i <= mesesRecorrencia; i++) {
     const dataFutura = addMonths(dataInicial, i);
@@ -68,14 +66,9 @@ export const criarLancamentosRecorrentes = async (
       .insert(lancamentosParaCriar);
 
     if (erroLancamentosFuturos) {
-      console.error(
-        "Erro ao criar lançamentos futuros:",
-        erroLancamentosFuturos,
-      );
+      console.error("❌ Erro ao criar lançamentos futuros:", erroLancamentosFuturos.message);
       throw erroLancamentosFuturos;
     }
-
-    console.log(`${lancamentosParaCriar.length} lançamentos futuros criados`);
   }
 
   return lancamentoPrincipal;

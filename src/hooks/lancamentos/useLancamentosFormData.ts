@@ -55,7 +55,6 @@ export const useLancamentosFormData = (
       meses_recorrencia: lancamento.meses_recorrencia || null,
     };
 
-    console.log("📝 Carregando dados do lançamento para edição:", loadedData);
     setFormData(loadedData);
   }, []);
 
@@ -74,10 +73,8 @@ export const useLancamentosFormData = (
   // Efeito para carregar dados quando editingLancamento mudar
   React.useEffect(() => {
     if (editingLancamento) {
-      console.log("📝 Carregando dados para edição:", editingLancamento);
       loadFormData(editingLancamento);
     } else {
-      console.log("🆕 Resetando formulário para novo lançamento");
       resetForm();
     }
   }, [editingLancamento, loadFormData, resetForm]);

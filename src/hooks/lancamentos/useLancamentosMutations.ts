@@ -22,11 +22,6 @@ export const useLancamentosMutations = () => {
   const useCreate = () => {
     return useMutation({
       mutationFn: async (lancamentoData: LancamentoCreateData) => {
-        console.log(
-          "useLancamentosMutations: Criando lançamento:",
-          lancamentoData,
-        );
-
         // Validar dados obrigatórios
         if (
           !lancamentoData.data ||
@@ -41,7 +36,7 @@ export const useLancamentosMutations = () => {
           throw new Error("User ID é obrigatório");
         }
 
-        // Lançamento simples - preparar dados corretamente
+        // Preparar dados para inserção
         const insertData = {
           data: lancamentoData.data,
           tipo: lancamentoData.tipo,
@@ -57,8 +52,6 @@ export const useLancamentosMutations = () => {
           meses_recorrencia: lancamentoData.meses_recorrencia || null,
         };
 
-        console.log("📦 Dados preparados para inserção:", insertData);
-
         const { data, error } = await supabase
           .from("lancamentos")
           .insert([insertData])
@@ -66,17 +59,9 @@ export const useLancamentosMutations = () => {
           .single();
 
         if (error) {
-          console.error(
-            "useLancamentosMutations: Erro ao criar lançamento:",
-            error,
-          );
+          console.error("❌ Erro ao criar lançamento:", error.message);
           throw error;
         }
-
-        console.log(
-          "useLancamentosMutations: Lançamento criado com sucesso:",
-          data,
-        );
 
         // Criar notificação para transações de alto valor
         if (user?.id && shouldNotify('large_transaction', data, user.id)) {
@@ -91,7 +76,6 @@ export const useLancamentosMutations = () => {
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
-        console.log("✅ useLancamentosMutations: Lançamento criado e queries invalidadas");
         
         // Log security event for data creation
         logDataModification("lancamentos", "INSERT", data.id, {
@@ -101,10 +85,7 @@ export const useLancamentosMutations = () => {
         });
       },
       onError: (error: unknown) => {
-        console.error(
-          "useLancamentosMutations: Erro na mutation de criação:",
-          error,
-        );
+        console.error("❌ Erro ao criar lançamento:", error);
       },
     });
   };
@@ -112,15 +93,6 @@ export const useLancamentosMutations = () => {
   const useUpdate = () => {
     return useMutation({
       mutationFn: async ({ id, ...updateData }: LancamentoUpdateData) => {
-        console.log(
-          "useLancamentosMutations: Iniciando atualização do lançamento ID:",
-          id,
-        );
-        console.log(
-          "useLancamentosMutations: Dados recebidos para atualização:",
-          updateData,
-        );
-
         if (!id) {
           throw new Error("ID do lançamento é obrigatório para atualização");
         }
@@ -132,13 +104,10 @@ export const useLancamentosMutations = () => {
           user_id,
           status,
           lancamento_pai_id,
+          recorrente,
+          meses_recorrencia,
           ...dataToUpdate
         } = updateData;
-
-        console.log(
-          "useLancamentosMutations: Dados limpos para atualização:",
-          dataToUpdate,
-        );
 
         const { data, error } = await supabase
           .from("lancamentos")
@@ -147,36 +116,22 @@ export const useLancamentosMutations = () => {
           .select(
             `
             *,
-            cliente:cadastros!cliente_id(nome),
-            fornecedor:cadastros!fornecedor_id(nome)
+            cliente:cadastros!cliente_id(id, nome),
+            fornecedor:cadastros!fornecedor_id(id, nome)
           `,
           )
           .single();
 
         if (error) {
-          console.error(
-            "useLancamentosMutations: Erro ao atualizar lançamento:",
-            error,
-          );
-          console.error("useLancamentosMutations: Detalhes do erro:", {
-            message: error.message,
-            details: error.details,
-            hint: error.hint,
-            code: error.code,
-          });
+          console.error("❌ Erro ao atualizar lançamento:", error.message);
           throw error;
         }
 
-        console.log(
-          "useLancamentosMutations: Lançamento atualizado com sucesso:",
-          data,
-        );
         return data;
       },
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
-        console.log("✅ useLancamentosMutations: Lançamento atualizado e queries invalidadas");
         
         // Log security event for data update
         logDataModification("lancamentos", "UPDATE", data.id, {
@@ -201,22 +156,15 @@ export const useLancamentosMutations = () => {
   const useDelete = () => {
     return useMutation({
       mutationFn: async (id: string) => {
-        console.log("useLancamentosMutations: Excluindo lançamento:", id);
-
         const { error } = await supabase
           .from("lancamentos")
           .delete()
           .eq("id", id);
 
         if (error) {
-          console.error(
-            "useLancamentosMutations: Erro ao excluir lançamento:",
-            error,
-          );
+          console.error("❌ Erro ao excluir lançamento:", error.message);
           throw error;
         }
-
-        console.log("useLancamentosMutations: Lançamento excluído com sucesso");
       },
       onSuccess: (_data, id) => {
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
@@ -234,10 +182,7 @@ export const useLancamentosMutations = () => {
         });
       },
       onError: (error: unknown) => {
-        console.error(
-          "useLancamentosMutations: Erro ao excluir lançamento:",
-          error,
-        );
+        console.error("❌ Erro ao excluir lançamento:", error);
         const errorMessage = error instanceof Error ? error.message : "Erro ao excluir lançamento. Tente novamente.";
         toast({
           title: "Erro",

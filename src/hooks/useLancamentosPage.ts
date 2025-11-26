@@ -24,13 +24,6 @@ export const useLancamentosPage = () => {
   } = useLancamentos();
   
   const { data: lancamentos, isLoading, error } = useLancamentosQuery();
-  
-  console.log("🔍 useLancamentosPage: Estado atual:", {
-    lancamentos: lancamentos?.length || 0,
-    isLoading,
-    error: error?.message,
-    user: user?.id
-  });
 
   const createLancamento = useCreate();
   const updateLancamento = useUpdate();
@@ -43,25 +36,20 @@ export const useLancamentosPage = () => {
   const fornecedores = allCadastros.filter((item: any) => item.tipo === "Fornecedor");
 
   useEffect(() => {
-    console.log("🔄 useLancamentosPage: Atualizando lançamentos filtrados");
     if (lancamentos) {
-      console.log("📋 useLancamentosPage: Lançamentos recebidos:", lancamentos.length);
-      setFilteredLancamentos(lancamentos); // Mostrar todos os lançamentos inicialmente
+      setFilteredLancamentos(lancamentos);
       filterLancamentos();
     } else {
-      console.log("⚠️ useLancamentosPage: Nenhum lançamento encontrado");
       setFilteredLancamentos([]);
     }
   }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
 
   const filterLancamentos = () => {
     if (!lancamentos || lancamentos.length === 0) {
-      console.log("⚠️ filterLancamentos: Nenhum lançamento para filtrar");
       setFilteredLancamentos([]);
       return;
     }
 
-    console.log("🔍 filterLancamentos: Aplicando filtros aos", lancamentos.length, "lançamentos");
     let filtered: Lancamento[] = [...lancamentos];
 
     if (searchTerm && searchTerm.trim()) {
@@ -93,12 +81,10 @@ export const useLancamentosPage = () => {
       );
     }
 
-    console.log("✅ filterLancamentos: Resultado filtrado:", filtered.length, "lançamentos");
     setFilteredLancamentos(filtered);
   };
 
   const handleEdit = (lancamento: Lancamento) => {
-    console.log("Editando lançamento:", lancamento);
     setEditingLancamento(lancamento);
     setActiveTab("formulario");
   };

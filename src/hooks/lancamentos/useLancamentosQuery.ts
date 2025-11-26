@@ -13,40 +13,20 @@ export const useLancamentosQuery = () => {
         throw new Error("Usuário não autenticado");
       }
 
-      console.log("🔍 useLancamentosQuery: Iniciando busca de lançamentos para usuário:", session.user.id);
-
-      // Primeiro, vamos buscar todos os lançamentos sem joins para debug
-      const { data: allLancamentos, error: simpleError } = await supabase
-        .from("lancamentos")
-        .select("*")
-        .eq("user_id", session.user.id);
-
-      console.log("📊 useLancamentosQuery: Lançamentos simples encontrados:", allLancamentos?.length || 0);
-      if (allLancamentos && allLancamentos.length > 0) {
-        console.log("📋 useLancamentosQuery: Primeiros lançamentos:", allLancamentos.slice(0, 3));
-      }
-
-      // Buscar lançamentos sem joins por enquanto para garantir que funcionem
+      // Buscar lançamentos com joins opcionais para clientes e fornecedores
       const { data, error } = await supabase
         .from("lancamentos")
-        .select("*")
+        .select(`
+          *,
+          cliente:cadastros!cliente_id(id, nome),
+          fornecedor:cadastros!fornecedor_id(id, nome)
+        `)
         .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false });
+        .order("data", { ascending: false });
 
       if (error) {
-        console.error("❌ useLancamentosQuery: Erro ao buscar lançamentos:", error);
-        console.error("🔍 useLancamentosQuery: Detalhes do erro:", {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code,
-        });
+        console.error("❌ Erro ao buscar lançamentos:", error.message);
         throw error;
-      }
-
-      console.log("✅ useLancamentosQuery: Lançamentos com joins encontrados:", data?.length || 0);
-      if (data && data.length > 0) {
-        console.log("📋 useLancamentosQuery: Primeiros 3 lançamentos com joins:", data.slice(0, 3));
       }
 
       return data as LancamentoComRelacoes[];

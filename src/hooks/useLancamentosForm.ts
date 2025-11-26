@@ -25,12 +25,6 @@ export const useLancamentosForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(
-      "useLancamentosForm: Submetendo formulário com dados:",
-      formData,
-    );
-    console.log("useLancamentosForm: Modo edição:", !!editingLancamento);
-
     const validation = validateForm(formData);
     if (!validation.isValid || !validation.valorNumerico) {
       return;
@@ -45,7 +39,6 @@ export const useLancamentosForm = ({
   };
 
   const handleCancel = () => {
-    console.log("useLancamentosForm: Cancelando edição/criação");
     resetForm();
     setEditingLancamento(null);
     setActiveTab("lista");

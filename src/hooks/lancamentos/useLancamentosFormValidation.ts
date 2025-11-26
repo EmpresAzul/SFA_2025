@@ -7,8 +7,6 @@ export const useLancamentosFormValidation = () => {
   const { toast } = useToast();
 
   const validateForm = (formData: LancamentoFormData) => {
-    console.log("Validando formulário:", formData);
-
     // Validar campos obrigatórios
     if (!formData.data) {
       toast({
@@ -71,7 +69,6 @@ export const useLancamentosFormValidation = () => {
       }
     }
 
-    console.log("Formulário válido. Valor numérico:", valorNumerico);
     return { isValid: true, valorNumerico };
   };
 
