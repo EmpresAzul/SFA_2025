@@ -255,17 +255,16 @@ const LancamentosFinanceiros: React.FC = () => {
             </div>
           ) : (
             <LancamentosTable
-                data={paginatedData}
-                totalItems={filteredData.length}
-                currentPage={currentPage}
-                itemsPerPage={itemsPerPage}
-                onPageChange={handlePageChange}
-                onItemsPerPageChange={handleItemsPerPageChange}
-                onView={handleView}
-                onEdit={handleEditItem}
-                onDelete={handleDeleteLancamento}
-              />
-            </>
+              data={paginatedData}
+              totalItems={filteredData.length}
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              onView={handleView}
+              onEdit={handleEditItem}
+              onDelete={handleDeleteLancamento}
+            />
           )}
         </TabsContent>
 
