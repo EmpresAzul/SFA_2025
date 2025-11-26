@@ -43,24 +43,17 @@ export const useLancamentosPage = () => {
   const fornecedores = allCadastros.filter((item: any) => item.tipo === "Fornecedor");
 
   useEffect(() => {
-    console.log("🔄 useEffect - lancamentos mudou:", lancamentos?.length || 0);
-    if (lancamentos) {
-      setFilteredLancamentos(lancamentos);
-      filterLancamentos();
-    } else {
-      console.log("⚠️ Nenhum lançamento encontrado");
-      setFilteredLancamentos([]);
-    }
-  }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
-
-  const filterLancamentos = () => {
+    console.log("🔄 useEffect - Filtrando lançamentos:", lancamentos?.length || 0);
+    
     if (!lancamentos || lancamentos.length === 0) {
+      console.log("⚠️ Nenhum lançamento para filtrar");
       setFilteredLancamentos([]);
       return;
     }
 
     let filtered: Lancamento[] = [...lancamentos];
 
+    // Aplicar filtro de busca
     if (searchTerm && searchTerm.trim()) {
       filtered = filtered.filter(
         (lancamento) =>
@@ -78,19 +71,27 @@ export const useLancamentosPage = () => {
       );
     }
 
+    // Aplicar filtro de tipo
     if (tipoFilter !== "todos") {
       filtered = filtered.filter(
         (lancamento) => lancamento.tipo === tipoFilter,
       );
     }
 
+    // Aplicar filtro de categoria
     if (categoriaFilter !== "todas") {
       filtered = filtered.filter(
         (lancamento) => lancamento.categoria === categoriaFilter,
       );
     }
 
+    console.log("✅ Lançamentos filtrados:", filtered.length);
     setFilteredLancamentos(filtered);
+  }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
+
+  const filterLancamentos = () => {
+    // Função mantida para compatibilidade, mas não é mais usada
+    console.log("⚠️ filterLancamentos() chamada - usar useEffect ao invés");
   };
 
   const handleEdit = (lancamento: Lancamento) => {
