@@ -162,24 +162,22 @@ export const useProdutoForm = (
 
       const dadosPrecificacao = {
         nome: produtoData.nome,
-        categoria: produtoData.categoria, // Será movido para dados_json no hook usePrecificacao
         tipo: "Produto" as const,
         preco_venda: precoFinal,
-        preco_final: precoFinal,
         margem_lucro: produtoData.margemLucro,
         custo_materia_prima: custoTotal,
-        dados_json: JSON.parse(
-          JSON.stringify({
-            categoria: produtoData.categoria,
-            custos_materiais: custosSerializados,
-            taxas_adicionais: taxasSerializadas,
-            custo_total: custoTotal,
-            total_taxas_percentual: totalTaxasPercentual,
-            percentual_total: percentualTotal,
-            lucro_valor: lucroValor,
-            valor_taxas: valorTaxas,
-          }),
-        ),
+        custo_mao_obra: 0,
+        despesas_fixas: 0,
+        dados_json: {
+          categoria: produtoData.categoria,
+          custos_materiais: custosSerializados,
+          taxas_adicionais: taxasSerializadas,
+          custo_total: custoTotal,
+          total_taxas_percentual: totalTaxasPercentual,
+          percentual_total: percentualTotal,
+          lucro_valor: lucroValor,
+          valor_taxas: valorTaxas,
+        },
       };
 
       if (editingItem) {

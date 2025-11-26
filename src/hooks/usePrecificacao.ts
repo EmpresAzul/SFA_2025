@@ -32,19 +32,11 @@ export const usePrecificacao = () => {
     return useQuery({
       queryKey: ["precificacao"],
       queryFn: async () => {
-        console.log("🔍 Buscando dados de precificação...");
-
-        // Obter o usuário atual
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {
-          console.log("❌ Usuário não autenticado na query");
           return [];
         }
-
-        console.log("👤 Usuário autenticado na query:", user.id);
 
         const { data, error } = await supabase
           .from("precificacao")
@@ -53,20 +45,10 @@ export const usePrecificacao = () => {
           .order("created_at", { ascending: false });
 
         if (error) {
-          console.error("❌ Erro ao buscar precificação:", error);
-          console.error("❌ Detalhes do erro:", {
-            message: error.message,
-            details: error.details,
-            hint: error.hint,
-            code: error.code,
-          });
-          throw error;
+          console.error("❌ Erro ao buscar precificação:", error.message);
+          return [];
         }
 
-        console.log("✅ Dados de precificação carregados:", data?.length || 0, "itens");
-        if (data && data.length > 0) {
-          console.log("📋 Primeiros itens:", data.slice(0, 3));
-        }
         return data as Precificacao[];
       },
     });
@@ -75,35 +57,23 @@ export const usePrecificacao = () => {
   const useCreate = () => {
     return useMutation({
       mutationFn: async (data: PrecificacaoInsert) => {
-        console.log("🚀 MUTATION CREATE - Iniciando criação de item:", data);
+        console.log("🚀 Criando item de precificação:", data);
 
         // Garantir que o user_id está presente
         if (!data.user_id) {
-          console.log("⚠️ user_id não fornecido, buscando...");
-          const {
-            data: { user },
-          } = await supabase.auth.getUser();
+          const { data: { user } } = await supabase.auth.getUser();
           if (!user) {
-            console.log("❌ Usuário não autenticado na mutation create");
             throw new Error("Usuário não autenticado");
           }
           data.user_id = user.id;
-          console.log("✅ user_id definido:", user.id);
         }
 
-        // Garantir que preco_venda seja definido
-        if (!data.preco_venda && data.preco_final) {
-          data.preco_venda = data.preco_final;
-        } else if (!data.preco_venda) {
-          data.preco_venda = 0;
-        }
-
-        // Garantir que campos obrigatórios estejam presentes
+        // Preparar dados para inserção
         const dadosLimpos = {
           user_id: data.user_id,
           nome: data.nome,
           tipo: data.tipo,
-          preco_venda: data.preco_venda,
+          preco_venda: data.preco_venda || 0,
           custo_materia_prima: data.custo_materia_prima || 0,
           custo_mao_obra: data.custo_mao_obra || 0,
           despesas_fixas: data.despesas_fixas || 0,
@@ -112,15 +82,7 @@ export const usePrecificacao = () => {
           observacoes: data.observacoes || null,
         };
 
-        // Adicionar categoria aos dados_json se fornecida
-        if (data.categoria) {
-          dadosLimpos.dados_json = {
-            ...dadosLimpos.dados_json,
-            categoria: data.categoria,
-          };
-        }
-
-        console.log("📦 Dados limpos para inserir:", dadosLimpos);
+        console.log("📦 Inserindo:", dadosLimpos);
 
         const { data: result, error } = await supabase
           .from("precificacao")
@@ -129,29 +91,19 @@ export const usePrecificacao = () => {
           .single();
 
         if (error) {
-          console.error("❌ Erro no Supabase ao criar precificação:", error);
-          console.error("❌ Detalhes do erro:", {
-            message: error.message,
-            details: error.details,
-            hint: error.hint,
-            code: error.code,
-          });
+          console.error("❌ Erro ao criar:", error.message);
           throw error;
         }
 
-        console.log("✅ Item de precificação criado com sucesso:", result);
+        console.log("✅ Item criado:", result);
         return result;
       },
-      onSuccess: (data) => {
-        console.log("🎉 Mutation CREATE bem-sucedida, invalidando queries...");
+      onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["precificacao"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
-        console.log("✅ Queries invalidadas após criação");
-        
-        // Não mostrar toast aqui pois já é mostrado nos componentes específicos
       },
       onError: (error) => {
-        console.error("💥 Erro na mutation de criação:", error);
+        console.error("❌ Erro ao criar:", error);
       },
     });
   };
