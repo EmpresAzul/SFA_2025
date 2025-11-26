@@ -52,7 +52,7 @@ export const useLancamentosMutations = () => {
           fornecedor_id: lancamentoData.fornecedor_id || null,
           observacoes: lancamentoData.observacoes || null,
           user_id: lancamentoData.user_id,
-          status: lancamentoData.status || 'ativo',
+          status: lancamentoData.status || 'confirmado',
           recorrente: lancamentoData.recorrente || false,
           meses_recorrencia: lancamentoData.meses_recorrencia || null,
         };

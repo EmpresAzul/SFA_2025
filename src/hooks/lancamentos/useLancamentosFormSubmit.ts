@@ -67,7 +67,7 @@ export const useLancamentosFormSubmit = ({
           fornecedor_id: formData.fornecedor_id || null,
           observacoes: formData.observacoes?.trim() || null,
           user_id: user.id,
-          status: "ativo",
+          status: "confirmado",
           recorrente: formData.recorrente || false,
           meses_recorrencia: formData.meses_recorrencia || null,
         };
