@@ -192,16 +192,15 @@ const PrecificacaoPage: React.FC = () => {
             </div>
           ) : (
             <PrecificacaoTable
-                data={paginatedData}
-                totalItems={filteredData.length}
-                currentPage={currentPage}
-                itemsPerPage={itemsPerPage}
-                onPageChange={handlePageChange}
-                onItemsPerPageChange={handleItemsPerPageChange}
-                onView={handleView}
-                onEdit={handleEdit}
-              />
-            </>
+              data={paginatedData}
+              totalItems={filteredData.length}
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              onView={handleView}
+              onEdit={handleEdit}
+            />
           )}
         </TabsContent>
 
