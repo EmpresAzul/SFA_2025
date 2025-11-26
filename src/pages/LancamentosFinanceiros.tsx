@@ -6,6 +6,7 @@ import LancamentosTable from "@/components/lancamentos/LancamentosTable";
 import LancamentosSummaryCards from "@/components/lancamentos/LancamentosSummaryCards";
 import LancamentosForm from "@/components/lancamentos/LancamentosForm";
 import LancamentosViewModal from "@/components/lancamentos/LancamentosViewModal";
+import { LancamentosDebug } from "@/components/lancamentos/LancamentosDebug";
 import { List, Plus, DollarSign, TrendingUp, TrendingDown } from "lucide-react";
 import type { Lancamento } from "@/hooks/useLancamentos";
 
@@ -322,6 +323,7 @@ const LancamentosFinanceiros: React.FC = () => {
             createLancamento={createLancamentoMutation}
             updateLancamento={updateLancamentoMutation}
           />
+          <LancamentosDebug />
         </TabsContent>
       </Tabs>
 
