@@ -228,25 +228,24 @@ const LoginForm: React.FC = () => {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
       
       <div className="relative z-10 w-full max-w-md px-4">
-        {/* Logo com Glassmorphism Premium */}
-        <div className="mb-4 text-center animate-fade-in">
-          <div className="inline-block p-6 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:shadow-[0_0_40px_rgba(54,118,220,0.3)] transition-all duration-500 hover:scale-105">
+        {/* Card Unificado com Logo e Formulário */}
+        <Card className="bg-white/10 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/20 overflow-hidden rounded-3xl animate-slide-up">
+          {/* Logo no topo do card */}
+          <div className="pt-8 pb-6 text-center border-b border-white/10">
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
               <span className="text-white drop-shadow-[0_2px_15px_rgba(255,255,255,0.4)]">FLUXO</span>
               <span className="drop-shadow-[0_2px_15px_rgba(54,118,220,0.6)]" style={{ color: '#3676DC' }}>AZUL</span>
             </h1>
-            <div className="h-1 w-20 mx-auto bg-gradient-to-r from-white via-[#3676DC] to-white rounded-full opacity-60 mt-2"></div>
+            <div className="h-1 w-20 mx-auto bg-gradient-to-r from-white via-[#3676DC] to-white rounded-full opacity-60 mt-3"></div>
           </div>
-        </div>
 
-        {/* Card com Glassmorphism Ultra Premium */}
-        <Card className="bg-gray-50/95 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/30 overflow-hidden rounded-3xl animate-slide-up">
+          {/* Formulário */}
           <div className="p-8">
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
                 <Label
                   htmlFor="email"
-                  className="text-gray-800 font-semibold text-sm flex items-center gap-2"
+                  className="text-white font-semibold text-sm flex items-center gap-2"
                 >
                   <span className="w-1.5 h-1.5 bg-[#3676DC] rounded-full"></span>
                   E-mail
@@ -270,7 +269,7 @@ const LoginForm: React.FC = () => {
               <div className="space-y-2">
                 <Label
                   htmlFor="password"
-                  className="text-gray-800 font-semibold text-sm flex items-center gap-2"
+                  className="text-white font-semibold text-sm flex items-center gap-2"
                 >
                   <span className="w-1.5 h-1.5 bg-[#3676DC] rounded-full"></span>
                   Senha
@@ -347,8 +346,7 @@ const LoginForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-sm font-bold hover:underline transition-all duration-200 hover:scale-105 inline-block"
-                style={{ color: '#3676DC' }}
+                className="text-sm font-bold text-white/90 hover:text-white hover:underline transition-all duration-200 hover:scale-105 inline-block"
               >
                 Esqueci minha senha
               </button>
