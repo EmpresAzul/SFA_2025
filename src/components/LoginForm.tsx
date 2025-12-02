@@ -215,31 +215,41 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#0f2847] to-[#1a2847]">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent transform rotate-12 scale-150"></div>
-        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-indigo-500/20 to-transparent transform -rotate-12 scale-150"></div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#1a3a5c] to-[#3676DC]">
+      {/* Animated Background Orbs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-blue-500/20 to-transparent rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-indigo-500/20 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl animate-float-delayed"></div>
       </div>
+
+      {/* Grid Pattern Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
       
       <div className="relative z-10 w-full max-w-md px-4">
-        <Card className="bg-white shadow-2xl border-0 overflow-hidden rounded-lg">
-          {/* Header com logo */}
-          <div className="bg-white p-6 text-center">
-            <div className="mb-4">
-              <h1 className="text-4xl font-black bg-gradient-to-r from-[#0f2847] via-[#1a2847] to-[#1e3a8a] bg-clip-text text-transparent uppercase tracking-wide">
-                FLUXOAZUL
-              </h1>
-            </div>
+        {/* Logo com Glassmorphism Premium */}
+        <div className="mb-8 text-center animate-fade-in">
+          <div className="inline-block p-8 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:shadow-[0_0_40px_rgba(54,118,220,0.3)] transition-all duration-500 hover:scale-105">
+            <h1 className="text-5xl sm:text-6xl font-bold tracking-tight mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              <span className="text-white drop-shadow-[0_2px_15px_rgba(255,255,255,0.4)]">FLUXO</span>
+              <span className="drop-shadow-[0_2px_15px_rgba(54,118,220,0.6)]" style={{ color: '#3676DC' }}>AZUL</span>
+            </h1>
+            <div className="h-1 w-24 mx-auto bg-gradient-to-r from-white via-[#3676DC] to-white rounded-full opacity-60"></div>
+            <p className="text-white/90 text-sm mt-3 font-semibold tracking-wide">Sistema de Gestão Financeira</p>
           </div>
+        </div>
 
-          <div className="px-6 pb-6">
-            <form onSubmit={handleLogin} className="space-y-4">
+        {/* Card com Glassmorphism Ultra Premium */}
+        <Card className="bg-white/95 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/30 overflow-hidden rounded-3xl animate-slide-up">
+          <div className="p-8">
+            <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
                 <Label
                   htmlFor="email"
-                  className="text-gray-700 font-medium text-sm"
+                  className="text-gray-800 font-semibold text-sm flex items-center gap-2"
                 >
+                  <span className="w-1.5 h-1.5 bg-[#3676DC] rounded-full"></span>
                   E-mail
                 </Label>
                 <Input
@@ -247,11 +257,11 @@ const LoginForm: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={handleEmailChange}
-                  placeholder="Digite seu e-mail"
+                  placeholder="seu@email.com"
                   required
-                  className={`h-11 border-2 bg-white text-gray-900 placeholder:text-gray-500 ${
+                  className={`h-12 border-2 bg-white/80 backdrop-blur-sm text-gray-900 placeholder:text-gray-400 ${
                     errors.email ? "border-red-500" : "border-gray-200"
-                  } focus:border-blue-500 transition-all duration-200 rounded-lg`}
+                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-300 rounded-xl shadow-sm hover:shadow-md`}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm">{errors.email}</p>
@@ -261,8 +271,9 @@ const LoginForm: React.FC = () => {
               <div className="space-y-2">
                 <Label
                   htmlFor="password"
-                  className="text-gray-700 font-medium text-sm"
+                  className="text-gray-800 font-semibold text-sm flex items-center gap-2"
                 >
+                  <span className="w-1.5 h-1.5 bg-[#3676DC] rounded-full"></span>
                   Senha
                 </Label>
                 <div className="relative">
@@ -271,18 +282,18 @@ const LoginForm: React.FC = () => {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={handlePasswordChange}
-                    placeholder="Digite sua senha"
+                    placeholder="••••••••"
                     required
-                    className={`h-11 border-2 bg-white text-gray-900 placeholder:text-gray-500 ${
+                    className={`h-12 border-2 bg-white/80 backdrop-blur-sm text-gray-900 placeholder:text-gray-400 ${
                       errors.password ? "border-red-500" : "border-gray-200"
-                    } focus:border-blue-500 transition-all duration-200 rounded-lg pr-12`}
+                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-300 rounded-xl pr-12 shadow-sm hover:shadow-md`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-600 transition-colors"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#3676DC] transition-all duration-200 hover:scale-110"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
                 {errors.password && (
@@ -310,21 +321,22 @@ const LoginForm: React.FC = () => {
                 </div>
               )}
 
-              <div className="pt-2">
+              <div className="pt-4">
                 <Button
                   type="submit"
                   disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
-                  className="w-full h-11 bg-gradient-to-r from-[#0a1628] via-[#0f2847] to-[#1a2847] hover:from-[#0f2847] hover:via-[#1a2847] hover:to-[#1e3a8a] text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full h-14 bg-gradient-to-r from-[#1a3a5c] via-[#3676DC] to-[#4a8ef5] hover:from-[#3676DC] hover:via-[#4a8ef5] hover:to-[#5a9eff] text-white font-bold rounded-xl shadow-lg hover:shadow-2xl hover:shadow-[#3676DC]/50 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-base relative overflow-hidden group"
                 >
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                   {loading ? (
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
-                      <span>Entrando...</span>
+                    <div className="flex items-center justify-center space-x-3 relative z-10">
+                      <div className="animate-spin rounded-full h-5 w-5 border-3 border-white/30 border-t-white"></div>
+                      <span className="font-bold">Entrando...</span>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center space-x-2">
-                      <LogIn size={18} />
-                      <span>Entrar no Sistema</span>
+                    <div className="flex items-center justify-center space-x-3 relative z-10">
+                      <LogIn size={22} className="group-hover:rotate-12 transition-transform duration-300" />
+                      <span className="font-bold tracking-wide">Entrar no Sistema</span>
                     </div>
                   )}
                 </Button>
@@ -332,49 +344,92 @@ const LoginForm: React.FC = () => {
             </form>
 
             {/* Forgot Password Link */}
-            <div className="mt-4 text-center">
+            <div className="mt-6 text-center">
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-sm text-blue-600 hover:text-blue-700 transition-colors underline font-medium"
+                className="text-sm font-bold hover:underline transition-all duration-200 hover:scale-105 inline-block"
+                style={{ color: '#3676DC' }}
               >
                 Esqueci minha senha
               </button>
             </div>
 
             {/* Footer */}
-            <div className="mt-6 pt-4 border-t border-gray-200 text-center">
-              <p className="text-gray-500 text-xs">
-                © 2025 FLUXOAZUL. Todos os direitos reservados.
+            <div className="mt-8 pt-6 border-t border-gray-200/50 text-center">
+              <p className="text-gray-600 text-xs font-medium">
+                © 2025 <span className="font-bold" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                  <span className="text-gray-800">FLUXO</span><span style={{ color: '#3676DC' }}>AZUL</span>
+                </span>
+                <br className="sm:hidden" />
+                <span className="hidden sm:inline"> • </span>
+                Todos os direitos reservados
               </p>
             </div>
           </div>
         </Card>
       </div>
 
-      {/* Forgot Password Dialog */}
+      {/* Animações CSS */}
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          50% { transform: translateY(-20px) translateX(10px); }
+        }
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          50% { transform: translateY(20px) translateX(-10px); }
+        }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slide-up {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float-delayed 8s ease-in-out infinite;
+        }
+        .animate-fade-in {
+          animation: fade-in 0.8s ease-out;
+        }
+        .animate-slide-up {
+          animation: slide-up 0.8s ease-out 0.2s both;
+        }
+      `}</style>
+
+      {/* Forgot Password Dialog com Glassmorphism */}
       <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
-        <DialogContent className="sm:max-w-md bg-white">
+        <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-xl border border-white/30 shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-gray-900">Recuperar Senha</DialogTitle>
-            <DialogDescription className="text-gray-600">
+            <DialogTitle className="text-gray-900 text-xl font-bold" style={{ fontFamily: 'Poppins, sans-serif' }}>
+              Recuperar Senha
+            </DialogTitle>
+            <DialogDescription className="text-gray-600 font-medium">
               Digite seu email para receber o link de redefinição de senha
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleForgotPassword} className="space-y-4">
+          <form onSubmit={handleForgotPassword} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="reset-email" className="text-gray-700 font-medium">Email</Label>
+              <Label htmlFor="reset-email" className="text-gray-800 font-semibold flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-[#3676DC] rounded-full"></span>
+                Email
+              </Label>
               <Input
                 id="reset-email"
                 type="email"
                 placeholder="seu@email.com"
                 value={resetEmail}
                 onChange={(e) => setResetEmail(sanitizeSecurityInput(e.target.value.trim()))}
-                className="h-11 border-2 border-gray-200 focus:border-blue-500"
+                className="h-12 border-2 border-gray-200 focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 rounded-xl transition-all duration-300"
                 disabled={resetLoading}
               />
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 pt-2">
               <Button
                 type="button"
                 variant="outline"
@@ -382,14 +437,14 @@ const LoginForm: React.FC = () => {
                   setShowForgotPassword(false);
                   setResetEmail("");
                 }}
-                className="flex-1 h-11 border-2"
+                className="flex-1 h-12 border-2 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200"
                 disabled={resetLoading}
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
-                className="flex-1 h-11 bg-gradient-to-r from-[#0a1628] via-[#0f2847] to-[#1a2847] hover:from-[#0f2847] hover:via-[#1a2847] hover:to-[#1e3a8a] text-white"
+                className="flex-1 h-12 bg-gradient-to-r from-[#1a3a5c] via-[#3676DC] to-[#4a8ef5] hover:from-[#3676DC] hover:via-[#4a8ef5] hover:to-[#5a9eff] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                 disabled={resetLoading}
               >
                 {resetLoading ? "Enviando..." : "Enviar Link"}
