@@ -15,8 +15,8 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = "md" }) => {
   return (
     <div className={`${className} flex items-center justify-center`}>
       <div className="relative">
-        <h1 className={`${sizeClasses[size]} font-black text-blue-900`}>
-          FluxoAzul
+        <h1 className={`${sizeClasses[size]} font-black text-blue-900 uppercase tracking-wide`}>
+          FLUXOAZUL
         </h1>
       </div>
     </div>

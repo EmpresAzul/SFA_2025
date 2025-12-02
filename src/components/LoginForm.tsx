@@ -227,8 +227,8 @@ const LoginForm: React.FC = () => {
           {/* Header com logo */}
           <div className="bg-white p-6 text-center">
             <div className="mb-4">
-              <h1 className="text-4xl font-black bg-gradient-to-r from-[#0f2847] via-[#1a2847] to-[#1e3a8a] bg-clip-text text-transparent">
-                FluxoAzul
+              <h1 className="text-4xl font-black bg-gradient-to-r from-[#0f2847] via-[#1a2847] to-[#1e3a8a] bg-clip-text text-transparent uppercase tracking-wide">
+                FLUXOAZUL
               </h1>
             </div>
           </div>
@@ -345,7 +345,7 @@ const LoginForm: React.FC = () => {
             {/* Footer */}
             <div className="mt-6 pt-4 border-t border-gray-200 text-center">
               <p className="text-gray-500 text-xs">
-                © 2025 FluxoAzul. Todos os direitos reservados.
+                © 2025 FLUXOAZUL. Todos os direitos reservados.
               </p>
             </div>
           </div>

@@ -17,8 +17,8 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({ collapsed, isMobile = fal
         </div>
       ) : (
         <div className="flex items-center">
-          <div className="text-white font-bold text-lg">
-            FluxoAzul
+          <div className="text-white font-bold text-lg uppercase tracking-wide">
+            FLUXOAZUL
           </div>
         </div>
       )}

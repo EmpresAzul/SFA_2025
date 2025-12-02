@@ -22,8 +22,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
 
       {/* Logo mobile - Centered */}
       <div className="flex-1 md:hidden flex justify-center">
-        <span className="text-base sm:text-lg font-bold text-blue-600 tracking-tight">
-          FluxoAzul
+        <span className="text-base sm:text-lg font-bold text-blue-600 uppercase tracking-wide">
+          FLUXOAZUL
         </span>
       </div>
 
