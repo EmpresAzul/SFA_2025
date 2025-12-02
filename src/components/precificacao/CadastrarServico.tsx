@@ -198,29 +198,26 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
 
       const dadosPrecificacao = {
         nome: servicoData.nome,
-        categoria: servicoData.categoria, // Será movido para dados_json no hook usePrecificacao
         tipo: "Serviço" as const,
         preco_venda: precoFinal,
-        preco_final: precoFinal,
         margem_lucro: servicoData.margemLucro,
         custo_materia_prima: custoMateriais,
         custo_mao_obra: custoMaoObra,
-        dados_json: JSON.parse(
-          JSON.stringify({
-            categoria: servicoData.categoria,
-            tempo_estimado: horasNumerico,
-            valor_hora: servicoData.valorHora,
-            custo_mao_obra: custoMaoObra,
-            custos_materiais: custosMateriaisSerializados,
-            taxas_adicionais: taxasSerializadas,
-            custo_materiais_total: custoMateriais,
-            custo_total: custoTotal,
-            total_taxas_percentual: totalTaxasPercentual,
-            percentual_total: percentualTotal,
-            lucro_valor: lucroValor,
-            valor_taxas: valorTaxas,
-          }),
-        ),
+        despesas_fixas: 0,
+        dados_json: {
+          categoria: servicoData.categoria,
+          tempo_estimado: horasNumerico,
+          valor_hora: servicoData.valorHora,
+          custo_mao_obra: custoMaoObra,
+          custos_materiais: custosMateriaisSerializados,
+          taxas_adicionais: taxasSerializadas,
+          custo_materiais_total: custoMateriais,
+          custo_total: custoTotal,
+          total_taxas_percentual: totalTaxasPercentual,
+          percentual_total: percentualTotal,
+          lucro_valor: lucroValor,
+          valor_taxas: valorTaxas,
+        },
       };
 
       if (editingItem) {

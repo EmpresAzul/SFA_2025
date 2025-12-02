@@ -136,10 +136,7 @@ export const usePrecificacao = () => {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["precificacao"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
-        toast({
-          title: "Sucesso!",
-          description: "Item atualizado com êxito.",
-        });
+        // Toast é mostrado no componente específico (useProdutoForm, etc)
       },
       onError: (error) => {
         console.error("❌ Erro na mutação de atualização:", error);
