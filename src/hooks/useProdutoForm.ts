@@ -54,42 +54,40 @@ export const useProdutoForm = (
   // Preencher formulário quando estiver editando
   useEffect(() => {
     if (editingItem) {
+      const dados = editingItem.dados_json as Record<string, unknown>;
+      
       setProdutoData({
         nome: editingItem.nome || "",
-        categoria: editingItem.categoria || "",
+        categoria: (dados?.categoria as string) || editingItem.categoria || "",
         margemLucro: editingItem.margem_lucro || 30,
       });
 
       // Carregar custos se existirem
-      if (editingItem.dados_json) {
-        const dados = editingItem.dados_json as Record<string, unknown>;
-        
-        if (dados.custos_materiais) {
+      if (dados.custos_materiais) {
           const custosCarregados = (dados.custos_materiais as Array<Record<string, unknown>>).map((custo) => ({
             id: (custo.id as string) || Date.now().toString(),
             descricao: custo.descricao as string,
             valor: custo.valor as number,
           }));
           setCustos(custosCarregados);
-        }
+      }
 
-        if (dados.taxas_adicionais) {
+      if (dados.taxas_adicionais) {
           const taxasCarregadas = (dados.taxas_adicionais as Array<Record<string, unknown>>).map((taxa) => ({
             id: (taxa.id as string) || Date.now().toString(),
             descricao: taxa.descricao as string,
             percentual: taxa.percentual as number,
           }));
           setTaxasAdicionais(taxasCarregadas);
-        }
+      }
 
-        if (dados.despesas_fixas) {
+      if (dados.despesas_fixas) {
           const despesasCarregadas = (dados.despesas_fixas as Array<Record<string, unknown>>).map((despesa) => ({
             id: (despesa.id as string) || Date.now().toString(),
             descricao: despesa.descricao as string,
             valor: despesa.valor as number,
           }));
           setDespesasFixas(despesasCarregadas);
-        }
       }
     }
   }, [editingItem]);

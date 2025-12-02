@@ -64,7 +64,7 @@ const CadastrarServico: React.FC<CadastrarServicoProps> = ({
 
       setServicoData({
         nome: editingItem.nome,
-        categoria: editingItem.categoria,
+        categoria: (dados?.categoria as string) || editingItem.categoria || "",
         tempoEstimado: dados?.tempo_estimado?.toString() || "",
         valorHora: Number(dados?.valor_hora) || 0,
         margemLucro: editingItem.margem_lucro || 20,
