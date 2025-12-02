@@ -388,7 +388,7 @@ const PrecificacaoViewModal: React.FC<PrecificacaoViewModalProps> = ({
                   Preço Final
                 </label>
                 <p className="text-2xl font-bold text-green-600">
-                  {formatNumberToDisplay(item.preco_final)}
+                  {formatNumberToDisplay(item.preco_venda || item.preco_final || 0)}
                 </p>
               </div>
               {item.margem_lucro && (

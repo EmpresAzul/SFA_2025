@@ -260,21 +260,22 @@ const Inventory: React.FC = () => {
 
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold gradient-fluxo-text">
-            Controle de Estoque
+    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 flex items-center gap-2">
+            <span className="flex-shrink-0">📦</span>
+            <span className="truncate">Controle de Estoque</span>
           </h1>
-          <p className="text-fluxo-black-600 mt-1">
-            Gerencie produtos e controle seu estoque
+          <p className="text-gray-600 text-xs sm:text-sm">
+            Gerencie produtos e controle seu estoque - {items.length} produtos cadastrados
           </p>
         </div>
         <Button
           onClick={() => setShowForm(true)}
-          className="gradient-professional hover:gradient-fluxo-light text-white shadow-professional"
+          className="fluxo-btn-primary w-full sm:w-auto flex items-center justify-center gap-2"
         >
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="h-4 w-4" />
           Novo Produto
         </Button>
       </div>
