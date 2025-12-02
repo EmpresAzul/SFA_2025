@@ -85,7 +85,14 @@ export const useLancamentosPage = () => {
       );
     }
 
-    console.log("✅ Lançamentos filtrados:", filtered.length);
+    // Ordenar por data (mais recente primeiro)
+    filtered.sort((a, b) => {
+      const dateA = new Date(a.data).getTime();
+      const dateB = new Date(b.data).getTime();
+      return dateB - dateA; // Ordem decrescente (mais recente primeiro)
+    });
+
+    console.log("✅ Lançamentos filtrados e ordenados:", filtered.length);
     setFilteredLancamentos(filtered);
   }, [lancamentos, searchTerm, tipoFilter, categoriaFilter]);
 
