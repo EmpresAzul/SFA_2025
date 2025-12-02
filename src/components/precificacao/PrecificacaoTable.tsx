@@ -124,6 +124,9 @@ const PrecificacaoTable: React.FC<PrecificacaoTableProps> = ({
                   Preço Final
                 </TableHead>
                 <TableHead className="font-semibold text-gray-700 text-xs py-2">
+                  Data
+                </TableHead>
+                <TableHead className="font-semibold text-gray-700 text-xs py-2">
                   Status
                 </TableHead>
                 <TableHead className="font-semibold text-gray-700 text-xs py-2 text-center">
@@ -134,7 +137,7 @@ const PrecificacaoTable: React.FC<PrecificacaoTableProps> = ({
             <TableBody>
               {data.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
+                  <TableCell colSpan={7} className="text-center py-8">
                     <div className="flex flex-col items-center gap-2 text-gray-500">
                       <Package className="h-8 w-8" />
                       <p>Nenhum item encontrado</p>
@@ -169,6 +172,15 @@ const PrecificacaoTable: React.FC<PrecificacaoTableProps> = ({
                     </TableCell>
                     <TableCell className="font-semibold text-green-600 py-2 text-right text-sm">
                       {formatNumberToDisplay(item.preco_venda || item.preco_final || 0)}
+                    </TableCell>
+                    <TableCell className="py-2 text-sm text-gray-600">
+                      {item.created_at 
+                        ? new Date(item.created_at).toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                          })
+                        : '-'}
                     </TableCell>
                     <TableCell className="py-2">
                       <Badge
