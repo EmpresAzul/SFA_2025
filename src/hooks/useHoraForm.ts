@@ -206,6 +206,7 @@ export const useHoraForm = (
       console.log("📦 Dados para salvar:", dadosPrecificacao);
 
       if (editingItem) {
+        // Atualizar item existente - NÃO incluir user_id no update
         console.log("✏️ Modo EDIÇÃO - atualizando item:", editingItem.id);
         await updatePrecificacao.mutateAsync({
           id: editingItem.id,
@@ -218,6 +219,7 @@ export const useHoraForm = (
           duration: 4000,
         });
       } else {
+        // Criar novo item - incluir user_id apenas na criação
         console.log("➕ Modo CRIAÇÃO - criando novo item");
 
         const dadosCompletos = {
