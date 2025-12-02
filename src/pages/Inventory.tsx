@@ -121,6 +121,31 @@ const Inventory: React.FC = () => {
     "Outros",
   ];
 
+  // Função para formatar valor monetário
+  const formatMoneyInput = (value: string): string => {
+    // Remove tudo que não é número
+    const numbers = value.replace(/\D/g, '');
+    
+    if (!numbers) return '';
+    
+    // Converte para número e divide por 100 para ter os centavos
+    const amount = parseFloat(numbers) / 100;
+    
+    // Formata como moeda brasileira
+    return amount.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
+  // Função para converter valor formatado para número
+  const parseMoneyInput = (value: string): number => {
+    if (!value) return 0;
+    // Remove pontos de milhar e substitui vírgula por ponto
+    const cleanValue = value.replace(/\./g, '').replace(',', '.');
+    return parseFloat(cleanValue) || 0;
+  };
+
   const calculateStats = () => {
     const activeItems = items.filter((item) => item.status === "ativo");
     const inactiveItems = items.filter((item) => item.status === "inativo");
@@ -181,8 +206,8 @@ const Inventory: React.FC = () => {
       category: formData.category,
       quantity: parseInt(formData.quantity),
       minQuantity: parseInt(formData.minQuantity),
-      price: parseFloat(formData.price),
-      cost: parseFloat(formData.cost),
+      price: parseMoneyInput(formData.price),
+      cost: parseMoneyInput(formData.cost),
       supplier: formData.supplier,
       barcode: formData.barcode,
       location: formData.location,
@@ -236,8 +261,8 @@ const Inventory: React.FC = () => {
       category: item.category,
       quantity: item.quantity.toString(),
       minQuantity: item.minQuantity.toString(),
-      price: item.price.toString(),
-      cost: item.cost.toString(),
+      price: item.price.toFixed(2).replace('.', ','),
+      cost: item.cost.toFixed(2).replace('.', ','),
       supplier: item.supplier,
       barcode: item.barcode,
       location: item.location,
@@ -246,6 +271,10 @@ const Inventory: React.FC = () => {
     });
     setEditingItem(item);
     setShowForm(true);
+    // Scroll para o topo onde está o formulário
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
   };
 
   const handleDelete = (id: string) => {
@@ -623,34 +652,46 @@ const Inventory: React.FC = () => {
                     <Label htmlFor="price" className="text-fluxo-black-700">
                       Preço de Venda (R$) *
                     </Label>
-                    <Input
-                      id="price"
-                      type="number"
-                      step="0.01"
-                      value={formData.price}
-                      onChange={(e) =>
-                        setFormData({ ...formData, price: e.target.value })
-                      }
-                      required
-                      className="border-fluxo-black-200"
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                        R$
+                      </span>
+                      <Input
+                        id="price"
+                        type="text"
+                        value={formData.price}
+                        onChange={(e) => {
+                          const formatted = formatMoneyInput(e.target.value);
+                          setFormData({ ...formData, price: formatted });
+                        }}
+                        required
+                        className="border-fluxo-black-200 pl-10"
+                        placeholder="0,00"
+                      />
+                    </div>
                   </div>
 
                   <div>
                     <Label htmlFor="cost" className="text-fluxo-black-700">
                       Custo (R$) *
                     </Label>
-                    <Input
-                      id="cost"
-                      type="number"
-                      step="0.01"
-                      value={formData.cost}
-                      onChange={(e) =>
-                        setFormData({ ...formData, cost: e.target.value })
-                      }
-                      required
-                      className="border-fluxo-black-200"
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                        R$
+                      </span>
+                      <Input
+                        id="cost"
+                        type="text"
+                        value={formData.cost}
+                        onChange={(e) => {
+                          const formatted = formatMoneyInput(e.target.value);
+                          setFormData({ ...formData, cost: formatted });
+                        }}
+                        required
+                        className="border-fluxo-black-200 pl-10"
+                        placeholder="0,00"
+                      />
+                    </div>
                   </div>
 
                   <div>

@@ -138,37 +138,44 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div className="fluxo-container fluxo-section bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen perfil-container perfil-responsive">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
-        <div className="flex-1">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-            👤 Meu Perfil
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base">
-            Visualize suas informações pessoais da conta
-          </p>
+    <div className="responsive-padding responsive-margin bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 min-h-screen">
+      {/* Header Premium */}
+      <div className="mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <User className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Meu Perfil
+                </h1>
+                <p className="text-gray-600 text-sm sm:text-base mt-1">
+                  Gerencie suas informações pessoais e preferências
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-
-
       {/* Cards de Informações */}
-      <div className="perfil-layout grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Resumo do Perfil */}
-        <Card className="perfil-card bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-          <CardHeader>
+        <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-lg">
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <User className="h-5 w-5 text-blue-600" />
-                Resumo do Perfil
+                <User className="h-5 w-5 text-white" />
+                <span className="text-white">Informações Pessoais</span>
               </div>
               {!isEditing ? (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleEdit}
-                  className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                  className="bg-white/20 text-white border-white/30 hover:bg-white/30 backdrop-blur-sm"
                 >
                   <Edit className="h-4 w-4 mr-1" />
                   Editar
@@ -179,7 +186,7 @@ const Profile: React.FC = () => {
                     variant="outline"
                     size="sm"
                     onClick={handleCancel}
-                    className="text-gray-600"
+                    className="bg-white/20 text-white border-white/30 hover:bg-white/30"
                   >
                     <X className="h-4 w-4 mr-1" />
                     Cancelar
@@ -188,7 +195,7 @@ const Profile: React.FC = () => {
                     size="sm"
                     onClick={handleSave}
                     disabled={saving}
-                    className="bg-blue-600 hover:bg-blue-700 mobile-button-fix"
+                    className="bg-white text-blue-600 hover:bg-white/90"
                   >
                     <Save className="h-4 w-4 mr-1" />
                     {saving ? 'Salvando...' : 'Salvar'}
@@ -197,24 +204,24 @@ const Profile: React.FC = () => {
               )}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 p-6">
             {!isEditing ? (
               <>
-                <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
-                  <span className="text-sm text-gray-600">Nome:</span>
-                  <span className="text-sm font-medium text-right">{profile.nome || 'Não informado'}</span>
+                <div className="flex items-start justify-between py-3 border-b border-gray-100">
+                  <span className="text-sm font-medium text-gray-500">Nome:</span>
+                  <span className="text-sm font-semibold text-gray-900 text-right">{profile.nome || 'Não informado'}</span>
                 </div>
-                <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
-                  <span className="text-sm text-gray-600">Empresa:</span>
-                  <span className="text-sm font-medium text-right">{profile.empresa || 'Não informado'}</span>
+                <div className="flex items-start justify-between py-3 border-b border-gray-100">
+                  <span className="text-sm font-medium text-gray-500">Empresa:</span>
+                  <span className="text-sm font-semibold text-gray-900 text-right">{profile.empresa || 'Não informado'}</span>
                 </div>
-                <div className="flex items-start justify-between py-1.5 border-b border-gray-100">
-                  <span className="text-sm text-gray-600">Cargo:</span>
-                  <span className="text-sm font-medium text-right">{profile.cargo || 'Não informado'}</span>
+                <div className="flex items-start justify-between py-3 border-b border-gray-100">
+                  <span className="text-sm font-medium text-gray-500">Cargo:</span>
+                  <span className="text-sm font-semibold text-gray-900 text-right">{profile.cargo || 'Não informado'}</span>
                 </div>
-                <div className="flex items-start justify-between py-1.5">
-                  <span className="text-sm text-gray-600">Telefone:</span>
-                  <span className="text-sm font-medium text-right">
+                <div className="flex items-start justify-between py-3">
+                  <span className="text-sm font-medium text-gray-500">Telefone:</span>
+                  <span className="text-sm font-semibold text-gray-900 text-right">
                     {profile.telefone ? formatPhone(profile.telefone) : 'Não informado'}
                   </span>
                 </div>
@@ -264,18 +271,19 @@ const Profile: React.FC = () => {
         </Card>
 
         {/* Email */}
-        <Card className="perfil-card bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-          <CardHeader>
+        <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-t-lg">
             <CardTitle className="flex items-center gap-2">
-              <Mail className="h-5 w-5 text-blue-600" />
-              Email
+              <Mail className="h-5 w-5 text-white" />
+              <span className="text-white">Email da Conta</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="p-3 bg-gray-50 rounded-lg border">
-              <p className="text-sm font-medium text-gray-800">{profile.email}</p>
-              <p className="text-xs text-gray-500 mt-1">
-                Email vinculado à conta
+          <CardContent className="p-6">
+            <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
+              <p className="text-base font-semibold text-gray-900">{profile.email}</p>
+              <p className="text-xs text-gray-600 mt-2 flex items-center gap-1">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Email verificado e vinculado à conta
               </p>
             </div>
           </CardContent>

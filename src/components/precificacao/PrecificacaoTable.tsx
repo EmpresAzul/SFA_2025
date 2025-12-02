@@ -14,8 +14,6 @@ import {
   Eye,
   Edit,
   Trash2,
-  ToggleLeft,
-  ToggleRight,
   Package,
   Wrench,
   Clock,
@@ -62,18 +60,9 @@ const PrecificacaoTable: React.FC<PrecificacaoTableProps> = ({
   onView,
   onEdit,
 }) => {
-  const { useUpdate, useDelete } = usePrecificacao();
-  const updateMutation = useUpdate();
+  const { useDelete } = usePrecificacao();
   const deleteMutation = useDelete();
   const [itemToDelete, setItemToDelete] = useState<Precificacao | null>(null);
-
-  const handleToggleStatus = async (item: Precificacao) => {
-    const newStatus = item.status === "ativo" ? "inativo" : "ativo";
-    updateMutation.mutate({
-      id: item.id,
-      data: { status: newStatus },
-    });
-  };
 
   const handleDelete = async () => {
     if (itemToDelete) {
@@ -213,28 +202,6 @@ const PrecificacaoTable: React.FC<PrecificacaoTableProps> = ({
                           title="Editar"
                         >
                           <Edit className="h-3.5 w-3.5" />
-                        </Button>
-
-                        {/* Ativar/Desativar */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleToggleStatus(item)}
-                          className={`h-7 w-7 p-0 ${
-                            item.status === "ativo"
-                              ? "text-green-600 hover:text-green-700 hover:bg-green-50"
-                              : "text-gray-400 hover:text-gray-500 hover:bg-gray-50"
-                          }`}
-                          title={
-                            item.status === "ativo" ? "Desativar" : "Ativar"
-                          }
-                          disabled={updateMutation.isPending}
-                        >
-                          {item.status === "ativo" ? (
-                            <ToggleRight className="h-3.5 w-3.5" />
-                          ) : (
-                            <ToggleLeft className="h-3.5 w-3.5" />
-                          )}
                         </Button>
 
                         {/* Excluir */}
