@@ -714,3 +714,100 @@ table,
 [class*="bg-black"] {
   background: hsl(var(--card)) !important;
 }
+
+/* ==========================================
+   CRM PREMIUM STYLES
+   ========================================== */
+
+.crm-container {
+  @apply mx-auto px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl w-full;
+}
+
+.crm-responsive {
+  @apply min-h-screen bg-gradient-to-br from-slate-50 to-blue-50;
+}
+
+.crm-form {
+  @apply bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6;
+  box-shadow: 
+    0 10px 40px -10px rgba(30, 58, 138, 0.12),
+    0 4px 20px -5px rgba(30, 58, 138, 0.08);
+}
+
+.crm-filters {
+  @apply bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-100 p-4 mb-6;
+}
+
+.crm-filters-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
+}
+
+.crm-filter-label {
+  @apply text-sm font-medium text-gray-700 mb-1 block;
+}
+
+.crm-pipeline-board {
+  @apply mt-6;
+}
+
+.crm-card {
+  @apply bg-white rounded-xl shadow-md border border-gray-100 p-4 transition-all duration-300;
+}
+
+.crm-card:hover {
+  @apply shadow-lg;
+  transform: translateY(-2px);
+}
+
+/* ==========================================
+   ESTOQUE PREMIUM STYLES (igual ao DRE)
+   ========================================== */
+
+.estoque-container {
+  @apply mx-auto px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl w-full;
+}
+
+.estoque-responsive {
+  @apply min-h-screen bg-gradient-to-br from-slate-50 to-blue-50;
+}
+
+.estoque-summary-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6;
+}
+
+.estoque-card {
+  @apply rounded-xl shadow-lg border-0 overflow-hidden transition-all duration-300;
+}
+
+.estoque-card:hover {
+  @apply shadow-xl;
+  transform: translateY(-2px);
+}
+
+.estoque-card-content {
+  @apply p-4 sm:p-5;
+}
+
+.estoque-card-title {
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1;
+}
+
+.estoque-card-value {
+  @apply text-xl sm:text-2xl lg:text-3xl font-bold text-white;
+}
+
+.estoque-card-icon {
+  @apply w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm;
+}
+
+/* ==========================================
+   PRECIFICAÇÃO PREMIUM STYLES
+   ========================================== */
+
+.precificacao-container {
+  @apply mx-auto px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl w-full;
+}
+
+.precificacao-responsive {
+  @apply min-h-screen bg-gradient-to-br from-slate-50 to-blue-50;
+}

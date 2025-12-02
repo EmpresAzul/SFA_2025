@@ -6,6 +6,7 @@ import CadastrosStats from "@/components/cadastro/CadastrosStats";
 import CadastrosFilters from "@/components/cadastro/CadastrosFilters";
 import CadastrosTable from "@/components/cadastro/CadastrosTable";
 import { UnifiedCadastroForm } from "@/components/cadastro/UnifiedCadastroForm";
+import { CadastroData } from "@/types/cadastros";
 
 const CadastrosUnified: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -109,18 +110,18 @@ const CadastrosUnified: React.FC = () => {
           />
 
           <CadastrosTable
-            cadastros={paginatedData}
+            cadastros={paginatedData as CadastroData[]}
             totalItems={filteredItems.length}
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
             onPageChange={handlePageChange}
             onItemsPerPageChange={handleItemsPerPageChange}
-            onEdit={(item) => handleEdit(item as any)}
+            onEdit={(item) => handleEdit(item)}
             onView={(cadastro) => {
-              setEditingItem(cadastro as any);
+              setEditingItem(cadastro);
               setIsEditModalOpen(true);
             }}
-            onToggleStatus={(item) => handleToggleStatus(item as any)}
+            onToggleStatus={(item) => handleToggleStatus(item)}
             onDelete={handleDelete}
           />
         </TabsContent>
@@ -136,8 +137,8 @@ const CadastrosUnified: React.FC = () => {
           setIsEditModalOpen(false);
           setEditingItem(null);
         }}
-        editingItem={editingItem as any}
-        onSave={(data: any) => handleSaveEdit(data)}
+        editingItem={editingItem}
+        onSave={(data) => handleSaveEdit(data)}
         loading={false}
       />
     </div>

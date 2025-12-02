@@ -17,36 +17,13 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { X, Save } from "lucide-react";
-
-// Tipo unificado para cadastro
-export type CadastroData = {
-  nome: string;
-  pessoa: "Física" | "Jurídica";
-  cpf_cnpj?: string;
-  telefone?: string;
-  email?: string;
-  endereco?: string;
-  numero?: string;
-  cidade?: string;
-  estado?: string;
-  bairro?: string;
-  cep?: string;
-  observacoes?: string;
-  salario?: string;
-  razao_social?: string;
-  tipo_fornecedor?: string;
-  cargo?: string;
-  data_admissao?: string;
-  status?: string;
-  tipo?: string;
-  tipoDisplay?: string;
-};
+import type { CadastroData } from "@/types/cadastros";
 
 interface CadastroEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   editingItem: CadastroData | null;
-  onSave: (data: CadastroData) => void;
+  onSave: (data: Partial<CadastroData>) => void;
   loading: boolean;
 }
 
@@ -57,7 +34,7 @@ const CadastroEditModal: React.FC<CadastroEditModalProps> = ({
   onSave,
   loading,
 }) => {
-  const [formData, setFormData] = React.useState<CadastroData>(editingItem || {} as CadastroData);
+  const [formData, setFormData] = React.useState<Partial<CadastroData>>(editingItem || {});
 
   React.useEffect(() => {
     if (editingItem) {
@@ -71,10 +48,9 @@ const CadastroEditModal: React.FC<CadastroEditModalProps> = ({
         numero: editingItem.numero || "",
         cidade: editingItem.cidade || "",
         estado: editingItem.estado || "",
-        bairro: editingItem.bairro || "",
         cep: editingItem.cep || "",
         observacoes: editingItem.observacoes || "",
-        salario: editingItem.salario || "",
+        salario: editingItem.salario,
       });
     }
   }, [editingItem]);
@@ -84,7 +60,7 @@ const CadastroEditModal: React.FC<CadastroEditModalProps> = ({
     onSave(formData);
   };
 
-  const handleInputChange = (field: keyof CadastroData, value: string | number) => {
+  const handleInputChange = (field: keyof CadastroData, value: string | number | undefined) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -95,7 +71,7 @@ const CadastroEditModal: React.FC<CadastroEditModalProps> = ({
       <DialogContent className="sm:max-w-[700px] bg-white/95 backdrop-blur-xl border-0 shadow-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-2">
-            ✏️ Editar {editingItem.tipoDisplay || editingItem.tipo}
+            ✏️ Editar {editingItem.tipo}
           </DialogTitle>
         </DialogHeader>
 
@@ -226,8 +202,8 @@ const CadastroEditModal: React.FC<CadastroEditModalProps> = ({
               </Select>
             </div>
 
-            {(editingItem.tipo === "Funcionário" ||
-              editingItem.tipoDisplay === "Funcionário") && (
+            {(editingItem.tipo?.toLowerCase() === "funcionário" ||
+              editingItem.tipo?.toLowerCase() === "funcionario") && (
               <div className="space-y-2">
                 <Label htmlFor="salario" className="text-sm font-medium">
                   Salário

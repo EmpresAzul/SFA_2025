@@ -7,7 +7,7 @@ import { ClienteForm } from "./forms/ClienteForm";
 import { FornecedorForm } from "./forms/FornecedorForm";
 import { FuncionarioForm } from "./forms/FuncionarioForm";
 import { EnderecoForm } from "./forms/EnderecoForm";
-import { CadastroData } from "./CadastroEditModal";
+import type { CadastroData } from "@/types/cadastros";
 
 interface CadastroFormProps {
   tipo: "Cliente" | "Fornecedor" | "Funcionário";
