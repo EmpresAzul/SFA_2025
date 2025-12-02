@@ -183,25 +183,24 @@ export const useHoraForm = (
 
       const dadosPrecificacao = {
         nome: horaData.nome,
-        categoria: "Hora Trabalhada", // Será movido para dados_json no hook usePrecificacao
         tipo: "Hora" as const,
         preco_venda: valorHoraTrabalhada,
-        preco_final: valorHoraTrabalhada,
+        custo_materia_prima: 0,
+        custo_mao_obra: 0,
         despesas_fixas: totalCustosFixos,
-        dados_json: JSON.parse(
-          JSON.stringify({
-            categoria: "Hora Trabalhada",
-            pro_labore: horaData.proLabore,
-            dias_trabalhados: diasTrabalhadosNumerico,
-            horas_por_dia: horasPorDiaNumerico,
-            horas_trabalhadas_mes: horasTrabalhadasMes,
-            despesas_fixas: despesasSerializadas,
-            total_custos_fixos: totalCustosFixos,
-            custo_total_mensal: custoTotalMensal,
-            valor_hora_trabalhada: valorHoraTrabalhada,
-            valor_dia_trabalhado: valorDiaTrabalhado,
-          }),
-        ),
+        margem_lucro: 0,
+        dados_json: {
+          categoria: "Hora Trabalhada",
+          pro_labore: horaData.proLabore,
+          dias_trabalhados: diasTrabalhadosNumerico,
+          horas_por_dia: horasPorDiaNumerico,
+          horas_trabalhadas_mes: horasTrabalhadasMes,
+          despesas_fixas: despesasSerializadas,
+          total_custos_fixos: totalCustosFixos,
+          custo_total_mensal: custoTotalMensal,
+          valor_hora_trabalhada: valorHoraTrabalhada,
+          valor_dia_trabalhado: valorDiaTrabalhado,
+        },
       };
 
       console.log("📦 Dados para salvar:", dadosPrecificacao);

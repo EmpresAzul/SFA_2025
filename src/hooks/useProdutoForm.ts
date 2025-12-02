@@ -181,16 +181,14 @@ export const useProdutoForm = (
       };
 
       if (editingItem) {
-        // Atualizar item existente
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          throw new Error("Usuário não autenticado");
-        }
+        // Atualizar item existente - NÃO incluir user_id no update
+        console.log("📝 Atualizando produto:", editingItem.id, dadosPrecificacao);
         
         await updatePrecificacao.mutateAsync({
           id: editingItem.id,
-          data: { ...dadosPrecificacao, user_id: user.id },
+          data: dadosPrecificacao,
         });
+        
         toast({
           title: "✅ Produto Atualizado!",
           description: `O produto "${produtoData.nome}" foi atualizado com sucesso.`,
