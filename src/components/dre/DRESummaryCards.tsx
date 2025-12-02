@@ -12,70 +12,82 @@ const DRESummaryCards: React.FC<DRESummaryCardsProps> = ({
   dreData,
 }) => {
   return (
-    <div className="dre-summary-cards">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {/* Card Receita Bruta */}
-      <Card className="dre-card bg-gradient-to-br from-emerald-400 via-emerald-500 to-green-600">
-        <CardContent className="dre-card-content">
+      <Card className="bg-gradient-to-br from-emerald-400 via-emerald-500 to-green-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <CardContent className="p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="dre-card-title">Receita Bruta</p>
-              <p className="dre-card-value">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="h-6 w-6 text-white/90" />
+                <p className="text-sm font-medium text-white/90">Receita Bruta</p>
+              </div>
+              <p className="text-2xl font-bold text-white mb-1">
                 {formatCurrency(dreData.receitaBrutaVendas)}
               </p>
             </div>
-            <div className="dre-card-icon">
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <TrendingUp className="h-6 w-6 text-white" />
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Card Receita Líquida */}
-      <Card className="dre-card bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600">
-        <CardContent className="dre-card-content">
+      <Card className="bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <CardContent className="p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="dre-card-title">Receita Líquida</p>
-              <p className="dre-card-value">
+              <div className="flex items-center gap-2 mb-2">
+                <DollarSign className="h-6 w-6 text-white/90" />
+                <p className="text-sm font-medium text-white/90">Receita Líquida</p>
+              </div>
+              <p className="text-2xl font-bold text-white mb-1">
                 {formatCurrency(dreData.receitaLiquidaVendas)}
               </p>
             </div>
-            <div className="dre-card-icon">
-              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <DollarSign className="h-6 w-6 text-white" />
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Card Resultado Operacional */}
-      <Card className="dre-card bg-gradient-to-br from-red-400 via-red-500 to-rose-600">
-        <CardContent className="dre-card-content">
+      <Card className="bg-gradient-to-br from-purple-400 via-purple-500 to-violet-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <CardContent className="p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="dre-card-title">Resultado Operacional</p>
-              <p className="dre-card-value">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="h-6 w-6 text-white/90" />
+                <p className="text-sm font-medium text-white/90">Resultado Operacional</p>
+              </div>
+              <p className="text-2xl font-bold text-white mb-1">
                 {formatCurrency(dreData.resultadoOperacionalEBIT)}
               </p>
             </div>
-            <div className="dre-card-icon">
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <TrendingUp className="h-6 w-6 text-white" />
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Card Lucro Líquido */}
-      <Card className="dre-card bg-gradient-to-br from-red-500 via-red-600 to-rose-700">
-        <CardContent className="dre-card-content">
+      <Card className="bg-gradient-to-br from-red-400 via-red-500 to-rose-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <CardContent className="p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="dre-card-title">Lucro Líquido</p>
-              <p className="dre-card-value">
+              <div className="flex items-center gap-2 mb-2">
+                <DollarSign className="h-6 w-6 text-white/90" />
+                <p className="text-sm font-medium text-white/90">Lucro Líquido</p>
+              </div>
+              <p className="text-2xl font-bold text-white mb-1">
                 {formatCurrency(dreData.lucroLiquidoExercicio)}
               </p>
             </div>
-            <div className="dre-card-icon">
-              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <DollarSign className="h-6 w-6 text-white" />
             </div>
           </div>
         </CardContent>

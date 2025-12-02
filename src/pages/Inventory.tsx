@@ -280,74 +280,78 @@ const Inventory: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-fluxo-black-200 shadow-professional">
-          <CardContent className="p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-gradient-to-br from-emerald-400 via-emerald-500 to-green-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <CardContent className="p-6 text-white">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-fluxo-black-600">
-                  Produtos Ativos
-                </p>
-                <p className="text-2xl font-bold text-green-600">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="h-6 w-6 text-white/90" />
+                  <p className="text-sm font-medium text-white/90">Produtos Ativos</p>
+                </div>
+                <p className="text-2xl font-bold text-white mb-1">
                   {stats.activeCount}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <TrendingUp className="h-6 w-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-fluxo-black-200 shadow-professional">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-red-400 via-red-500 to-rose-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <CardContent className="p-6 text-white">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-fluxo-black-600">
-                  Produtos Inativos
-                </p>
-                <p className="text-2xl font-bold text-red-600">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingDown className="h-6 w-6 text-white/90" />
+                  <p className="text-sm font-medium text-white/90">Produtos Inativos</p>
+                </div>
+                <p className="text-2xl font-bold text-white mb-1">
                   {stats.inactiveCount}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                <TrendingDown className="w-6 h-6 text-red-600" />
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <TrendingDown className="h-6 w-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-fluxo-black-200 shadow-professional">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <CardContent className="p-6 text-white">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-fluxo-black-600">
-                  Valor Total
-                </p>
-                <p className="text-2xl font-bold text-fluxo-blue-600">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <DollarSign className="h-6 w-6 text-white/90" />
+                  <p className="text-sm font-medium text-white/90">Valor Total</p>
+                </div>
+                <p className="text-2xl font-bold text-white mb-1">
                   {formatCurrency(stats.totalValue)}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-fluxo-blue-600" />
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <DollarSign className="h-6 w-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-fluxo-black-200 shadow-professional">
-          <CardContent className="p-6">
+        <Card className="bg-gradient-to-br from-orange-400 via-orange-500 to-red-500 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+          <CardContent className="p-6 text-white">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-fluxo-black-600">
-                  Estoque Baixo
-                </p>
-                <p className="text-2xl font-bold text-orange-600">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Package className="h-6 w-6 text-white/90" />
+                  <p className="text-sm font-medium text-white/90">Estoque Baixo</p>
+                </div>
+                <p className="text-2xl font-bold text-white mb-1">
                   {stats.lowStockCount}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <Package className="w-6 h-6 text-orange-600" />
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <Package className="h-6 w-6 text-white" />
               </div>
             </div>
           </CardContent>

@@ -35,62 +35,74 @@ export const PipelineStats: React.FC<PipelineStatsProps> = ({ negocios }) => {
   }, [negocios]);
 
   return (
-    <div className="crm-summary-cards">
-      <Card className="crm-card bg-gradient-to-br from-blue-400 to-blue-600 text-white">
-        <CardContent className="crm-card-content">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <Card className="bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <CardContent className="p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="crm-card-title">Total de Leads</p>
-              <p className="crm-card-value">{stats.total}</p>
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="h-6 w-6 text-white/90" />
+                <p className="text-sm font-medium text-white/90">Total de Leads</p>
+              </div>
+              <p className="text-2xl font-bold text-white mb-1">{stats.total}</p>
               <p className="text-xs text-white/80">Leads cadastrados</p>
             </div>
-            <div className="crm-card-icon">
-              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <Users className="h-6 w-6 text-white" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="crm-card bg-gradient-to-br from-green-400 to-green-600 text-white">
-        <CardContent className="crm-card-content">
+      <Card className="bg-gradient-to-br from-emerald-400 via-emerald-500 to-green-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <CardContent className="p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="crm-card-title">Negócios Fechados</p>
-              <p className="crm-card-value">{stats.fechados}</p>
+              <div className="flex items-center gap-2 mb-2">
+                <Target className="h-6 w-6 text-white/90" />
+                <p className="text-sm font-medium text-white/90">Negócios Fechados</p>
+              </div>
+              <p className="text-2xl font-bold text-white mb-1">{stats.fechados}</p>
               <p className="text-xs text-white/80">Vendas concluídas</p>
             </div>
-            <div className="crm-card-icon">
-              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <Target className="h-6 w-6 text-white" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="crm-card bg-gradient-to-br from-purple-400 to-purple-600 text-white">
-        <CardContent className="crm-card-content">
+      <Card className="bg-gradient-to-br from-purple-400 via-purple-500 to-violet-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <CardContent className="p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="crm-card-title">Valor Total</p>
-              <p className="crm-card-value">{formatNumberToDisplay(stats.valorTotal)}</p>
+              <div className="flex items-center gap-2 mb-2">
+                <DollarSign className="h-6 w-6 text-white/90" />
+                <p className="text-sm font-medium text-white/90">Valor Total</p>
+              </div>
+              <p className="text-2xl font-bold text-white mb-1">{formatNumberToDisplay(stats.valorTotal)}</p>
               <p className="text-xs text-white/80">Valor dos negócios</p>
             </div>
-            <div className="crm-card-icon">
-              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <DollarSign className="h-6 w-6 text-white" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="crm-card bg-gradient-to-br from-orange-400 to-orange-600 text-white">
-        <CardContent className="crm-card-content">
+      <Card className="bg-gradient-to-br from-orange-400 via-orange-500 to-red-500 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <CardContent className="p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="crm-card-title">Taxa de Conversão</p>
-              <p className="crm-card-value">{stats.taxaConversao.toFixed(1)}%</p>
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="h-6 w-6 text-white/90" />
+                <p className="text-sm font-medium text-white/90">Taxa de Conversão</p>
+              </div>
+              <p className="text-2xl font-bold text-white mb-1">{stats.taxaConversao.toFixed(1)}%</p>
               <p className="text-xs text-white/80">Eficiência de vendas</p>
             </div>
-            <div className="crm-card-icon">
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <TrendingUp className="h-6 w-6 text-white" />
             </div>
           </div>
         </CardContent>
