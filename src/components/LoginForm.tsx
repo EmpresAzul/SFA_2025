@@ -229,19 +229,18 @@ const LoginForm: React.FC = () => {
       
       <div className="relative z-10 w-full max-w-md px-4">
         {/* Logo com Glassmorphism Premium */}
-        <div className="mb-8 text-center animate-fade-in">
-          <div className="inline-block p-8 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:shadow-[0_0_40px_rgba(54,118,220,0.3)] transition-all duration-500 hover:scale-105">
-            <h1 className="text-5xl sm:text-6xl font-bold tracking-tight mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
+        <div className="mb-4 text-center animate-fade-in">
+          <div className="inline-block p-6 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:shadow-[0_0_40px_rgba(54,118,220,0.3)] transition-all duration-500 hover:scale-105">
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
               <span className="text-white drop-shadow-[0_2px_15px_rgba(255,255,255,0.4)]">FLUXO</span>
               <span className="drop-shadow-[0_2px_15px_rgba(54,118,220,0.6)]" style={{ color: '#3676DC' }}>AZUL</span>
             </h1>
-            <div className="h-1 w-24 mx-auto bg-gradient-to-r from-white via-[#3676DC] to-white rounded-full opacity-60"></div>
-            <p className="text-white/90 text-sm mt-3 font-semibold tracking-wide">Sistema de Gestão Financeira</p>
+            <div className="h-1 w-20 mx-auto bg-gradient-to-r from-white via-[#3676DC] to-white rounded-full opacity-60 mt-2"></div>
           </div>
         </div>
 
         {/* Card com Glassmorphism Ultra Premium */}
-        <Card className="bg-white/95 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/30 overflow-hidden rounded-3xl animate-slide-up">
+        <Card className="bg-gray-50/95 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/30 overflow-hidden rounded-3xl animate-slide-up">
           <div className="p-8">
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
@@ -259,7 +258,7 @@ const LoginForm: React.FC = () => {
                   onChange={handleEmailChange}
                   placeholder="seu@email.com"
                   required
-                  className={`h-12 border-2 bg-white/80 backdrop-blur-sm text-gray-900 placeholder:text-gray-400 ${
+                  className={`h-12 border-2 bg-white text-gray-900 placeholder:text-gray-400 ${
                     errors.email ? "border-red-500" : "border-gray-200"
                   } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-300 rounded-xl shadow-sm hover:shadow-md`}
                 />
@@ -284,7 +283,7 @@ const LoginForm: React.FC = () => {
                     onChange={handlePasswordChange}
                     placeholder="••••••••"
                     required
-                    className={`h-12 border-2 bg-white/80 backdrop-blur-sm text-gray-900 placeholder:text-gray-400 ${
+                    className={`h-12 border-2 bg-white text-gray-900 placeholder:text-gray-400 ${
                       errors.password ? "border-red-500" : "border-gray-200"
                     } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-300 rounded-xl pr-12 shadow-sm hover:shadow-md`}
                   />
@@ -353,18 +352,6 @@ const LoginForm: React.FC = () => {
               >
                 Esqueci minha senha
               </button>
-            </div>
-
-            {/* Footer */}
-            <div className="mt-8 pt-6 border-t border-gray-200/50 text-center">
-              <p className="text-gray-600 text-xs font-medium">
-                © 2025 <span className="font-bold" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                  <span className="text-gray-800">FLUXO</span><span style={{ color: '#3676DC' }}>AZUL</span>
-                </span>
-                <br className="sm:hidden" />
-                <span className="hidden sm:inline"> • </span>
-                Todos os direitos reservados
-              </p>
             </div>
           </div>
         </Card>
