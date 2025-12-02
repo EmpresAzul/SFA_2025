@@ -254,22 +254,11 @@ export const CadastroTable: React.FC<CadastroTableProps> = ({
           isOpen={!!editingCadastro}
           onClose={() => setEditingCadastro(null)}
           editingItem={{
-            nome: editingCadastro.nome,
-            pessoa: editingCadastro.pessoa as "Física" | "Jurídica",
-            cpf_cnpj: editingCadastro.cpf_cnpj || "",
-            telefone: editingCadastro.telefone || "",
-            email: editingCadastro.email || "",
-            endereco: editingCadastro.endereco || "",
-            numero: editingCadastro.numero || "",
-            cidade: editingCadastro.cidade || "",
-            estado: editingCadastro.estado || "",
-            bairro: editingCadastro.bairro || "",
-            cep: editingCadastro.cep || "",
-            observacoes: editingCadastro.observacoes || "",
-            salario: editingCadastro.salario?.toString() || "",
-            status: editingCadastro.status,
-            tipo: editingCadastro.tipo,
-            tipoDisplay: editingCadastro.tipo,
+            ...editingCadastro,
+            pessoa: editingCadastro.pessoa || "Física",
+            salario: typeof editingCadastro.salario === 'string' 
+              ? parseFloat(editingCadastro.salario) || undefined 
+              : editingCadastro.salario,
           }}
           onSave={(data) => {
             onEdit(editingCadastro);

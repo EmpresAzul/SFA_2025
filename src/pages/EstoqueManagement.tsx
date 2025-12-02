@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEstoqueData } from "@/hooks/useEstoqueData";
 import { useEstoqueForm } from "@/hooks/useEstoqueForm";
@@ -15,6 +15,7 @@ const EstoqueManagement: React.FC = () => {
   const [editingItem, setEditingItem] = useState<Estoque | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
+  const [activeTab, setActiveTab] = useState("lista");
 
   const { estoques, loading, fetchEstoques, handleToggleStatus, handleDelete } =
     useEstoqueData();
@@ -85,7 +86,7 @@ const EstoqueManagement: React.FC = () => {
 
       <EstoqueSummaryCards filteredEstoques={filteredData} />
 
-      <Tabs defaultValue="lista" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="flex flex-col lg:flex-row gap-4 mb-6">
           <TabsList className="grid grid-cols-1 sm:grid-cols-2 bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg rounded-xl h-auto sm:h-14 p-1">
             <TabsTrigger
@@ -120,7 +121,10 @@ const EstoqueManagement: React.FC = () => {
             onItemsPerPageChange={handleItemsPerPageChange}
             selectedEstoque={selectedEstoque}
             setSelectedEstoque={setSelectedEstoque}
-            handleEdit={handleEdit}
+            handleEdit={(estoque) => {
+              handleEdit(estoque);
+              setActiveTab("formulario");
+            }}
             handleToggleStatus={(estoque: any) => handleToggleStatus(estoque.id)}
             handleDelete={(estoque: any) => handleDelete(estoque.id)}
           />

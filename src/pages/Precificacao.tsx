@@ -207,7 +207,8 @@ const PrecificacaoPage: React.FC = () => {
         <TabsContent value="produto">
           <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
             <CadastrarProduto
-              editingItem={editingItem?.tipo === "Produto" ? editingItem : null}
+              key={editingItem?.id || 'new-produto'}
+              editingItem={activeTab === "produto" && editingItem?.tipo === "Produto" ? editingItem : null}
               onCancelEdit={handleCancelEdit}
               onSaveSuccess={handleSaveSuccess}
             />
@@ -217,7 +218,8 @@ const PrecificacaoPage: React.FC = () => {
         <TabsContent value="servico">
           <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
             <CadastrarServico
-              editingItem={editingItem?.tipo === "Serviço" ? editingItem : null}
+              key={editingItem?.id || 'new-servico'}
+              editingItem={activeTab === "servico" && editingItem?.tipo === "Serviço" ? editingItem : null}
               onCancelEdit={handleCancelEdit}
               onSaveSuccess={handleSaveSuccess}
             />
@@ -227,7 +229,8 @@ const PrecificacaoPage: React.FC = () => {
         <TabsContent value="hora">
           <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg">
             <CadastrarHora
-              editingItem={editingItem?.tipo === "Hora" ? editingItem : null}
+              key={editingItem?.id || 'new-hora'}
+              editingItem={activeTab === "hora" && editingItem?.tipo === "Hora" ? editingItem : null}
               onCancelEdit={handleCancelEdit}
               onSaveSuccess={handleSaveSuccess}
             />

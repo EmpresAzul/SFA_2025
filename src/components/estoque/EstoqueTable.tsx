@@ -253,14 +253,7 @@ export const EstoqueTable: React.FC<EstoqueTableProps> = ({
                           variant="ghost"
                           size="sm"
                           className="h-7 w-7 p-0 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
-                          onClick={() => {
-                            handleEdit(estoque);
-                            // Switch to form tab
-                            const tabTrigger = document.querySelector(
-                              '[value="formulario"]',
-                            ) as HTMLElement;
-                            if (tabTrigger) tabTrigger.click();
-                          }}
+                          onClick={() => handleEdit(estoque)}
                           title="Editar"
                         >
                           <Pencil className="h-3.5 w-3.5" />

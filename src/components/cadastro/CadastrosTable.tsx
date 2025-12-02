@@ -22,7 +22,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Eye, Edit, Trash2, ToggleLeft, ToggleRight, Users, Building, UserCheck } from 'lucide-react';
-import { CadastroData } from '@/types/cadastros';
+import type { CadastroData } from '@/types/cadastros';
 import CadastrosPagination from './CadastrosPagination';
 
 interface CadastrosTableProps {
@@ -51,11 +51,13 @@ const CadastrosTable: React.FC<CadastrosTableProps> = ({
   onDelete,
 }) => {
   const getTipoIcon = (tipo: string) => {
-    switch (tipo) {
+    const tipoLower = tipo?.toLowerCase() || '';
+    switch (tipoLower) {
       case 'cliente':
         return <Users className="h-4 w-4 text-blue-600" />;
       case 'fornecedor':
         return <Building className="h-4 w-4 text-green-600" />;
+      case 'funcionário':
       case 'funcionario':
         return <UserCheck className="h-4 w-4 text-purple-600" />;
       default:
@@ -64,11 +66,13 @@ const CadastrosTable: React.FC<CadastrosTableProps> = ({
   };
 
   const getTipoBadgeVariant = (tipo: string) => {
-    switch (tipo) {
+    const tipoLower = tipo?.toLowerCase() || '';
+    switch (tipoLower) {
       case 'cliente':
         return "default";
       case 'fornecedor':
         return "secondary";
+      case 'funcionário':
       case 'funcionario':
         return "outline";
       default:

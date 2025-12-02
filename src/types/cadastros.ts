@@ -1,50 +1,81 @@
+// Tipo unificado para cadastros - compatível com o banco de dados
 export interface CadastroData {
   id: string;
+  user_id: string;
   nome: string;
-  email: string;
-  telefone: string;
-  tipo: 'cliente' | 'fornecedor' | 'funcionario';
-  status: 'ativo' | 'inativo';
-  pessoa: 'Física' | 'Jurídica';
-  endereco?: {
-    rua: string;
-    numero: string;
-    complemento?: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-  };
-  documento?: {
-    tipo: 'cpf' | 'cnpj';
-    numero: string;
-  };
+  tipo: string; // 'Cliente', 'Fornecedor', 'Funcionário'
+  pessoa?: string; // 'Física' | 'Jurídica'
+  status: string; // 'ativo' | 'inativo'
+  ativo?: boolean;
+  cpf_cnpj?: string;
+  telefone?: string;
+  email?: string;
+  endereco?: string;
+  numero?: string;
+  bairro?: string;
+  cidade?: string;
+  estado?: string;
+  cep?: string;
   observacoes?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface ClienteData extends Omit<CadastroData, 'tipo'> {
-  tipo: 'cliente';
+  data_nascimento?: string;
+  cargo?: string;
+  salario?: number;
+  // Campos específicos de fornecedor
+  razao_social?: string;
+  tipo_fornecedor?: string;
+  contato_principal?: string;
+  ramo_atividade?: string;
+  // Campos específicos de funcionário
+  data_admissao?: string;
+  data_demissao?: string;
+  // Campos específicos de cliente
   limite_credito?: number;
-  data_cadastro: string;
+  data_cadastro?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
-export interface FornecedorData extends Omit<CadastroData, 'tipo'> {
-  tipo: 'fornecedor';
-  ramo_atividade: string;
-  contato_principal: string;
+// Alias para compatibilidade com código existente
+export type Cadastro = CadastroData;
+
+// Tipo para formulário de criação
+export interface CadastroFormData {
+  nome: string;
+  tipo: string;
+  pessoa?: string;
+  status?: string;
+  ativo?: boolean;
+  cpf_cnpj?: string;
+  telefone?: string;
+  email?: string;
+  endereco?: string;
+  numero?: string;
+  bairro?: string;
+  cidade?: string;
+  estado?: string;
+  cep?: string;
+  observacoes?: string;
+  data_nascimento?: string;
+  cargo?: string;
+  salario?: number;
+  razao_social?: string;
+  tipo_fornecedor?: string;
+  data_admissao?: string;
+  user_id?: string;
 }
 
-export interface FuncionarioData extends Omit<CadastroData, 'tipo'> {
-  tipo: 'funcionario';
-  cargo: string;
-  salario: number;
-  data_admissao: string;
+// Tipos específicos para formulários legados (compatibilidade)
+export interface ClienteData extends CadastroData {
+  limite_credito?: number;
+  data_cadastro?: string;
+}
+
+export interface FornecedorData extends CadastroData {
+  ramo_atividade?: string;
+  contato_principal?: string;
+}
+
+export interface FuncionarioData extends CadastroData {
+  data_admissao?: string;
   data_demissao?: string;
 }
-
-export type CadastroFormData = Omit<CadastroData, 'id' | 'created_at' | 'updated_at'>;
-
-// Alias para compatibilidade
-export type Cadastro = CadastroData;

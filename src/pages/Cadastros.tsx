@@ -245,9 +245,9 @@ const Cadastros: React.FC = () => {
         <TabsContent value="formulario">
           <CadastroForm
             tipo={tipoCapitalized}
-            formData={formData}
-            setFormData={(data) => setFormData(data)}
-            editingCadastro={editingCadastro ? convertCadastroToFormData(editingCadastro) : null}
+            formData={formData as any}
+            setFormData={(data) => setFormData(data as any)}
+            editingCadastro={editingCadastro ? convertCadastroToFormData(editingCadastro) as any : null}
             loading={loading}
             onSubmit={handleFormSubmit}
             onCancel={handleCancelEdit}

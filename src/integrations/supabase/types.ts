@@ -110,6 +110,57 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_leads: {
+        Row: {
+          company: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          next_follow_up: string | null
+          notes: string | null
+          phone: string | null
+          probability: number | null
+          source: string
+          status: string
+          updated_at: string
+          user_id: string
+          value: number | null
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          next_follow_up?: string | null
+          notes?: string | null
+          phone?: string | null
+          probability?: number | null
+          source?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          value?: number | null
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          next_follow_up?: string | null
+          notes?: string | null
+          phone?: string | null
+          probability?: number | null
+          source?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          value?: number | null
+        }
+        Relationships: []
+      }
       estoques: {
         Row: {
           created_at: string | null
