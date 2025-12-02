@@ -32,11 +32,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle, isMobile = false
         isMobile ? "w-64" : (collapsed ? "w-16" : "w-64"),
       )}
     >
-      {/* Background com cores corrigidas para mobile */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-blue-700/95 to-blue-800/90 backdrop-blur-xl"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-blue-900/10 via-transparent to-blue-900/20"></div>
+      {/* Background premium com cor #0F2340 */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0F2340] via-[#1a3557] to-[#0F2340] backdrop-blur-xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-blue-600/10"></div>
+      
+      {/* Efeito de brilho sutil */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-400/10 via-transparent to-transparent"></div>
 
-      <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-blue-400/30 via-blue-500/20 to-blue-400/30"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-blue-400/40 via-blue-500/30 to-blue-400/40 shadow-[0_0_8px_rgba(59,130,246,0.3)]"></div>
 
       <div className="relative z-10 h-full flex flex-col">
         <SidebarHeader collapsed={collapsed && !isMobile} isMobile={isMobile} />
