@@ -131,43 +131,54 @@ export const useLancamentosMutations = () => {
   const useUpdate = () => {
     return useMutation({
       mutationFn: async ({ id, ...updateData }: LancamentoUpdateData) => {
+        console.log("🔄 useUpdate: Iniciando atualização");
+        console.log("📦 useUpdate: ID:", id);
+        console.log("📦 useUpdate: Dados recebidos:", updateData);
+        
         if (!id) {
           throw new Error("ID do lançamento é obrigatório para atualização");
         }
 
-        // Remove campos que não devem ser atualizados diretamente
-        const {
-          created_at,
-          updated_at,
-          user_id,
-          status,
-          lancamento_pai_id,
-          recorrente,
-          meses_recorrencia,
-          ...dataToUpdate
-        } = updateData;
+        // Preparar dados SIMPLIFICADOS para atualização
+        const dataToUpdate: any = {};
+        
+        // Campos que podem ser atualizados
+        if (updateData.data) dataToUpdate.data = updateData.data;
+        if (updateData.tipo) dataToUpdate.tipo = updateData.tipo;
+        if (updateData.categoria) dataToUpdate.categoria = updateData.categoria;
+        if (updateData.valor !== undefined) dataToUpdate.valor = updateData.valor;
+        
+        // Campos opcionais
+        if (updateData.descricao !== undefined) dataToUpdate.descricao = updateData.descricao;
+        if (updateData.observacoes !== undefined) dataToUpdate.observacoes = updateData.observacoes;
+        if (updateData.cliente_id !== undefined) dataToUpdate.cliente_id = updateData.cliente_id;
+        if (updateData.fornecedor_id !== undefined) dataToUpdate.fornecedor_id = updateData.fornecedor_id;
+
+        console.log("📤 useUpdate: Enviando para Supabase:", dataToUpdate);
 
         const { data, error } = await supabase
           .from("lancamentos")
           .update(dataToUpdate)
           .eq("id", id)
-          .select(
-            `
-            *,
-            cliente:cadastros!cliente_id(id, nome),
-            fornecedor:cadastros!fornecedor_id(id, nome)
-          `,
-          )
+          .select()
           .single();
 
         if (error) {
-          console.error("❌ Erro ao atualizar lançamento:", error.message);
+          console.error("❌ useUpdate: Erro do Supabase:", error);
+          console.error("❌ useUpdate: Detalhes:", {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
           throw error;
         }
 
+        console.log("✅ useUpdate: Lançamento atualizado com sucesso:", data);
         return data;
       },
       onSuccess: (data) => {
+        console.log("✅ useUpdate onSuccess: Invalidando queries");
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         
@@ -175,17 +186,24 @@ export const useLancamentosMutations = () => {
         logDataModification("lancamentos", "UPDATE", data.id, {
           updated_fields: Object.keys(data).filter(key => key !== 'id' && key !== 'created_at' && key !== 'updated_at'),
         });
+        
+        toast({
+          title: "✅ Atualizado!",
+          description: "Lançamento atualizado com sucesso.",
+          duration: 3000,
+        });
+        
+        console.log("✅ useUpdate onSuccess: Concluído");
       },
       onError: (error: unknown) => {
-        console.error(
-          "useLancamentosMutations: Erro na mutation de atualização:",
-          error,
-        );
+        console.error("❌ useUpdate onError: Erro ao atualizar:", error);
         const errorMessage = error instanceof Error ? error.message : "Erro ao atualizar lançamento. Tente novamente.";
+        
         toast({
-          title: "Erro",
+          title: "❌ Erro ao Atualizar",
           description: errorMessage,
           variant: "destructive",
+          duration: 5000,
         });
       },
     });
