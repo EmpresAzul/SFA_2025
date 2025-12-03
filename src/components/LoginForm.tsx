@@ -229,73 +229,59 @@ const LoginForm: React.FC = () => {
       
       <div className="relative z-10 w-full max-w-md px-4">
         {/* Card Unificado com Logo e Formulário */}
-        <Card className="bg-white/10 backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/20 overflow-hidden rounded-3xl animate-slide-up">
+        <Card className="bg-[#3a5a7a]/95 backdrop-blur-xl shadow-2xl border border-white/10 overflow-hidden rounded-2xl animate-slide-up">
           {/* Logo no topo do card */}
-          <div className="pt-8 pb-6 text-center border-b border-white/10">
+          <div className="pt-8 pb-6 text-center">
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              <span className="text-white drop-shadow-[0_2px_15px_rgba(255,255,255,0.4)]">FLUXO</span>
-              <span className="drop-shadow-[0_2px_15px_rgba(54,118,220,0.6)]" style={{ color: '#3676DC' }}>AZUL</span>
+              <span className="text-white">FLUXO</span>
+              <span style={{ color: '#3676DC' }}>AZUL</span>
             </h1>
-            <div className="h-1 w-20 mx-auto bg-gradient-to-r from-white via-[#3676DC] to-white rounded-full opacity-60 mt-3"></div>
+            <div className="h-0.5 w-16 mx-auto bg-white/30 mt-3"></div>
           </div>
 
           {/* Formulário */}
-          <div className="p-8">
-            <form onSubmit={handleLogin} className="space-y-6">
+          <div className="px-8 pb-8">
+            <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-white font-semibold text-sm flex items-center gap-2"
-                >
-                  <span className="w-1.5 h-1.5 bg-[#3676DC] rounded-full"></span>
-                  E-mail
-                </Label>
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={handleEmailChange}
-                  placeholder="seu@email.com"
+                  placeholder="E-mail"
                   required
-                  className={`h-12 border-2 bg-white/10 backdrop-blur-sm text-white placeholder:text-white/50 ${
-                    errors.email ? "border-red-500" : "border-white/30"
-                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 transition-all duration-300 rounded-xl shadow-sm hover:shadow-md hover:bg-white/20`}
+                  className={`h-12 border-2 bg-white text-gray-900 placeholder:text-gray-500 ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-200 rounded-lg`}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email}</p>
+                  <p className="text-red-400 text-sm">{errors.email}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label
-                  htmlFor="password"
-                  className="text-white font-semibold text-sm flex items-center gap-2"
-                >
-                  <span className="w-1.5 h-1.5 bg-[#3676DC] rounded-full"></span>
-                  Senha
-                </Label>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={handlePasswordChange}
-                    placeholder="••••••••"
+                    placeholder="Senha"
                     required
-                    className={`h-12 border-2 bg-white/10 backdrop-blur-sm text-white placeholder:text-white/50 ${
-                      errors.password ? "border-red-500" : "border-white/30"
-                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 transition-all duration-300 rounded-xl pr-12 shadow-sm hover:shadow-md hover:bg-white/20`}
+                    className={`h-12 border-2 bg-white text-gray-900 placeholder:text-gray-500 ${
+                      errors.password ? "border-red-500" : "border-gray-300"
+                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-200 rounded-lg pr-12`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-[#3676DC] transition-all duration-200 hover:scale-110"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#3676DC] transition-colors"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm">{errors.password}</p>
+                  <p className="text-red-400 text-sm">{errors.password}</p>
                 )}
               </div>
 
@@ -319,22 +305,21 @@ const LoginForm: React.FC = () => {
                 </div>
               )}
 
-              <div className="pt-4">
+              <div className="pt-3">
                 <Button
                   type="submit"
                   disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
-                  className="w-full h-14 bg-gradient-to-r from-[#1a3a5c] via-[#3676DC] to-[#4a8ef5] hover:from-[#3676DC] hover:via-[#4a8ef5] hover:to-[#5a9eff] text-white font-bold rounded-xl shadow-lg hover:shadow-2xl hover:shadow-[#3676DC]/50 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-base relative overflow-hidden group"
+                  className="w-full h-12 bg-gradient-to-r from-[#2d5a8a] to-[#3676DC] hover:from-[#3676DC] hover:to-[#4a8ef5] text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                   {loading ? (
-                    <div className="flex items-center justify-center space-x-3 relative z-10">
-                      <div className="animate-spin rounded-full h-5 w-5 border-3 border-white/30 border-t-white"></div>
-                      <span className="font-bold">Entrando...</span>
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
+                      <span>Entrando...</span>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center space-x-3 relative z-10">
-                      <LogIn size={22} className="group-hover:rotate-12 transition-transform duration-300" />
-                      <span className="font-bold tracking-wide">Entrar no Sistema</span>
+                    <div className="flex items-center justify-center space-x-2">
+                      <LogIn size={20} />
+                      <span>Entrar no Sistema</span>
                     </div>
                   )}
                 </Button>
@@ -342,11 +327,11 @@ const LoginForm: React.FC = () => {
             </form>
 
             {/* Forgot Password Link */}
-            <div className="mt-6 text-center">
+            <div className="mt-5 text-center">
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-sm font-bold text-white/90 hover:text-white hover:underline transition-all duration-200 hover:scale-105 inline-block"
+                className="text-sm font-semibold text-white/90 hover:text-white hover:underline transition-colors"
               >
                 Esqueci minha senha
               </button>
