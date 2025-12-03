@@ -258,9 +258,9 @@ const LoginForm: React.FC = () => {
                   onChange={handleEmailChange}
                   placeholder="Email ID"
                   required
-                  className={`h-14 bg-white/10 backdrop-blur-md text-white placeholder:text-white/50 border-0 border-b-2 ${
+                  className={`h-14 bg-transparent backdrop-blur-md text-white placeholder:text-white/50 border-0 border-b-2 ${
                     errors.email ? "border-red-400" : "border-white/30"
-                  } focus:border-white/60 focus:bg-white/15 transition-all duration-300 rounded-t-xl rounded-b-none pl-12 pr-4`}
+                  } focus:border-white/60 focus:bg-white/5 transition-all duration-300 rounded-t-xl rounded-b-none pl-12 pr-4`}
                 />
                 {errors.email && (
                   <p className="text-red-300 text-xs mt-1.5 ml-1">{errors.email}</p>
@@ -279,9 +279,9 @@ const LoginForm: React.FC = () => {
                   onChange={handlePasswordChange}
                   placeholder="Password"
                   required
-                  className={`h-14 bg-white/10 backdrop-blur-md text-white placeholder:text-white/50 border-0 border-b-2 ${
+                  className={`h-14 bg-transparent backdrop-blur-md text-white placeholder:text-white/50 border-0 border-b-2 ${
                     errors.password ? "border-red-400" : "border-white/30"
-                  } focus:border-white/60 focus:bg-white/15 transition-all duration-300 rounded-t-xl rounded-b-none pl-12 pr-12`}
+                  } focus:border-white/60 focus:bg-white/5 transition-all duration-300 rounded-t-xl rounded-b-none pl-12 pr-12`}
                 />
                 <button
                   type="button"
