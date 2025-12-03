@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { Eye, EyeOff, Mail, Lock, Shield } from "lucide-react";
+import { Eye, EyeOff, Lock, ArrowRight, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useInputValidation, validateEmail } from "@/hooks/useInputValidation";
 import { loginRateLimiter } from "@/utils/inputSanitization";
@@ -26,9 +26,8 @@ const LoginForm: React.FC = () => {
     remainingAttempts: number;
     resetTime: number | null;
   }>({ isLimited: false, remainingAttempts: 5, resetTime: null });
-  console.log('LoginForm: About to call useAuth...');
+  
   const { signIn, user } = useAuth();
-  console.log('LoginForm: useAuth called successfully', { user: !!user });
   const navigate = useNavigate();
   const { logLoginAttempt, logSuspiciousActivity } = useSecurity();
   const {
@@ -40,14 +39,12 @@ const LoginForm: React.FC = () => {
     password: { required: true, minLength: 6, message: 'Senha é obrigatória' }
   });
 
-  // Redirecionar se já estiver logado
   useEffect(() => {
     if (user) {
       navigate("/dashboard");
     }
   }, [user, navigate]);
 
-  // Check rate limiting status
   useEffect(() => {
     const identifier = `login_${email || 'anonymous'}`;
     const isLimited = loginRateLimiter.isRateLimited(identifier);
@@ -78,7 +75,6 @@ const LoginForm: React.FC = () => {
 
     const identifier = `login_${email}`;
     
-    // Check rate limiting
     if (loginRateLimiter.isRateLimited(identifier)) {
       const resetTime = loginRateLimiter.getResetTime(identifier);
       const resetDate = resetTime ? new Date(resetTime) : new Date();
@@ -98,7 +94,6 @@ const LoginForm: React.FC = () => {
       return;
     }
 
-    // Validate form data
     const isValid = validateForm({ email, password });
     if (!isValid) {
       toast({
@@ -124,7 +119,6 @@ const LoginForm: React.FC = () => {
       const result = await signIn(email, password);
       
       if (result.error) {
-        // Log failed attempt
         await logLoginAttempt(false, { 
           email, 
           error: result.error.message,
@@ -134,16 +128,14 @@ const LoginForm: React.FC = () => {
         throw result.error;
       }
 
-      // Log successful attempt
       await logLoginAttempt(true, { email, identifier });
       
       toast({
         title: "Login realizado com êxito!",
-        description: "Bem-vindo ao FluxoAzul! Você foi autenticado com sucesso.",
+        description: "Bem-vindo ao FluxoAzul!",
       });
       navigate("/dashboard");
     } catch (error: any) {
-      // Update rate limiting info
       const isLimited = loginRateLimiter.isRateLimited(identifier);
       const remainingAttempts = loginRateLimiter.getRemainingAttempts(identifier);
       const resetTime = loginRateLimiter.getResetTime(identifier);
@@ -201,7 +193,6 @@ const LoginForm: React.FC = () => {
       setShowForgotPassword(false);
       setResetEmail("");
     } catch (error: any) {
-      console.error("Error sending reset email:", error);
       toast({
         title: "Erro ao enviar",
         description: "Erro ao enviar email. Verifique se o email está cadastrado.",
@@ -213,120 +204,99 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#172a5a]">
-      <div className="w-full max-w-[350px] px-6">
-        {/* Glassmorphism Card */}
-        <div className="backdrop-blur-[10px] bg-white/15 rounded-[20px] border border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] p-10 text-center">
-          
-          {/* Logo */}
-          <div className="mb-8">
-            <h1 className="text-[2.2rem] font-bold text-white" style={{ fontFamily: 'Poppins, sans-serif', letterSpacing: '1px' }}>
-              FLUXO<span className="text-[#4A90E2]">AZUL</span>
-            </h1>
+    <div className="min-h-screen flex justify-center items-center bg-[#172a5a]" style={{ fontFamily: 'Poppins, sans-serif' }}>
+      <div className="w-[350px] px-[30px] py-[40px] bg-white/15 rounded-[20px] border border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] backdrop-blur-[10px] text-center">
+        
+        {/* Logo */}
+        <div className="mb-[30px]">
+          <h1 className="text-white text-[2.2rem] font-bold" style={{ letterSpacing: '1px' }}>
+            FLUXO<span className="text-[#4A90E2]">AZUL</span>
+          </h1>
+        </div>
+
+        {/* Formulário */}
+        <form onSubmit={handleLogin}>
+          {/* Campo E-mail */}
+          <div className="relative mb-5">
+            <Input
+              type="email"
+              placeholder="E-mail"
+              value={email}
+              onChange={handleEmailChange}
+              required
+              className="w-full px-[15px] pr-[40px] py-3 bg-white/90 text-[#333] text-base border-0 rounded-[10px] outline-none transition-all duration-300 placeholder:text-[#888] focus:shadow-[0_0_0_2px_#4A90E2]"
+            />
+            <div className="absolute top-1/2 right-[15px] transform -translate-y-1/2 pointer-events-none">
+              <Lock className="w-5 h-5 text-[#555]" />
+            </div>
+            {errors.email && (
+              <p className="text-red-300 text-xs mt-1 text-left">{errors.email}</p>
+            )}
           </div>
 
-          {/* Formulário */}
-          <form onSubmit={handleLogin} className="space-y-5">
-            {/* Email Field */}
-            <div className="relative">
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={handleEmailChange}
-                placeholder="E-mail"
-                required
-                className={`w-full h-12 px-4 pr-10 bg-white/90 text-gray-800 placeholder:text-gray-500 border-0 rounded-[10px] outline-none transition-all duration-300 ${
-                  errors.email ? "shadow-[0_0_0_2px_#ef4444]" : "focus:shadow-[0_0_0_2px_#4A90E2]"
-                }`}
-              />
-              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <Lock className="w-5 h-5 text-gray-600" />
-              </div>
-              {errors.email && (
-                <p className="text-red-300 text-xs mt-1.5 text-left">{errors.email}</p>
-              )}
-            </div>
-
-            {/* Password Field */}
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={handlePasswordChange}
-                placeholder="Senha"
-                required
-                className={`w-full h-12 px-4 pr-10 bg-white/90 text-gray-800 placeholder:text-gray-500 border-0 rounded-[10px] outline-none transition-all duration-300 ${
-                  errors.password ? "shadow-[0_0_0_2px_#ef4444]" : "focus:shadow-[0_0_0_2px_#4A90E2]"
-                }`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
-              >
-                {showPassword ? <EyeOff className="w-5 h-5 text-gray-600" /> : <Eye className="w-5 h-5 text-gray-600" />}
-              </button>
-              {errors.password && (
-                <p className="text-red-300 text-xs mt-1.5 text-left">{errors.password}</p>
-              )}
-            </div>
-
-            {/* Rate limiting info */}
-            {rateLimitInfo.isLimited && (
-              <div className="flex items-center space-x-2 p-2.5 bg-red-500/20 border border-red-400/30 rounded-lg">
-                <Shield className="h-4 w-4 text-red-300" />
-                <p className="text-red-200 text-xs text-left">
-                  Bloqueado por segurança.
-                  {rateLimitInfo.resetTime && ` Tente após ${new Date(rateLimitInfo.resetTime).toLocaleTimeString()}.`}
-                </p>
-              </div>
-            )}
-            
-            {!rateLimitInfo.isLimited && rateLimitInfo.remainingAttempts < 3 && (
-              <div className="flex items-center space-x-2 p-2.5 bg-yellow-500/20 border border-yellow-400/30 rounded-lg">
-                <Shield className="h-4 w-4 text-yellow-300" />
-                <p className="text-yellow-200 text-xs text-left">
-                  {rateLimitInfo.remainingAttempts} tentativas restantes.
-                </p>
-              </div>
-            )}
-
-            {/* Login Button */}
-            <Button
-              type="submit"
-              disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
-              className="w-full h-12 mt-4 bg-gradient-to-r from-[#4A90E2] to-[#1E79DE] hover:from-[#1E79DE] hover:to-[#4A90E2] text-white font-semibold rounded-[10px] shadow-[0_4px_10px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_15px_rgba(0,0,0,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          {/* Campo Senha */}
+          <div className="relative mb-5">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Senha"
+              value={password}
+              onChange={handlePasswordChange}
+              required
+              className="w-full px-[15px] pr-[40px] py-3 bg-white/90 text-[#333] text-base border-0 rounded-[10px] outline-none transition-all duration-300 placeholder:text-[#888] focus:shadow-[0_0_0_2px_#4A90E2]"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute top-1/2 right-[15px] transform -translate-y-1/2 cursor-pointer"
             >
-              {loading ? (
-                <div className="flex items-center justify-center gap-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
-                  <span>Entrando...</span>
-                </div>
+              {showPassword ? (
+                <Eye className="w-5 h-5 text-[#555]" />
               ) : (
-                <div className="flex items-center justify-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  <span>Entrar no Sistema</span>
-                </div>
+                <EyeOff className="w-5 h-5 text-[#555]" />
               )}
-            </Button>
+            </button>
+            {errors.password && (
+              <p className="text-red-300 text-xs mt-1 text-left">{errors.password}</p>
+            )}
+          </div>
 
-            {/* Forgot Password Link */}
-            <div className="text-center mt-5">
-              <button
-                type="button"
-                onClick={() => setShowForgotPassword(true)}
-                className="text-sm text-white/80 hover:text-[#4A90E2] transition-colors"
-              >
-                Esqueci minha senha
-              </button>
+          {/* Rate limiting */}
+          {rateLimitInfo.isLimited && (
+            <div className="flex items-center gap-2 p-2 mb-4 bg-red-500/20 border border-red-400/30 rounded-lg">
+              <Shield className="w-4 h-4 text-red-300" />
+              <p className="text-red-200 text-xs text-left">
+                Bloqueado. {rateLimitInfo.resetTime && `Tente após ${new Date(rateLimitInfo.resetTime).toLocaleTimeString()}.`}
+              </p>
             </div>
-          </form>
-        </div>
+          )}
+
+          {/* Botão Login */}
+          <Button
+            type="submit"
+            disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
+            className="w-full py-3 mt-[15px] bg-gradient-to-r from-[#4A90E2] to-[#1E79DE] hover:from-[#1E79DE] hover:to-[#4A90E2] text-white text-base font-semibold border-0 rounded-[10px] cursor-pointer transition-all duration-300 shadow-[0_4px_10px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_15px_rgba(0,0,0,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <span>Entrando...</span>
+            ) : (
+              <span className="flex items-center justify-center gap-2">
+                <ArrowRight className="w-4 h-4" />
+                Entrar no Sistema
+              </span>
+            )}
+          </Button>
+        </form>
+
+        {/* Link Esqueci minha senha */}
+        <button
+          onClick={() => setShowForgotPassword(true)}
+          className="block mt-5 text-white/80 text-[0.9rem] no-underline transition-colors duration-300 hover:text-[#4A90E2] cursor-pointer bg-transparent border-0"
+        >
+          Esqueci minha senha
+        </button>
       </div>
 
-      {/* Forgot Password Dialog */}
+      {/* Dialog Recuperar Senha */}
       <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
         <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-xl border border-white/30 shadow-2xl">
           <DialogHeader>
@@ -339,8 +309,7 @@ const LoginForm: React.FC = () => {
           </DialogHeader>
           <form onSubmit={handleForgotPassword} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="reset-email" className="text-gray-800 font-semibold flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-[#4A90E2] rounded-full"></span>
+              <Label htmlFor="reset-email" className="text-gray-800 font-semibold">
                 Email
               </Label>
               <Input
@@ -349,11 +318,11 @@ const LoginForm: React.FC = () => {
                 placeholder="seu@email.com"
                 value={resetEmail}
                 onChange={(e) => setResetEmail(sanitizeSecurityInput(e.target.value.trim()))}
-                className="h-12 border-2 border-gray-200 focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 rounded-xl transition-all duration-300"
+                className="h-12 border-2 border-gray-200 focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 rounded-xl"
                 disabled={resetLoading}
               />
             </div>
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3">
               <Button
                 type="button"
                 variant="outline"
@@ -361,14 +330,14 @@ const LoginForm: React.FC = () => {
                   setShowForgotPassword(false);
                   setResetEmail("");
                 }}
-                className="flex-1 h-12 border-2 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200"
+                className="flex-1 h-12 border-2 rounded-xl font-semibold"
                 disabled={resetLoading}
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
-                className="flex-1 h-12 bg-gradient-to-r from-[#4A90E2] to-[#1E79DE] hover:from-[#1E79DE] hover:to-[#4A90E2] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="flex-1 h-12 bg-gradient-to-r from-[#4A90E2] to-[#1E79DE] hover:from-[#1E79DE] hover:to-[#4A90E2] text-white font-bold rounded-xl"
                 disabled={resetLoading}
               >
                 {resetLoading ? "Enviando..." : "Enviar Link"}
