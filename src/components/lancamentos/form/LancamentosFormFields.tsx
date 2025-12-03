@@ -84,11 +84,11 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
         </RadioGroup>
       </div>
 
-      {/* Data e Valor */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Data, Data de Vencimento/Recebimento e Valor */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="data" className="text-sm font-medium text-gray-700">
-            Data *
+            Data do Lançamento *
           </Label>
           <Input
             id="data"
@@ -98,6 +98,40 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
             className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
+
+        {formData.tipo === "despesa" ? (
+          <div className="space-y-2">
+            <Label htmlFor="data_vencimento" className="text-sm font-medium text-gray-700">
+              Data de Vencimento *
+            </Label>
+            <Input
+              id="data_vencimento"
+              type="date"
+              value={formData.data_vencimento || formData.data}
+              onChange={(e) => handleInputChange("data_vencimento", e.target.value)}
+              className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-600">
+              Define quando a despesa deve ser paga
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <Label htmlFor="data_recebimento" className="text-sm font-medium text-gray-700">
+              Data de Recebimento *
+            </Label>
+            <Input
+              id="data_recebimento"
+              type="date"
+              value={formData.data_recebimento || formData.data}
+              onChange={(e) => handleInputChange("data_recebimento", e.target.value)}
+              className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-600">
+              Define quando a receita será recebida
+            </p>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label htmlFor="valor" className="text-sm font-medium text-gray-700">

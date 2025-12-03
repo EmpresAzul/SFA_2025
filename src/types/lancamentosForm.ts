@@ -10,6 +10,8 @@ export interface LancamentoFormData {
   descricao: string;
   valor: string;
   data: string;
+  data_vencimento?: string;
+  data_recebimento?: string;
   tipo: "receita" | "despesa";
   categoria: string;
   cliente_id?: string;

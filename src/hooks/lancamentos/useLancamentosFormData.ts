@@ -6,6 +6,8 @@ import { formatNumberToInput } from "@/utils/currency";
 const getInitialFormData = (): LancamentoFormData => ({
   descricao: "",
   data: new Date().toISOString().split("T")[0],
+  data_vencimento: new Date().toISOString().split("T")[0],
+  data_recebimento: new Date().toISOString().split("T")[0],
   tipo: "receita",
   categoria: "",
   valor: "0,00",
@@ -25,6 +27,8 @@ export const useLancamentosFormData = (
       return {
         descricao: editingLancamento.descricao || "",
         data: editingLancamento.data,
+        data_vencimento: (editingLancamento as any).data_vencimento || editingLancamento.data,
+        data_recebimento: (editingLancamento as any).data_recebimento || editingLancamento.data,
         tipo: editingLancamento.tipo,
         categoria: editingLancamento.categoria,
         valor: valorFormatado,
@@ -45,6 +49,8 @@ export const useLancamentosFormData = (
     const loadedData: LancamentoFormData = {
       descricao: lancamento.descricao || "",
       data: lancamento.data,
+      data_vencimento: (lancamento as any).data_vencimento || lancamento.data,
+      data_recebimento: (lancamento as any).data_recebimento || lancamento.data,
       tipo: lancamento.tipo,
       categoria: lancamento.categoria,
       valor: valorFormatado,
