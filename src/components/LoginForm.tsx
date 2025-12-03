@@ -240,7 +240,7 @@ const LoginForm: React.FC = () => {
 
           {/* Formulário */}
           <div className="px-8 pb-8">
-            <form onSubmit={handleLogin} className="space-y-5">
+            <form onSubmit={handleLogin} className="space-y-3">
               <div>
                 <Input
                   id="email"
@@ -249,9 +249,9 @@ const LoginForm: React.FC = () => {
                   onChange={handleEmailChange}
                   placeholder="E-mail"
                   required
-                  className={`h-12 border-2 bg-[#3676DC]/30 backdrop-blur-md text-white placeholder:text-white/60 ${
-                    errors.email ? "border-red-400" : "border-[#3676DC]/50"
-                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-[#3676DC]/40 transition-all duration-200 rounded-lg hover:bg-[#3676DC]/35`}
+                  className={`h-12 border-2 bg-white/90 backdrop-blur-md text-black placeholder:text-gray-500 ${
+                    errors.email ? "border-red-400" : "border-white/50"
+                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-white transition-all duration-200 rounded-lg hover:bg-white`}
                 />
                 {errors.email && (
                   <p className="text-red-300 text-sm mt-1">{errors.email}</p>
@@ -267,14 +267,14 @@ const LoginForm: React.FC = () => {
                     onChange={handlePasswordChange}
                     placeholder="Senha"
                     required
-                    className={`h-12 border-2 bg-[#3676DC]/30 backdrop-blur-md text-white placeholder:text-white/60 ${
-                      errors.password ? "border-red-400" : "border-[#3676DC]/50"
-                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-[#3676DC]/40 transition-all duration-200 rounded-lg pr-12 hover:bg-[#3676DC]/35`}
+                    className={`h-12 border-2 bg-white/90 backdrop-blur-md text-black placeholder:text-gray-500 ${
+                      errors.password ? "border-red-400" : "border-white/50"
+                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-white transition-all duration-200 rounded-lg pr-12 hover:bg-white`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white transition-colors"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-black transition-colors"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
@@ -304,7 +304,7 @@ const LoginForm: React.FC = () => {
                 </div>
               )}
 
-              <div className="pt-3">
+              <div>
                 <Button
                   type="submit"
                   disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
