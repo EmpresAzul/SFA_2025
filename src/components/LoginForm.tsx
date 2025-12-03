@@ -250,12 +250,12 @@ const LoginForm: React.FC = () => {
                   onChange={handleEmailChange}
                   placeholder="E-mail"
                   required
-                  className={`h-12 border-2 bg-white text-gray-900 placeholder:text-gray-500 ${
-                    errors.email ? "border-red-500" : "border-gray-300"
-                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-200 rounded-lg`}
+                  className={`h-12 border-2 bg-white/20 backdrop-blur-md text-white placeholder:text-white/60 ${
+                    errors.email ? "border-red-400" : "border-white/30"
+                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-white/30 transition-all duration-200 rounded-lg hover:bg-white/25`}
                 />
                 {errors.email && (
-                  <p className="text-red-400 text-sm mt-1">{errors.email}</p>
+                  <p className="text-red-300 text-sm mt-1">{errors.email}</p>
                 )}
               </div>
 
@@ -268,20 +268,20 @@ const LoginForm: React.FC = () => {
                     onChange={handlePasswordChange}
                     placeholder="Senha"
                     required
-                    className={`h-12 border-2 bg-white text-gray-900 placeholder:text-gray-500 ${
-                      errors.password ? "border-red-500" : "border-gray-300"
-                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-200 rounded-lg pr-12`}
+                    className={`h-12 border-2 bg-white/20 backdrop-blur-md text-white placeholder:text-white/60 ${
+                      errors.password ? "border-red-400" : "border-white/30"
+                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-white/30 transition-all duration-200 rounded-lg pr-12 hover:bg-white/25`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#3676DC] transition-colors"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white transition-colors"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-400 text-sm mt-1">{errors.password}</p>
+                  <p className="text-red-300 text-sm mt-1">{errors.password}</p>
                 )}
               </div>
 
