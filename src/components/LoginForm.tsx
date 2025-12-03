@@ -213,138 +213,116 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#3d2463] via-[#4a2d5c] to-[#2d1b4e]">
-      {/* Animated gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-pink-500/30 to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-blue-500/30 to-purple-600/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-br from-pink-400/20 via-purple-500/20 to-blue-400/20 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 w-full max-w-md px-6">
-        {/* Glassmorphism Card Premium */}
-        <div className="relative backdrop-blur-3xl bg-gradient-to-br from-purple-600/40 via-pink-500/40 to-blue-500/40 rounded-[2.5rem] shadow-2xl border border-white/20 p-10 overflow-hidden">
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 via-purple-500/20 to-blue-500/20 rounded-[2.5rem]"></div>
+    <div className="min-h-screen flex items-center justify-center bg-[#172a5a]">
+      <div className="w-full max-w-[350px] px-6">
+        {/* Glassmorphism Card */}
+        <div className="backdrop-blur-[10px] bg-white/15 rounded-[20px] border border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] p-10 text-center">
           
-          {/* Content */}
-          <div className="relative z-10">
-            {/* Avatar Circle */}
-            <div className="flex justify-center mb-8">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-400/30 via-purple-400/30 to-blue-400/30 backdrop-blur-xl border-2 border-white/30 flex items-center justify-center shadow-xl">
-                <User className="w-12 h-12 text-white/80" strokeWidth={1.5} />
-              </div>
-            </div>
-
-            {/* Logo */}
-            <div className="mb-10 text-center">
-              <h1 className="text-3xl font-bold" style={{ fontFamily: 'Poppins, sans-serif', letterSpacing: '1px' }}>
-                <span className="text-white">FLUXO</span>
-                <span className="text-[#5B9EFF]">AZUL</span>
-              </h1>
-            </div>
-
-            {/* Formulário */}
-            <form onSubmit={handleLogin} className="space-y-5">
-              {/* Email Field */}
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
-                  <Mail className="w-5 h-5 text-white/60" strokeWidth={2} />
-                </div>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  placeholder="Email ID"
-                  required
-                  className={`h-14 bg-white/10 backdrop-blur-md text-white placeholder:text-white/50 border-0 border-b-2 ${
-                    errors.email ? "border-red-400" : "border-white/30"
-                  } focus:border-white/60 focus:bg-white/15 transition-all duration-300 rounded-t-xl rounded-b-none pl-12 pr-4`}
-                />
-                {errors.email && (
-                  <p className="text-red-300 text-xs mt-1.5 ml-1">{errors.email}</p>
-                )}
-              </div>
-
-              {/* Password Field */}
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
-                  <Lock className="w-5 h-5 text-white/60" strokeWidth={2} />
-                </div>
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={handlePasswordChange}
-                  placeholder="Password"
-                  required
-                  className={`h-14 bg-white/10 backdrop-blur-md text-white placeholder:text-white/50 border-0 border-b-2 ${
-                    errors.password ? "border-red-400" : "border-white/30"
-                  } focus:border-white/60 focus:bg-white/15 transition-all duration-300 rounded-t-xl rounded-b-none pl-12 pr-12`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white/90 transition-colors z-10"
-                >
-                  {showPassword ? <EyeOff size={18} strokeWidth={2} /> : <Eye size={18} strokeWidth={2} />}
-                </button>
-                {errors.password && (
-                  <p className="text-red-300 text-xs mt-1.5 ml-1">{errors.password}</p>
-                )}
-              </div>
-
-              {/* Rate limiting info */}
-              {rateLimitInfo.isLimited && (
-                <div className="flex items-center space-x-2 p-3 bg-red-500/20 backdrop-blur-md border border-red-400/30 rounded-xl">
-                  <Shield className="h-4 w-4 text-red-300" />
-                  <p className="text-red-200 text-xs">
-                    Bloqueado por segurança.
-                    {rateLimitInfo.resetTime && ` Tente após ${new Date(rateLimitInfo.resetTime).toLocaleTimeString()}.`}
-                  </p>
-                </div>
-              )}
-              
-              {!rateLimitInfo.isLimited && rateLimitInfo.remainingAttempts < 3 && (
-                <div className="flex items-center space-x-2 p-3 bg-yellow-500/20 backdrop-blur-md border border-yellow-400/30 rounded-xl">
-                  <Shield className="h-4 w-4 text-yellow-300" />
-                  <p className="text-yellow-200 text-xs">
-                    {rateLimitInfo.remainingAttempts} tentativas restantes.
-                  </p>
-                </div>
-              )}
-
-              {/* Login Button */}
-              <div className="pt-4">
-                <Button
-                  type="submit"
-                  disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
-                  className="w-full h-14 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 hover:from-purple-500 hover:via-pink-500 hover:to-blue-500 text-white font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none uppercase tracking-wider text-sm"
-                >
-                  {loading ? (
-                    <div className="flex items-center justify-center gap-3">
-                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
-                      <span>Entrando...</span>
-                    </div>
-                  ) : (
-                    "LOGIN"
-                  )}
-                </Button>
-              </div>
-
-              {/* Forgot Password Link */}
-              <div className="text-center pt-5">
-                <button
-                  type="button"
-                  onClick={() => setShowForgotPassword(true)}
-                  className="text-sm text-white/70 hover:text-white transition-colors"
-                >
-                  Esqueci minha senha
-                </button>
-              </div>
-            </form>
+          {/* Logo */}
+          <div className="mb-8">
+            <h1 className="text-[2.2rem] font-bold text-white" style={{ fontFamily: 'Poppins, sans-serif', letterSpacing: '1px' }}>
+              FLUXO<span className="text-[#4A90E2]">AZUL</span>
+            </h1>
           </div>
+
+          {/* Formulário */}
+          <form onSubmit={handleLogin} className="space-y-5">
+            {/* Email Field */}
+            <div className="relative">
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={handleEmailChange}
+                placeholder="E-mail"
+                required
+                className={`w-full h-12 px-4 pr-10 bg-white/90 text-gray-800 placeholder:text-gray-500 border-0 rounded-[10px] outline-none transition-all duration-300 ${
+                  errors.email ? "shadow-[0_0_0_2px_#ef4444]" : "focus:shadow-[0_0_0_2px_#4A90E2]"
+                }`}
+              />
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <Lock className="w-5 h-5 text-gray-600" />
+              </div>
+              {errors.email && (
+                <p className="text-red-300 text-xs mt-1.5 text-left">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Password Field */}
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={handlePasswordChange}
+                placeholder="Senha"
+                required
+                className={`w-full h-12 px-4 pr-10 bg-white/90 text-gray-800 placeholder:text-gray-500 border-0 rounded-[10px] outline-none transition-all duration-300 ${
+                  errors.password ? "shadow-[0_0_0_2px_#ef4444]" : "focus:shadow-[0_0_0_2px_#4A90E2]"
+                }`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5 text-gray-600" /> : <Eye className="w-5 h-5 text-gray-600" />}
+              </button>
+              {errors.password && (
+                <p className="text-red-300 text-xs mt-1.5 text-left">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Rate limiting info */}
+            {rateLimitInfo.isLimited && (
+              <div className="flex items-center space-x-2 p-2.5 bg-red-500/20 border border-red-400/30 rounded-lg">
+                <Shield className="h-4 w-4 text-red-300" />
+                <p className="text-red-200 text-xs text-left">
+                  Bloqueado por segurança.
+                  {rateLimitInfo.resetTime && ` Tente após ${new Date(rateLimitInfo.resetTime).toLocaleTimeString()}.`}
+                </p>
+              </div>
+            )}
+            
+            {!rateLimitInfo.isLimited && rateLimitInfo.remainingAttempts < 3 && (
+              <div className="flex items-center space-x-2 p-2.5 bg-yellow-500/20 border border-yellow-400/30 rounded-lg">
+                <Shield className="h-4 w-4 text-yellow-300" />
+                <p className="text-yellow-200 text-xs text-left">
+                  {rateLimitInfo.remainingAttempts} tentativas restantes.
+                </p>
+              </div>
+            )}
+
+            {/* Login Button */}
+            <Button
+              type="submit"
+              disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
+              className="w-full h-12 mt-4 bg-gradient-to-r from-[#4A90E2] to-[#1E79DE] hover:from-[#1E79DE] hover:to-[#4A90E2] text-white font-semibold rounded-[10px] shadow-[0_4px_10px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_15px_rgba(0,0,0,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
+                  <span>Entrando...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  <span>Entrar no Sistema</span>
+                </div>
+              )}
+            </Button>
+
+            {/* Forgot Password Link */}
+            <div className="text-center mt-5">
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-sm text-white/80 hover:text-[#4A90E2] transition-colors"
+              >
+                Esqueci minha senha
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
