@@ -240,8 +240,8 @@ const LoginForm: React.FC = () => {
           </div>
 
           {/* Formulário */}
-          <div className="px-8 pb-8">
-            <form onSubmit={handleLogin} className="space-y-5">
+          <div className="px-8 pb-8 bg-[#3a5a7a]">
+            <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Input
                   id="email"
