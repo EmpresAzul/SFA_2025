@@ -13,7 +13,6 @@ import { loginRateLimiter } from "@/utils/inputSanitization";
 import { sanitizeSecurityInput } from "@/utils/securityHeaders";
 import { useSecurity } from "@/hooks/useSecurity";
 import { supabase } from "@/integrations/supabase/client";
-import Logo from "./Logo";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -250,9 +249,9 @@ const LoginForm: React.FC = () => {
                   onChange={handleEmailChange}
                   placeholder="E-mail"
                   required
-                  className={`h-12 border-2 bg-white/20 backdrop-blur-md text-white placeholder:text-white/60 ${
-                    errors.email ? "border-red-400" : "border-white/30"
-                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-white/30 transition-all duration-200 rounded-lg hover:bg-white/25`}
+                  className={`h-12 border-2 bg-[#3676DC]/30 backdrop-blur-md text-white placeholder:text-white/60 ${
+                    errors.email ? "border-red-400" : "border-[#3676DC]/50"
+                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-[#3676DC]/40 transition-all duration-200 rounded-lg hover:bg-[#3676DC]/35`}
                 />
                 {errors.email && (
                   <p className="text-red-300 text-sm mt-1">{errors.email}</p>
@@ -268,9 +267,9 @@ const LoginForm: React.FC = () => {
                     onChange={handlePasswordChange}
                     placeholder="Senha"
                     required
-                    className={`h-12 border-2 bg-white/20 backdrop-blur-md text-white placeholder:text-white/60 ${
-                      errors.password ? "border-red-400" : "border-white/30"
-                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-white/30 transition-all duration-200 rounded-lg pr-12 hover:bg-white/25`}
+                    className={`h-12 border-2 bg-[#3676DC]/30 backdrop-blur-md text-white placeholder:text-white/60 ${
+                      errors.password ? "border-red-400" : "border-[#3676DC]/50"
+                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-[#3676DC]/40 transition-all duration-200 rounded-lg pr-12 hover:bg-[#3676DC]/35`}
                   />
                   <button
                     type="button"
