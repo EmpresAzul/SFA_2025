@@ -7,8 +7,12 @@ export const useLancamentosFormValidation = () => {
   const { toast } = useToast();
 
   const validateForm = (formData: LancamentoFormData) => {
+    console.log("🔍 Validação: Iniciando validação do formulário");
+    console.log("📋 Validação: Dados do formulário:", formData);
+    
     // Validar campos obrigatórios
     if (!formData.data) {
+      console.error("❌ Validação: Data não preenchida");
       toast({
         title: "Erro de validação",
         description: "Data é obrigatória.",
@@ -18,6 +22,7 @@ export const useLancamentosFormValidation = () => {
     }
 
     if (!formData.tipo) {
+      console.error("❌ Validação: Tipo não selecionado");
       toast({
         title: "Erro de validação",
         description: "Tipo é obrigatório.",
@@ -27,6 +32,7 @@ export const useLancamentosFormValidation = () => {
     }
 
     if (!formData.categoria.trim()) {
+      console.error("❌ Validação: Categoria não selecionada");
       toast({
         title: "Erro de validação",
         description: "Categoria é obrigatória.",
@@ -37,7 +43,10 @@ export const useLancamentosFormValidation = () => {
 
     // Validar valor
     const valorNumerico = parseStringToNumber(formData.valor);
+    console.log("💰 Validação: Valor numérico parseado:", valorNumerico);
+    
     if (valorNumerico <= 0) {
+      console.error("❌ Validação: Valor inválido ou zero");
       toast({
         title: "Erro de validação",
         description: "Valor deve ser maior que zero.",
@@ -48,7 +57,9 @@ export const useLancamentosFormValidation = () => {
 
     // Validar campos de recorrência
     if (formData.recorrente) {
+      console.log("🔄 Validação: Lançamento recorrente detectado");
       if (!formData.meses_recorrencia || formData.meses_recorrencia <= 0) {
+        console.error("❌ Validação: Meses de recorrência não informado");
         toast({
           title: "Erro de validação",
           description:
@@ -59,6 +70,7 @@ export const useLancamentosFormValidation = () => {
       }
 
       if (formData.meses_recorrencia > 60) {
+        console.error("❌ Validação: Meses de recorrência excede o máximo");
         toast({
           title: "Erro de validação",
           description:
@@ -69,6 +81,7 @@ export const useLancamentosFormValidation = () => {
       }
     }
 
+    console.log("✅ Validação: Formulário válido!");
     return { isValid: true, valorNumerico };
   };
 

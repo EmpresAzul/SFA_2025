@@ -22,6 +22,9 @@ export const useLancamentosMutations = () => {
   const useCreate = () => {
     return useMutation({
       mutationFn: async (lancamentoData: LancamentoCreateData) => {
+        console.log("🚀 useCreate: Iniciando criação de lançamento");
+        console.log("📦 useCreate: Dados recebidos:", lancamentoData);
+        
         // Validar dados obrigatórios
         if (
           !lancamentoData.data ||
@@ -29,10 +32,12 @@ export const useLancamentosMutations = () => {
           !lancamentoData.categoria ||
           !lancamentoData.valor
         ) {
+          console.error("❌ useCreate: Validação falhou - campos obrigatórios faltando");
           throw new Error("Data, tipo, categoria e valor são obrigatórios");
         }
 
         if (!lancamentoData.user_id) {
+          console.error("❌ useCreate: User ID não fornecido");
           throw new Error("User ID é obrigatório");
         }
 
@@ -54,6 +59,8 @@ export const useLancamentosMutations = () => {
           meses_recorrencia: lancamentoData.meses_recorrencia || null,
         };
 
+        console.log("📤 useCreate: Enviando para Supabase:", insertData);
+
         const { data, error } = await supabase
           .from("lancamentos")
           .insert([insertData])
@@ -61,9 +68,17 @@ export const useLancamentosMutations = () => {
           .single();
 
         if (error) {
-          console.error("❌ Erro ao criar lançamento:", error.message);
+          console.error("❌ useCreate: Erro do Supabase:", error);
+          console.error("❌ useCreate: Detalhes:", {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
           throw error;
         }
+
+        console.log("✅ useCreate: Lançamento criado com sucesso:", data);
 
         // Criar notificação para transações de alto valor
         if (user?.id && shouldNotify('large_transaction', data, user.id)) {

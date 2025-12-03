@@ -24,7 +24,13 @@ export const useLancamentosFormSubmit = ({
     editingLancamento: LancamentoComRelacoes | null,
     resetForm: () => void,
   ) => {
+    console.log("🚀 submitForm: Iniciando submit");
+    console.log("📋 submitForm: FormData:", formData);
+    console.log("💰 submitForm: Valor numérico:", valorNumerico);
+    console.log("✏️ submitForm: Editando?", !!editingLancamento);
+    
     if (!user) {
+      console.error("❌ submitForm: Usuário não autenticado");
       toast({
         title: "Erro",
         description: "Usuário não autenticado.",
@@ -33,10 +39,12 @@ export const useLancamentosFormSubmit = ({
       return;
     }
 
+    console.log("👤 submitForm: User ID:", user.id);
     setLoading(true);
 
     try {
       if (editingLancamento) {
+        console.log("✏️ submitForm: Modo EDIÇÃO");
         // Dados para atualização - apenas campos editáveis
         const updateData = {
           id: editingLancamento.id,
@@ -52,14 +60,17 @@ export const useLancamentosFormSubmit = ({
           observacoes: formData.observacoes?.trim() || null,
         };
 
+        console.log("📤 submitForm: Enviando update:", updateData);
         await updateLancamento.mutateAsync(updateData);
 
+        console.log("✅ submitForm: Update concluído com sucesso");
         toast({
           title: "✅ Lançamento Atualizado!",
           description: `${formData.tipo === 'receita' ? 'Receita' : 'Despesa'} de ${formData.categoria} foi atualizada com sucesso.`,
           duration: 4000,
         });
       } else {
+        console.log("➕ submitForm: Modo CRIAÇÃO");
         const lancamentoData = {
           data: formData.data,
           data_vencimento: formData.tipo === 'despesa' ? (formData.data_vencimento || formData.data) : null,
@@ -77,16 +88,22 @@ export const useLancamentosFormSubmit = ({
           meses_recorrencia: formData.meses_recorrencia || null,
         };
 
+        console.log("📦 submitForm: Dados do lançamento preparados:", lancamentoData);
+        
         // Se for recorrente, usar função especial
         if (formData.recorrente && formData.meses_recorrencia && formData.meses_recorrencia > 0) {
+          console.log("🔄 submitForm: Criando lançamentos recorrentes");
           await criarLancamentosRecorrentes(lancamentoData, formData.meses_recorrencia);
+          console.log("✅ submitForm: Lançamentos recorrentes criados");
           toast({
             title: "✅ Lançamentos Recorrentes Criados!",
             description: `${formData.meses_recorrencia} lançamentos mensais foram criados com sucesso.`,
             duration: 5000,
           });
         } else {
+          console.log("📤 submitForm: Enviando lançamento único");
           await createLancamento.mutateAsync(lancamentoData);
+          console.log("✅ submitForm: Lançamento único criado");
           
           toast({
             title: "✅ Lançamento Salvo!",
@@ -96,11 +113,14 @@ export const useLancamentosFormSubmit = ({
         }
       }
 
+      console.log("🔄 submitForm: Resetando formulário");
       resetForm();
       setEditingLancamento(null);
+      console.log("🔄 submitForm: Redirecionando para lista");
       setActiveTab("lista");
+      console.log("✅ submitForm: Submit concluído com sucesso!");
     } catch (error: unknown) {
-      console.error('Erro ao salvar lançamento:', error);
+      console.error('❌ submitForm: ERRO ao salvar lançamento:', error);
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao salvar lançamento';
       toast({
         title: 'Erro',
