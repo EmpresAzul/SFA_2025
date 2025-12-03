@@ -2,6 +2,7 @@ import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
+import ErrorBoundary from "./components/ErrorBoundary";
 import PWAInstallBanner from "./components/PWAInstallBanner";
 import PWAStatusIndicator from "./components/PWAStatusIndicator";
 import PWAInstallPrompt from "./components/pwa/PWAInstallPrompt";
@@ -200,7 +201,9 @@ const App = () => (
       <PWAStatusIndicator />
       <UpdateNotification />
       
-      <Toaster />
+      <ErrorBoundary>
+        <Toaster />
+      </ErrorBoundary>
   </>
 );
 
