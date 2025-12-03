@@ -257,9 +257,9 @@ const LoginForm: React.FC = () => {
                   onChange={handleEmailChange}
                   placeholder="seu@email.com"
                   required
-                  className={`h-12 border-2 bg-white text-gray-900 placeholder:text-gray-400 ${
-                    errors.email ? "border-red-500" : "border-gray-200"
-                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-300 rounded-xl shadow-sm hover:shadow-md`}
+                  className={`h-12 border-2 bg-white/10 backdrop-blur-sm text-white placeholder:text-white/50 ${
+                    errors.email ? "border-red-500" : "border-white/30"
+                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 transition-all duration-300 rounded-xl shadow-sm hover:shadow-md hover:bg-white/20`}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm">{errors.email}</p>
@@ -282,14 +282,14 @@ const LoginForm: React.FC = () => {
                     onChange={handlePasswordChange}
                     placeholder="••••••••"
                     required
-                    className={`h-12 border-2 bg-white text-gray-900 placeholder:text-gray-400 ${
-                      errors.password ? "border-red-500" : "border-gray-200"
-                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-300 rounded-xl pr-12 shadow-sm hover:shadow-md`}
+                    className={`h-12 border-2 bg-white/10 backdrop-blur-sm text-white placeholder:text-white/50 ${
+                      errors.password ? "border-red-500" : "border-white/30"
+                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 transition-all duration-300 rounded-xl pr-12 shadow-sm hover:shadow-md hover:bg-white/20`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#3676DC] transition-all duration-200 hover:scale-110"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-[#3676DC] transition-all duration-200 hover:scale-110"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
