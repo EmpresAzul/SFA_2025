@@ -228,7 +228,7 @@ const LoginForm: React.FC = () => {
       
       <div className="relative z-10 w-full max-w-md px-4">
         {/* Card Unificado com Logo e Formulário */}
-        <Card className="bg-[#3a5a7a]/95 backdrop-blur-xl shadow-2xl border border-white/10 overflow-hidden rounded-2xl animate-slide-up">
+        <Card className="bg-white/10 backdrop-blur-xl shadow-2xl border border-white/20 overflow-hidden rounded-2xl animate-slide-up">
           {/* Logo no topo do card */}
           <div className="pt-8 pb-6 text-center">
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
@@ -239,7 +239,7 @@ const LoginForm: React.FC = () => {
           </div>
 
           {/* Formulário */}
-          <div className="px-8 pb-8 bg-[#3a5a7a]">
+          <div className="px-8 pb-8">
             <form onSubmit={handleLogin} className="space-y-5">
               <div>
                 <Input
