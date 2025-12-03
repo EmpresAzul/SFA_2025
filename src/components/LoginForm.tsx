@@ -224,10 +224,10 @@ const LoginForm: React.FC = () => {
               value={email}
               onChange={handleEmailChange}
               required
-              className="w-full px-[15px] pr-[40px] py-3 bg-white/90 text-[#333] text-base border-0 rounded-[10px] outline-none transition-all duration-300 placeholder:text-[#888] focus:shadow-[0_0_0_2px_#4A90E2]"
+              className="w-full px-[15px] pr-[40px] py-3 bg-transparent text-white text-base border-0 border-b-2 border-white/30 rounded-none outline-none transition-all duration-300 placeholder:text-white/60 focus:border-white/60 focus:shadow-none"
             />
             <div className="absolute top-1/2 right-[15px] transform -translate-y-1/2 pointer-events-none">
-              <Lock className="w-5 h-5 text-[#555]" />
+              <Lock className="w-5 h-5 text-white/60" />
             </div>
             {errors.email && (
               <p className="text-red-300 text-xs mt-1 text-left">{errors.email}</p>
@@ -242,7 +242,7 @@ const LoginForm: React.FC = () => {
               value={password}
               onChange={handlePasswordChange}
               required
-              className="w-full px-[15px] pr-[40px] py-3 bg-white/90 text-[#333] text-base border-0 rounded-[10px] outline-none transition-all duration-300 placeholder:text-[#888] focus:shadow-[0_0_0_2px_#4A90E2]"
+              className="w-full px-[15px] pr-[40px] py-3 bg-transparent text-white text-base border-0 border-b-2 border-white/30 rounded-none outline-none transition-all duration-300 placeholder:text-white/60 focus:border-white/60 focus:shadow-none"
             />
             <button
               type="button"
@@ -250,9 +250,9 @@ const LoginForm: React.FC = () => {
               className="absolute top-1/2 right-[15px] transform -translate-y-1/2 cursor-pointer"
             >
               {showPassword ? (
-                <Eye className="w-5 h-5 text-[#555]" />
+                <Eye className="w-5 h-5 text-white/60" />
               ) : (
-                <EyeOff className="w-5 h-5 text-[#555]" />
+                <EyeOff className="w-5 h-5 text-white/60" />
               )}
             </button>
             {errors.password && (
