@@ -2,6 +2,8 @@ export interface Lancamento {
   id: string;
   user_id: string;
   data: string;
+  data_vencimento?: string | null;
+  data_recebimento?: string | null;
   tipo: "receita" | "despesa";
   categoria: string;
   valor: number;
