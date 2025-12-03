@@ -229,7 +229,7 @@ const LoginForm: React.FC = () => {
         </div>
 
         {/* Formulário */}
-        <form onSubmit={handleLogin} className="space-y-5 sm:space-y-6">
+        <form onSubmit={handleLogin} className="space-y-5 sm:space-y-6 bg-transparent">
           {/* Campo E-mail */}
           <div className="relative group">
             <Input
