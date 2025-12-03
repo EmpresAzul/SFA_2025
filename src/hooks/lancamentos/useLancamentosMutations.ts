@@ -99,10 +99,15 @@ export const useLancamentosMutations = () => {
 
         return data;
       },
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         console.log("✅ useCreate onSuccess: Invalidando queries");
-        queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
-        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
+        
+        // Invalidar e refetch IMEDIATAMENTE
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["lancamentos"], refetchType: 'active' }),
+          queryClient.refetchQueries({ queryKey: ["lancamentos"], type: 'active' }),
+          queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] }),
+        ]);
         
         // Log security event for data creation
         logDataModification("lancamentos", "INSERT", data.id, {
@@ -111,7 +116,7 @@ export const useLancamentosMutations = () => {
           valor: data.valor,
         });
         
-        console.log("✅ useCreate onSuccess: Concluído");
+        console.log("✅ useCreate onSuccess: Concluído e atualizado");
       },
       onError: (error: unknown) => {
         console.error("❌ useCreate onError: Erro ao criar lançamento:", error);
@@ -177,10 +182,15 @@ export const useLancamentosMutations = () => {
         console.log("✅ useUpdate: Lançamento atualizado com sucesso:", data);
         return data;
       },
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         console.log("✅ useUpdate onSuccess: Invalidando queries");
-        queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
-        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
+        
+        // Invalidar e refetch IMEDIATAMENTE
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["lancamentos"], refetchType: 'active' }),
+          queryClient.refetchQueries({ queryKey: ["lancamentos"], type: 'active' }),
+          queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] }),
+        ]);
         
         // Log security event for data update
         logDataModification("lancamentos", "UPDATE", data.id, {
@@ -190,10 +200,10 @@ export const useLancamentosMutations = () => {
         toast({
           title: "✅ Atualizado!",
           description: "Lançamento atualizado com sucesso.",
-          duration: 3000,
+          duration: 2000,
         });
         
-        console.log("✅ useUpdate onSuccess: Concluído");
+        console.log("✅ useUpdate onSuccess: Concluído e atualizado");
       },
       onError: (error: unknown) => {
         console.error("❌ useUpdate onError: Erro ao atualizar:", error);
@@ -222,9 +232,13 @@ export const useLancamentosMutations = () => {
           throw error;
         }
       },
-      onSuccess: (_data, id) => {
-        queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
-        queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
+      onSuccess: async (_data, id) => {
+        // Invalidar e refetch IMEDIATAMENTE
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["lancamentos"], refetchType: 'active' }),
+          queryClient.refetchQueries({ queryKey: ["lancamentos"], type: 'active' }),
+          queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] }),
+        ]);
         
         // Log security event for data deletion
         logDataModification("lancamentos", "DELETE", id, {
@@ -232,9 +246,9 @@ export const useLancamentosMutations = () => {
         });
         
         toast({
-          title: "✅ Lançamento Excluído!",
-          description: "O lançamento foi removido com sucesso do sistema.",
-          duration: 3000,
+          title: "✅ Excluído!",
+          description: "Lançamento removido com sucesso.",
+          duration: 2000,
         });
       },
       onError: (error: unknown) => {

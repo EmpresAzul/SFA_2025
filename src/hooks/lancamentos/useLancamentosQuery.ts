@@ -42,8 +42,10 @@ export const useLancamentosQuery = () => {
     },
     enabled: !!session?.user?.id,
     retry: 1,
-    retryDelay: 1000,
-    staleTime: 30000, // 30 segundos
+    retryDelay: 500,
+    staleTime: 0, // Sempre buscar dados frescos
     gcTime: 300000, // 5 minutos
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 };
