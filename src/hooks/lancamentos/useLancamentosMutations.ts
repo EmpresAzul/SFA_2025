@@ -39,6 +39,8 @@ export const useLancamentosMutations = () => {
         // Preparar dados para inserção
         const insertData = {
           data: lancamentoData.data,
+          data_vencimento: (lancamentoData as any).data_vencimento || null,
+          data_recebimento: (lancamentoData as any).data_recebimento || null,
           tipo: lancamentoData.tipo,
           categoria: lancamentoData.categoria,
           valor: lancamentoData.valor,
