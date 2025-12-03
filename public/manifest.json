@@ -1,12 +1,12 @@
 {
-  "name": "FluxoAzul - Gestão Financeira PME",
+  "name": "FluxoAzul - Gestão Financeira Premium",
   "short_name": "FluxoAzul",
-  "description": "Sistema de gestão financeira completo para pequenas e médias empresas",
-  "version": "FECHAMENTO31",
+  "description": "Sistema premium de gestão financeira para empresas modernas",
+  "version": "2.0.0",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1e3a8a",
-  "theme_color": "#1e3a8a",
+  "background_color": "#0a1628",
+  "theme_color": "#0f2847",
   "orientation": "any",
   "scope": "/",
   "lang": "pt-BR",
@@ -79,10 +79,10 @@
       ]
     },
     {
-      "name": "Estoque",
-      "short_name": "Estoque",
-      "description": "Gerenciar estoque de produtos",
-      "url": "/estoque",
+      "name": "CRM Pipeline",
+      "short_name": "CRM",
+      "description": "Gerenciar leads e oportunidades",
+      "url": "/pipeline",
       "icons": [
         {
           "src": "/icon-192x192.png",
@@ -99,5 +99,8 @@
   },
   "launch_handler": {
     "client_mode": "navigate-existing"
-  }
+  },
+  "screenshots": [],
+  "iarc_rating_id": "",
+  "handle_links": "preferred"
 }
