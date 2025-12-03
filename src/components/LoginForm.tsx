@@ -3,10 +3,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { Eye, EyeOff, LogIn, Shield } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, Shield, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useInputValidation, validateEmail } from "@/hooks/useInputValidation";
 import { loginRateLimiter } from "@/utils/inputSanitization";
@@ -214,114 +213,138 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1e3a5f] via-[#2a4a6f] to-[#1e3a5f]">
-      <div className="w-full max-w-sm px-6">
-        {/* Card Minimalista */}
-        <div className="bg-[#3d5570]/80 rounded-2xl shadow-2xl p-8 border border-[#4a6080]/50">
-          {/* Logo */}
-          <div className="mb-10 text-center">
-            <h1 className="text-4xl font-bold" style={{ fontFamily: 'Poppins, sans-serif', letterSpacing: '0.5px' }}>
-              <span className="text-white">FLUXO</span>
-              <span className="text-[#5B9EFF]">AZUL</span>
-            </h1>
-          </div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#2d1b4e] via-[#1a2f5c] to-[#0f1c3d]">
+      {/* Animated gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 rounded-full blur-3xl"></div>
+      </div>
 
-          {/* Formulário */}
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={handleEmailChange}
-                placeholder="E-mail"
-                required
-                className={`h-11 bg-white text-gray-800 placeholder:text-gray-400 border-0 ${
-                  errors.email ? "ring-2 ring-red-400" : ""
-                } focus:ring-0 focus:outline-none transition-all duration-200 rounded-lg`}
-              />
-              {errors.email && (
-                <p className="text-red-300 text-xs mt-1">{errors.email}</p>
-              )}
+      <div className="relative z-10 w-full max-w-md px-6">
+        {/* Glassmorphism Card Premium */}
+        <div className="relative backdrop-blur-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent rounded-[2.5rem] shadow-2xl border border-white/20 p-10 overflow-hidden">
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-blue-500/10 rounded-[2.5rem]"></div>
+          
+          {/* Content */}
+          <div className="relative z-10">
+            {/* Avatar Circle */}
+            <div className="flex justify-center mb-8">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-400/30 via-purple-400/30 to-blue-400/30 backdrop-blur-xl border-2 border-white/30 flex items-center justify-center shadow-xl">
+                <User className="w-12 h-12 text-white/80" strokeWidth={1.5} />
+              </div>
             </div>
 
-            <div>
+            {/* Logo */}
+            <div className="mb-10 text-center">
+              <h1 className="text-3xl font-bold" style={{ fontFamily: 'Poppins, sans-serif', letterSpacing: '1px' }}>
+                <span className="text-white">FLUXO</span>
+                <span className="text-[#5B9EFF]">AZUL</span>
+              </h1>
+            </div>
+
+            {/* Formulário */}
+            <form onSubmit={handleLogin} className="space-y-5">
+              {/* Email Field */}
               <div className="relative">
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
+                  <Mail className="w-5 h-5 text-white/60" strokeWidth={2} />
+                </div>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  placeholder="Email ID"
+                  required
+                  className={`h-14 bg-white/10 backdrop-blur-md text-white placeholder:text-white/50 border-0 border-b-2 ${
+                    errors.email ? "border-red-400" : "border-white/30"
+                  } focus:border-white/60 focus:bg-white/15 transition-all duration-300 rounded-t-xl rounded-b-none pl-12 pr-4`}
+                />
+                {errors.email && (
+                  <p className="text-red-300 text-xs mt-1.5 ml-1">{errors.email}</p>
+                )}
+              </div>
+
+              {/* Password Field */}
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10">
+                  <Lock className="w-5 h-5 text-white/60" strokeWidth={2} />
+                </div>
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={handlePasswordChange}
-                  placeholder="Senha"
+                  placeholder="Password"
                   required
-                  className={`h-11 bg-white text-gray-800 placeholder:text-gray-400 border-0 pr-11 ${
-                    errors.password ? "ring-2 ring-red-400" : ""
-                  } focus:ring-0 focus:outline-none transition-all duration-200 rounded-lg`}
+                  className={`h-14 bg-white/10 backdrop-blur-md text-white placeholder:text-white/50 border-0 border-b-2 ${
+                    errors.password ? "border-red-400" : "border-white/30"
+                  } focus:border-white/60 focus:bg-white/15 transition-all duration-300 rounded-t-xl rounded-b-none pl-12 pr-12`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white/90 transition-colors z-10"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={18} strokeWidth={2} /> : <Eye size={18} strokeWidth={2} />}
+                </button>
+                {errors.password && (
+                  <p className="text-red-300 text-xs mt-1.5 ml-1">{errors.password}</p>
+                )}
+              </div>
+
+              {/* Rate limiting info */}
+              {rateLimitInfo.isLimited && (
+                <div className="flex items-center space-x-2 p-3 bg-red-500/20 backdrop-blur-md border border-red-400/30 rounded-xl">
+                  <Shield className="h-4 w-4 text-red-300" />
+                  <p className="text-red-200 text-xs">
+                    Bloqueado por segurança.
+                    {rateLimitInfo.resetTime && ` Tente após ${new Date(rateLimitInfo.resetTime).toLocaleTimeString()}.`}
+                  </p>
+                </div>
+              )}
+              
+              {!rateLimitInfo.isLimited && rateLimitInfo.remainingAttempts < 3 && (
+                <div className="flex items-center space-x-2 p-3 bg-yellow-500/20 backdrop-blur-md border border-yellow-400/30 rounded-xl">
+                  <Shield className="h-4 w-4 text-yellow-300" />
+                  <p className="text-yellow-200 text-xs">
+                    {rateLimitInfo.remainingAttempts} tentativas restantes.
+                  </p>
+                </div>
+              )}
+
+              {/* Login Button */}
+              <div className="pt-4">
+                <Button
+                  type="submit"
+                  disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
+                  className="w-full h-14 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 hover:from-purple-500 hover:via-pink-500 hover:to-blue-500 text-white font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none uppercase tracking-wider text-sm"
+                >
+                  {loading ? (
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
+                      <span>Entrando...</span>
+                    </div>
+                  ) : (
+                    "LOGIN"
+                  )}
+                </Button>
+              </div>
+
+              {/* Forgot Password Link */}
+              <div className="text-center pt-5">
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(true)}
+                  className="text-sm text-white/70 hover:text-white transition-colors"
+                >
+                  Esqueci minha senha
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-red-300 text-xs mt-1">{errors.password}</p>
-              )}
-            </div>
-
-            {/* Rate limiting info */}
-            {rateLimitInfo.isLimited && (
-              <div className="flex items-center space-x-2 p-2.5 bg-red-100 rounded-lg">
-                <Shield className="h-4 w-4 text-red-600" />
-                <p className="text-red-700 text-xs">
-                  Bloqueado por segurança.
-                  {rateLimitInfo.resetTime && ` Tente após ${new Date(rateLimitInfo.resetTime).toLocaleTimeString()}.`}
-                </p>
-              </div>
-            )}
-            
-            {!rateLimitInfo.isLimited && rateLimitInfo.remainingAttempts < 3 && (
-              <div className="flex items-center space-x-2 p-2.5 bg-yellow-100 rounded-lg">
-                <Shield className="h-4 w-4 text-yellow-600" />
-                <p className="text-yellow-700 text-xs">
-                  {rateLimitInfo.remainingAttempts} tentativas restantes.
-                </p>
-              </div>
-            )}
-
-            <div className="pt-1">
-              <Button
-                type="submit"
-                disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
-                className="w-full h-11 bg-[#5B9EFF] hover:bg-[#4a8ef5] text-white font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
-                    <span>Entrando...</span>
-                  </>
-                ) : (
-                  <>
-                    <LogIn size={16} />
-                    <span>Entrar no Sistema</span>
-                  </>
-                )}
-              </Button>
-            </div>
-
-            {/* Forgot Password Link */}
-            <div className="text-center pt-3">
-              <button
-                type="button"
-                onClick={() => setShowForgotPassword(true)}
-                className="text-xs text-white/70 hover:text-white transition-colors"
-              >
-                Esqueci minha senha
-              </button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
 
