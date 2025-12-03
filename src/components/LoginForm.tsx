@@ -225,7 +225,7 @@ const LoginForm: React.FC = () => {
           <h1 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold tracking-wider">
             FLUXO<span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">AZUL</span>
           </h1>
-          <p className="text-white/50 text-xs sm:text-sm mt-2 font-light">Sistema de Gestão Financeira</p>
+          <p className="text-white/50 text-xs sm:text-sm mt-2 font-light">Gestão Financeira Inteligente</p>
         </div>
 
         {/* Formulário */}
@@ -317,10 +317,7 @@ const LoginForm: React.FC = () => {
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         </div>
 
-        {/* Footer text */}
-        <p className="mt-4 text-white/30 text-xs">
-          © 2024 FluxoAzul. Todos os direitos reservados.
-        </p>
+
       </div>
 
       {/* Dialog Recuperar Senha */}
