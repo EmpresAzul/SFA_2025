@@ -41,6 +41,8 @@ export const useLancamentosFormSubmit = ({
         const updateData = {
           id: editingLancamento.id,
           data: formData.data,
+          data_vencimento: formData.tipo === 'despesa' ? (formData.data_vencimento || formData.data) : null,
+          data_recebimento: formData.tipo === 'receita' ? (formData.data_recebimento || formData.data) : null,
           tipo: formData.tipo,
           categoria: formData.categoria,
           valor: valorNumerico,
@@ -60,6 +62,8 @@ export const useLancamentosFormSubmit = ({
       } else {
         const lancamentoData = {
           data: formData.data,
+          data_vencimento: formData.tipo === 'despesa' ? (formData.data_vencimento || formData.data) : null,
+          data_recebimento: formData.tipo === 'receita' ? (formData.data_recebimento || formData.data) : null,
           tipo: formData.tipo,
           categoria: formData.categoria,
           valor: valorNumerico,
