@@ -260,7 +260,7 @@ const Profile: React.FC = () => {
                   <Input
                     value={editData.telefone}
                     onChange={(e) => handlePhoneChange(e.target.value)}
-                    placeholder="(11) 99999-9999"
+                    placeholder="Whatsapp com DDD"
                     maxLength={15}
                     className="mobile-input-fix"
                   />
