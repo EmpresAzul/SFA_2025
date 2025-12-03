@@ -75,7 +75,18 @@ export const useLancamentosMutations = () => {
             hint: error.hint,
             code: error.code
           });
-          throw error;
+          
+          // Mensagem de erro mais amigável
+          let errorMessage = "Erro ao salvar lançamento. ";
+          if (error.message.includes("violates")) {
+            errorMessage += "Verifique se todos os campos obrigatórios estão preenchidos.";
+          } else if (error.message.includes("permission")) {
+            errorMessage += "Você não tem permissão para criar lançamentos.";
+          } else {
+            errorMessage += error.message;
+          }
+          
+          throw new Error(errorMessage);
         }
 
         console.log("✅ useCreate: Lançamento criado com sucesso:", data);
@@ -91,6 +102,7 @@ export const useLancamentosMutations = () => {
         return data;
       },
       onSuccess: (data) => {
+        console.log("✅ useCreate onSuccess: Invalidando queries");
         queryClient.invalidateQueries({ queryKey: ["lancamentos"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
         
@@ -100,9 +112,20 @@ export const useLancamentosMutations = () => {
           categoria: data.categoria,
           valor: data.valor,
         });
+        
+        console.log("✅ useCreate onSuccess: Concluído");
       },
       onError: (error: unknown) => {
-        console.error("❌ Erro ao criar lançamento:", error);
+        console.error("❌ useCreate onError: Erro ao criar lançamento:", error);
+        const errorMessage = error instanceof Error ? error.message : "Erro desconhecido ao criar lançamento";
+        console.error("❌ useCreate onError: Mensagem:", errorMessage);
+        
+        toast({
+          title: "❌ Erro ao Salvar",
+          description: errorMessage,
+          variant: "destructive",
+          duration: 5000,
+        });
       },
     });
   };
