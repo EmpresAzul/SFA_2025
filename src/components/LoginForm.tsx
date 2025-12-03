@@ -241,8 +241,8 @@ const LoginForm: React.FC = () => {
 
           {/* Formulário */}
           <div className="px-8 pb-8 bg-[#3a5a7a]">
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div>
                 <Input
                   id="email"
                   type="email"
@@ -255,11 +255,11 @@ const LoginForm: React.FC = () => {
                   } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 transition-all duration-200 rounded-lg`}
                 />
                 {errors.email && (
-                  <p className="text-red-400 text-sm">{errors.email}</p>
+                  <p className="text-red-400 text-sm mt-1">{errors.email}</p>
                 )}
               </div>
 
-              <div className="space-y-2">
+              <div>
                 <div className="relative">
                   <Input
                     id="password"
@@ -281,7 +281,7 @@ const LoginForm: React.FC = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-400 text-sm">{errors.password}</p>
+                  <p className="text-red-400 text-sm mt-1">{errors.password}</p>
                 )}
               </div>
 
