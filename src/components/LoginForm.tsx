@@ -238,10 +238,10 @@ const LoginForm: React.FC = () => {
               value={email}
               onChange={handleEmailChange}
               required
-              className="w-full h-12 sm:h-14 px-4 sm:px-5 pr-12 bg-white/10 backdrop-blur-sm text-white text-sm sm:text-base border border-white/20 rounded-xl outline-none transition-all duration-300 placeholder:text-white/40 focus:bg-white/15 focus:border-blue-400/50 focus:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:bg-white/15"
+              className="w-full h-12 sm:h-14 px-4 sm:px-5 pr-12 bg-slate-100 backdrop-blur-sm text-gray-900 text-sm sm:text-base border border-slate-300 rounded-xl outline-none transition-all duration-300 placeholder:text-gray-600 focus:bg-slate-50 focus:border-blue-500 focus:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:bg-slate-50"
             />
             <div className="absolute top-1/2 right-4 transform -translate-y-1/2 pointer-events-none">
-              <Lock className="w-5 h-5 text-white/40 group-hover:text-blue-400 transition-colors" />
+              <Lock className="w-5 h-5 text-gray-500 group-hover:text-blue-500 transition-colors" />
             </div>
             {errors.email && (
               <p className="text-red-400 text-xs mt-2 text-left font-medium">{errors.email}</p>
@@ -256,12 +256,12 @@ const LoginForm: React.FC = () => {
               value={password}
               onChange={handlePasswordChange}
               required
-              className="w-full h-12 sm:h-14 px-4 sm:px-5 pr-12 bg-white/10 backdrop-blur-sm text-white text-sm sm:text-base border border-white/20 rounded-xl outline-none transition-all duration-300 placeholder:text-white/40 focus:bg-white/15 focus:border-blue-400/50 focus:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:bg-white/15"
+              className="w-full h-12 sm:h-14 px-4 sm:px-5 pr-12 bg-slate-100 backdrop-blur-sm text-gray-900 text-sm sm:text-base border border-slate-300 rounded-xl outline-none transition-all duration-300 placeholder:text-gray-600 focus:bg-slate-50 focus:border-blue-500 focus:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:bg-slate-50"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-white/40 hover:text-blue-400 transition-colors"
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-blue-500 transition-colors"
             >
               {showPassword ? (
                 <Eye className="w-5 h-5" />
