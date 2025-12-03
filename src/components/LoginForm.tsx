@@ -213,19 +213,19 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#2d1b4e] via-[#1a2f5c] to-[#0f1c3d]">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#3d2463] via-[#4a2d5c] to-[#2d1b4e]">
       {/* Animated gradient orbs */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-blue-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-pink-500/30 to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-blue-500/30 to-purple-600/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-br from-pink-400/20 via-purple-500/20 to-blue-400/20 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative z-10 w-full max-w-md px-6">
         {/* Glassmorphism Card Premium */}
-        <div className="relative backdrop-blur-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent rounded-[2.5rem] shadow-2xl border border-white/20 p-10 overflow-hidden">
+        <div className="relative backdrop-blur-3xl bg-gradient-to-br from-purple-600/40 via-pink-500/40 to-blue-500/40 rounded-[2.5rem] shadow-2xl border border-white/20 p-10 overflow-hidden">
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-blue-500/10 rounded-[2.5rem]"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 via-purple-500/20 to-blue-500/20 rounded-[2.5rem]"></div>
           
           {/* Content */}
           <div className="relative z-10">
