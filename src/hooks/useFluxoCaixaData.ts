@@ -51,6 +51,16 @@ export const useFluxoCaixaData = (periodoFilter: string, startDate?: string, end
         dataInicio = startOfMonth(subMonths(hoje, 5));
         dataFim = endOfMonth(hoje);
         break;
+      case "proximos-30-dias":
+        dataInicio = hoje;
+        dataFim = new Date(hoje);
+        dataFim.setDate(dataFim.getDate() + 30);
+        break;
+      case "proximos-60-dias":
+        dataInicio = hoje;
+        dataFim = new Date(hoje);
+        dataFim.setDate(dataFim.getDate() + 60);
+        break;
       case "personalizado":
         if (startDate && endDate) {
           dataInicio = new Date(startDate);

@@ -65,6 +65,10 @@ const FluxoCaixa: React.FC = () => {
         return "Últimos 3 Meses";
       case "ultimos-6-meses":
         return "Últimos 6 Meses";
+      case "proximos-30-dias":
+        return "Próximos 30 Dias";
+      case "proximos-60-dias":
+        return "Próximos 60 Dias";
       case "personalizado":
         if (startDate && endDate) {
           const start = new Date(startDate).toLocaleDateString('pt-BR');
