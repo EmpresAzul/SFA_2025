@@ -226,63 +226,61 @@ const LoginForm: React.FC = () => {
       {/* Grid Pattern Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
       
-      <div className="relative z-10 w-full max-w-md px-4">
-        {/* Card Unificado com Logo e Formulário */}
-        <Card className="bg-white/10 backdrop-blur-xl shadow-2xl border border-white/20 overflow-hidden rounded-2xl animate-slide-up">
-          {/* Logo no topo do card */}
-          <div className="pt-8 pb-6 text-center">
-            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
+      <div className="relative z-10 w-full max-w-sm px-4">
+        {/* Card Premium com Glassmorphism */}
+        <Card className="bg-[#4a5f7f]/40 backdrop-blur-2xl shadow-2xl border border-white/10 overflow-hidden rounded-3xl animate-slide-up p-10">
+          {/* Logo */}
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl font-bold tracking-wide" style={{ fontFamily: 'Poppins, sans-serif' }}>
               <span className="text-white">FLUXO</span>
-              <span style={{ color: '#3676DC' }}>AZUL</span>
+              <span className="text-[#5B9EFF]">AZUL</span>
             </h1>
-            <div className="h-0.5 w-16 mx-auto bg-white/30 mt-3"></div>
           </div>
 
           {/* Formulário */}
-          <div className="px-8 pb-8">
-            <form onSubmit={handleLogin} className="space-y-3">
-              <div>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  placeholder="E-mail"
-                  required
-                  className={`h-12 border-2 bg-white/90 backdrop-blur-md text-black placeholder:text-gray-500 ${
-                    errors.email ? "border-red-400" : "border-white/50"
-                  } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-white transition-all duration-200 rounded-lg hover:bg-white`}
-                />
-                {errors.email && (
-                  <p className="text-red-300 text-sm mt-1">{errors.email}</p>
-                )}
-              </div>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={handleEmailChange}
+                placeholder="E-mail"
+                required
+                className={`h-12 bg-white/95 text-gray-700 placeholder:text-gray-400 border-0 ${
+                  errors.email ? "ring-2 ring-red-400" : ""
+                } focus:ring-2 focus:ring-[#5B9EFF] transition-all duration-200 rounded-xl shadow-sm`}
+              />
+              {errors.email && (
+                <p className="text-red-300 text-sm mt-1">{errors.email}</p>
+              )}
+            </div>
 
-              <div>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={handlePasswordChange}
-                    placeholder="Senha"
-                    required
-                    className={`h-12 border-2 bg-white/90 backdrop-blur-md text-black placeholder:text-gray-500 ${
-                      errors.password ? "border-red-400" : "border-white/50"
-                    } focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/30 focus:bg-white transition-all duration-200 rounded-lg pr-12 hover:bg-white`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-black transition-colors"
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="text-red-300 text-sm mt-1">{errors.password}</p>
-                )}
+            <div>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={handlePasswordChange}
+                  placeholder="Senha"
+                  required
+                  className={`h-12 bg-white/95 text-gray-700 placeholder:text-gray-400 border-0 pr-12 ${
+                    errors.password ? "ring-2 ring-red-400" : ""
+                  } focus:ring-2 focus:ring-[#5B9EFF] transition-all duration-200 rounded-xl shadow-sm`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
+              {errors.password && (
+                <p className="text-red-300 text-sm mt-1">{errors.password}</p>
+              )}
+            </div>
 
               {/* Rate limiting info */}
               {rateLimitInfo.isLimited && (
@@ -304,38 +302,37 @@ const LoginForm: React.FC = () => {
                 </div>
               )}
 
-              <div>
-                <Button
-                  type="submit"
-                  disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
-                  className="w-full h-12 bg-gradient-to-r from-[#2d5a8a] to-[#3676DC] hover:from-[#3676DC] hover:to-[#4a8ef5] text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                >
-                  {loading ? (
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
-                      <span>Entrando...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center space-x-2">
-                      <LogIn size={20} />
-                      <span>Entrar no Sistema</span>
-                    </div>
-                  )}
-                </Button>
-              </div>
-            </form>
+            <div className="pt-2">
+              <Button
+                type="submit"
+                disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
+                className="w-full h-12 bg-[#5B9EFF] hover:bg-[#4a8ef5] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
+                    <span>Entrando...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn size={18} />
+                    <span>Entrar no Sistema</span>
+                  </>
+                )}
+              </Button>
+            </div>
 
             {/* Forgot Password Link */}
-            <div className="mt-5 text-center">
+            <div className="text-center pt-4">
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-sm font-semibold text-white/90 hover:text-white hover:underline transition-colors"
+                className="text-sm text-white/80 hover:text-white transition-colors"
               >
                 Esqueci minha senha
               </button>
             </div>
-          </div>
+          </form>
         </Card>
       </div>
 
