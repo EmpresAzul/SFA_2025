@@ -84,8 +84,8 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
         </RadioGroup>
       </div>
 
-      {/* Data, Data de Vencimento/Recebimento e Valor */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Data e Valor - SIMPLIFICADO */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="data" className="text-sm font-medium text-gray-700">
             Data do Lançamento *
@@ -98,40 +98,6 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
             className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
-
-        {formData.tipo === "despesa" ? (
-          <div className="space-y-2">
-            <Label htmlFor="data_vencimento" className="text-sm font-medium text-gray-700">
-              Data de Vencimento *
-            </Label>
-            <Input
-              id="data_vencimento"
-              type="date"
-              value={formData.data_vencimento || formData.data}
-              onChange={(e) => handleInputChange("data_vencimento", e.target.value)}
-              className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <p className="text-xs text-gray-600">
-              Define quando a despesa deve ser paga
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <Label htmlFor="data_recebimento" className="text-sm font-medium text-gray-700">
-              Data de Recebimento *
-            </Label>
-            <Input
-              id="data_recebimento"
-              type="date"
-              value={formData.data_recebimento || formData.data}
-              onChange={(e) => handleInputChange("data_recebimento", e.target.value)}
-              className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <p className="text-xs text-gray-600">
-              Define quando a receita será recebida
-            </p>
-          </div>
-        )}
 
         <div className="space-y-2">
           <Label htmlFor="valor" className="text-sm font-medium text-gray-700">
@@ -221,52 +187,7 @@ const LancamentosFormFields: React.FC<LancamentosFormFieldsProps> = ({
         </p>
       </div>
 
-      {/* Campo Recorrente - Posicionado logo após Categoria */}
-      <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="recorrente"
-            checked={formData.recorrente}
-            onCheckedChange={handleRecorrenteChange}
-          />
-          <Label
-            htmlFor="recorrente"
-            className="text-sm font-medium text-gray-700"
-          >
-            Lançamento Recorrente
-          </Label>
-        </div>
 
-        {formData.recorrente && (
-          <div className="space-y-2">
-            <Label
-              htmlFor="meses_recorrencia"
-              className="text-sm font-medium text-gray-700"
-            >
-              Quantidade de Meses *
-            </Label>
-            <Input
-              id="meses_recorrencia"
-              type="number"
-              min="1"
-              max="60"
-              value={formData.meses_recorrencia || ""}
-              onChange={(e) =>
-                handleInputChange(
-                  "meses_recorrencia",
-                  parseInt(e.target.value) || null,
-                )
-              }
-              placeholder="Ex: 12 (para 12 meses)"
-              className="border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-            />
-            <p className="text-xs text-gray-600">
-              Este lançamento será repetido automaticamente pelos próximos{" "}
-              {formData.meses_recorrencia || 0} meses
-            </p>
-          </div>
-        )}
-      </div>
 
       {/* Observações */}
       <div className="space-y-2">

@@ -41,23 +41,21 @@ export const useLancamentosMutations = () => {
           throw new Error("User ID é obrigatório");
         }
 
-        // Preparar dados para inserção
-        const insertData = {
+        // Preparar dados para inserção - SIMPLIFICADO
+        const insertData: any = {
           data: lancamentoData.data,
-          data_vencimento: (lancamentoData as any).data_vencimento || null,
-          data_recebimento: (lancamentoData as any).data_recebimento || null,
           tipo: lancamentoData.tipo,
           categoria: lancamentoData.categoria,
           valor: lancamentoData.valor,
-          descricao: lancamentoData.descricao || lancamentoData.observacoes || `${lancamentoData.tipo} - ${lancamentoData.categoria}`,
-          cliente_id: lancamentoData.cliente_id || null,
-          fornecedor_id: lancamentoData.fornecedor_id || null,
-          observacoes: lancamentoData.observacoes || null,
           user_id: lancamentoData.user_id,
-          status: lancamentoData.status || 'confirmado',
-          recorrente: lancamentoData.recorrente || false,
-          meses_recorrencia: lancamentoData.meses_recorrencia || null,
+          status: 'confirmado',
         };
+
+        // Campos opcionais
+        if (lancamentoData.descricao) insertData.descricao = lancamentoData.descricao;
+        if (lancamentoData.observacoes) insertData.observacoes = lancamentoData.observacoes;
+        if (lancamentoData.cliente_id) insertData.cliente_id = lancamentoData.cliente_id;
+        if (lancamentoData.fornecedor_id) insertData.fornecedor_id = lancamentoData.fornecedor_id;
 
         console.log("📤 useCreate: Enviando para Supabase:", insertData);
 
