@@ -205,7 +205,7 @@ const LoginForm: React.FC = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-[#172a5a]" style={{ fontFamily: 'Poppins, sans-serif' }}>
-      <div className="w-[350px] px-[30px] py-[40px] bg-white/15 rounded-[20px] border border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] backdrop-blur-[10px] text-center">
+      <div className="w-[350px] px-[30px] py-[40px] bg-transparent rounded-[20px] text-center">
         
         {/* Logo */}
         <div className="mb-[30px]">
@@ -224,10 +224,10 @@ const LoginForm: React.FC = () => {
               value={email}
               onChange={handleEmailChange}
               required
-              className="w-full px-[15px] pr-[40px] py-3 bg-transparent text-white text-base border-0 border-b-2 border-white/30 rounded-none outline-none transition-all duration-300 placeholder:text-white/60 focus:border-white/60 focus:shadow-none"
+              className="w-full px-[15px] pr-[40px] py-3 bg-white text-gray-800 text-base border-0 rounded-[10px] outline-none transition-all duration-300 placeholder:text-gray-500 focus:shadow-[0_0_0_2px_#4A90E2]"
             />
             <div className="absolute top-1/2 right-[15px] transform -translate-y-1/2 pointer-events-none">
-              <Lock className="w-5 h-5 text-white/60" />
+              <Lock className="w-5 h-5 text-gray-500" />
             </div>
             {errors.email && (
               <p className="text-red-300 text-xs mt-1 text-left">{errors.email}</p>
@@ -242,7 +242,7 @@ const LoginForm: React.FC = () => {
               value={password}
               onChange={handlePasswordChange}
               required
-              className="w-full px-[15px] pr-[40px] py-3 bg-transparent text-white text-base border-0 border-b-2 border-white/30 rounded-none outline-none transition-all duration-300 placeholder:text-white/60 focus:border-white/60 focus:shadow-none"
+              className="w-full px-[15px] pr-[40px] py-3 bg-white text-gray-800 text-base border-0 rounded-[10px] outline-none transition-all duration-300 placeholder:text-gray-500 focus:shadow-[0_0_0_2px_#4A90E2]"
             />
             <button
               type="button"
@@ -250,9 +250,9 @@ const LoginForm: React.FC = () => {
               className="absolute top-1/2 right-[15px] transform -translate-y-1/2 cursor-pointer"
             >
               {showPassword ? (
-                <Eye className="w-5 h-5 text-white/60" />
+                <Eye className="w-5 h-5 text-gray-500" />
               ) : (
-                <EyeOff className="w-5 h-5 text-white/60" />
+                <EyeOff className="w-5 h-5 text-gray-500" />
               )}
             </button>
             {errors.password && (
