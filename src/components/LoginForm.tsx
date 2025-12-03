@@ -214,24 +214,13 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#1a3a5c] to-[#3676DC]">
-      {/* Animated Background Orbs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-blue-500/20 to-transparent rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-indigo-500/20 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl animate-float-delayed"></div>
-      </div>
-
-      {/* Grid Pattern Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
-      
-      <div className="relative z-10 w-full max-w-sm px-4">
-        {/* Card Premium com Glassmorphism */}
-        <Card className="bg-[#4a5f7f]/40 backdrop-blur-2xl shadow-2xl border border-white/10 overflow-hidden rounded-3xl animate-slide-up p-10">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1e3a5f] via-[#2a4a6f] to-[#1e3a5f]">
+      <div className="w-full max-w-sm px-6">
+        {/* Card Minimalista */}
+        <div className="bg-[#3d5570]/80 rounded-2xl shadow-2xl p-8 border border-[#4a6080]/50">
           {/* Logo */}
-          <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold tracking-wide" style={{ fontFamily: 'Poppins, sans-serif' }}>
+          <div className="mb-10 text-center">
+            <h1 className="text-4xl font-bold" style={{ fontFamily: 'Poppins, sans-serif', letterSpacing: '0.5px' }}>
               <span className="text-white">FLUXO</span>
               <span className="text-[#5B9EFF]">AZUL</span>
             </h1>
@@ -247,12 +236,12 @@ const LoginForm: React.FC = () => {
                 onChange={handleEmailChange}
                 placeholder="E-mail"
                 required
-                className={`h-12 bg-white/95 text-gray-700 placeholder:text-gray-400 border-0 ${
+                className={`h-11 bg-white text-gray-800 placeholder:text-gray-400 border-0 ${
                   errors.email ? "ring-2 ring-red-400" : ""
-                } focus:ring-2 focus:ring-[#5B9EFF] transition-all duration-200 rounded-xl shadow-sm`}
+                } focus:ring-0 focus:outline-none transition-all duration-200 rounded-lg`}
               />
               {errors.email && (
-                <p className="text-red-300 text-sm mt-1">{errors.email}</p>
+                <p className="text-red-300 text-xs mt-1">{errors.email}</p>
               )}
             </div>
 
@@ -265,57 +254,57 @@ const LoginForm: React.FC = () => {
                   onChange={handlePasswordChange}
                   placeholder="Senha"
                   required
-                  className={`h-12 bg-white/95 text-gray-700 placeholder:text-gray-400 border-0 pr-12 ${
+                  className={`h-11 bg-white text-gray-800 placeholder:text-gray-400 border-0 pr-11 ${
                     errors.password ? "ring-2 ring-red-400" : ""
-                  } focus:ring-2 focus:ring-[#5B9EFF] transition-all duration-200 rounded-xl shadow-sm`}
+                  } focus:ring-0 focus:outline-none transition-all duration-200 rounded-lg`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-300 text-sm mt-1">{errors.password}</p>
+                <p className="text-red-300 text-xs mt-1">{errors.password}</p>
               )}
             </div>
 
-              {/* Rate limiting info */}
-              {rateLimitInfo.isLimited && (
-                <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <Shield className="h-4 w-4 text-red-500" />
-                  <p className="text-red-700 text-sm">
-                    Conta temporariamente bloqueada por segurança. 
-                    {rateLimitInfo.resetTime && ` Tente novamente após ${new Date(rateLimitInfo.resetTime).toLocaleTimeString()}.`}
-                  </p>
-                </div>
-              )}
-              
-              {!rateLimitInfo.isLimited && rateLimitInfo.remainingAttempts < 3 && (
-                <div className="flex items-center space-x-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <Shield className="h-4 w-4 text-yellow-500" />
-                  <p className="text-yellow-700 text-sm">
-                    Aviso: {rateLimitInfo.remainingAttempts} tentativas restantes antes do bloqueio temporário.
-                  </p>
-                </div>
-              )}
+            {/* Rate limiting info */}
+            {rateLimitInfo.isLimited && (
+              <div className="flex items-center space-x-2 p-2.5 bg-red-100 rounded-lg">
+                <Shield className="h-4 w-4 text-red-600" />
+                <p className="text-red-700 text-xs">
+                  Bloqueado por segurança.
+                  {rateLimitInfo.resetTime && ` Tente após ${new Date(rateLimitInfo.resetTime).toLocaleTimeString()}.`}
+                </p>
+              </div>
+            )}
+            
+            {!rateLimitInfo.isLimited && rateLimitInfo.remainingAttempts < 3 && (
+              <div className="flex items-center space-x-2 p-2.5 bg-yellow-100 rounded-lg">
+                <Shield className="h-4 w-4 text-yellow-600" />
+                <p className="text-yellow-700 text-xs">
+                  {rateLimitInfo.remainingAttempts} tentativas restantes.
+                </p>
+              </div>
+            )}
 
-            <div className="pt-2">
+            <div className="pt-1">
               <Button
                 type="submit"
                 disabled={loading || !!errors.email || !!errors.password || rateLimitInfo.isLimited}
-                className="w-full h-12 bg-[#5B9EFF] hover:bg-[#4a8ef5] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+                className="w-full h-11 bg-[#5B9EFF] hover:bg-[#4a8ef5] text-white font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
                     <span>Entrando...</span>
                   </>
                 ) : (
                   <>
-                    <LogIn size={18} />
+                    <LogIn size={16} />
                     <span>Entrar no Sistema</span>
                   </>
                 )}
@@ -323,50 +312,18 @@ const LoginForm: React.FC = () => {
             </div>
 
             {/* Forgot Password Link */}
-            <div className="text-center pt-4">
+            <div className="text-center pt-3">
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-sm text-white/80 hover:text-white transition-colors"
+                className="text-xs text-white/70 hover:text-white transition-colors"
               >
                 Esqueci minha senha
               </button>
             </div>
           </form>
-        </Card>
+        </div>
       </div>
-
-      {/* Animações CSS */}
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) translateX(0px); }
-          50% { transform: translateY(-20px) translateX(10px); }
-        }
-        @keyframes float-delayed {
-          0%, 100% { transform: translateY(0px) translateX(0px); }
-          50% { transform: translateY(20px) translateX(-10px); }
-        }
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slide-up {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        .animate-float-delayed {
-          animation: float-delayed 8s ease-in-out infinite;
-        }
-        .animate-fade-in {
-          animation: fade-in 0.8s ease-out;
-        }
-        .animate-slide-up {
-          animation: slide-up 0.8s ease-out 0.2s both;
-        }
-      `}</style>
 
       {/* Forgot Password Dialog com Glassmorphism */}
       <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
