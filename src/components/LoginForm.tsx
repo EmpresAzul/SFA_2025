@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { Eye, EyeOff, Mail, Lock, Shield, User } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useInputValidation, validateEmail } from "@/hooks/useInputValidation";
 import { loginRateLimiter } from "@/utils/inputSanitization";
@@ -326,7 +326,7 @@ const LoginForm: React.FC = () => {
         </div>
       </div>
 
-      {/* Forgot Password Dialog com Glassmorphism */}
+      {/* Forgot Password Dialog */}
       <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
         <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-xl border border-white/30 shadow-2xl">
           <DialogHeader>
@@ -340,7 +340,7 @@ const LoginForm: React.FC = () => {
           <form onSubmit={handleForgotPassword} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="reset-email" className="text-gray-800 font-semibold flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-[#3676DC] rounded-full"></span>
+                <span className="w-1.5 h-1.5 bg-[#4A90E2] rounded-full"></span>
                 Email
               </Label>
               <Input
@@ -349,7 +349,7 @@ const LoginForm: React.FC = () => {
                 placeholder="seu@email.com"
                 value={resetEmail}
                 onChange={(e) => setResetEmail(sanitizeSecurityInput(e.target.value.trim()))}
-                className="h-12 border-2 border-gray-200 focus:border-[#3676DC] focus:ring-2 focus:ring-[#3676DC]/20 rounded-xl transition-all duration-300"
+                className="h-12 border-2 border-gray-200 focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 rounded-xl transition-all duration-300"
                 disabled={resetLoading}
               />
             </div>
@@ -368,7 +368,7 @@ const LoginForm: React.FC = () => {
               </Button>
               <Button
                 type="submit"
-                className="flex-1 h-12 bg-gradient-to-r from-[#1a3a5c] via-[#3676DC] to-[#4a8ef5] hover:from-[#3676DC] hover:via-[#4a8ef5] hover:to-[#5a9eff] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="flex-1 h-12 bg-gradient-to-r from-[#4A90E2] to-[#1E79DE] hover:from-[#1E79DE] hover:to-[#4A90E2] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                 disabled={resetLoading}
               >
                 {resetLoading ? "Enviando..." : "Enviar Link"}
